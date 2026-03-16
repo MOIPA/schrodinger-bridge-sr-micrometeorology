@@ -1,0 +1,47 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[[source]]
+url = "https://download.pytorch.org/whl/cu117"
+verify_ssl = true
+name = "downloadpytorch"
+
+[packages]
+torch = {version = "==1.13.1", index = "downloadpytorch"}
+numpy = "==1.26.4"
+scipy = "*"
+scikit-learn = "*"
+pandas = "*"
+tqdm = "*"
+xarray = "*"
+netcdf4 = "*"
+h5netcdf = "*"
+cartopy = "*"
+xgrads = "*"
+pyyaml = "*"
+tabulate = "*"
+numba = "*"
+einops = "*"
+
+[dev-packages]
+black = "*"
+flake8 = "*"
+isort = "*"
+ipykernel = "*"
+matplotlib = "*"
+jupyterlab = "*"
+python-lsp-server = "*"
+jupyter-lsp = "*"
+jupyterlab-lsp = "*"
+ipython = "*"
+jupyterlab-code-formatter = "*"
+ipywidgets = "*"
+seaborn = "*"
+pyvista = {extras = ["all"], version = "*"}
+panel = "*"
+ipyvtklink = "*"
+
+[requires]
+python_version = "3.11"

@@ -1,0 +1,140 @@
+# Configuration for Wind Field Super-Resolution
+data:
+  biases:
+    hr_u1: 2.268650
+    hr_v1: 5.487056
+    lr_u1: 2.268602
+    lr_v1: 5.487113
+    t2: 302.572113
+    z: 37.488346
+    lu: 16.725616
+    tsk: 303.533447
+    swdow: 243.775620
+    glw: 441.881378
+    hfx: 35.444469
+    lh: 79.600403
+    psfc: 99613.843750
+    pblh: 576.574646
+    t_ml0: 302.324524
+    t_ml2: 301.183228
+    t_ml5: 298.456818
+    u_ml0: 2.620372
+    u_ml2: 3.919058
+    u_ml5: 6.558106
+    v_ml0: 6.434248
+    v_ml2: 8.576588
+    v_ml5: 9.858344
+    q_ml0: 0.021821
+    q_ml2: 0.021468
+    q_ml5: 0.020230
+  discarded_minute_range:
+  - 1
+  - 30
+  dtype: float32
+  hr_cropped_shape:
+  - 128
+  - 128
+  hr_data_shape:
+  - 128
+  - 128
+  input_variable_names:
+  - lr_u10
+  - lr_v10
+  - t2
+  - z
+  - lu
+  - tsk
+  - swdown
+  - glw
+  - hfx
+  - lh
+  - psfc
+  - pblh
+  - t_ml0
+  - u_ml0
+  - v_ml0
+  - q_ml0
+  - t_ml2
+  - u_ml2
+  - v_ml2
+  - q_ml2
+  - t_ml5
+  - u_ml5
+  - v_ml5
+  - q_ml5
+  is_clipped: false
+  max_clipped_value: null
+  min_clipped_value: null
+  missing_value: 0.0
+  scales:
+    hr_u1: 2.492969
+    hr_v1: 2.252990
+    lr_u1: 2.450218
+    lr_v1: 2.172717
+    t2: 1.833548
+    z: 79.458435
+    lu: 9.772257
+    tsk: 4.087181
+    swdow: 322.604156
+    glw: 11.915731
+    hfx: 84.616913
+    lh: 109.189278
+    psfc: 888.182190
+    pblh: 310.770905
+    t_ml0: 1.636133
+    t_ml2: 1.420663
+    t_ml5: 1.042335
+    u_ml0: 2.863708
+    u_ml2: 3.374242
+    u_ml5: 3.663273
+    v_ml0: 2.463590
+    v_ml2: 2.608714
+    v_ml5: 2.661177
+    q_ml0: 0.001390
+    q_ml2: 0.001410
+    q_ml5: 0.001267
+  target_variable_names:
+  - hr_u10
+  - hr_v10
+loader:
+  batch_size: 4
+  dl_data_ver: wrf_v1 # Using the new data directory
+  num_workers: 8
+  seed: 42
+  train_valid_test_ratios:
+  - 0.7
+  - 0.145
+  - 0.155
+model:
+  attn_res:
+  - 16
+  channel_mults:
+  - 1
+  - 2
+  - 4
+  - 8
+  - 8
+  channels_each_head: 16
+  dropout: 0.2
+  in_channel: 26 # 1 (from yt, which is now 2 channels but treated as one 'state') + 24 conditional vars
+  inner_channel: 32
+  max_period: 10.0
+  out_channel: 2 # CRITICAL: Output is 2 channels (U and V)
+  res_blocks: 1
+  resblock_updown: true
+si:
+  eps: 0.2
+  formula: quadratic
+  loss_type: L2
+  n_timestep: 10
+train:
+  early_stopping_patience: 400
+  ema_decay: null
+  epochs: 400
+  learning_rate: 0.0001
+  loss:
+    loss_name: L2
+  optim_name: AdamW
+  save_interval: 100
+  seed: 78268
+  use_amp: false

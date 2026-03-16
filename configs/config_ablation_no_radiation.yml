@@ -1,0 +1,118 @@
+data:
+  biases:
+    hr_tm: 302.789878
+    lr_tm: 302.789859
+    z: 37.488344
+    lu: 16.725617
+    tsk: 303.749280
+    hfx: 37.300310
+    lh: 81.561140
+    psfc: 99609.435891
+    pblh: 613.879272
+    u10: 2.746514
+    v10: 5.719489
+    t_ml2: 301.389098
+    u_ml2: 4.674829
+    v_ml2: 8.924617
+    q_ml2: 0.021612
+    t_ml5: 298.581383
+    u_ml5: 7.446774
+    v_ml5: 10.152592
+    q_ml5: 0.020363
+  discarded_minute_range:
+  - 1
+  - 30
+  dtype: float32
+  hr_cropped_shape:
+  - 128
+  - 128
+  hr_data_shape:
+  - 128
+  - 128
+  input_variable_names:
+  - lr_tm002m
+  - z
+  - lu
+  - tsk
+  - hfx
+  - lh
+  - psfc
+  - pblh
+  - u10
+  - v10
+  - t_ml2
+  - u_ml2
+  - v_ml2
+  - q_ml2
+  - t_ml5
+  - u_ml5
+  - v_ml5
+  - q_ml5
+  is_clipped: false
+  max_clipped_value: null
+  min_clipped_value: null
+  missing_value: 0.0
+  scales:
+    hr_tm: 1.803983
+    lr_tm: 1.757697
+    z: 79.458447
+    lu: 9.772258
+    tsk: 4.192689
+    hfx: 88.441964
+    lh: 112.152199
+    psfc: 890.129691
+    pblh: 308.542929
+    u10: 2.105250
+    v10: 2.151192
+    t_ml2: 1.357763
+    u_ml2: 2.623157
+    v_ml2: 2.418024
+    q_ml2: 0.001354
+    t_ml5: 1.028359
+    u_ml5: 2.742625
+    v_ml5: 2.548377
+    q_ml5: 0.001206
+  target_variable_names:
+  - hr_tm002m
+loader:
+  batch_size: 4
+  dl_data_ver: v20_2d
+  num_workers: 64
+  seed: 42
+  train_valid_test_ratios:
+  - 0.7
+  - 0.145
+  - 0.155
+model:
+  attn_res:
+  - 16
+  channel_mults:
+  - 1
+  - 2
+  - 4
+  - 8
+  - 8
+  channels_each_head: 16
+  dropout: 0.2
+  in_channel: 19
+  inner_channel: 32
+  max_period: 10.0
+  out_channel: 1
+  res_blocks: 1
+  resblock_updown: true
+si:
+  eps: 0.2
+  formula: quadratic
+  loss_type: L2
+  n_timestep: 10
+train:
+  early_stopping_patience: 400
+  ema_decay: null
+  epochs: 400
+  learning_rate: 0.0001
+  loss:
+    loss_name: L2
+  optim_name: AdamW
+  save_interval: 100
+  seed: 78268
+  use_amp: false

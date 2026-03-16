@@ -1,0 +1,113 @@
+data:
+  biases:
+    hr_lu: 3.5
+    hr_tz: 0.0
+    lr_tm: 32.8
+    lr_vl: 0.0
+    lr_vp: 0.0
+    lr_vr: 0.0
+    re_tm: 0.304
+  discarded_minute_range:
+  - 1
+  - 30
+  dtype: float32
+  hr_cropped_shape:
+  - 160
+  - 160
+  hr_data_shape:
+  - 320
+  - 320
+  input_variable_names:
+  - lr_tm002m
+  - hr_tz
+  - hr_lu
+  - lr_tm010m
+  - lr_vl010m
+  - lr_vp010m
+  - lr_vr010m
+  - lr_tm030m
+  - lr_vl030m
+  - lr_vp030m
+  - lr_vr030m
+  - lr_tm050m
+  - lr_vl050m
+  - lr_vp050m
+  - lr_vr050m
+  - lr_tm090m
+  - lr_vl090m
+  - lr_vp090m
+  - lr_vr090m
+  - lr_tm130m
+  - lr_vl130m
+  - lr_vp130m
+  - lr_vr130m
+  - lr_tm170m
+  - lr_vl170m
+  - lr_vp170m
+  - lr_vr170m
+  - lr_tm230m
+  - lr_vl230m
+  - lr_vp230m
+  - lr_vr230m
+  is_clipped: false
+  max_clipped_value: null
+  min_clipped_value: null
+  missing_value: 0.0
+  scales:
+    hr_lu: 3.0
+    hr_tz: 210.0
+    lr_tm: 4.95
+    lr_vl: 13.0
+    lr_vp: 13.0
+    lr_vr: 5.0
+    re_tm: 0.585
+ddpm:
+  beta_schedules:
+    test:
+      end: 10.0
+      n_timestep: 50
+      schedule: linear
+      start: 0.001
+    train:
+      end: 10.0
+      n_timestep: 50
+      schedule: linear
+      start: 0.001
+  dtype: float32
+loader:
+  batch_size: 32
+  dl_data_ver: v20_2d
+  num_workers: 4
+  seed: 42
+  train_valid_test_ratios:
+  - 0.7
+  - 0.145
+  - 0.155
+model:
+  attn_res:
+  - 16
+  channel_mults:
+  - 1
+  - 2
+  - 4
+  - 8
+  - 8
+  channels_each_head: 16
+  dropout: 0.2
+  in_channel: 32
+  inner_channel: 32
+  max_period: 10.0
+  out_channel: 1
+  res_blocks: 1
+  resblock_updown: true
+train:
+  early_stopping_patience: 1001
+  ema_decay: null
+  epochs: 1001
+  learning_rate: 0.0001
+  loss:
+    loss_name: L2
+  optim_name: AdamW
+  save_interval: 100
+  seed: 78268
+  use_amp: true

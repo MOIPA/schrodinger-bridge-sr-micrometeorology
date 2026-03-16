@@ -1,0 +1,16 @@
+name: tzq
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - numpy
+  - pandas
+  - pip
+  - tqdm
+  - scikit-learn
+  - xarray
+  - cfgrib
+  - pytorch::pytorch
+  - cartopy
+  - matplotlib

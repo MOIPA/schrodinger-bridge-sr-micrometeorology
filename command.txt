@@ -1,0 +1,199 @@
+python scripts/train_schrodinger_bridge_model.py --config_path configs/schrodinger_bridge_model.yml --device cpu
+
+
+conda activate atmos
+
+cd 大气
+
+
+python visualize_samples.py --config_path configs/schrodinger_bridge_model.yml --model_weight_path data/DL_result/ExperimentSchrodingerBridgeModel/schrodinger_bridge_model/model_weight.pth --npz_path data/DL_data/v20_2d/20250108T050000.npz  --output_path inf.png
+
+python visualize_samples_hongkong.py --config_path configs/schrodinger_bridge_model.yml  --model_weight_path data/DL_result/ExperimentSchrodingerBridgeModel/schrodinger_bridge_model/checkpoint.pth  --npz_dir ./prepare_npz/ --output_dir ./visualizations --num_samples 5 --data_only
+
+可视化风场：
+   1 python visualize_wind.py ^
+   2     --config_path configs/config_wind.yml ^
+   3     --model_weight_path path/to/your/wind_checkpoint.pth ^
+   4     --npz_dir path/to/your/wind_npz_data/ ^
+   5     --output_dir visualizations_wind/ ^
+   6     --num_samples 3
+python visualize_wind.py   --config_path configs/config_wind.yml  --model_weight_path data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth   --npz_dir ./prepare_npz_wind/   --output_dir visualizations_wind/  --num_samples 3
+
+计算平均每个图片的损失结果
+   1 python calculate_loss.py ^
+   2     --config_path configs/config_baseline_all_vars.yml ^
+   3     --model_weight_path path/to/your/checkpoint.pth ^
+   4     --npz_dir data/DL_data/wrf_v1/
+计算插值图片和真实结果的loss：
+   1 python calculate_baseline_loss.py ^
+   2     --npz_dir data/DL_data/wrf_v1/
+  （请将 `--npz_dir` 替换为您存放 `.npz` 文件的实际路径）
+
+你好，我正在一台新的电脑上继续我们之前的项目。为了让你能快速了解上下文，以下是项目的核心信息摘要：
+
+  1. 项目目标：
+  复现并改进一篇关于“薛定谔桥(Schrödinger Bridge)”的论文，用于气象数据的超分辨率任务。
+
+  2. 技术栈与环境：
+   * 语言：Python
+   * 核心库：PyTorch, xarray, cfgrib, numpy, Cartopy
+   * 环境：本地Windows，纯CPU运行，使用Conda管理环境。
+
+  3. 项目当前状态：
+  我们已经成功解决了代码在本地CPU环境运行的各种bug，并打通了从数据处理到模型训练、再到推理可视化的完整流程。
+   * 数据管道：我们编写了 prepare_data.py 脚本，可以从ERA5的GRIB数据中提取指定区域（华东）和变量，处理成模型所需的 .npz 格式。
+   * 模型配置：核心配置文件是 configs/schrodinger_bridge_model.yml。我们已经根据自己的数据，将其大幅修改，特别是模型的输入通道 in_channel
+     (当前为16)，以及input_variable_names (15个条件变量)。
+   * 模型训练：主训练脚本是 scripts/train_schrodinger_bridge_model.py。我们为它加入了断点续训 (checkpointing) 的功能，可以将训练状态保存到 checkpoint.pth 文件中。
+   * 推理与可视化：我们编写了 visualize_samples.py 脚本，它可以加载训练好的模型，对单个 .npz 文件进行推理，并使用 Cartopy 绘制带有真实地理信息的对比图。
+   * 物理约束：我们讨论了下一步的创新方向，即在损失函数中加入基于风场散度的物理约束。相关的数学公式和PyTorch实现思路已经有了。
+
+  4. 我的下一个目标是：
+  （在这里填写您想继续做的事，例如：“继续改进 `visualize_samples.py` 的绘图细节”，或者“开始着手修改训练代码，加入散度损失函数”等等。）
+
+  ---
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  ---
+
+  WRF 安装与使用计划
+
+  阶段一：环境准备 —— 在Windows中安装Linux (WSL2)
+
+   1. 安装WSL2：
+       * 以管理员身份打开您的PowerShell或CMD。
+       * 运行命令：wsl --install
+       * 这个命令会自动为您启用所需功能、下载最新的Linux内核，并默认安装 Ubuntu 发行版。
+       * 安装完成后，重启电脑。
+
+   2. 初始化Ubuntu：
+       * 从“开始”菜单找到并打开 “Ubuntu”。
+       * 首次启动时，系统会要求您创建一个Linux用户名和密码。请务必记住它们。
+
+   3. 更新Linux系统并安装基础编译环境：
+       * 在打开的Ubuntu终端中，依次运行以下命令，更新系统并安装WRF编译所需的基础工具（C编译器、Fortran编译器、C Shell等）：
+   1         sudo apt update
+   2         sudo apt upgrade
+   3         sudo apt install build-essential csh gfortran
+
+  阶段二：安装WRF的依赖库（最关键、最易出错的步骤）
+
+  WRF依赖于一些科学计算库，它们需要以特定顺序从源代码编译。您需要在您的Ubuntu终端中，一步步执行。
+
+   1. 创建工作目录：
+
+   1     mkdir ~/WRF_build
+   2     cd ~/WRF_build
+
+   2. 安装依赖库：
+       * 我们会将所有依赖库安装在 ~/WRF_build/libs 目录下。
+       * 下面是一系列命令，请依次复制并执行。如果中途有任何命令报错，请停止并向我反馈错误信息。
+
+    1         # -- 设置环境变量 --
+    2         export DIR=~/WRF_build/libs
+    3         export CC=gcc
+    4         export CXX=g++
+    5         export FC=gfortran
+    6         export F77=gfortran
+    7         export CFLAGS="-g -O2"
+    8         export FFLAGS="-g -O2"
+    9
+   10         # -- 安装 zlib --
+   11         wget https://www.zlib.net/zlib-1.3.1.tar.gz
+   12         tar -xvzf zlib-1.3.1.tar.gz
+   13         cd zlib-1.3.1
+   14         ./configure --prefix=$DIR
+   15         make
+   16         make install
+   17         cd ..
+   18
+   19         # -- 安装 HDF5 --
+   20         wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.14/hdf5-1.14.3/src/hdf5-1.14.3.tar.gz
+   21         tar -xvzf hdf5-1.14.3.tar.gz
+   22         cd hdf5-1.14.3
+   23         ./configure --prefix=$DIR --with-zlib=$DIR --enable-fortran
+   24         make
+   25         make install
+   26         cd ..
+   27
+   28         # -- 安装 NetCDF (C 和 Fortran) --
+   29         export PATH=$DIR/bin:$PATH
+   30         export NETCDF=$DIR
+   31         export LDFLAGS="-L$DIR/lib"
+   32         export CPPFLAGS="-I$DIR/include"
+   33
+   34         wget https://github.com/Unidata/netcdf-c/archive/refs/tags/v4.9.2.tar.gz -O netcdf-c-4.9.2.tar.gz
+   35         tar -xvzf netcdf-c-4.9.2.tar.gz
+   36         cd netcdf-c-4.9.2
+   37         ./configure --prefix=$NETCDF --with-hdf5=$DIR --enable-netcdf-4 --disable-dap
+   38         make
+   39         make install
+   40         cd ..
+   41
+   42         wget https://github.com/Unidata/netcdf-fortran/archive/refs/tags/v4.6.1.tar.gz -O netcdf-fortran-4.6.1.tar.gz
+   43         tar -xvzf netcdf-fortran-4.6.1.tar.gz
+   44         cd netcdf-fortran-4.6.1
+   45         ./configure --prefix=$NETCDF
+   46         make
+   47         make install
+   48         cd ..
+
+  阶段三：编译WPS和WRF本体
+
+   1. 下载WPS和WRF源代码：
+   1     cd ~/WRF_build
+   2     git clone https://github.com/wrf-model/WPS.git
+   3     git clone https://github.com/wrf-model/WRF.git
+
+   2. 编译WRF：
+       * 进入WRF目录并开始配置：
+   1         cd WRF
+   2         ./configure
+       * 系统会给出几个选项，请选择带有 gfortran 和 gcc 的选项（通常是数字 34 或附近），然后选择 1 (smpar，适用于单机多核并行)。
+       * 配置完成后，开始编译：
+   1         ./compile em_real >& compile_wrf.log &
+       * 编译过程很长（可能需要30分钟到数小时）。您可以用 tail -f compile_wrf.log 命令查看实时日志。如果最后看到 Executables successfully built 字样，则表示成功。
+
+   3. 编译WPS：
+       * 进入WPS目录并开始配置：
+
+   1         cd ../WPS
+   2         ./configure
+       * 系统会询问地理数据路径，暂时直接按回车跳过。然后选择 gfortran 相关的选项（通常是数字 3）。
+       * 编译WPS：
+
+   1         ./compile >& compile_wps.log &
+       * 用 tail -f compile_wps.log 查看日志，成功后会提示 successful。
+
+  阶段四：WRF模拟流程（使用指南）
+
+  安装完成后，运行WRF是一个三步走的过程：
+
+   1. WPS-geogrid（定义地理格网）：
+       * 您需要下载高分辨率的静态地理数据 (https://www2.mmm.ucar.edu/wrf/users/download/get_sources_wps_geog.html)。
+       * 然后编辑 namelist.wps 文件，设置您的模拟区域（经纬度范围、分辨率、嵌套层数等）。
+       * 运行 ./geogrid.exe。
+
+   2. WPS-ungrib & metgrid（准备气象场）：
+       * 下载驱动WRF所需的初始场和边界场数据（例如，全球的GFS或ERA5数据，GRIB格式）。
+       * 运行 ./link_grib.csh /path/to/your/grib/files。
+       * 运行 ./ungrib.exe。
+       * 运行 ./metgrid.exe。
+
+   3. WRF-real & wrf（执行模拟）：
+       * 将WPS生成的 met_em.* 文件链接到WRF的运行目录。
+       * 编辑 namelist.input 文件，设置模拟的物理参数方案、时间步长等。
+       * 运行 ./real.exe 生成初始文件。
+       * 运行 ./wrf.exe 开始积分计算，进行模拟。
