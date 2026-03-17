@@ -114,11 +114,11 @@ data:
   - 30
   dtype: float32
   hr_cropped_shape:
-  - 192
-  - 192
+  - 128
+  - 128
   hr_data_shape:
-  - 192
-  - 192
+  - 128
+  - 128
   # 条件变量（10个，不含lr风场 — lr由 __getitem__ 自动从 hr 名推导）
   input_variable_names:
   - t2
@@ -176,10 +176,10 @@ model:
   channels_each_head: 16
   dropout: 0.2
   in_channel: 28    # 18 (yt: LR wind interpolated) + 10 (condition vars)
-  inner_channel: 64  # 从32提升，增加容量
+  inner_channel: 32
   max_period: 10.0
   out_channel: 18    # 6 levels x 3 components (u/v/w)
-  res_blocks: 2      # 从1提升
+  res_blocks: 1
   resblock_updown: true
 si:
   eps: 0.2
