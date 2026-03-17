@@ -1,2298 +1,0 @@
-OMP_NUM_THREADS=128
-Experiment Schrodinger-Bridge Model is selected.
-
-**************************************************
-Show configuration
-**************************************************
-
-EXPERIMENT_NAME='ExperimentSchrodingerBridgeModel'
-config_name='config_wind'
-config_path='configs/config_wind.yml'
-result_dir_path='/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind'
-
-Input config = {
-  "data": {
-    "target_variable_names": [
-      "hr_u10",
-      "hr_v10"
-    ],
-    "input_variable_names": [
-      "lr_u10",
-      "lr_v10",
-      "t2",
-      "z",
-      "lu",
-      "tsk",
-      "swdown",
-      "glw",
-      "hfx",
-      "lh",
-      "psfc",
-      "pblh",
-      "t_ml0",
-      "u_ml0",
-      "v_ml0",
-      "q_ml0",
-      "t_ml2",
-      "u_ml2",
-      "v_ml2",
-      "q_ml2",
-      "t_ml5",
-      "u_ml5",
-      "v_ml5",
-      "q_ml5"
-    ],
-    "biases": {
-      "hr_u1": 2.26865,
-      "hr_v1": 5.487056,
-      "lr_u1": 2.268602,
-      "lr_v1": 5.487113,
-      "t2": 302.572113,
-      "z": 37.488346,
-      "lu": 16.725616,
-      "tsk": 303.533447,
-      "swdow": 243.77562,
-      "glw": 441.881378,
-      "hfx": 35.444469,
-      "lh": 79.600403,
-      "psfc": 99613.84375,
-      "pblh": 576.574646,
-      "t_ml0": 302.324524,
-      "t_ml2": 301.183228,
-      "t_ml5": 298.456818,
-      "u_ml0": 2.620372,
-      "u_ml2": 3.919058,
-      "u_ml5": 6.558106,
-      "v_ml0": 6.434248,
-      "v_ml2": 8.576588,
-      "v_ml5": 9.858344,
-      "q_ml0": 0.021821,
-      "q_ml2": 0.021468,
-      "q_ml5": 0.02023
-    },
-    "scales": {
-      "hr_u1": 2.492969,
-      "hr_v1": 2.25299,
-      "lr_u1": 2.450218,
-      "lr_v1": 2.172717,
-      "t2": 1.833548,
-      "z": 79.458435,
-      "lu": 9.772257,
-      "tsk": 4.087181,
-      "swdow": 322.604156,
-      "glw": 11.915731,
-      "hfx": 84.616913,
-      "lh": 109.189278,
-      "psfc": 888.18219,
-      "pblh": 310.770905,
-      "t_ml0": 1.636133,
-      "t_ml2": 1.420663,
-      "t_ml5": 1.042335,
-      "u_ml0": 2.863708,
-      "u_ml2": 3.374242,
-      "u_ml5": 3.663273,
-      "v_ml0": 2.46359,
-      "v_ml2": 2.608714,
-      "v_ml5": 2.661177,
-      "q_ml0": 0.00139,
-      "q_ml2": 0.00141,
-      "q_ml5": 0.001267
-    },
-    "is_clipped": false,
-    "min_clipped_value": null,
-    "max_clipped_value": null,
-    "missing_value": 0.0,
-    "hr_data_shape": [
-      128,
-      128
-    ],
-    "hr_cropped_shape": [
-      128,
-      128
-    ],
-    "dtype": "float32",
-    "discarded_minute_range": [
-      1,
-      30
-    ]
-  },
-  "loader": {
-    "batch_size": 4,
-    "dl_data_ver": "wrf_v1",
-    "train_valid_test_ratios": [
-      0.7,
-      0.145,
-      0.155
-    ],
-    "num_workers": 8,
-    "seed": 42
-  },
-  "train": {
-    "epochs": 400,
-    "early_stopping_patience": 400,
-    "seed": 78268,
-    "learning_rate": 0.0001,
-    "optim_name": "AdamW",
-    "loss": {
-      "loss_name": "L2"
-    },
-    "use_amp": false,
-    "ema_decay": null,
-    "save_interval": 100
-  },
-  "model": {
-    "in_channel": 26,
-    "inner_channel": 32,
-    "out_channel": 2,
-    "res_blocks": 1,
-    "channel_mults": [
-      1,
-      2,
-      4,
-      8,
-      8
-    ],
-    "attn_res": [
-      16
-    ],
-    "channels_each_head": 16,
-    "dropout": 0.2,
-    "resblock_updown": true,
-    "max_period": 10.0
-  },
-  "si": {
-    "n_timestep": 10,
-    "eps": 0.2,
-    "formula": "quadratic",
-    "loss_type": "L2"
-  }
-}
-
-dataset_config.dataset_name='Dataset2dTemperature2m'
-The total files = 168. A part of them is used for training.
-All files give to dataset are 116.
-Reading all files.
-  0%|          | 0/116 [00:00<?, ?it/s]  3%|▎         | 4/116 [00:00<00:03, 34.97it/s]  7%|▋         | 8/116 [00:00<00:03, 35.56it/s] 10%|█         | 12/116 [00:00<00:02, 35.72it/s] 14%|█▍        | 16/116 [00:00<00:02, 36.00it/s] 17%|█▋        | 20/116 [00:00<00:02, 36.13it/s] 21%|██        | 24/116 [00:00<00:02, 36.25it/s] 24%|██▍       | 28/116 [00:00<00:02, 36.18it/s] 28%|██▊       | 32/116 [00:00<00:02, 36.06it/s] 31%|███       | 36/116 [00:01<00:02, 35.99it/s] 34%|███▍      | 40/116 [00:01<00:02, 36.08it/s] 38%|███▊      | 44/116 [00:01<00:01, 36.22it/s] 41%|████▏     | 48/116 [00:01<00:01, 36.28it/s] 45%|████▍     | 52/116 [00:01<00:01, 36.03it/s] 48%|████▊     | 56/116 [00:01<00:01, 35.85it/s] 52%|█████▏    | 60/116 [00:01<00:01, 35.81it/s] 55%|█████▌    | 64/116 [00:01<00:01, 36.00it/s] 59%|█████▊    | 68/116 [00:01<00:01, 36.14it/s] 62%|██████▏   | 72/116 [00:01<00:01, 36.14it/s] 66%|██████▌   | 76/116 [00:02<00:01, 36.03it/s] 69%|██████▉   | 80/116 [00:02<00:01, 35.83it/s] 72%|███████▏  | 84/116 [00:02<00:00, 35.73it/s] 76%|███████▌  | 88/116 [00:02<00:00, 35.84it/s] 79%|███████▉  | 92/116 [00:02<00:00, 35.97it/s] 83%|████████▎ | 96/116 [00:02<00:00, 36.03it/s] 86%|████████▌ | 100/116 [00:02<00:00, 36.02it/s] 90%|████████▉ | 104/116 [00:02<00:00, 35.89it/s] 93%|█████████▎| 108/116 [00:03<00:00, 35.67it/s] 97%|█████████▋| 112/116 [00:03<00:00, 35.79it/s]100%|██████████| 116/116 [00:03<00:00, 36.01it/s]100%|██████████| 116/116 [00:03<00:00, 35.97it/s]
-train: dataset size = 116, batch num = 29
-
-All files give to dataset are 25.
-Reading all files.
-  0%|          | 0/25 [00:00<?, ?it/s] 16%|█▌        | 4/25 [00:00<00:00, 33.86it/s] 32%|███▏      | 8/25 [00:00<00:00, 33.37it/s] 48%|████▊     | 12/25 [00:00<00:00, 33.19it/s] 64%|██████▍   | 16/25 [00:00<00:00, 33.18it/s] 80%|████████  | 20/25 [00:00<00:00, 33.53it/s] 96%|█████████▌| 24/25 [00:00<00:00, 33.71it/s]100%|██████████| 25/25 [00:00<00:00, 33.56it/s]
-valid: dataset size = 25, batch num = 7
-
-DEBUG-DICT_LOADERS:29
-UNetDDPMVer01 is created
-EMA self.decay=None
-Optimizer is AdamW.
-/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/scripts/train_schrodinger_bridge_model.py:161: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
-  scaler = torch.cuda.amp.GradScaler()
-/public3/home/scg4074/.conda/envs/tzq/lib/python3.12/site-packages/torch/amp/grad_scaler.py:132: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
-  warnings.warn(
-No checkpoint found at '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'. Starting training from scratch.
-
-**************************************************
-Train model
-**************************************************
-
-Train start: 2026-02-24 06:47:28.403118+00:00 UTC
-Saving interval = 100
-EMA decay rate = None
-  0%|          | 0/401 [00:00<?, ?it/s]Epoch 1 / 400
-train error: avg loss = 0.41618329
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 29.682837963104248 sec
-----------
-  0%|          | 1/401 [00:29<3:17:53, 29.68s/it]Epoch 2 / 400
-train error: avg loss = 0.46461692
-ES count = 1
-Elapsed time = 29.867268800735474 sec
-----------
-  0%|          | 2/401 [00:59<3:18:06, 29.79s/it]Epoch 3 / 400
-train error: avg loss = 0.40763658
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 32.09367370605469 sec
-----------
-  1%|          | 3/401 [01:31<3:24:35, 30.84s/it]Epoch 4 / 400
-train error: avg loss = 0.43314523
-ES count = 1
-Elapsed time = 32.618852376937866 sec
-----------
-  1%|          | 4/401 [02:04<3:28:43, 31.54s/it]Epoch 5 / 400
-train error: avg loss = 0.40993716
-ES count = 2
-Elapsed time = 33.09743285179138 sec
-----------
-  1%|          | 5/401 [02:37<3:31:53, 32.10s/it]Epoch 6 / 400
-train error: avg loss = 0.47838701
-ES count = 3
-Elapsed time = 33.97594428062439 sec
-----------
-  1%|▏         | 6/401 [03:11<3:35:32, 32.74s/it]Epoch 7 / 400
-train error: avg loss = 0.46454956
-ES count = 4
-Elapsed time = 33.736241579055786 sec
-----------
-  2%|▏         | 7/401 [03:45<3:37:08, 33.07s/it]Epoch 8 / 400
-train error: avg loss = 0.33025487
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 34.18166947364807 sec
-----------
-  2%|▏         | 8/401 [04:19<3:38:54, 33.42s/it]Epoch 9 / 400
-train error: avg loss = 0.42503833
-ES count = 1
-Elapsed time = 33.63482880592346 sec
-----------
-  2%|▏         | 9/401 [04:52<3:38:47, 33.49s/it]Epoch 10 / 400
-train error: avg loss = 0.41814812
-ES count = 2
-Elapsed time = 34.35687732696533 sec
-----------
-  2%|▏         | 10/401 [05:27<3:39:58, 33.76s/it]Epoch 11 / 400
-train error: avg loss = 0.35698835
-ES count = 3
-Elapsed time = 34.35796809196472 sec
-----------
-  3%|▎         | 11/401 [06:01<3:40:36, 33.94s/it]Epoch 12 / 400
-train error: avg loss = 0.31075452
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.83991551399231 sec
-----------
-  3%|▎         | 12/401 [06:37<3:43:47, 34.52s/it]Epoch 13 / 400
-train error: avg loss = 0.21844095
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.048314571380615 sec
-----------
-  3%|▎         | 13/401 [07:12<3:44:15, 34.68s/it]Epoch 14 / 400
-train error: avg loss = 0.23701423
-ES count = 1
-Elapsed time = 34.61150288581848 sec
-----------
-  3%|▎         | 14/401 [07:47<3:43:32, 34.66s/it]Epoch 15 / 400
-train error: avg loss = 0.19021926
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.49674320220947 sec
-----------
-  4%|▎         | 15/401 [08:22<3:44:35, 34.91s/it]Epoch 16 / 400
-train error: avg loss = 0.20402629
-ES count = 1
-Elapsed time = 34.534419536590576 sec
-----------
-  4%|▍         | 16/401 [08:57<3:43:17, 34.80s/it]Epoch 17 / 400
-train error: avg loss = 0.16993720
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.275604248046875 sec
-----------
-  4%|▍         | 17/401 [09:32<3:43:37, 34.94s/it]Epoch 18 / 400
-train error: avg loss = 0.14957197
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.327051639556885 sec
-----------
-  4%|▍         | 18/401 [10:07<3:43:47, 35.06s/it]Epoch 19 / 400
-train error: avg loss = 0.14467257
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.972378969192505 sec
-----------
-  5%|▍         | 19/401 [10:43<3:44:57, 35.33s/it]Epoch 20 / 400
-train error: avg loss = 0.14157250
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 36.12405252456665 sec
-----------
-  5%|▍         | 20/401 [11:19<3:45:52, 35.57s/it]Epoch 21 / 400
-train error: avg loss = 0.13291172
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 36.542675256729126 sec
-----------
-  5%|▌         | 21/401 [11:56<3:47:07, 35.86s/it]Epoch 22 / 400
-train error: avg loss = 0.16275348
-ES count = 1
-Elapsed time = 35.08979153633118 sec
-----------
-  5%|▌         | 22/401 [12:31<3:45:03, 35.63s/it]Epoch 23 / 400
-train error: avg loss = 0.13254974
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.42068076133728 sec
-----------
-  6%|▌         | 23/401 [13:06<3:44:04, 35.57s/it]Epoch 24 / 400
-train error: avg loss = 0.14493618
-ES count = 1
-Elapsed time = 34.482120990753174 sec
-----------
-  6%|▌         | 24/401 [13:41<3:41:26, 35.24s/it]Epoch 25 / 400
-train error: avg loss = 0.13196233
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 34.764506816864014 sec
-----------
-  6%|▌         | 25/401 [14:16<3:39:57, 35.10s/it]Epoch 26 / 400
-train error: avg loss = 0.16048382
-ES count = 1
-Elapsed time = 34.31849932670593 sec
-----------
-  6%|▋         | 26/401 [14:50<3:37:54, 34.86s/it]Epoch 27 / 400
-train error: avg loss = 0.12224496
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.38356351852417 sec
-----------
-  7%|▋         | 27/401 [15:25<3:38:17, 35.02s/it]Epoch 28 / 400
-train error: avg loss = 0.13822711
-ES count = 1
-Elapsed time = 35.10686373710632 sec
-----------
-  7%|▋         | 28/401 [16:00<3:37:52, 35.05s/it]Epoch 29 / 400
-train error: avg loss = 0.13334707
-ES count = 2
-Elapsed time = 35.75689339637756 sec
-----------
-  7%|▋         | 29/401 [16:36<3:38:36, 35.26s/it]Epoch 30 / 400
-train error: avg loss = 0.12653946
-ES count = 3
-Elapsed time = 35.05100178718567 sec
-----------
-  7%|▋         | 30/401 [17:11<3:37:38, 35.20s/it]Epoch 31 / 400
-train error: avg loss = 0.10639853
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.37292742729187 sec
-----------
-  8%|▊         | 31/401 [17:47<3:37:22, 35.25s/it]Epoch 32 / 400
-train error: avg loss = 0.13270849
-ES count = 1
-Elapsed time = 35.35354804992676 sec
-----------
-  8%|▊         | 32/401 [18:22<3:36:58, 35.28s/it]Epoch 33 / 400
-train error: avg loss = 0.11562430
-ES count = 2
-Elapsed time = 34.763097047805786 sec
-----------
-  8%|▊         | 33/401 [18:57<3:35:26, 35.13s/it]Epoch 34 / 400
-train error: avg loss = 0.11032063
-ES count = 3
-Elapsed time = 34.64689660072327 sec
-----------
-  8%|▊         | 34/401 [19:31<3:33:58, 34.98s/it]Epoch 35 / 400
-train error: avg loss = 0.11808676
-ES count = 4
-Elapsed time = 34.15827131271362 sec
-----------
-  9%|▊         | 35/401 [20:06<3:31:53, 34.74s/it]Epoch 36 / 400
-train error: avg loss = 0.10963991
-ES count = 5
-Elapsed time = 35.10476303100586 sec
-----------
-  9%|▉         | 36/401 [20:41<3:31:58, 34.85s/it]Epoch 37 / 400
-train error: avg loss = 0.12018414
-ES count = 6
-Elapsed time = 35.91939401626587 sec
-----------
-  9%|▉         | 37/401 [21:17<3:33:21, 35.17s/it]Epoch 38 / 400
-train error: avg loss = 0.11023259
-ES count = 7
-Elapsed time = 34.225120306015015 sec
-----------
-  9%|▉         | 38/401 [21:51<3:31:03, 34.89s/it]Epoch 39 / 400
-train error: avg loss = 0.11492906
-ES count = 8
-Elapsed time = 34.8614616394043 sec
-----------
- 10%|▉         | 39/401 [22:26<3:30:25, 34.88s/it]Epoch 40 / 400
-train error: avg loss = 0.09911558
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 36.28744959831238 sec
-----------
- 10%|▉         | 40/401 [23:02<3:32:23, 35.30s/it]Epoch 41 / 400
-train error: avg loss = 0.11438605
-ES count = 1
-Elapsed time = 35.55077767372131 sec
-----------
- 10%|█         | 41/401 [23:38<3:32:15, 35.38s/it]Epoch 42 / 400
-train error: avg loss = 0.10068748
-ES count = 2
-Elapsed time = 34.542787075042725 sec
-----------
- 10%|█         | 42/401 [24:12<3:30:10, 35.13s/it]Epoch 43 / 400
-train error: avg loss = 0.12396966
-ES count = 3
-Elapsed time = 33.62744116783142 sec
-----------
- 11%|█         | 43/401 [24:46<3:26:54, 34.68s/it]Epoch 44 / 400
-train error: avg loss = 0.08899474
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.417105197906494 sec
-----------
- 11%|█         | 44/401 [25:21<3:27:38, 34.90s/it]Epoch 45 / 400
-train error: avg loss = 0.09293174
-ES count = 1
-Elapsed time = 34.8739218711853 sec
-----------
- 11%|█         | 45/401 [25:56<3:27:01, 34.89s/it]Epoch 46 / 400
-train error: avg loss = 0.10226951
-ES count = 2
-Elapsed time = 35.50673317909241 sec
-----------
- 11%|█▏        | 46/401 [26:31<3:27:32, 35.08s/it]Epoch 47 / 400
-train error: avg loss = 0.09040367
-ES count = 3
-Elapsed time = 35.20472240447998 sec
-----------
- 12%|█▏        | 47/401 [27:07<3:27:10, 35.11s/it]Epoch 48 / 400
-train error: avg loss = 0.07734430
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.20705699920654 sec
-----------
- 12%|█▏        | 48/401 [27:42<3:26:45, 35.14s/it]Epoch 49 / 400
-train error: avg loss = 0.08704794
-ES count = 1
-Elapsed time = 35.005743980407715 sec
-----------
- 12%|█▏        | 49/401 [28:17<3:25:55, 35.10s/it]Epoch 50 / 400
-train error: avg loss = 0.07844589
-ES count = 2
-Elapsed time = 34.95545244216919 sec
-----------
- 12%|█▏        | 50/401 [28:52<3:25:05, 35.06s/it]Epoch 51 / 400
-train error: avg loss = 0.09778491
-ES count = 3
-Elapsed time = 34.531444787979126 sec
-----------
- 13%|█▎        | 51/401 [29:26<3:23:35, 34.90s/it]Epoch 52 / 400
-train error: avg loss = 0.07404743
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.59239339828491 sec
-----------
- 13%|█▎        | 52/401 [30:02<3:24:12, 35.11s/it]Epoch 53 / 400
-train error: avg loss = 0.06572596
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 36.53834772109985 sec
-----------
- 13%|█▎        | 53/401 [30:39<3:26:06, 35.54s/it]Epoch 54 / 400
-train error: avg loss = 0.08835779
-ES count = 1
-Elapsed time = 36.194199085235596 sec
-----------
- 13%|█▎        | 54/401 [31:15<3:26:39, 35.73s/it]Epoch 55 / 400
-train error: avg loss = 0.07805713
-ES count = 2
-Elapsed time = 35.02179741859436 sec
-----------
- 14%|█▎        | 55/401 [31:50<3:24:50, 35.52s/it]Epoch 56 / 400
-train error: avg loss = 0.05568651
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.93878674507141 sec
-----------
- 14%|█▍        | 56/401 [32:26<3:24:57, 35.65s/it]Epoch 57 / 400
-train error: avg loss = 0.07462738
-ES count = 1
-Elapsed time = 35.702688455581665 sec
-----------
- 14%|█▍        | 57/401 [33:01<3:24:28, 35.66s/it]Epoch 58 / 400
-train error: avg loss = 0.07599250
-ES count = 2
-Elapsed time = 34.37297534942627 sec
-----------
- 14%|█▍        | 58/401 [33:36<3:21:39, 35.28s/it]Epoch 59 / 400
-train error: avg loss = 0.06828223
-ES count = 3
-Elapsed time = 35.301713943481445 sec
-----------
- 15%|█▍        | 59/401 [34:11<3:21:07, 35.28s/it]Epoch 60 / 400
-train error: avg loss = 0.05952967
-ES count = 4
-Elapsed time = 35.34396505355835 sec
-----------
- 15%|█▍        | 60/401 [34:46<3:20:38, 35.30s/it]Epoch 61 / 400
-train error: avg loss = 0.06185001
-ES count = 5
-Elapsed time = 36.453794717788696 sec
-----------
- 15%|█▌        | 61/401 [35:23<3:22:00, 35.65s/it]Epoch 62 / 400
-train error: avg loss = 0.06987564
-ES count = 6
-Elapsed time = 35.037954568862915 sec
-----------
- 15%|█▌        | 62/401 [35:58<3:20:22, 35.47s/it]Epoch 63 / 400
-train error: avg loss = 0.06152777
-ES count = 7
-Elapsed time = 34.80278563499451 sec
-----------
- 16%|█▌        | 63/401 [36:33<3:18:40, 35.27s/it]Epoch 64 / 400
-train error: avg loss = 0.06695870
-ES count = 8
-Elapsed time = 35.3350031375885 sec
-----------
- 16%|█▌        | 64/401 [37:08<3:18:11, 35.29s/it]Epoch 65 / 400
-train error: avg loss = 0.06748662
-ES count = 9
-Elapsed time = 35.804455041885376 sec
-----------
- 16%|█▌        | 65/401 [37:44<3:18:28, 35.44s/it]Epoch 66 / 400
-train error: avg loss = 0.06082189
-ES count = 10
-Elapsed time = 35.50977420806885 sec
-----------
- 16%|█▋        | 66/401 [38:19<3:18:00, 35.46s/it]Epoch 67 / 400
-train error: avg loss = 0.07061771
-ES count = 11
-Elapsed time = 36.064229011535645 sec
-----------
- 17%|█▋        | 67/401 [38:55<3:18:24, 35.64s/it]Epoch 68 / 400
-train error: avg loss = 0.06127174
-ES count = 12
-Elapsed time = 34.81343913078308 sec
-----------
- 17%|█▋        | 68/401 [39:30<3:16:26, 35.39s/it]Epoch 69 / 400
-train error: avg loss = 0.06043779
-ES count = 13
-Elapsed time = 34.91523027420044 sec
-----------
- 17%|█▋        | 69/401 [40:05<3:15:03, 35.25s/it]Epoch 70 / 400
-train error: avg loss = 0.06338590
-ES count = 14
-Elapsed time = 35.50258111953735 sec
-----------
- 17%|█▋        | 70/401 [40:41<3:14:53, 35.33s/it]Epoch 71 / 400
-train error: avg loss = 0.05516437
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.06777811050415 sec
-----------
- 18%|█▊        | 71/401 [41:16<3:13:52, 35.25s/it]Epoch 72 / 400
-train error: avg loss = 0.06086090
-ES count = 1
-Elapsed time = 35.970797300338745 sec
-----------
- 18%|█▊        | 72/401 [41:52<3:14:28, 35.47s/it]Epoch 73 / 400
-train error: avg loss = 0.05407940
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.603299379348755 sec
-----------
- 18%|█▊        | 73/401 [42:27<3:14:06, 35.51s/it]Epoch 74 / 400
-train error: avg loss = 0.05350319
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 34.981940031051636 sec
-----------
- 18%|█▊        | 74/401 [43:02<3:12:39, 35.35s/it]Epoch 75 / 400
-train error: avg loss = 0.05493347
-ES count = 1
-Elapsed time = 35.15756940841675 sec
-----------
- 19%|█▊        | 75/401 [43:37<3:11:45, 35.29s/it]Epoch 76 / 400
-train error: avg loss = 0.05969606
-ES count = 2
-Elapsed time = 33.87674856185913 sec
-----------
- 19%|█▉        | 76/401 [44:11<3:08:51, 34.87s/it]Epoch 77 / 400
-train error: avg loss = 0.05740085
-ES count = 3
-Elapsed time = 34.79209089279175 sec
-----------
- 19%|█▉        | 77/401 [44:46<3:08:09, 34.85s/it]Epoch 78 / 400
-train error: avg loss = 0.04874190
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.0693883895874 sec
-----------
- 19%|█▉        | 78/401 [45:21<3:07:56, 34.91s/it]Epoch 79 / 400
-train error: avg loss = 0.05188792
-ES count = 1
-Elapsed time = 35.7080078125 sec
-----------
- 20%|█▉        | 79/401 [45:57<3:08:38, 35.15s/it]Epoch 80 / 400
-train error: avg loss = 0.05522913
-ES count = 2
-Elapsed time = 35.28589630126953 sec
-----------
- 20%|█▉        | 80/401 [46:32<3:08:16, 35.19s/it]Epoch 81 / 400
-train error: avg loss = 0.05115224
-ES count = 3
-Elapsed time = 35.798221588134766 sec
-----------
- 20%|██        | 81/401 [47:08<3:08:39, 35.37s/it]Epoch 82 / 400
-train error: avg loss = 0.05407097
-ES count = 4
-Elapsed time = 35.61216425895691 sec
-----------
- 20%|██        | 82/401 [47:44<3:08:27, 35.45s/it]Epoch 83 / 400
-train error: avg loss = 0.05516524
-ES count = 5
-Elapsed time = 35.460047483444214 sec
-----------
- 21%|██        | 83/401 [48:19<3:07:53, 35.45s/it]Epoch 84 / 400
-train error: avg loss = 0.05679842
-ES count = 6
-Elapsed time = 35.832499504089355 sec
-----------
- 21%|██        | 84/401 [48:55<3:07:54, 35.56s/it]Epoch 85 / 400
-train error: avg loss = 0.05418716
-ES count = 7
-Elapsed time = 36.0635621547699 sec
-----------
- 21%|██        | 85/401 [49:31<3:08:05, 35.71s/it]Epoch 86 / 400
-train error: avg loss = 0.04899295
-ES count = 8
-Elapsed time = 35.98461556434631 sec
-----------
- 21%|██▏       | 86/401 [50:07<3:07:55, 35.80s/it]Epoch 87 / 400
-train error: avg loss = 0.05229786
-ES count = 9
-Elapsed time = 35.57558298110962 sec
-----------
- 22%|██▏       | 87/401 [50:42<3:06:59, 35.73s/it]Epoch 88 / 400
-train error: avg loss = 0.05498757
-ES count = 10
-Elapsed time = 35.36254572868347 sec
-----------
- 22%|██▏       | 88/401 [51:18<3:05:49, 35.62s/it]Epoch 89 / 400
-train error: avg loss = 0.05499691
-ES count = 11
-Elapsed time = 35.245339155197144 sec
-----------
- 22%|██▏       | 89/401 [51:53<3:04:38, 35.51s/it]Epoch 90 / 400
-train error: avg loss = 0.04629850
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.141459703445435 sec
-----------
- 22%|██▏       | 90/401 [52:28<3:03:28, 35.40s/it]Epoch 91 / 400
-train error: avg loss = 0.05356230
-ES count = 1
-Elapsed time = 34.87670397758484 sec
-----------
- 23%|██▎       | 91/401 [53:03<3:02:04, 35.24s/it]Epoch 92 / 400
-train error: avg loss = 0.05108285
-ES count = 2
-Elapsed time = 34.63931751251221 sec
-----------
- 23%|██▎       | 92/401 [53:38<3:00:33, 35.06s/it]Epoch 93 / 400
-train error: avg loss = 0.04777765
-ES count = 3
-Elapsed time = 35.01810050010681 sec
-----------
- 23%|██▎       | 93/401 [54:13<2:59:54, 35.05s/it]Epoch 94 / 400
-train error: avg loss = 0.04915734
-ES count = 4
-Elapsed time = 34.73388314247131 sec
-----------
- 23%|██▎       | 94/401 [54:48<2:58:50, 34.95s/it]Epoch 95 / 400
-train error: avg loss = 0.04966227
-ES count = 5
-Elapsed time = 34.81249213218689 sec
-----------
- 24%|██▎       | 95/401 [55:22<2:58:02, 34.91s/it]Epoch 96 / 400
-train error: avg loss = 0.04208988
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 34.43459367752075 sec
-----------
- 24%|██▍       | 96/401 [55:57<2:56:44, 34.77s/it]Epoch 97 / 400
-train error: avg loss = 0.04948031
-ES count = 1
-Elapsed time = 34.263636112213135 sec
-----------
- 24%|██▍       | 97/401 [56:31<2:55:23, 34.62s/it]Epoch 98 / 400
-train error: avg loss = 0.04990833
-ES count = 2
-Elapsed time = 34.22210764884949 sec
-----------
- 24%|██▍       | 98/401 [57:05<2:54:13, 34.50s/it]Epoch 99 / 400
-train error: avg loss = 0.04807154
-ES count = 3
-Elapsed time = 34.91248273849487 sec
-----------
- 25%|██▍       | 99/401 [57:40<2:54:16, 34.62s/it]Epoch 100 / 400
-train error: avg loss = 0.05154022
-ES count = 4
-Epoch = 100. Save a periodic model snapshot.
-Elapsed time = 34.97852826118469 sec
-----------
- 25%|██▍       | 100/401 [58:15<2:54:13, 34.73s/it]Epoch 101 / 400
-train error: avg loss = 0.04209288
-ES count = 5
-Elapsed time = 35.44511151313782 sec
-----------
- 25%|██▌       | 101/401 [58:51<2:54:43, 34.94s/it]Epoch 102 / 400
-train error: avg loss = 0.04144921
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.312963247299194 sec
-----------
- 25%|██▌       | 102/401 [59:26<2:54:41, 35.06s/it]Epoch 103 / 400
-train error: avg loss = 0.04484507
-ES count = 1
-Elapsed time = 34.1098210811615 sec
-----------
- 26%|██▌       | 103/401 [1:00:00<2:52:41, 34.77s/it]Epoch 104 / 400
-train error: avg loss = 0.04208917
-ES count = 2
-Elapsed time = 34.98452711105347 sec
-----------
- 26%|██▌       | 104/401 [1:00:35<2:52:26, 34.84s/it]Epoch 105 / 400
-train error: avg loss = 0.03874791
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.05087971687317 sec
-----------
- 26%|██▌       | 105/401 [1:01:10<2:52:10, 34.90s/it]Epoch 106 / 400
-train error: avg loss = 0.03635552
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.4729437828064 sec
-----------
- 26%|██▋       | 106/401 [1:01:46<2:52:26, 35.07s/it]Epoch 107 / 400
-train error: avg loss = 0.04296947
-ES count = 1
-Elapsed time = 35.29486656188965 sec
-----------
- 27%|██▋       | 107/401 [1:02:21<2:52:10, 35.14s/it]Epoch 108 / 400
-train error: avg loss = 0.05055860
-ES count = 2
-Elapsed time = 35.03390336036682 sec
-----------
- 27%|██▋       | 108/401 [1:02:56<2:51:26, 35.11s/it]Epoch 109 / 400
-train error: avg loss = 0.04202544
-ES count = 3
-Elapsed time = 34.101521492004395 sec
-----------
- 27%|██▋       | 109/401 [1:03:30<2:49:23, 34.81s/it]Epoch 110 / 400
-train error: avg loss = 0.04221266
-ES count = 4
-Elapsed time = 35.11076831817627 sec
-----------
- 27%|██▋       | 110/401 [1:04:05<2:49:15, 34.90s/it]Epoch 111 / 400
-train error: avg loss = 0.04048916
-ES count = 5
-Elapsed time = 34.963109493255615 sec
-----------
- 28%|██▊       | 111/401 [1:04:40<2:48:46, 34.92s/it]Epoch 112 / 400
-train error: avg loss = 0.04923362
-ES count = 6
-Elapsed time = 35.89717149734497 sec
-----------
- 28%|██▊       | 112/401 [1:05:16<2:49:36, 35.21s/it]Epoch 113 / 400
-train error: avg loss = 0.04450600
-ES count = 7
-Elapsed time = 34.06982159614563 sec
-----------
- 28%|██▊       | 113/401 [1:05:50<2:47:22, 34.87s/it]Epoch 114 / 400
-train error: avg loss = 0.04547885
-ES count = 8
-Elapsed time = 34.353004932403564 sec
-----------
- 28%|██▊       | 114/401 [1:06:24<2:46:03, 34.72s/it]Epoch 115 / 400
-train error: avg loss = 0.03849576
-ES count = 9
-Elapsed time = 33.82582354545593 sec
-----------
- 29%|██▊       | 115/401 [1:06:58<2:44:12, 34.45s/it]Epoch 116 / 400
-train error: avg loss = 0.04218596
-ES count = 10
-Elapsed time = 34.03899073600769 sec
-----------
- 29%|██▉       | 116/401 [1:07:32<2:43:02, 34.33s/it]Epoch 117 / 400
-train error: avg loss = 0.04250493
-ES count = 11
-Elapsed time = 34.149041175842285 sec
-----------
- 29%|██▉       | 117/401 [1:08:06<2:42:13, 34.27s/it]Epoch 118 / 400
-train error: avg loss = 0.04324924
-ES count = 12
-Elapsed time = 34.255632162094116 sec
-----------
- 29%|██▉       | 118/401 [1:08:41<2:41:37, 34.27s/it]Epoch 119 / 400
-train error: avg loss = 0.04059311
-ES count = 13
-Elapsed time = 34.017333030700684 sec
-----------
- 30%|██▉       | 119/401 [1:09:15<2:40:42, 34.19s/it]Epoch 120 / 400
-train error: avg loss = 0.04299733
-ES count = 14
-Elapsed time = 34.85427403450012 sec
-----------
- 30%|██▉       | 120/401 [1:09:49<2:41:03, 34.39s/it]Epoch 121 / 400
-train error: avg loss = 0.03789608
-ES count = 15
-Elapsed time = 35.307469844818115 sec
-----------
- 30%|███       | 121/401 [1:10:25<2:41:46, 34.67s/it]Epoch 122 / 400
-train error: avg loss = 0.03920253
-ES count = 16
-Elapsed time = 34.541552782058716 sec
-----------
- 30%|███       | 122/401 [1:10:59<2:41:01, 34.63s/it]Epoch 123 / 400
-train error: avg loss = 0.04352976
-ES count = 17
-Elapsed time = 34.46028804779053 sec
-----------
- 31%|███       | 123/401 [1:11:34<2:40:12, 34.58s/it]Epoch 124 / 400
-train error: avg loss = 0.04103306
-ES count = 18
-Elapsed time = 34.373677015304565 sec
-----------
- 31%|███       | 124/401 [1:12:08<2:39:21, 34.52s/it]Epoch 125 / 400
-train error: avg loss = 0.05438663
-ES count = 19
-Elapsed time = 34.32981562614441 sec
-----------
- 31%|███       | 125/401 [1:12:43<2:38:31, 34.46s/it]Epoch 126 / 400
-train error: avg loss = 0.04262091
-ES count = 20
-Elapsed time = 34.69295859336853 sec
-----------
- 31%|███▏      | 126/401 [1:13:17<2:38:16, 34.53s/it]Epoch 127 / 400
-train error: avg loss = 0.04621799
-ES count = 21
-Elapsed time = 34.70092439651489 sec
-----------
- 32%|███▏      | 127/401 [1:13:52<2:37:55, 34.58s/it]Epoch 128 / 400
-train error: avg loss = 0.03844022
-ES count = 22
-Elapsed time = 34.3095486164093 sec
-----------
- 32%|███▏      | 128/401 [1:14:26<2:36:58, 34.50s/it]Epoch 129 / 400
-train error: avg loss = 0.04500417
-ES count = 23
-Elapsed time = 34.37792634963989 sec
-----------
- 32%|███▏      | 129/401 [1:15:01<2:36:14, 34.46s/it]Epoch 130 / 400
-train error: avg loss = 0.04490121
-ES count = 24
-Elapsed time = 34.310460567474365 sec
-----------
- 32%|███▏      | 130/401 [1:15:35<2:35:27, 34.42s/it]Epoch 131 / 400
-train error: avg loss = 0.04142908
-ES count = 25
-Elapsed time = 35.00980353355408 sec
-----------
- 33%|███▎      | 131/401 [1:16:10<2:35:40, 34.60s/it]Epoch 132 / 400
-train error: avg loss = 0.03815293
-ES count = 26
-Elapsed time = 34.11977815628052 sec
-----------
- 33%|███▎      | 132/401 [1:16:44<2:34:27, 34.45s/it]Epoch 133 / 400
-train error: avg loss = 0.04310322
-ES count = 27
-Elapsed time = 34.71084475517273 sec
-----------
- 33%|███▎      | 133/401 [1:17:19<2:34:14, 34.53s/it]Epoch 134 / 400
-train error: avg loss = 0.03794422
-ES count = 28
-Elapsed time = 34.09118151664734 sec
-----------
- 33%|███▎      | 134/401 [1:17:53<2:33:04, 34.40s/it]Epoch 135 / 400
-train error: avg loss = 0.03920944
-ES count = 29
-Elapsed time = 33.87823009490967 sec
-----------
- 34%|███▎      | 135/401 [1:18:27<2:31:48, 34.24s/it]Epoch 136 / 400
-train error: avg loss = 0.04079554
-ES count = 30
-Elapsed time = 33.670504331588745 sec
-----------
- 34%|███▍      | 136/401 [1:19:00<2:30:28, 34.07s/it]Epoch 137 / 400
-train error: avg loss = 0.03836013
-ES count = 31
-Elapsed time = 34.848315715789795 sec
-----------
- 34%|███▍      | 137/401 [1:19:35<2:30:56, 34.30s/it]Epoch 138 / 400
-train error: avg loss = 0.04097254
-ES count = 32
-Elapsed time = 35.67737293243408 sec
-----------
- 34%|███▍      | 138/401 [1:20:11<2:32:10, 34.72s/it]Epoch 139 / 400
-train error: avg loss = 0.03852861
-ES count = 33
-Elapsed time = 35.198243141174316 sec
-----------
- 35%|███▍      | 139/401 [1:20:46<2:32:13, 34.86s/it]Epoch 140 / 400
-train error: avg loss = 0.04197382
-ES count = 34
-Elapsed time = 35.06824469566345 sec
-----------
- 35%|███▍      | 140/401 [1:21:21<2:31:55, 34.92s/it]Epoch 141 / 400
-train error: avg loss = 0.03981473
-ES count = 35
-Elapsed time = 35.02914071083069 sec
-----------
- 35%|███▌      | 141/401 [1:21:56<2:31:28, 34.96s/it]Epoch 142 / 400
-train error: avg loss = 0.03980217
-ES count = 36
-Elapsed time = 34.01799249649048 sec
-----------
- 35%|███▌      | 142/401 [1:22:30<2:29:40, 34.67s/it]Epoch 143 / 400
-train error: avg loss = 0.03557261
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 34.96209716796875 sec
-----------
- 36%|███▌      | 143/401 [1:23:05<2:29:28, 34.76s/it]Epoch 144 / 400
-train error: avg loss = 0.03783726
-ES count = 1
-Elapsed time = 35.179890871047974 sec
-----------
- 36%|███▌      | 144/401 [1:23:40<2:29:25, 34.89s/it]Epoch 145 / 400
-train error: avg loss = 0.03824914
-ES count = 2
-Elapsed time = 34.760231494903564 sec
-----------
- 36%|███▌      | 145/401 [1:24:15<2:28:41, 34.85s/it]Epoch 146 / 400
-train error: avg loss = 0.04066676
-ES count = 3
-Elapsed time = 34.98403525352478 sec
-----------
- 36%|███▋      | 146/401 [1:24:50<2:28:16, 34.89s/it]Epoch 147 / 400
-train error: avg loss = 0.03236904
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.59702277183533 sec
-----------
- 37%|███▋      | 147/401 [1:25:26<2:28:35, 35.10s/it]Epoch 148 / 400
-train error: avg loss = 0.04036394
-ES count = 1
-Elapsed time = 35.389033794403076 sec
-----------
- 37%|███▋      | 148/401 [1:26:01<2:28:22, 35.19s/it]Epoch 149 / 400
-train error: avg loss = 0.03839818
-ES count = 2
-Elapsed time = 34.53389525413513 sec
-----------
- 37%|███▋      | 149/401 [1:26:36<2:26:57, 34.99s/it]Epoch 150 / 400
-train error: avg loss = 0.03846924
-ES count = 3
-Elapsed time = 34.23792004585266 sec
-----------
- 37%|███▋      | 150/401 [1:27:10<2:25:26, 34.77s/it]Epoch 151 / 400
-train error: avg loss = 0.03648175
-ES count = 4
-Elapsed time = 34.53136205673218 sec
-----------
- 38%|███▊      | 151/401 [1:27:44<2:24:33, 34.70s/it]Epoch 152 / 400
-train error: avg loss = 0.03585159
-ES count = 5
-Elapsed time = 34.46889281272888 sec
-----------
- 38%|███▊      | 152/401 [1:28:19<2:23:42, 34.63s/it]Epoch 153 / 400
-train error: avg loss = 0.03548544
-ES count = 6
-Elapsed time = 34.934264183044434 sec
-----------
- 38%|███▊      | 153/401 [1:28:54<2:23:30, 34.72s/it]Epoch 154 / 400
-train error: avg loss = 0.03316423
-ES count = 7
-Elapsed time = 34.831961154937744 sec
-----------
- 38%|███▊      | 154/401 [1:29:29<2:23:04, 34.75s/it]Epoch 155 / 400
-train error: avg loss = 0.03735456
-ES count = 8
-Elapsed time = 35.04736638069153 sec
-----------
- 39%|███▊      | 155/401 [1:30:04<2:22:51, 34.84s/it]Epoch 156 / 400
-train error: avg loss = 0.03842978
-ES count = 9
-Elapsed time = 34.91289234161377 sec
-----------
- 39%|███▉      | 156/401 [1:30:39<2:22:21, 34.86s/it]Epoch 157 / 400
-train error: avg loss = 0.03897907
-ES count = 10
-Elapsed time = 35.06710362434387 sec
-----------
- 39%|███▉      | 157/401 [1:31:14<2:22:01, 34.92s/it]Epoch 158 / 400
-train error: avg loss = 0.03901620
-ES count = 11
-Elapsed time = 34.48100805282593 sec
-----------
- 39%|███▉      | 158/401 [1:31:48<2:20:54, 34.79s/it]Epoch 159 / 400
-train error: avg loss = 0.03741791
-ES count = 12
-Elapsed time = 35.36771059036255 sec
-----------
- 40%|███▉      | 159/401 [1:32:24<2:21:01, 34.96s/it]Epoch 160 / 400
-train error: avg loss = 0.03566933
-ES count = 13
-Elapsed time = 35.679426193237305 sec
-----------
- 40%|███▉      | 160/401 [1:32:59<2:21:18, 35.18s/it]Epoch 161 / 400
-train error: avg loss = 0.03696559
-ES count = 14
-Elapsed time = 35.15830683708191 sec
-----------
- 40%|████      | 161/401 [1:33:34<2:20:41, 35.17s/it]Epoch 162 / 400
-train error: avg loss = 0.03929104
-ES count = 15
-Elapsed time = 34.728631258010864 sec
-----------
- 40%|████      | 162/401 [1:34:09<2:19:34, 35.04s/it]Epoch 163 / 400
-train error: avg loss = 0.03444716
-ES count = 16
-Elapsed time = 34.922356367111206 sec
-----------
- 41%|████      | 163/401 [1:34:44<2:18:51, 35.00s/it]Epoch 164 / 400
-train error: avg loss = 0.03640554
-ES count = 17
-Elapsed time = 34.69666123390198 sec
-----------
- 41%|████      | 164/401 [1:35:19<2:17:54, 34.91s/it]Epoch 165 / 400
-train error: avg loss = 0.03670674
-ES count = 18
-Elapsed time = 33.54122233390808 sec
-----------
- 41%|████      | 165/401 [1:35:52<2:15:42, 34.50s/it]Epoch 166 / 400
-train error: avg loss = 0.03788732
-ES count = 19
-Elapsed time = 33.71168756484985 sec
-----------
- 41%|████▏     | 166/401 [1:36:26<2:14:12, 34.26s/it]Epoch 167 / 400
-train error: avg loss = 0.03267640
-ES count = 20
-Elapsed time = 33.66731095314026 sec
-----------
- 42%|████▏     | 167/401 [1:37:00<2:12:56, 34.09s/it]Epoch 168 / 400
-train error: avg loss = 0.03545734
-ES count = 21
-Elapsed time = 33.65403366088867 sec
-----------
- 42%|████▏     | 168/401 [1:37:33<2:11:51, 33.96s/it]Epoch 169 / 400
-train error: avg loss = 0.03477951
-ES count = 22
-Elapsed time = 33.87214374542236 sec
-----------
- 42%|████▏     | 169/401 [1:38:07<2:11:12, 33.93s/it]Epoch 170 / 400
-train error: avg loss = 0.03699265
-ES count = 23
-Elapsed time = 34.602617025375366 sec
-----------
- 42%|████▏     | 170/401 [1:38:42<2:11:24, 34.13s/it]Epoch 171 / 400
-train error: avg loss = 0.03505661
-ES count = 24
-Elapsed time = 34.09370183944702 sec
-----------
- 43%|████▎     | 171/401 [1:39:16<2:10:47, 34.12s/it]Epoch 172 / 400
-train error: avg loss = 0.03814912
-ES count = 25
-Elapsed time = 34.55788278579712 sec
-----------
- 43%|████▎     | 172/401 [1:39:50<2:10:43, 34.25s/it]Epoch 173 / 400
-train error: avg loss = 0.03232346
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 34.1836051940918 sec
-----------
- 43%|████▎     | 173/401 [1:40:25<2:10:04, 34.23s/it]Epoch 174 / 400
-train error: avg loss = 0.03879275
-ES count = 1
-Elapsed time = 33.82389736175537 sec
-----------
- 43%|████▎     | 174/401 [1:40:58<2:09:02, 34.11s/it]Epoch 175 / 400
-train error: avg loss = 0.03724533
-ES count = 2
-Elapsed time = 34.90123200416565 sec
-----------
- 44%|████▎     | 175/401 [1:41:33<2:09:22, 34.35s/it]Epoch 176 / 400
-train error: avg loss = 0.03412060
-ES count = 3
-Elapsed time = 35.264644145965576 sec
-----------
- 44%|████▍     | 176/401 [1:42:09<2:09:50, 34.62s/it]Epoch 177 / 400
-train error: avg loss = 0.03378260
-ES count = 4
-Elapsed time = 34.268826484680176 sec
-----------
- 44%|████▍     | 177/401 [1:42:43<2:08:51, 34.52s/it]Epoch 178 / 400
-train error: avg loss = 0.03525283
-ES count = 5
-Elapsed time = 34.78231596946716 sec
-----------
- 44%|████▍     | 178/401 [1:43:18<2:08:35, 34.60s/it]Epoch 179 / 400
-train error: avg loss = 0.03704741
-ES count = 6
-Elapsed time = 35.08673310279846 sec
-----------
- 45%|████▍     | 179/401 [1:43:53<2:08:33, 34.74s/it]Epoch 180 / 400
-train error: avg loss = 0.03328032
-ES count = 7
-Elapsed time = 34.64708352088928 sec
-----------
- 45%|████▍     | 180/401 [1:44:27<2:07:51, 34.71s/it]Epoch 181 / 400
-train error: avg loss = 0.03457140
-ES count = 8
-Elapsed time = 34.215039014816284 sec
-----------
- 45%|████▌     | 181/401 [1:45:02<2:06:44, 34.57s/it]Epoch 182 / 400
-train error: avg loss = 0.03863431
-ES count = 9
-Elapsed time = 33.67277383804321 sec
-----------
- 45%|████▌     | 182/401 [1:45:35<2:05:11, 34.30s/it]Epoch 183 / 400
-train error: avg loss = 0.03602398
-ES count = 10
-Elapsed time = 34.78245997428894 sec
-----------
- 46%|████▌     | 183/401 [1:46:10<2:05:08, 34.44s/it]Epoch 184 / 400
-train error: avg loss = 0.03393479
-ES count = 11
-Elapsed time = 34.49809789657593 sec
-----------
- 46%|████▌     | 184/401 [1:46:45<2:04:37, 34.46s/it]Epoch 185 / 400
-train error: avg loss = 0.03548241
-ES count = 12
-Elapsed time = 35.59712600708008 sec
-----------
- 46%|████▌     | 185/401 [1:47:20<2:05:17, 34.80s/it]Epoch 186 / 400
-train error: avg loss = 0.03772151
-ES count = 13
-Elapsed time = 35.171417474746704 sec
-----------
- 46%|████▋     | 186/401 [1:47:55<2:05:06, 34.91s/it]Epoch 187 / 400
-train error: avg loss = 0.03314198
-ES count = 14
-Elapsed time = 35.368321895599365 sec
-----------
- 47%|████▋     | 187/401 [1:48:31<2:05:00, 35.05s/it]Epoch 188 / 400
-train error: avg loss = 0.03428792
-ES count = 15
-Elapsed time = 35.49122738838196 sec
-----------
- 47%|████▋     | 188/401 [1:49:06<2:04:53, 35.18s/it]Epoch 189 / 400
-train error: avg loss = 0.03588324
-ES count = 16
-Elapsed time = 34.786853313446045 sec
-----------
- 47%|████▋     | 189/401 [1:49:41<2:03:53, 35.06s/it]Epoch 190 / 400
-train error: avg loss = 0.03286913
-ES count = 17
-Elapsed time = 35.841349363327026 sec
-----------
- 47%|████▋     | 190/401 [1:50:17<2:04:07, 35.30s/it]Epoch 191 / 400
-train error: avg loss = 0.03190972
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.52978181838989 sec
-----------
- 48%|████▊     | 191/401 [1:50:52<2:03:47, 35.37s/it]Epoch 192 / 400
-train error: avg loss = 0.03522104
-ES count = 1
-Elapsed time = 34.9740993976593 sec
-----------
- 48%|████▊     | 192/401 [1:51:27<2:02:47, 35.25s/it]Epoch 193 / 400
-train error: avg loss = 0.03579201
-ES count = 2
-Elapsed time = 35.460166215896606 sec
-----------
- 48%|████▊     | 193/401 [1:52:03<2:02:25, 35.31s/it]Epoch 194 / 400
-train error: avg loss = 0.03545366
-ES count = 3
-Elapsed time = 34.81255102157593 sec
-----------
- 48%|████▊     | 194/401 [1:52:38<2:01:18, 35.16s/it]Epoch 195 / 400
-train error: avg loss = 0.03473163
-ES count = 4
-Elapsed time = 34.018107891082764 sec
-----------
- 49%|████▊     | 195/401 [1:53:12<1:59:32, 34.82s/it]Epoch 196 / 400
-train error: avg loss = 0.03785411
-ES count = 5
-Elapsed time = 34.3271586894989 sec
-----------
- 49%|████▉     | 196/401 [1:53:46<1:58:27, 34.67s/it]Epoch 197 / 400
-train error: avg loss = 0.03871628
-ES count = 6
-Elapsed time = 34.717243909835815 sec
-----------
- 49%|████▉     | 197/401 [1:54:21<1:57:55, 34.69s/it]Epoch 198 / 400
-train error: avg loss = 0.03394874
-ES count = 7
-Elapsed time = 34.67619466781616 sec
-----------
- 49%|████▉     | 198/401 [1:54:55<1:57:20, 34.68s/it]Epoch 199 / 400
-train error: avg loss = 0.03254709
-ES count = 8
-Elapsed time = 34.78487229347229 sec
-----------
- 50%|████▉     | 199/401 [1:55:30<1:56:52, 34.71s/it]Epoch 200 / 400
-train error: avg loss = 0.03714891
-ES count = 9
-Epoch = 200. Save a periodic model snapshot.
-Elapsed time = 36.309690713882446 sec
-----------
- 50%|████▉     | 200/401 [1:56:06<1:57:53, 35.19s/it]Epoch 201 / 400
-train error: avg loss = 0.03489901
-ES count = 10
-Elapsed time = 34.55076575279236 sec
-----------
- 50%|█████     | 201/401 [1:56:41<1:56:40, 35.00s/it]Epoch 202 / 400
-train error: avg loss = 0.03459428
-ES count = 11
-Elapsed time = 35.07766318321228 sec
-----------
- 50%|█████     | 202/401 [1:57:16<1:56:09, 35.02s/it]Epoch 203 / 400
-train error: avg loss = 0.03510458
-ES count = 12
-Elapsed time = 35.33818483352661 sec
-----------
- 51%|█████     | 203/401 [1:57:51<1:55:53, 35.12s/it]Epoch 204 / 400
-train error: avg loss = 0.03717604
-ES count = 13
-Elapsed time = 35.187296628952026 sec
-----------
- 51%|█████     | 204/401 [1:58:27<1:55:22, 35.14s/it]Epoch 205 / 400
-train error: avg loss = 0.03585733
-ES count = 14
-Elapsed time = 35.645089864730835 sec
-----------
- 51%|█████     | 205/401 [1:59:02<1:55:17, 35.29s/it]Epoch 206 / 400
-train error: avg loss = 0.03114328
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 34.96670484542847 sec
-----------
- 51%|█████▏    | 206/401 [1:59:37<1:54:22, 35.19s/it]Epoch 207 / 400
-train error: avg loss = 0.03482318
-ES count = 1
-Elapsed time = 34.88579225540161 sec
-----------
- 52%|█████▏    | 207/401 [2:00:12<1:53:29, 35.10s/it]Epoch 208 / 400
-train error: avg loss = 0.03347905
-ES count = 2
-Elapsed time = 34.33374285697937 sec
-----------
- 52%|█████▏    | 208/401 [2:00:46<1:52:10, 34.87s/it]Epoch 209 / 400
-train error: avg loss = 0.03164733
-ES count = 3
-Elapsed time = 34.4785795211792 sec
-----------
- 52%|█████▏    | 209/401 [2:01:21<1:51:12, 34.75s/it]Epoch 210 / 400
-train error: avg loss = 0.03198009
-ES count = 4
-Elapsed time = 34.96181559562683 sec
-----------
- 52%|█████▏    | 210/401 [2:01:56<1:50:49, 34.82s/it]Epoch 211 / 400
-train error: avg loss = 0.03005665
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 34.823320627212524 sec
-----------
- 53%|█████▎    | 211/401 [2:02:31<1:50:15, 34.82s/it]Epoch 212 / 400
-train error: avg loss = 0.03438475
-ES count = 1
-Elapsed time = 34.771254539489746 sec
-----------
- 53%|█████▎    | 212/401 [2:03:05<1:49:38, 34.80s/it]Epoch 213 / 400
-train error: avg loss = 0.03636972
-ES count = 2
-Elapsed time = 34.32291531562805 sec
-----------
- 53%|█████▎    | 213/401 [2:03:40<1:48:36, 34.66s/it]Epoch 214 / 400
-train error: avg loss = 0.03240808
-ES count = 3
-Elapsed time = 34.50666570663452 sec
-----------
- 53%|█████▎    | 214/401 [2:04:14<1:47:52, 34.61s/it]Epoch 215 / 400
-train error: avg loss = 0.03620467
-ES count = 4
-Elapsed time = 34.03085446357727 sec
-----------
- 54%|█████▎    | 215/401 [2:04:48<1:46:45, 34.44s/it]Epoch 216 / 400
-train error: avg loss = 0.03358030
-ES count = 5
-Elapsed time = 34.737890005111694 sec
-----------
- 54%|█████▍    | 216/401 [2:05:23<1:46:27, 34.53s/it]Epoch 217 / 400
-train error: avg loss = 0.03553921
-ES count = 6
-Elapsed time = 35.37303042411804 sec
-----------
- 54%|█████▍    | 217/401 [2:05:58<1:46:39, 34.78s/it]Epoch 218 / 400
-train error: avg loss = 0.03008694
-ES count = 7
-Elapsed time = 35.24522018432617 sec
-----------
- 54%|█████▍    | 218/401 [2:06:34<1:46:30, 34.92s/it]Epoch 219 / 400
-train error: avg loss = 0.03619216
-ES count = 8
-Elapsed time = 35.06422519683838 sec
-----------
- 55%|█████▍    | 219/401 [2:07:09<1:46:03, 34.96s/it]Epoch 220 / 400
-train error: avg loss = 0.03551444
-ES count = 9
-Elapsed time = 34.75269269943237 sec
-----------
- 55%|█████▍    | 220/401 [2:07:43<1:45:17, 34.90s/it]Epoch 221 / 400
-train error: avg loss = 0.03597711
-ES count = 10
-Elapsed time = 33.597917556762695 sec
-----------
- 55%|█████▌    | 221/401 [2:08:17<1:43:31, 34.51s/it]Epoch 222 / 400
-train error: avg loss = 0.03348071
-ES count = 11
-Elapsed time = 34.16022348403931 sec
-----------
- 55%|█████▌    | 222/401 [2:08:51<1:42:38, 34.41s/it]Epoch 223 / 400
-train error: avg loss = 0.03349172
-ES count = 12
-Elapsed time = 34.62662672996521 sec
-----------
- 56%|█████▌    | 223/401 [2:09:26<1:42:15, 34.47s/it]Epoch 224 / 400
-train error: avg loss = 0.03081813
-ES count = 13
-Elapsed time = 34.392600774765015 sec
-----------
- 56%|█████▌    | 224/401 [2:10:00<1:41:37, 34.45s/it]Epoch 225 / 400
-train error: avg loss = 0.03032327
-ES count = 14
-Elapsed time = 34.21454215049744 sec
-----------
- 56%|█████▌    | 225/401 [2:10:34<1:40:50, 34.38s/it]Epoch 226 / 400
-train error: avg loss = 0.03367221
-ES count = 15
-Elapsed time = 34.619566679000854 sec
-----------
- 56%|█████▋    | 226/401 [2:11:09<1:40:43, 34.54s/it]Epoch 227 / 400
-train error: avg loss = 0.03245543
-ES count = 16
-Elapsed time = 35.45750427246094 sec
-----------
- 57%|█████▋    | 227/401 [2:11:45<1:40:57, 34.81s/it]Epoch 228 / 400
-train error: avg loss = 0.02912464
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.23153877258301 sec
-----------
- 57%|█████▋    | 228/401 [2:12:20<1:40:44, 34.94s/it]Epoch 229 / 400
-train error: avg loss = 0.03254510
-ES count = 1
-Elapsed time = 33.5138041973114 sec
-----------
- 57%|█████▋    | 229/401 [2:12:54<1:38:55, 34.51s/it]Epoch 230 / 400
-train error: avg loss = 0.02928219
-ES count = 2
-Elapsed time = 34.61940383911133 sec
-----------
- 57%|█████▋    | 230/401 [2:13:28<1:38:26, 34.54s/it]Epoch 231 / 400
-train error: avg loss = 0.03177607
-ES count = 3
-Elapsed time = 35.023518323898315 sec
-----------
- 58%|█████▊    | 231/401 [2:14:03<1:38:16, 34.69s/it]Epoch 232 / 400
-train error: avg loss = 0.03179787
-ES count = 4
-Elapsed time = 35.187886238098145 sec
-----------
- 58%|█████▊    | 232/401 [2:14:38<1:38:07, 34.84s/it]Epoch 233 / 400
-train error: avg loss = 0.03223843
-ES count = 5
-Elapsed time = 35.54926371574402 sec
-----------
- 58%|█████▊    | 233/401 [2:15:14<1:38:08, 35.05s/it]Epoch 234 / 400
-train error: avg loss = 0.03344666
-ES count = 6
-Elapsed time = 34.18488955497742 sec
-----------
- 58%|█████▊    | 234/401 [2:15:48<1:36:50, 34.79s/it]Epoch 235 / 400
-train error: avg loss = 0.03016173
-ES count = 7
-Elapsed time = 34.170477867126465 sec
-----------
- 59%|█████▊    | 235/401 [2:16:22<1:35:44, 34.61s/it]Epoch 236 / 400
-train error: avg loss = 0.03134827
-ES count = 8
-Elapsed time = 34.32646656036377 sec
-----------
- 59%|█████▉    | 236/401 [2:16:57<1:34:56, 34.52s/it]Epoch 237 / 400
-train error: avg loss = 0.03114902
-ES count = 9
-Elapsed time = 34.10288739204407 sec
-----------
- 59%|█████▉    | 237/401 [2:17:31<1:34:01, 34.40s/it]Epoch 238 / 400
-train error: avg loss = 0.03541220
-ES count = 10
-Elapsed time = 34.626933574676514 sec
-----------
- 59%|█████▉    | 238/401 [2:18:05<1:33:37, 34.47s/it]Epoch 239 / 400
-train error: avg loss = 0.03330318
-ES count = 11
-Elapsed time = 34.192628622055054 sec
-----------
- 60%|█████▉    | 239/401 [2:18:40<1:32:50, 34.38s/it]Epoch 240 / 400
-train error: avg loss = 0.03442819
-ES count = 12
-Elapsed time = 35.13698625564575 sec
-----------
- 60%|█████▉    | 240/401 [2:19:15<1:32:52, 34.61s/it]Epoch 241 / 400
-train error: avg loss = 0.03213017
-ES count = 13
-Elapsed time = 35.24830174446106 sec
-----------
- 60%|██████    | 241/401 [2:19:50<1:32:48, 34.80s/it]Epoch 242 / 400
-train error: avg loss = 0.03073226
-ES count = 14
-Elapsed time = 35.282390832901 sec
-----------
- 60%|██████    | 242/401 [2:20:25<1:32:36, 34.95s/it]Epoch 243 / 400
-train error: avg loss = 0.03378342
-ES count = 15
-Elapsed time = 34.149574279785156 sec
-----------
- 61%|██████    | 243/401 [2:20:59<1:31:23, 34.71s/it]Epoch 244 / 400
-train error: avg loss = 0.03235415
-ES count = 16
-Elapsed time = 34.099923849105835 sec
-----------
- 61%|██████    | 244/401 [2:21:33<1:30:20, 34.53s/it]Epoch 245 / 400
-train error: avg loss = 0.03101048
-ES count = 17
-Elapsed time = 35.802130460739136 sec
-----------
- 61%|██████    | 245/401 [2:22:09<1:30:45, 34.91s/it]Epoch 246 / 400
-train error: avg loss = 0.02878553
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 36.138001918792725 sec
-----------
- 61%|██████▏   | 246/401 [2:22:45<1:31:08, 35.28s/it]Epoch 247 / 400
-train error: avg loss = 0.03298613
-ES count = 1
-Elapsed time = 35.7153959274292 sec
-----------
- 62%|██████▏   | 247/401 [2:23:21<1:30:52, 35.41s/it]Epoch 248 / 400
-train error: avg loss = 0.03575281
-ES count = 2
-Elapsed time = 35.20047569274902 sec
-----------
- 62%|██████▏   | 248/401 [2:23:56<1:30:08, 35.35s/it]Epoch 249 / 400
-train error: avg loss = 0.03114399
-ES count = 3
-Elapsed time = 35.31900501251221 sec
-----------
- 62%|██████▏   | 249/401 [2:24:32<1:29:31, 35.34s/it]Epoch 250 / 400
-train error: avg loss = 0.03139945
-ES count = 4
-Elapsed time = 35.653318643569946 sec
-----------
- 62%|██████▏   | 250/401 [2:25:07<1:29:10, 35.43s/it]Epoch 251 / 400
-train error: avg loss = 0.02808306
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 36.28845810890198 sec
-----------
- 63%|██████▎   | 251/401 [2:25:44<1:29:13, 35.69s/it]Epoch 252 / 400
-train error: avg loss = 0.03213132
-ES count = 1
-Elapsed time = 34.52419567108154 sec
-----------
- 63%|██████▎   | 252/401 [2:26:18<1:27:45, 35.34s/it]Epoch 253 / 400
-train error: avg loss = 0.02992174
-ES count = 2
-Elapsed time = 35.379899740219116 sec
-----------
- 63%|██████▎   | 253/401 [2:26:54<1:27:12, 35.35s/it]Epoch 254 / 400
-train error: avg loss = 0.02771275
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.486050605773926 sec
-----------
- 63%|██████▎   | 254/401 [2:27:29<1:26:42, 35.39s/it]Epoch 255 / 400
-train error: avg loss = 0.03216365
-ES count = 1
-Elapsed time = 35.96231770515442 sec
-----------
- 64%|██████▎   | 255/401 [2:28:05<1:26:32, 35.56s/it]Epoch 256 / 400
-train error: avg loss = 0.02771602
-ES count = 2
-Elapsed time = 35.178855419158936 sec
-----------
- 64%|██████▍   | 256/401 [2:28:40<1:25:40, 35.45s/it]Epoch 257 / 400
-train error: avg loss = 0.02663363
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.07586932182312 sec
-----------
- 64%|██████▍   | 257/401 [2:29:15<1:24:48, 35.34s/it]Epoch 258 / 400
-train error: avg loss = 0.03128481
-ES count = 1
-Elapsed time = 35.31218433380127 sec
-----------
- 64%|██████▍   | 258/401 [2:29:51<1:24:12, 35.33s/it]Epoch 259 / 400
-train error: avg loss = 0.03237648
-ES count = 2
-Elapsed time = 36.02275037765503 sec
-----------
- 65%|██████▍   | 259/401 [2:30:27<1:24:06, 35.54s/it]Epoch 260 / 400
-train error: avg loss = 0.02615302
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 34.94827699661255 sec
-----------
- 65%|██████▍   | 260/401 [2:31:02<1:23:05, 35.36s/it]Epoch 261 / 400
-train error: avg loss = 0.03125371
-ES count = 1
-Elapsed time = 35.20162272453308 sec
-----------
- 65%|██████▌   | 261/401 [2:31:37<1:22:23, 35.31s/it]Epoch 262 / 400
-train error: avg loss = 0.02851371
-ES count = 2
-Elapsed time = 34.27783989906311 sec
-----------
- 65%|██████▌   | 262/401 [2:32:11<1:21:05, 35.00s/it]Epoch 263 / 400
-train error: avg loss = 0.02886212
-ES count = 3
-Elapsed time = 35.1454918384552 sec
-----------
- 66%|██████▌   | 263/401 [2:32:46<1:20:36, 35.05s/it]Epoch 264 / 400
-train error: avg loss = 0.02856508
-ES count = 4
-Elapsed time = 35.610843658447266 sec
-----------
- 66%|██████▌   | 264/401 [2:33:22<1:20:24, 35.22s/it]Epoch 265 / 400
-train error: avg loss = 0.02913161
-ES count = 5
-Elapsed time = 33.83638882637024 sec
-----------
- 66%|██████▌   | 265/401 [2:33:56<1:18:53, 34.80s/it]Epoch 266 / 400
-train error: avg loss = 0.02918379
-ES count = 6
-Elapsed time = 34.3225998878479 sec
-----------
- 66%|██████▋   | 266/401 [2:34:30<1:17:58, 34.66s/it]Epoch 267 / 400
-train error: avg loss = 0.03032748
-ES count = 7
-Elapsed time = 34.94299578666687 sec
-----------
- 67%|██████▋   | 267/401 [2:35:05<1:17:35, 34.74s/it]Epoch 268 / 400
-train error: avg loss = 0.02857330
-ES count = 8
-Elapsed time = 35.57317638397217 sec
-----------
- 67%|██████▋   | 268/401 [2:35:40<1:17:34, 34.99s/it]Epoch 269 / 400
-train error: avg loss = 0.02843982
-ES count = 9
-Elapsed time = 34.589170694351196 sec
-----------
- 67%|██████▋   | 269/401 [2:36:15<1:16:43, 34.87s/it]Epoch 270 / 400
-train error: avg loss = 0.02988874
-ES count = 10
-Elapsed time = 35.18685817718506 sec
-----------
- 67%|██████▋   | 270/401 [2:36:50<1:16:20, 34.97s/it]Epoch 271 / 400
-train error: avg loss = 0.02745541
-ES count = 11
-Elapsed time = 34.76381850242615 sec
-----------
- 68%|██████▊   | 271/401 [2:37:25<1:15:37, 34.91s/it]Epoch 272 / 400
-train error: avg loss = 0.03037072
-ES count = 12
-Elapsed time = 34.68756628036499 sec
-----------
- 68%|██████▊   | 272/401 [2:38:00<1:14:54, 34.84s/it]Epoch 273 / 400
-train error: avg loss = 0.02963210
-ES count = 13
-Elapsed time = 35.226304054260254 sec
-----------
- 68%|██████▊   | 273/401 [2:38:35<1:14:34, 34.96s/it]Epoch 274 / 400
-train error: avg loss = 0.03241882
-ES count = 14
-Elapsed time = 35.482515811920166 sec
-----------
- 68%|██████▊   | 274/401 [2:39:10<1:14:19, 35.11s/it]Epoch 275 / 400
-train error: avg loss = 0.03050177
-ES count = 15
-Elapsed time = 35.38546800613403 sec
-----------
- 69%|██████▊   | 275/401 [2:39:46<1:13:54, 35.20s/it]Epoch 276 / 400
-train error: avg loss = 0.03005813
-ES count = 16
-Elapsed time = 34.9473135471344 sec
-----------
- 69%|██████▉   | 276/401 [2:40:21<1:13:10, 35.12s/it]Epoch 277 / 400
-train error: avg loss = 0.03113077
-ES count = 17
-Elapsed time = 34.46120476722717 sec
-----------
- 69%|██████▉   | 277/401 [2:40:55<1:12:10, 34.92s/it]Epoch 278 / 400
-train error: avg loss = 0.03122528
-ES count = 18
-Elapsed time = 34.14509916305542 sec
-----------
- 69%|██████▉   | 278/401 [2:41:29<1:11:06, 34.69s/it]Epoch 279 / 400
-train error: avg loss = 0.03281265
-ES count = 19
-Elapsed time = 34.77177143096924 sec
-----------
- 70%|██████▉   | 279/401 [2:42:04<1:10:35, 34.71s/it]Epoch 280 / 400
-train error: avg loss = 0.02786881
-ES count = 20
-Elapsed time = 35.27014875411987 sec
-----------
- 70%|██████▉   | 280/401 [2:42:39<1:10:20, 34.88s/it]Epoch 281 / 400
-train error: avg loss = 0.03042491
-ES count = 21
-Elapsed time = 35.699804067611694 sec
-----------
- 70%|███████   | 281/401 [2:43:15<1:10:15, 35.13s/it]Epoch 282 / 400
-train error: avg loss = 0.02742159
-ES count = 22
-Elapsed time = 35.46127104759216 sec
-----------
- 70%|███████   | 282/401 [2:43:51<1:09:52, 35.23s/it]Epoch 283 / 400
-train error: avg loss = 0.02478993
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 36.09478306770325 sec
-----------
- 71%|███████   | 283/401 [2:44:27<1:09:47, 35.49s/it]Epoch 284 / 400
-train error: avg loss = 0.02999166
-ES count = 1
-Elapsed time = 35.56782937049866 sec
-----------
- 71%|███████   | 284/401 [2:45:02<1:09:14, 35.51s/it]Epoch 285 / 400
-train error: avg loss = 0.02700175
-ES count = 2
-Elapsed time = 34.98845934867859 sec
-----------
- 71%|███████   | 285/401 [2:45:37<1:08:21, 35.36s/it]Epoch 286 / 400
-train error: avg loss = 0.03005759
-ES count = 3
-Elapsed time = 35.768452644348145 sec
-----------
- 71%|███████▏  | 286/401 [2:46:13<1:08:00, 35.48s/it]Epoch 287 / 400
-train error: avg loss = 0.02723552
-ES count = 4
-Elapsed time = 34.80513596534729 sec
-----------
- 72%|███████▏  | 287/401 [2:46:48<1:07:01, 35.28s/it]Epoch 288 / 400
-train error: avg loss = 0.02590925
-ES count = 5
-Elapsed time = 35.7406051158905 sec
-----------
- 72%|███████▏  | 288/401 [2:47:23<1:06:42, 35.42s/it]Epoch 289 / 400
-train error: avg loss = 0.02923382
-ES count = 6
-Elapsed time = 35.5098934173584 sec
-----------
- 72%|███████▏  | 289/401 [2:47:59<1:06:09, 35.44s/it]Epoch 290 / 400
-train error: avg loss = 0.02709532
-ES count = 7
-Elapsed time = 34.65831160545349 sec
-----------
- 72%|███████▏  | 290/401 [2:48:34<1:05:08, 35.21s/it]Epoch 291 / 400
-train error: avg loss = 0.02861947
-ES count = 8
-Elapsed time = 34.692556619644165 sec
-----------
- 73%|███████▎  | 291/401 [2:49:08<1:04:15, 35.05s/it]Epoch 292 / 400
-train error: avg loss = 0.02656286
-ES count = 9
-Elapsed time = 35.49792146682739 sec
-----------
- 73%|███████▎  | 292/401 [2:49:44<1:03:55, 35.19s/it]Epoch 293 / 400
-train error: avg loss = 0.02878867
-ES count = 10
-Elapsed time = 35.141924142837524 sec
-----------
- 73%|███████▎  | 293/401 [2:50:19<1:03:18, 35.17s/it]Epoch 294 / 400
-train error: avg loss = 0.02709659
-ES count = 11
-Elapsed time = 34.35262584686279 sec
-----------
- 73%|███████▎  | 294/401 [2:50:53<1:02:17, 34.93s/it]Epoch 295 / 400
-train error: avg loss = 0.03276735
-ES count = 12
-Elapsed time = 33.53810977935791 sec
-----------
- 74%|███████▎  | 295/401 [2:51:27<1:00:58, 34.51s/it]Epoch 296 / 400
-train error: avg loss = 0.03067665
-ES count = 13
-Elapsed time = 34.352768898010254 sec
-----------
- 74%|███████▍  | 296/401 [2:52:01<1:00:18, 34.46s/it]Epoch 297 / 400
-train error: avg loss = 0.02884060
-ES count = 14
-Elapsed time = 35.04029607772827 sec
-----------
- 74%|███████▍  | 297/401 [2:52:36<1:00:02, 34.64s/it]Epoch 298 / 400
-train error: avg loss = 0.02776189
-ES count = 15
-Elapsed time = 35.325674057006836 sec
-----------
- 74%|███████▍  | 298/401 [2:53:12<59:48, 34.84s/it]  Epoch 299 / 400
-train error: avg loss = 0.03005160
-ES count = 16
-Elapsed time = 35.75069236755371 sec
-----------
- 75%|███████▍  | 299/401 [2:53:47<59:41, 35.12s/it]Epoch 300 / 400
-train error: avg loss = 0.02682968
-ES count = 17
-Epoch = 300. Save a periodic model snapshot.
-Elapsed time = 35.45933651924133 sec
-----------
- 75%|███████▍  | 300/401 [2:54:23<59:17, 35.22s/it]Epoch 301 / 400
-train error: avg loss = 0.03068801
-ES count = 18
-Elapsed time = 34.883641719818115 sec
-----------
- 75%|███████▌  | 301/401 [2:54:58<58:31, 35.12s/it]Epoch 302 / 400
-train error: avg loss = 0.02784533
-ES count = 19
-Elapsed time = 35.17983436584473 sec
-----------
- 75%|███████▌  | 302/401 [2:55:33<57:58, 35.14s/it]Epoch 303 / 400
-train error: avg loss = 0.02913684
-ES count = 20
-Elapsed time = 34.84926772117615 sec
-----------
- 76%|███████▌  | 303/401 [2:56:08<57:14, 35.05s/it]Epoch 304 / 400
-train error: avg loss = 0.03089807
-ES count = 21
-Elapsed time = 36.020846128463745 sec
-----------
- 76%|███████▌  | 304/401 [2:56:44<57:08, 35.34s/it]Epoch 305 / 400
-train error: avg loss = 0.02786209
-ES count = 22
-Elapsed time = 35.314019441604614 sec
-----------
- 76%|███████▌  | 305/401 [2:57:19<56:32, 35.33s/it]Epoch 306 / 400
-train error: avg loss = 0.02731558
-ES count = 23
-Elapsed time = 35.64279651641846 sec
-----------
- 76%|███████▋  | 306/401 [2:57:55<56:05, 35.43s/it]Epoch 307 / 400
-train error: avg loss = 0.02818043
-ES count = 24
-Elapsed time = 35.007757902145386 sec
-----------
- 77%|███████▋  | 307/401 [2:58:30<55:18, 35.30s/it]Epoch 308 / 400
-train error: avg loss = 0.03081675
-ES count = 25
-Elapsed time = 34.8287296295166 sec
-----------
- 77%|███████▋  | 308/401 [2:59:05<54:29, 35.16s/it]Epoch 309 / 400
-train error: avg loss = 0.02776747
-ES count = 26
-Elapsed time = 34.09971213340759 sec
-----------
- 77%|███████▋  | 309/401 [2:59:39<53:25, 34.84s/it]Epoch 310 / 400
-train error: avg loss = 0.02736399
-ES count = 27
-Elapsed time = 34.49584221839905 sec
-----------
- 77%|███████▋  | 310/401 [3:00:13<52:41, 34.74s/it]Epoch 311 / 400
-train error: avg loss = 0.02549479
-ES count = 28
-Elapsed time = 35.449156522750854 sec
-----------
- 78%|███████▊  | 311/401 [3:00:49<52:25, 34.95s/it]Epoch 312 / 400
-train error: avg loss = 0.02785858
-ES count = 29
-Elapsed time = 35.37322735786438 sec
-----------
- 78%|███████▊  | 312/401 [3:01:24<52:01, 35.08s/it]Epoch 313 / 400
-train error: avg loss = 0.02712484
-ES count = 30
-Elapsed time = 35.16775631904602 sec
-----------
- 78%|███████▊  | 313/401 [3:01:59<51:29, 35.11s/it]Epoch 314 / 400
-train error: avg loss = 0.02757300
-ES count = 31
-Elapsed time = 36.322553396224976 sec
-----------
- 78%|███████▊  | 314/401 [3:02:35<51:25, 35.47s/it]Epoch 315 / 400
-train error: avg loss = 0.02464013
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.59254860877991 sec
-----------
- 79%|███████▊  | 315/401 [3:03:11<50:53, 35.51s/it]Epoch 316 / 400
-train error: avg loss = 0.02953974
-ES count = 1
-Elapsed time = 34.620400190353394 sec
-----------
- 79%|███████▉  | 316/401 [3:03:46<49:55, 35.24s/it]Epoch 317 / 400
-train error: avg loss = 0.02456992
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.325242042541504 sec
-----------
- 79%|███████▉  | 317/401 [3:04:21<49:22, 35.27s/it]Epoch 318 / 400
-train error: avg loss = 0.02523730
-ES count = 1
-Elapsed time = 35.064903259277344 sec
-----------
- 79%|███████▉  | 318/401 [3:04:56<48:42, 35.21s/it]Epoch 319 / 400
-train error: avg loss = 0.02512780
-ES count = 2
-Elapsed time = 34.14525485038757 sec
-----------
- 80%|███████▉  | 319/401 [3:05:30<47:40, 34.89s/it]Epoch 320 / 400
-train error: avg loss = 0.02783615
-ES count = 3
-Elapsed time = 32.436988830566406 sec
-----------
- 80%|███████▉  | 320/401 [3:06:03<46:06, 34.15s/it]Epoch 321 / 400
-train error: avg loss = 0.02441509
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.17744040489197 sec
-----------
- 80%|████████  | 321/401 [3:06:38<45:56, 34.46s/it]Epoch 322 / 400
-train error: avg loss = 0.02606694
-ES count = 1
-Elapsed time = 34.13563323020935 sec
-----------
- 80%|████████  | 322/401 [3:07:12<45:14, 34.36s/it]Epoch 323 / 400
-train error: avg loss = 0.02303771
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 34.311660289764404 sec
-----------
- 81%|████████  | 323/401 [3:07:46<44:39, 34.35s/it]Epoch 324 / 400
-train error: avg loss = 0.02572846
-ES count = 1
-Elapsed time = 34.59399342536926 sec
-----------
- 81%|████████  | 324/401 [3:08:21<44:10, 34.42s/it]Epoch 325 / 400
-train error: avg loss = 0.02484343
-ES count = 2
-Elapsed time = 33.88709855079651 sec
-----------
- 81%|████████  | 325/401 [3:08:55<43:23, 34.26s/it]Epoch 326 / 400
-train error: avg loss = 0.02811613
-ES count = 3
-Elapsed time = 34.558324575424194 sec
-----------
- 81%|████████▏ | 326/401 [3:09:29<42:56, 34.35s/it]Epoch 327 / 400
-train error: avg loss = 0.02863517
-ES count = 4
-Elapsed time = 34.09142470359802 sec
-----------
- 82%|████████▏ | 327/401 [3:10:03<42:16, 34.27s/it]Epoch 328 / 400
-train error: avg loss = 0.02637866
-ES count = 5
-Elapsed time = 34.72106695175171 sec
-----------
- 82%|████████▏ | 328/401 [3:10:38<41:51, 34.41s/it]Epoch 329 / 400
-train error: avg loss = 0.02485007
-ES count = 6
-Elapsed time = 34.36363101005554 sec
-----------
- 82%|████████▏ | 329/401 [3:11:12<41:16, 34.39s/it]Epoch 330 / 400
-train error: avg loss = 0.02720697
-ES count = 7
-Elapsed time = 35.347065925598145 sec
-----------
- 82%|████████▏ | 330/401 [3:11:48<41:02, 34.68s/it]Epoch 331 / 400
-train error: avg loss = 0.02333074
-ES count = 8
-Elapsed time = 35.38807415962219 sec
-----------
- 83%|████████▎ | 331/401 [3:12:23<40:42, 34.89s/it]Epoch 332 / 400
-train error: avg loss = 0.02567605
-ES count = 9
-Elapsed time = 34.94784641265869 sec
-----------
- 83%|████████▎ | 332/401 [3:12:58<40:08, 34.91s/it]Epoch 333 / 400
-train error: avg loss = 0.02664068
-ES count = 10
-Elapsed time = 35.228251695632935 sec
-----------
- 83%|████████▎ | 333/401 [3:13:33<39:40, 35.01s/it]Epoch 334 / 400
-train error: avg loss = 0.02643377
-ES count = 11
-Elapsed time = 34.34419107437134 sec
-----------
- 83%|████████▎ | 334/401 [3:14:08<38:52, 34.81s/it]Epoch 335 / 400
-train error: avg loss = 0.02580397
-ES count = 12
-Elapsed time = 35.14837956428528 sec
-----------
- 84%|████████▎ | 335/401 [3:14:43<38:24, 34.91s/it]Epoch 336 / 400
-train error: avg loss = 0.02241396
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 36.10515213012695 sec
-----------
- 84%|████████▍ | 336/401 [3:15:19<38:12, 35.27s/it]Epoch 337 / 400
-train error: avg loss = 0.02758436
-ES count = 1
-Elapsed time = 33.19441866874695 sec
-----------
- 84%|████████▍ | 337/401 [3:15:52<36:57, 34.65s/it]Epoch 338 / 400
-train error: avg loss = 0.02990318
-ES count = 2
-Elapsed time = 34.765594244003296 sec
-----------
- 84%|████████▍ | 338/401 [3:16:27<36:26, 34.71s/it]Epoch 339 / 400
-train error: avg loss = 0.02752630
-ES count = 3
-Elapsed time = 34.394184827804565 sec
-----------
- 85%|████████▍ | 339/401 [3:17:01<35:46, 34.62s/it]Epoch 340 / 400
-train error: avg loss = 0.02537951
-ES count = 4
-Elapsed time = 33.46092772483826 sec
-----------
- 85%|████████▍ | 340/401 [3:17:35<34:50, 34.27s/it]Epoch 341 / 400
-train error: avg loss = 0.02452981
-ES count = 5
-Elapsed time = 34.68664193153381 sec
-----------
- 85%|████████▌ | 341/401 [3:18:10<34:23, 34.39s/it]Epoch 342 / 400
-train error: avg loss = 0.02384209
-ES count = 6
-Elapsed time = 34.113375425338745 sec
-----------
- 85%|████████▌ | 342/401 [3:18:44<33:44, 34.31s/it]Epoch 343 / 400
-train error: avg loss = 0.02351405
-ES count = 7
-Elapsed time = 33.868746757507324 sec
-----------
- 86%|████████▌ | 343/401 [3:19:18<33:02, 34.18s/it]Epoch 344 / 400
-train error: avg loss = 0.02229072
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.237842082977295 sec
-----------
- 86%|████████▌ | 344/401 [3:19:53<32:46, 34.50s/it]Epoch 345 / 400
-train error: avg loss = 0.02969217
-ES count = 1
-Elapsed time = 33.81716346740723 sec
-----------
- 86%|████████▌ | 345/401 [3:20:27<32:00, 34.29s/it]Epoch 346 / 400
-train error: avg loss = 0.02831845
-ES count = 2
-Elapsed time = 35.160645961761475 sec
-----------
- 86%|████████▋ | 346/401 [3:21:02<31:40, 34.55s/it]Epoch 347 / 400
-train error: avg loss = 0.02681203
-ES count = 3
-Elapsed time = 36.47069573402405 sec
-----------
- 87%|████████▋ | 347/401 [3:21:38<31:36, 35.13s/it]Epoch 348 / 400
-train error: avg loss = 0.02658118
-ES count = 4
-Elapsed time = 35.23698616027832 sec
-----------
- 87%|████████▋ | 348/401 [3:22:13<31:03, 35.16s/it]Epoch 349 / 400
-train error: avg loss = 0.02570885
-ES count = 5
-Elapsed time = 35.4459969997406 sec
-----------
- 87%|████████▋ | 349/401 [3:22:49<30:32, 35.25s/it]Epoch 350 / 400
-train error: avg loss = 0.02351712
-ES count = 6
-Elapsed time = 35.73308849334717 sec
-----------
- 87%|████████▋ | 350/401 [3:23:25<30:05, 35.39s/it]Epoch 351 / 400
-train error: avg loss = 0.02602662
-ES count = 7
-Elapsed time = 34.876211404800415 sec
-----------
- 88%|████████▊ | 351/401 [3:24:00<29:21, 35.24s/it]Epoch 352 / 400
-train error: avg loss = 0.02781907
-ES count = 8
-Elapsed time = 35.724921464920044 sec
-----------
- 88%|████████▊ | 352/401 [3:24:35<28:53, 35.38s/it]Epoch 353 / 400
-train error: avg loss = 0.02717062
-ES count = 9
-Elapsed time = 34.43584179878235 sec
-----------
- 88%|████████▊ | 353/401 [3:25:10<28:04, 35.10s/it]Epoch 354 / 400
-train error: avg loss = 0.02403366
-ES count = 10
-Elapsed time = 34.177889823913574 sec
-----------
- 88%|████████▊ | 354/401 [3:25:44<27:16, 34.82s/it]Epoch 355 / 400
-train error: avg loss = 0.02419631
-ES count = 11
-Elapsed time = 33.990516662597656 sec
-----------
- 89%|████████▊ | 355/401 [3:26:18<26:30, 34.57s/it]Epoch 356 / 400
-train error: avg loss = 0.02278644
-ES count = 12
-Elapsed time = 34.44707918167114 sec
-----------
- 89%|████████▉ | 356/401 [3:26:52<25:54, 34.54s/it]Epoch 357 / 400
-train error: avg loss = 0.02445394
-ES count = 13
-Elapsed time = 33.63106822967529 sec
-----------
- 89%|████████▉ | 357/401 [3:27:26<25:07, 34.26s/it]Epoch 358 / 400
-train error: avg loss = 0.02306692
-ES count = 14
-Elapsed time = 34.306384563446045 sec
-----------
- 89%|████████▉ | 358/401 [3:28:00<24:33, 34.28s/it]Epoch 359 / 400
-train error: avg loss = 0.02395081
-ES count = 15
-Elapsed time = 34.71654534339905 sec
-----------
- 90%|████████▉ | 359/401 [3:28:35<24:05, 34.41s/it]Epoch 360 / 400
-train error: avg loss = 0.02611125
-ES count = 16
-Elapsed time = 35.21518683433533 sec
-----------
- 90%|████████▉ | 360/401 [3:29:10<23:40, 34.65s/it]Epoch 361 / 400
-train error: avg loss = 0.02339422
-ES count = 17
-Elapsed time = 35.23331069946289 sec
-----------
- 90%|█████████ | 361/401 [3:29:45<23:13, 34.83s/it]Epoch 362 / 400
-train error: avg loss = 0.02365007
-ES count = 18
-Elapsed time = 34.45695447921753 sec
-----------
- 90%|█████████ | 362/401 [3:30:20<22:33, 34.72s/it]Epoch 363 / 400
-train error: avg loss = 0.02475898
-ES count = 19
-Elapsed time = 34.570695638656616 sec
-----------
- 91%|█████████ | 363/401 [3:30:54<21:57, 34.67s/it]Epoch 364 / 400
-train error: avg loss = 0.02428143
-ES count = 20
-Elapsed time = 34.123602867126465 sec
-----------
- 91%|█████████ | 364/401 [3:31:29<21:16, 34.51s/it]Epoch 365 / 400
-train error: avg loss = 0.02851880
-ES count = 21
-Elapsed time = 34.601109981536865 sec
-----------
- 91%|█████████ | 365/401 [3:32:03<20:43, 34.54s/it]Epoch 366 / 400
-train error: avg loss = 0.02211585
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 34.79234433174133 sec
-----------
- 91%|█████████▏| 366/401 [3:32:38<20:11, 34.61s/it]Epoch 367 / 400
-train error: avg loss = 0.02668071
-ES count = 1
-Elapsed time = 33.86056923866272 sec
-----------
- 92%|█████████▏| 367/401 [3:33:12<19:29, 34.39s/it]Epoch 368 / 400
-train error: avg loss = 0.02470637
-ES count = 2
-Elapsed time = 34.26591467857361 sec
-----------
- 92%|█████████▏| 368/401 [3:33:46<18:53, 34.35s/it]Epoch 369 / 400
-train error: avg loss = 0.02600848
-ES count = 3
-Elapsed time = 34.47065997123718 sec
-----------
- 92%|█████████▏| 369/401 [3:34:21<18:20, 34.39s/it]Epoch 370 / 400
-train error: avg loss = 0.02328454
-ES count = 4
-Elapsed time = 34.72536110877991 sec
-----------
- 92%|█████████▏| 370/401 [3:34:55<17:49, 34.49s/it]Epoch 371 / 400
-train error: avg loss = 0.02579743
-ES count = 5
-Elapsed time = 34.647292375564575 sec
-----------
- 93%|█████████▎| 371/401 [3:35:30<17:16, 34.54s/it]Epoch 372 / 400
-train error: avg loss = 0.02328988
-ES count = 6
-Elapsed time = 34.03950905799866 sec
-----------
- 93%|█████████▎| 372/401 [3:36:04<16:37, 34.39s/it]Epoch 373 / 400
-train error: avg loss = 0.02453989
-ES count = 7
-Elapsed time = 34.936933517456055 sec
-----------
- 93%|█████████▎| 373/401 [3:36:39<16:07, 34.55s/it]Epoch 374 / 400
-train error: avg loss = 0.02330645
-ES count = 8
-Elapsed time = 34.957359313964844 sec
-----------
- 93%|█████████▎| 374/401 [3:37:14<15:36, 34.67s/it]Epoch 375 / 400
-train error: avg loss = 0.02493369
-ES count = 9
-Elapsed time = 35.224430084228516 sec
-----------
- 94%|█████████▎| 375/401 [3:37:49<15:05, 34.84s/it]Epoch 376 / 400
-train error: avg loss = 0.02188949
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 34.157071352005005 sec
-----------
- 94%|█████████▍| 376/401 [3:38:23<14:25, 34.63s/it]Epoch 377 / 400
-train error: avg loss = 0.02596598
-ES count = 1
-Elapsed time = 34.233689308166504 sec
-----------
- 94%|█████████▍| 377/401 [3:38:58<13:48, 34.51s/it]Epoch 378 / 400
-train error: avg loss = 0.02104096
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 34.73563766479492 sec
-----------
- 94%|█████████▍| 378/401 [3:39:32<13:15, 34.58s/it]Epoch 379 / 400
-train error: avg loss = 0.02199977
-ES count = 1
-Elapsed time = 34.67530632019043 sec
-----------
- 95%|█████████▍| 379/401 [3:40:07<12:41, 34.61s/it]Epoch 380 / 400
-train error: avg loss = 0.02258058
-ES count = 2
-Elapsed time = 34.48262429237366 sec
-----------
- 95%|█████████▍| 380/401 [3:40:41<12:06, 34.57s/it]Epoch 381 / 400
-train error: avg loss = 0.02882260
-ES count = 3
-Elapsed time = 33.88326573371887 sec
-----------
- 95%|█████████▌| 381/401 [3:41:15<11:27, 34.37s/it]Epoch 382 / 400
-train error: avg loss = 0.02169749
-ES count = 4
-Elapsed time = 34.696592569351196 sec
-----------
- 95%|█████████▌| 382/401 [3:41:50<10:54, 34.46s/it]Epoch 383 / 400
-train error: avg loss = 0.02233249
-ES count = 5
-Elapsed time = 34.77949857711792 sec
-----------
- 96%|█████████▌| 383/401 [3:42:25<10:22, 34.56s/it]Epoch 384 / 400
-train error: avg loss = 0.02037483
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.57830190658569 sec
-----------
- 96%|█████████▌| 384/401 [3:43:00<09:52, 34.87s/it]Epoch 385 / 400
-train error: avg loss = 0.01968474
-Best loss is updated and ES count is reset.
-Checkpoint saved to '/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeModel/config_wind/checkpoint.pth'
-Elapsed time = 35.263012409210205 sec
-----------
- 96%|█████████▌| 385/401 [3:43:36<09:19, 34.98s/it]Epoch 386 / 400
-train error: avg loss = 0.02151020
-ES count = 1
-Elapsed time = 34.25259041786194 sec
-----------
- 96%|█████████▋| 386/401 [3:44:10<08:41, 34.77s/it]Epoch 387 / 400
-train error: avg loss = 0.02239259
-ES count = 2
-Elapsed time = 34.016454219818115 sec
-----------
- 97%|█████████▋| 387/401 [3:44:44<08:03, 34.54s/it]Epoch 388 / 400
-train error: avg loss = 0.02515768
-ES count = 3
-Elapsed time = 34.526673316955566 sec
-----------
- 97%|█████████▋| 388/401 [3:45:18<07:28, 34.54s/it]Epoch 389 / 400
-train error: avg loss = 0.02084513
-ES count = 4
-Elapsed time = 32.752904176712036 sec
-----------
- 97%|█████████▋| 389/401 [3:45:51<06:48, 34.00s/it]Epoch 390 / 400
-train error: avg loss = 0.02177045
-ES count = 5
-Elapsed time = 34.480143308639526 sec
-----------
- 97%|█████████▋| 390/401 [3:46:26<06:15, 34.15s/it]Epoch 391 / 400
-train error: avg loss = 0.02243221
-ES count = 6
-Elapsed time = 33.838629484176636 sec
-----------
- 98%|█████████▊| 391/401 [3:46:59<05:40, 34.05s/it]Epoch 392 / 400
-train error: avg loss = 0.02254072
-ES count = 7
-Elapsed time = 33.89235734939575 sec
-----------
- 98%|█████████▊| 392/401 [3:47:33<05:06, 34.01s/it]Epoch 393 / 400
-train error: avg loss = 0.02012667
-ES count = 8
-Elapsed time = 34.0413339138031 sec
-----------
- 98%|█████████▊| 393/401 [3:48:07<04:32, 34.02s/it]Epoch 394 / 400
-train error: avg loss = 0.02366453
-ES count = 9
-Elapsed time = 34.49714469909668 sec
-----------
- 98%|█████████▊| 394/401 [3:48:42<03:59, 34.16s/it]Epoch 395 / 400
-train error: avg loss = 0.02272254
-ES count = 10
-Elapsed time = 34.6774365901947 sec
-----------
- 99%|█████████▊| 395/401 [3:49:17<03:25, 34.32s/it]Epoch 396 / 400
-train error: avg loss = 0.02295161
-ES count = 11
-Elapsed time = 35.20614004135132 sec
-----------
- 99%|█████████▉| 396/401 [3:49:52<02:52, 34.58s/it]Epoch 397 / 400
-train error: avg loss = 0.02079757
-ES count = 12
-Elapsed time = 34.31504011154175 sec
-----------
- 99%|█████████▉| 397/401 [3:50:26<02:18, 34.50s/it]Epoch 398 / 400
-train error: avg loss = 0.02196854
-ES count = 13
-Elapsed time = 34.421170473098755 sec
-----------
- 99%|█████████▉| 398/401 [3:51:01<01:43, 34.48s/it]Epoch 399 / 400
-train error: avg loss = 0.02411881
-ES count = 14
-Elapsed time = 34.861074686050415 sec
-----------
-100%|█████████▉| 399/401 [3:51:35<01:09, 34.59s/it]Epoch 400 / 400
-train error: avg loss = 0.02388583
-ES count = 15
-Epoch = 400. Save a periodic model snapshot.
-Elapsed time = 34.21633696556091 sec
-----------
-100%|█████████▉| 400/401 [3:52:10<00:34, 34.48s/it]Epoch 401 / 400
-train error: avg loss = 0.02131924
-ES count = 16
-Elapsed time = 34.658857345581055 sec
-----------
-100%|██████████| 401/401 [3:52:44<00:00, 34.53s/it]100%|██████████| 401/401 [3:52:44<00:00, 34.82s/it]
-Train end: 2026-02-24T10:40:13.179965+00:00 UTC
-Best epoch: 385, best_loss: 0.01968474
-Total elapsed time = 232.74622450669605 min
-
-**************************************************
-Make inference
-**************************************************
-
-
-Inference at epoch 100.
-UNetDDPMVer01 is created
-/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/scripts/train_schrodinger_bridge_model.py:68: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
-  model.load_state_dict(torch.load(model_weight_path, map_location=device))
-dataset_config.dataset_name='Dataset2dTemperature2m'
-The total files = 168. A part of them is used for training.
-All files give to dataset are 25.
-Reading all files.
-  0%|          | 0/25 [00:00<?, ?it/s]  4%|▍         | 1/25 [00:00<00:03,  7.95it/s] 12%|█▏        | 3/25 [00:00<00:01, 12.92it/s] 20%|██        | 5/25 [00:00<00:01, 15.52it/s] 28%|██▊       | 7/25 [00:00<00:01, 16.83it/s] 36%|███▌      | 9/25 [00:00<00:00, 17.11it/s] 44%|████▍     | 11/25 [00:00<00:00, 17.61it/s] 56%|█████▌    | 14/25 [00:00<00:00, 18.67it/s] 64%|██████▍   | 16/25 [00:00<00:00, 18.99it/s] 72%|███████▏  | 18/25 [00:01<00:00, 18.81it/s] 84%|████████▍ | 21/25 [00:01<00:00, 19.30it/s] 92%|█████████▏| 23/25 [00:01<00:00, 18.90it/s]100%|██████████| 25/25 [00:01<00:00, 18.03it/s]
-valid: dataset size = 25, batch num = 7
-
-Requested 60 samples, but only 25 are available. Using all available data.
-
-**************************************************
-Error
-**************************************************
-
-'hr_tm'
-Traceback (most recent call last):
-  File "/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/scripts/train_schrodinger_bridge_model.py", line 316, in <module>
-    loader.dataset._scale_inversely(pred, "hr_tm")
-  File "/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/src/dl_data/dataset_2d_tm2m.py", line 103, in _scale_inversely
-    b, s = self.c.biases[n], self.c.scales[n]
-           ~~~~~~~~~~~~~^^^
-KeyError: 'hr_tm'
-
