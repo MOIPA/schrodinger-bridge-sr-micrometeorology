@@ -15,6 +15,7 @@ from src.dl_data.dataset_2d_tm2m import (
     Dataset2dTemperature2m,
     Dataset2dTemperature2mConfig,
 )
+from src.dl_data.dataset_3d_wind import Dataset3dWind
 from src.utils.random_seed_helper import get_torch_generator, seed_worker
 
 logger = getLogger()
@@ -41,6 +42,10 @@ def make_dataloaders_and_samplers(
         dataset_initializer = Dataset2dResidualTemperature2m
         extension = "npz"
         assert isinstance(dataset_config, Dataset2dResidualTemperature2mConfig)
+    elif dataset_config.dataset_name == "Dataset3dWind":
+        logger.info(f"{dataset_config.dataset_name=}")
+        dataset_initializer = Dataset3dWind
+        extension = "npz"
     else:
         raise NotImplementedError(
             f"Dataset {dataset_config.dataset_name} is not supported."

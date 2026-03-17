@@ -48,6 +48,8 @@ logger.setLevel(INFO)
 parser = argparse.ArgumentParser()
 parser.add_argument("--config_path", type=str, required=True)
 parser.add_argument("--device", type=str, default="cuda:0")
+parser.add_argument("--experiment_name", type=str, default=EXPERIMENT_NAME,
+                    help="Experiment name, e.g. ExperimentSchrodingerBridgeModel or ExperimentSchrodingerBridge3dWind")
 
 
 def get_model_si_loader(
@@ -117,23 +119,25 @@ def make_data_for_inference(n_data, dataset):
 
 if __name__ == "__main__":
     try:
-        config_path: str = parser.parse_args().config_path
-        device: str = parser.parse_args().device
+        args = parser.parse_args()
+        config_path: str = args.config_path
+        device: str = args.device
+        experiment_name: str = args.experiment_name
 
         config_name = os.path.basename(config_path).split(".")[0]
 
-        config: ExperimentSchrodingerBridgeModelConfig = load_config(
-            EXPERIMENT_NAME, config_path
+        config = load_config(
+            experiment_name, config_path
         )
 
-        result_dir_path = f"{ROOT_DIR}/data/DL_result/{EXPERIMENT_NAME}/{config_name}"
+        result_dir_path = f"{ROOT_DIR}/data/DL_result/{experiment_name}/{config_name}"
         os.makedirs(result_dir_path, exist_ok=True)
         logger.addHandler(FileHandler(f"{result_dir_path}/log.txt"))
 
         logger.info("\n" + "*" * 50)
         logger.info("Show configuration")
         logger.info("*" * 50 + "\n")
-        logger.info(f"{EXPERIMENT_NAME=}")
+        logger.info(f"{experiment_name=}")
         logger.info(f"{config_name=}")
         logger.info(f"{config_path=}")
         logger.info(f"{result_dir_path=}")

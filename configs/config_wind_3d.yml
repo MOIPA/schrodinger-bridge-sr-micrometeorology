@@ -1,0 +1,203 @@
+# Configuration for 3D Wind Field Super-Resolution
+# 6 eta levels (ml0,1,2,3,5,10) x 3 components (U/V/W) = 18 output channels
+# Condition variables: 10 surface variables
+# UNet input = 18 (yt) + 10 (y_cond) = 28 channels
+# UNet output = 18 channels
+#
+# 训练命令:
+#   python scripts/train_schrodinger_bridge_model.py \
+#     --config_path configs/config_wind_3d.yml \
+#     --experiment_name ExperimentSchrodingerBridge3dWind \
+#     --device cuda:0
+
+data:
+  # ===== biases 和 scales 需要运行 prepare_wind_data_3d.py 后填入真实值 =====
+  # 以下为占位符（均值=0, 标准差=1），请替换为实际统计结果
+  biases:
+    # HR wind fields (18)
+    hr_u_ml0: 0.0
+    hr_v_ml0: 0.0
+    hr_w_ml0: 0.0
+    hr_u_ml1: 0.0
+    hr_v_ml1: 0.0
+    hr_w_ml1: 0.0
+    hr_u_ml2: 0.0
+    hr_v_ml2: 0.0
+    hr_w_ml2: 0.0
+    hr_u_ml3: 0.0
+    hr_v_ml3: 0.0
+    hr_w_ml3: 0.0
+    hr_u_ml5: 0.0
+    hr_v_ml5: 0.0
+    hr_w_ml5: 0.0
+    hr_u_ml10: 0.0
+    hr_v_ml10: 0.0
+    hr_w_ml10: 0.0
+    # LR wind fields (18)
+    lr_u_ml0: 0.0
+    lr_v_ml0: 0.0
+    lr_w_ml0: 0.0
+    lr_u_ml1: 0.0
+    lr_v_ml1: 0.0
+    lr_w_ml1: 0.0
+    lr_u_ml2: 0.0
+    lr_v_ml2: 0.0
+    lr_w_ml2: 0.0
+    lr_u_ml3: 0.0
+    lr_v_ml3: 0.0
+    lr_w_ml3: 0.0
+    lr_u_ml5: 0.0
+    lr_v_ml5: 0.0
+    lr_w_ml5: 0.0
+    lr_u_ml10: 0.0
+    lr_v_ml10: 0.0
+    lr_w_ml10: 0.0
+    # Condition variables (10)
+    t2: 302.572113
+    z: 37.488346
+    lu: 16.725616
+    tsk: 303.533447
+    swdown: 243.775620
+    glw: 441.881378
+    hfx: 35.444469
+    lh: 79.600403
+    psfc: 99613.843750
+    pblh: 576.574646
+  scales:
+    # HR wind fields (18)
+    hr_u_ml0: 1.0
+    hr_v_ml0: 1.0
+    hr_w_ml0: 1.0
+    hr_u_ml1: 1.0
+    hr_v_ml1: 1.0
+    hr_w_ml1: 1.0
+    hr_u_ml2: 1.0
+    hr_v_ml2: 1.0
+    hr_w_ml2: 1.0
+    hr_u_ml3: 1.0
+    hr_v_ml3: 1.0
+    hr_w_ml3: 1.0
+    hr_u_ml5: 1.0
+    hr_v_ml5: 1.0
+    hr_w_ml5: 1.0
+    hr_u_ml10: 1.0
+    hr_v_ml10: 1.0
+    hr_w_ml10: 1.0
+    # LR wind fields (18)
+    lr_u_ml0: 1.0
+    lr_v_ml0: 1.0
+    lr_w_ml0: 1.0
+    lr_u_ml1: 1.0
+    lr_v_ml1: 1.0
+    lr_w_ml1: 1.0
+    lr_u_ml2: 1.0
+    lr_v_ml2: 1.0
+    lr_w_ml2: 1.0
+    lr_u_ml3: 1.0
+    lr_v_ml3: 1.0
+    lr_w_ml3: 1.0
+    lr_u_ml5: 1.0
+    lr_v_ml5: 1.0
+    lr_w_ml5: 1.0
+    lr_u_ml10: 1.0
+    lr_v_ml10: 1.0
+    lr_w_ml10: 1.0
+    # Condition variables (10)
+    t2: 1.833548
+    z: 79.458435
+    lu: 9.772257
+    tsk: 4.087181
+    swdown: 322.604156
+    glw: 11.915731
+    hfx: 84.616913
+    lh: 109.189278
+    psfc: 888.182190
+    pblh: 310.770905
+  discarded_minute_range:
+  - 1
+  - 30
+  dtype: float32
+  hr_cropped_shape:
+  - 128
+  - 128
+  hr_data_shape:
+  - 128
+  - 128
+  # 条件变量（10个，不含lr风场 — lr由 __getitem__ 自动从 hr 名推导）
+  input_variable_names:
+  - t2
+  - z
+  - lu
+  - tsk
+  - swdown
+  - glw
+  - hfx
+  - lh
+  - psfc
+  - pblh
+  is_clipped: false
+  max_clipped_value: null
+  min_clipped_value: null
+  missing_value: 0.0
+  # 目标变量（18个 HR 风场）
+  target_variable_names:
+  - hr_u_ml0
+  - hr_v_ml0
+  - hr_w_ml0
+  - hr_u_ml1
+  - hr_v_ml1
+  - hr_w_ml1
+  - hr_u_ml2
+  - hr_v_ml2
+  - hr_w_ml2
+  - hr_u_ml3
+  - hr_v_ml3
+  - hr_w_ml3
+  - hr_u_ml5
+  - hr_v_ml5
+  - hr_w_ml5
+  - hr_u_ml10
+  - hr_v_ml10
+  - hr_w_ml10
+loader:
+  batch_size: 2
+  dl_data_ver: wrf_3d_v1
+  num_workers: 4
+  seed: 42
+  train_valid_test_ratios:
+  - 0.7
+  - 0.145
+  - 0.155
+model:
+  attn_res:
+  - 16
+  channel_mults:
+  - 1
+  - 2
+  - 4
+  - 8
+  - 8
+  channels_each_head: 16
+  dropout: 0.2
+  in_channel: 28    # 18 (yt: LR wind interpolated) + 10 (condition vars)
+  inner_channel: 64  # 从32提升，增加容量
+  max_period: 10.0
+  out_channel: 18    # 6 levels x 3 components (u/v/w)
+  res_blocks: 2      # 从1提升
+  resblock_updown: true
+si:
+  eps: 0.2
+  formula: quadratic
+  loss_type: L2
+  n_timestep: 10
+train:
+  early_stopping_patience: 400
+  ema_decay: null
+  epochs: 400
+  learning_rate: 0.0005
+  loss:
+    loss_name: L2
+  optim_name: AdamW
+  save_interval: 100
+  seed: 78268
+  use_amp: true
