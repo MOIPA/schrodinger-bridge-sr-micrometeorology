@@ -16,7 +16,7 @@ import warnings
 
 # 1. 路径设置
 WRF_DIR = "/public3/home/scg4074/gp_zhaokc/SimulationJuly/RESULT_UCM/SLUCM/"
-OUTPUT_DIR = "/public3/home/scg4074/tzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_wind"
+OUTPUT_DIR = "/public3/home/scg4074/tzq/git/schrodinger-bridge-sr-micrometeorology/prepare_npz_wind"
 
 # 2. 数据处理参数
 DOWNSAMPLING_FACTOR = 4
