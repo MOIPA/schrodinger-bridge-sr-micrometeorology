@@ -116,3 +116,4 @@ target/
 prepare_npz
 prepare_npz_test
 prepare_npz_wind
+tmp

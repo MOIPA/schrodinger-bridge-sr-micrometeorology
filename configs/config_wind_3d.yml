@@ -118,11 +118,11 @@ data:
   - 30
   dtype: float32
   hr_cropped_shape:
-  - 128
-  - 128
+  - 192
+  - 192
   hr_data_shape:
-  - 128
-  - 128
+  - 192
+  - 192
   # 条件变量（10个，不含lr风场 — lr由 __getitem__ 自动从 hr 名推导）
   input_variable_names:
   - t2
@@ -200,4 +200,4 @@ train:
   optim_name: AdamW
   save_interval: 100
   seed: 78268
-  use_amp: true
+  use_amp: false
