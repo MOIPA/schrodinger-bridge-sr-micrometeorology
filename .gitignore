@@ -117,3 +117,4 @@ prepare_npz
 prepare_npz_test
 prepare_npz_wind
 tmp
+prepare_npz_wind_3d
