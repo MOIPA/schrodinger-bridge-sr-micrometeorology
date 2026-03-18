@@ -175,7 +175,8 @@ def visualize_wind_3d_inference(config, net, si, npz_path, output_dir):
     # ==========================================
     # 图1: 水平风场 (u,v) 对比 — 6行 × 3列
     # ==========================================
-    fig, axes = plt.subplots(6, 3, figsize=(15, 28))
+    fig, axes = plt.subplots(6, 3, figsize=(18, 32))
+    fig.subplots_adjust(right=0.88, hspace=0.3, wspace=0.05)
 
     for row, level in enumerate(LEVELS):
         hr_u = hr_data[f'hr_u_{level}']
@@ -199,40 +200,41 @@ def visualize_wind_3d_inference(config, net, si, npz_path, output_dir):
         im = plot_horizontal_wind(axes[row, 2], pred_u, pred_v,
                            f'Predicted - {LEVEL_LABELS[row]}', vmin=vmin, vmax=vmax)
 
-        # 每行添加colorbar
-        fig.colorbar(im, ax=axes[row, :].tolist(), orientation='vertical', shrink=0.8,
-                     label='Wind Speed (m/s)', pad=0.02)
+        # colorbar放在右侧，不挤占图的空间
+        cbar_ax = fig.add_axes([0.90, axes[row, 2].get_position().y0,
+                                0.015, axes[row, 2].get_position().height])
+        fig.colorbar(im, cax=cbar_ax, label='m/s')
 
-    fig.suptitle(f'Horizontal Wind Field (U,V) Comparison\n{base_name}', fontsize=16, y=0.99)
-    plt.tight_layout(rect=[0, 0, 0.92, 0.98])
+    fig.suptitle(f'Horizontal Wind Field (U,V) Comparison\n{base_name}', fontsize=16, y=0.995)
     plt.savefig(os.path.join(output_dir, f'{base_name}_horizontal_uv.png'), dpi=150, bbox_inches='tight')
     plt.close(fig)
 
     # ==========================================
     # 图2: W分量对比 — 6行 × 3列
     # ==========================================
-    fig, axes = plt.subplots(6, 3, figsize=(15, 28))
+    fig, axes = plt.subplots(6, 3, figsize=(18, 32))
+    fig.subplots_adjust(right=0.88, hspace=0.3, wspace=0.05)
 
     for row, level in enumerate(LEVELS):
         hr_w = hr_data[f'hr_w_{level}']
         lr_w = lr_data[f'lr_w_{level}']
         pred_w = pred_physical[f'hr_w_{level}']
 
-        # 对称色标
-        abs_max = max(abs(np.nanmin(hr_w)), abs(np.nanmax(hr_w)),
-                      abs(np.nanmin(lr_w)), abs(np.nanmax(lr_w)),
-                      abs(np.nanmin(pred_w)), abs(np.nanmax(pred_w)))
-        vmin, vmax = -abs_max, abs_max
+        # 用HR的95百分位作为色标范围，让细节更明显
+        p95 = np.nanpercentile(np.abs(hr_w), 95)
+        if p95 < 0.01:
+            p95 = 0.01  # 避免色标范围太小
+        vmin, vmax = -p95, p95
 
         plot_w_field(axes[row, 0], lr_w, f'LR W - {LEVEL_LABELS[row]}', vmin=vmin, vmax=vmax)
         plot_w_field(axes[row, 1], hr_w, f'HR W Truth - {LEVEL_LABELS[row]}', vmin=vmin, vmax=vmax)
         im = plot_w_field(axes[row, 2], pred_w, f'Predicted W - {LEVEL_LABELS[row]}', vmin=vmin, vmax=vmax)
 
-        fig.colorbar(im, ax=axes[row, :].tolist(), orientation='vertical', shrink=0.8,
-                     label='W (m/s)', pad=0.02)
+        cbar_ax = fig.add_axes([0.90, axes[row, 2].get_position().y0,
+                                0.015, axes[row, 2].get_position().height])
+        fig.colorbar(im, cax=cbar_ax, label='m/s')
 
-    fig.suptitle(f'Vertical Velocity (W) Comparison\n{base_name}', fontsize=16, y=0.99)
-    plt.tight_layout(rect=[0, 0, 0.92, 0.98])
+    fig.suptitle(f'Vertical Velocity (W) Comparison\n{base_name}', fontsize=16, y=0.995)
     plt.savefig(os.path.join(output_dir, f'{base_name}_vertical_w.png'), dpi=150, bbox_inches='tight')
     plt.close(fig)
 
@@ -304,7 +306,8 @@ def visualize_data_only(npz_path, output_dir):
         print(f"  {key}: shape={npz_data[key].shape}, range=[{npz_data[key].min():.4f}, {npz_data[key].max():.4f}]")
 
     # 水平风场 HR vs LR — 6行 × 2列
-    fig, axes = plt.subplots(6, 2, figsize=(10, 28))
+    fig, axes = plt.subplots(6, 2, figsize=(12, 32))
+    fig.subplots_adjust(right=0.88, hspace=0.3, wspace=0.05)
     for row, level in enumerate(LEVELS):
         hr_u = npz_data.get(f'hr_u_{level}')
         hr_v = npz_data.get(f'hr_v_{level}')
@@ -322,10 +325,11 @@ def visualize_data_only(npz_path, output_dir):
                            f'LR - {LEVEL_LABELS[row]}', vmin=vmin, vmax=vmax)
         im = plot_horizontal_wind(axes[row, 1], hr_u, hr_v,
                            f'HR - {LEVEL_LABELS[row]}', vmin=vmin, vmax=vmax)
-        fig.colorbar(im, ax=axes[row, :].tolist(), orientation='vertical', shrink=0.8, pad=0.02)
+        cbar_ax = fig.add_axes([0.90, axes[row, 1].get_position().y0,
+                                0.015, axes[row, 1].get_position().height])
+        fig.colorbar(im, cax=cbar_ax, label='m/s')
 
-    fig.suptitle(f'Data Verification: HR vs LR\n{base_name}', fontsize=14, y=0.99)
-    plt.tight_layout(rect=[0, 0, 0.92, 0.98])
+    fig.suptitle(f'Data Verification: HR vs LR\n{base_name}', fontsize=14, y=0.995)
     plt.savefig(os.path.join(output_dir, f'{base_name}_data_verify.png'), dpi=100, bbox_inches='tight')
     plt.close(fig)
     print(f"  已保存: {base_name}_data_verify.png")
