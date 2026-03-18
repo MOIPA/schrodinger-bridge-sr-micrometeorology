@@ -316,18 +316,18 @@ if __name__ == "__main__":
                 y0=y0.to(device), y_cond=y_cond.to(device), n_return_step=None
             )
 
-            pred = (
-                loader.dataset._scale_inversely(pred, "hr_tm")
-                .detach()
-                .cpu()
-                .to(torch.float32)
-            )
-            y1 = (
-                loader.dataset._scale_inversely(y1, "hr_tm")
-                .detach()
-                .cpu()
-                .to(torch.float32)
-            )
+            pred = pred.detach().cpu().to(torch.float32)
+            y1 = y1.detach().cpu().to(torch.float32)
+
+            # 对每个目标通道分别反标准化
+            target_names = config.data.target_variable_names
+            for ch_idx, var_name in enumerate(target_names):
+                pred[:, ch_idx] = loader.dataset._scale_inversely(
+                    pred[:, ch_idx], var_name
+                )
+                y1[:, ch_idx] = loader.dataset._scale_inversely(
+                    y1[:, ch_idx], var_name
+                )
             write_pickle({"y1": y1, "pred": pred}, pickle_file_path)
             end_time = time.time()
 
