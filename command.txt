@@ -197,3 +197,13 @@ python visualize_wind.py   --config_path configs/config_wind.yml  --model_weight
        * 编辑 namelist.input 文件，设置模拟的物理参数方案、时间步长等。
        * 运行 ./real.exe 生成初始文件。
        * 运行 ./wrf.exe 开始积分计算，进行模拟。
+
+
+cd /public3/home/scg4074/tzq/git/schrodinger-bridge-sr-micrometeorology
+
+python visualize_wind_3d.py \
+--npz_dir data/DL_data/wrf_3d_v1 \
+--output_dir visualizations_wind_3d \
+--config_path configs/config_wind_3d.yml \
+--model_weight_path data/DL_result/ExperimentSchrodingerBridge3dWind/config_wind_3d/checkpoint.pth \
+--num_samples 3
