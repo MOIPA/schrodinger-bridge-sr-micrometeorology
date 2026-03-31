@@ -151,9 +151,11 @@ def visualize_wind_3d_inference(config, net, si, npz_path, output_dir):
         scale = config.data.scales.get(name, 1.0)
         pred_physical[name] = (pred_normalized[0, i].cpu().numpy() * scale + bias)
 
-    # 准备HR真值和LR数据（resize到target_shape）
+    # 准备HR真值和LR数据
+    DOWNSAMPLING_FACTOR = 4
     hr_data = {}
-    lr_data = {}
+    lr_data = {}       # LR展示用：45×45的真实低分辨率（不插值回大图）
+    lr_data_full = {}  # LR计算用：180×180的插值版本（用于垂直剖面等需要同尺寸对比的场景）
     for name in target_names:
         hr_arr = npz_data[name]
         if hr_arr.shape != tuple(target_shape):
@@ -165,12 +167,20 @@ def visualize_wind_3d_inference(config, net, si, npz_path, output_dir):
 
     for name in lr_names:
         lr_arr = npz_data[name]
+        # 保存完整尺寸版本（用于垂直剖面）
         if lr_arr.shape != tuple(target_shape):
-            lr_arr = F.interpolate(
+            lr_full = F.interpolate(
                 torch.from_numpy(lr_arr).float()[None, None], size=target_shape,
                 mode='bicubic', align_corners=False
             ).squeeze().numpy()
-        lr_data[name] = lr_arr
+        else:
+            lr_full = lr_arr
+        lr_data_full[name] = lr_full
+        # 从HR降采样得到真正的45×45低分辨率（用于可视化）
+        hr_name = name.replace('lr_', 'hr_')
+        hr_tensor = torch.from_numpy(hr_data[hr_name]).float().unsqueeze(0).unsqueeze(0)
+        lr_small = F.avg_pool2d(hr_tensor, kernel_size=DOWNSAMPLING_FACTOR).squeeze().numpy()
+        lr_data[name] = lr_small
 
     # ==========================================
     # 图1: 水平风场 (u,v) 对比 — 6行 × 3列
@@ -186,15 +196,16 @@ def visualize_wind_3d_inference(config, net, si, npz_path, output_dir):
         pred_u = pred_physical[f'hr_u_{level}']
         pred_v = pred_physical[f'hr_v_{level}']
 
-        # 统一色标
+        # 统一色标（基于HR和Pred，LR的45×45值范围类似）
         all_speeds = [np.sqrt(hr_u**2 + hr_v**2),
                       np.sqrt(lr_u**2 + lr_v**2),
                       np.sqrt(pred_u**2 + pred_v**2)]
         vmin = min(np.nanmin(s) for s in all_speeds)
         vmax = max(np.nanmax(s) for s in all_speeds)
 
+        lr_h, lr_w_size = lr_u.shape
         plot_horizontal_wind(axes[row, 0], lr_u, lr_v,
-                           f'LR - {LEVEL_LABELS[row]}', vmin=vmin, vmax=vmax)
+                           f'LR ({lr_h}×{lr_w_size}) - {LEVEL_LABELS[row]}', vmin=vmin, vmax=vmax)
         plot_horizontal_wind(axes[row, 1], hr_u, hr_v,
                            f'HR Truth - {LEVEL_LABELS[row]}', vmin=vmin, vmax=vmax)
         im = plot_horizontal_wind(axes[row, 2], pred_u, pred_v,
@@ -226,7 +237,7 @@ def visualize_wind_3d_inference(config, net, si, npz_path, output_dir):
             p95 = 0.01  # 避免色标范围太小
         vmin, vmax = -p95, p95
 
-        plot_w_field(axes[row, 0], lr_w, f'LR W - {LEVEL_LABELS[row]}', vmin=vmin, vmax=vmax)
+        plot_w_field(axes[row, 0], lr_w, f'LR W ({lr_w.shape[0]}×{lr_w.shape[1]}) - {LEVEL_LABELS[row]}', vmin=vmin, vmax=vmax)
         plot_w_field(axes[row, 1], hr_w, f'HR W Truth - {LEVEL_LABELS[row]}', vmin=vmin, vmax=vmax)
         im = plot_w_field(axes[row, 2], pred_w, f'Predicted W - {LEVEL_LABELS[row]}', vmin=vmin, vmax=vmax)
 
@@ -251,7 +262,7 @@ def visualize_wind_3d_inference(config, net, si, npz_path, output_dir):
     for col, (xpos, xlabel) in enumerate(zip(cross_positions, cross_labels)):
         # U分量垂直剖面
         ax_u = axes[0, col]
-        for src_label, src_data, ls in [('HR', hr_data, '-'), ('LR', lr_data, '--'), ('Pred', pred_physical, ':')]:
+        for src_label, src_data, ls in [('HR', hr_data, '-'), ('LR', lr_data_full, '--'), ('Pred', pred_physical, ':')]:
             u_profile = []
             for level in LEVELS:
                 key = f'hr_u_{level}' if src_label != 'LR' else f'lr_u_{level}'
@@ -266,7 +277,7 @@ def visualize_wind_3d_inference(config, net, si, npz_path, output_dir):
 
         # W分量垂直剖面
         ax_w = axes[1, col]
-        for src_label, src_data, ls in [('HR', hr_data, '-'), ('LR', lr_data, '--'), ('Pred', pred_physical, ':')]:
+        for src_label, src_data, ls in [('HR', hr_data, '-'), ('LR', lr_data_full, '--'), ('Pred', pred_physical, ':')]:
             w_profile = []
             for level in LEVELS:
                 key = f'hr_w_{level}' if src_label != 'LR' else f'lr_w_{level}'
@@ -311,10 +322,15 @@ def visualize_data_only(npz_path, output_dir):
     for row, level in enumerate(LEVELS):
         hr_u = npz_data.get(f'hr_u_{level}')
         hr_v = npz_data.get(f'hr_v_{level}')
-        lr_u = npz_data.get(f'lr_u_{level}')
-        lr_v = npz_data.get(f'lr_v_{level}')
-        if hr_u is None or lr_u is None:
+        if hr_u is None:
             continue
+
+        # 从HR降采样得到真正的45×45低分辨率
+        DOWNSAMPLING_FACTOR = 4
+        hr_u_tensor = torch.from_numpy(hr_u).float().unsqueeze(0).unsqueeze(0)
+        hr_v_tensor = torch.from_numpy(hr_v).float().unsqueeze(0).unsqueeze(0)
+        lr_u = F.avg_pool2d(hr_u_tensor, kernel_size=DOWNSAMPLING_FACTOR).squeeze().numpy()
+        lr_v = F.avg_pool2d(hr_v_tensor, kernel_size=DOWNSAMPLING_FACTOR).squeeze().numpy()
 
         hr_speed = np.sqrt(hr_u**2 + hr_v**2)
         lr_speed = np.sqrt(lr_u**2 + lr_v**2)
@@ -322,7 +338,7 @@ def visualize_data_only(npz_path, output_dir):
         vmax = max(np.nanmax(hr_speed), np.nanmax(lr_speed))
 
         plot_horizontal_wind(axes[row, 0], lr_u, lr_v,
-                           f'LR - {LEVEL_LABELS[row]}', vmin=vmin, vmax=vmax)
+                           f'LR ({lr_u.shape[0]}×{lr_u.shape[1]}) - {LEVEL_LABELS[row]}', vmin=vmin, vmax=vmax)
         im = plot_horizontal_wind(axes[row, 1], hr_u, hr_v,
                            f'HR - {LEVEL_LABELS[row]}', vmin=vmin, vmax=vmax)
         cbar_ax = fig.add_axes([0.90, axes[row, 1].get_position().y0,
