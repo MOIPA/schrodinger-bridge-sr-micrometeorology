@@ -176,9 +176,10 @@ def visualize_wind_3d_inference(config, net, si, npz_path, output_dir):
         else:
             lr_full = lr_arr
         lr_data_full[name] = lr_full
-        # 从HR降采样得到真正的45×45低分辨率（用于可视化）
+        # 从原始180×180的HR降采样得到真正的45×45低分辨率（用于可视化）
         hr_name = name.replace('lr_', 'hr_')
-        hr_tensor = torch.from_numpy(hr_data[hr_name]).float().unsqueeze(0).unsqueeze(0)
+        hr_original = npz_data[hr_name]  # 原始180×180，不是resize后的
+        hr_tensor = torch.from_numpy(hr_original).float().unsqueeze(0).unsqueeze(0)
         lr_small = F.avg_pool2d(hr_tensor, kernel_size=DOWNSAMPLING_FACTOR).squeeze().numpy()
         lr_data[name] = lr_small
 
