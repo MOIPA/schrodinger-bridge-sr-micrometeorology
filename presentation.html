@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920, height=1080">
+<title>基于薛定谔桥的三维风场超分辨率重建</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+    background: #1a1a2e;
+    color: #333;
+  }
+
+  .slide {
+    width: 1920px;
+    height: 1080px;
+    background: #ffffff;
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+    margin: 0 auto 40px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+
+  /* ===== 顶部装饰条 ===== */
+  .slide::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #1e3a5f, #2980b9, #1e3a5f);
+  }
+
+  /* ===== 页码 ===== */
+  .page-num {
+    position: absolute;
+    bottom: 28px;
+    right: 48px;
+    font-size: 18px;
+    color: #999;
+    font-weight: 300;
+  }
+
+  /* ===== 标题页 ===== */
+  .slide-title {
+    background: linear-gradient(135deg, #0f2027 0%, #203a43 40%, #2c5364 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+  }
+  .slide-title::before { display: none; }
+  .slide-title h1 {
+    font-size: 56px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    margin-bottom: 24px;
+    line-height: 1.4;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  .slide-title .subtitle {
+    font-size: 30px;
+    font-weight: 300;
+    color: #b0d4f1;
+    margin-bottom: 60px;
+    letter-spacing: 2px;
+  }
+  .slide-title .meta {
+    font-size: 22px;
+    color: #8ab4d6;
+    line-height: 1.8;
+  }
+
+  /* ===== 内容页公用 ===== */
+  .slide-header {
+    padding: 36px 80px 0;
+  }
+  .slide-header h2 {
+    font-size: 38px;
+    font-weight: 700;
+    color: #1e3a5f;
+    border-bottom: 3px solid #2980b9;
+    padding-bottom: 12px;
+    display: inline-block;
+  }
+  .slide-body {
+    padding: 28px 80px 0;
+  }
+
+  /* ===== 通用文本 ===== */
+  p, li {
+    font-size: 24px;
+    line-height: 1.7;
+    color: #444;
+  }
+  ul { padding-left: 32px; }
+  li { margin-bottom: 8px; }
+  strong { color: #1e3a5f; }
+  .highlight { color: #c0392b; font-weight: 700; }
+  .blue { color: #2980b9; font-weight: 700; }
+  .small { font-size: 18px; color: #777; }
+
+  /* ===== 两栏布局 ===== */
+  .two-col {
+    display: flex;
+    gap: 48px;
+  }
+  .two-col .col { flex: 1; }
+  .two-col .col-wide { flex: 1.3; }
+  .two-col .col-narrow { flex: 0.7; }
+
+  /* ===== 框架图容器 ===== */
+  .diagram-box {
+    background: #f7f9fc;
+    border: 1px solid #d0dbe8;
+    border-radius: 12px;
+    padding: 28px;
+    margin: 16px 0;
+  }
+  .diagram-box .caption {
+    font-size: 17px;
+    color: #666;
+    text-align: center;
+    margin-top: 12px;
+    font-style: italic;
+  }
+
+  /* ===== SVG 图内文本 ===== */
+  svg text {
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  /* ===== 表格 ===== */
+  .table-title {
+    font-size: 20px;
+    color: #555;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 21px;
+    margin: 8px 0;
+  }
+  th {
+    background: #1e3a5f;
+    color: #fff;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 500;
+  }
+  td {
+    padding: 10px 16px;
+    border-bottom: 1px solid #e0e0e0;
+    color: #444;
+  }
+  tr:nth-child(even) td { background: #f7f9fc; }
+  tr:hover td { background: #e8f0f8; }
+
+  /* ===== 引用框 ===== */
+  .ref-box {
+    background: #f0f5fa;
+    border-left: 4px solid #2980b9;
+    padding: 14px 20px;
+    margin: 12px 0;
+    font-size: 20px;
+    color: #555;
+  }
+
+  /* ===== 关键数字 ===== */
+  .stat-row {
+    display: flex;
+    gap: 24px;
+    margin: 16px 0;
+  }
+  .stat-card {
+    flex: 1;
+    background: linear-gradient(135deg, #f0f5fa, #e8f0f8);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid #d0dbe8;
+  }
+  .stat-card .num {
+    font-size: 42px;
+    font-weight: 700;
+    color: #1e3a5f;
+  }
+  .stat-card .label {
+    font-size: 18px;
+    color: #666;
+    margin-top: 4px;
+  }
+
+  /* ===== 流程箭头 ===== */
+  .flow-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin: 20px 0;
+  }
+  .flow-box {
+    background: linear-gradient(135deg, #1e3a5f, #2c5f8a);
+    color: #fff;
+    padding: 18px 28px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 500;
+    min-width: 200px;
+  }
+  .flow-box.alt {
+    background: linear-gradient(135deg, #2980b9, #5dade2);
+  }
+  .flow-box.green {
+    background: linear-gradient(135deg, #1a7a4c, #27ae60);
+  }
+  .flow-arrow {
+    font-size: 36px;
+    color: #2980b9;
+    margin: 0 12px;
+    font-weight: 700;
+  }
+
+  /* ===== 时间轴 ===== */
+  .timeline {
+    position: relative;
+    padding-left: 40px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 14px;
+    top: 0; bottom: 0;
+    width: 3px;
+    background: #2980b9;
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+    padding-left: 28px;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -33px;
+    top: 6px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #2980b9;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 2px #2980b9;
+  }
+  .timeline-item.done::before { background: #27ae60; box-shadow: 0 0 0 2px #27ae60; }
+  .timeline-item.current::before { background: #e74c3c; box-shadow: 0 0 0 2px #e74c3c; }
+  .timeline-item h4 {
+    font-size: 22px; color: #1e3a5f; margin-bottom: 4px;
+  }
+  .timeline-item p {
+    font-size: 19px; color: #666;
+  }
+
+  /* print helpers */
+  @media print {
+    body { background: #fff; }
+    .slide { box-shadow: none; margin: 0; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== SLIDE 1: 封面 ==================== -->
+<div class="slide slide-title">
+  <h1>基于薛定谔桥的三维城市风场<br>超分辨率重建</h1>
+  <div class="subtitle">Schrödinger Bridge for 3D Urban Wind Field Super-Resolution</div>
+  <div class="meta">
+    汇报人：XXX<br>
+    指导老师：XXX<br>
+    2026年4月
+  </div>
+</div>
+
+<!-- ==================== SLIDE 2: 研究大背景 ==================== -->
+<div class="slide">
+  <div class="slide-header"><h2>一、研究大背景：城市微气象与精细风场</h2></div>
+  <div class="slide-body">
+    <div class="two-col">
+      <div class="col">
+        <p style="margin-bottom:16px;">城市化进程加速，<strong>城市微气象环境</strong>日益受到关注：</p>
+        <ul>
+          <li><span class="highlight">城市热岛效应</span>：城区温度比郊区高2-5°C，加剧高温热浪</li>
+          <li><span class="highlight">大气污染扩散</span>：风场决定了PM₂.₅、O₃等污染物的传输与稀释</li>
+          <li><span class="highlight">行人风环境</span>：高层建筑群引发的阵风、涡旋影响行人舒适度和安全</li>
+          <li><span class="highlight">城市通风廊道</span>：合理规划需要精确的三维风场信息</li>
+        </ul>
+        <div class="ref-box" style="margin-top:24px;">
+          <strong>核心挑战</strong>：上述问题都需要<span class="highlight">高时空分辨率</span>的三维风场数据，<br>
+          而现有数值模式（如WRF）受限于计算资源，水平分辨率通常在<strong>1km量级</strong>，<br>
+          难以解析街区尺度（~100m）的精细风场结构。
+        </div>
+      </div>
+      <div class="col">
+        <!-- 城市微气象概念图 -->
+        <div class="diagram-box">
+          <svg viewBox="0 0 780 560" xmlns="http://www.w3.org/2000/svg">
+            <!-- 天空背景 -->
+            <defs>
+              <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#87CEEB"/>
+                <stop offset="100%" stop-color="#E0F0FF"/>
+              </linearGradient>
+              <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#8B9A6B"/>
+                <stop offset="100%" stop-color="#6B8A4B"/>
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="780" height="420" fill="url(#sky)"/>
+            <rect x="0" y="420" width="780" height="140" fill="url(#ground)"/>
+
+            <!-- 太阳和辐射 -->
+            <circle cx="680" cy="70" r="40" fill="#FFD700" opacity="0.9"/>
+            <line x1="660" y1="120" x2="580" y2="250" stroke="#FFD700" stroke-width="2" stroke-dasharray="8,4" opacity="0.6"/>
+            <line x1="680" y1="120" x2="640" y2="280" stroke="#FFD700" stroke-width="2" stroke-dasharray="8,4" opacity="0.6"/>
+            <line x1="700" y1="120" x2="720" y2="300" stroke="#FFD700" stroke-width="2" stroke-dasharray="8,4" opacity="0.6"/>
+            <text x="720" y="155" font-size="15" fill="#B8860B" font-weight="500">SWDOWN</text>
+
+            <!-- 边界层高度线 -->
+            <path d="M 0,140 Q 200,100 400,130 Q 600,160 780,120" stroke="#E74C3C" stroke-width="2.5" stroke-dasharray="12,6" fill="none"/>
+            <text x="15" y="125" font-size="16" fill="#E74C3C" font-weight="700">PBLH — 行星边界层顶</text>
+
+            <!-- 建筑群 -->
+            <rect x="120" y="280" width="60" height="140" fill="#5D6D7E" rx="2"/>
+            <rect x="195" y="240" width="70" height="180" fill="#7F8C8D" rx="2"/>
+            <rect x="280" y="310" width="55" height="110" fill="#5D6D7E" rx="2"/>
+            <rect x="355" y="260" width="65" height="160" fill="#85929E" rx="2"/>
+            <rect x="440" y="300" width="50" height="120" fill="#5D6D7E" rx="2"/>
+            <!-- 窗户 -->
+            <rect x="135" y="295" width="12" height="10" fill="#AED6F1" opacity="0.8"/>
+            <rect x="155" y="295" width="12" height="10" fill="#AED6F1" opacity="0.8"/>
+            <rect x="135" y="320" width="12" height="10" fill="#AED6F1" opacity="0.8"/>
+            <rect x="155" y="320" width="12" height="10" fill="#AED6F1" opacity="0.8"/>
+            <rect x="210" y="255" width="14" height="12" fill="#AED6F1" opacity="0.8"/>
+            <rect x="235" y="255" width="14" height="12" fill="#AED6F1" opacity="0.8"/>
+            <rect x="210" y="280" width="14" height="12" fill="#AED6F1" opacity="0.8"/>
+            <rect x="235" y="280" width="14" height="12" fill="#AED6F1" opacity="0.8"/>
+            <text x="220" y="445" font-size="15" fill="#2C3E50" text-anchor="middle" font-weight="500">城市建筑群</text>
+
+            <!-- 山地 -->
+            <path d="M 550,420 L 620,280 L 650,300 L 700,250 L 780,420 Z" fill="#6B8A5B"/>
+            <path d="M 570,420 L 640,310 L 680,340 L 720,290 L 770,420 Z" fill="#7A9A6B" opacity="0.7"/>
+            <text x="660" y="400" font-size="15" fill="#2C3E50" text-anchor="middle" font-weight="500">山地地形</text>
+            <text x="665" y="355" font-size="14" fill="#1e3a5f" text-anchor="middle">HGT ↑</text>
+
+            <!-- 水体 -->
+            <rect x="0" y="420" width="110" height="40" fill="#5DADE2" rx="4" opacity="0.7"/>
+            <text x="55" y="445" font-size="15" fill="#1A5276" text-anchor="middle" font-weight="500">水体</text>
+
+            <!-- 风箭头 - 大尺度 -->
+            <path d="M 30,200 L 180,195" stroke="#2980B9" stroke-width="3" marker-end="url(#arrowBlue)"/>
+            <path d="M 200,180 L 350,175" stroke="#2980B9" stroke-width="3" marker-end="url(#arrowBlue)"/>
+            <path d="M 400,190 L 530,185" stroke="#2980B9" stroke-width="3" marker-end="url(#arrowBlue)"/>
+            <defs>
+              <marker id="arrowBlue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="#2980B9"/>
+              </marker>
+              <marker id="arrowRed" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="#E74C3C"/>
+              </marker>
+              <marker id="arrowGreen" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="#27AE60"/>
+              </marker>
+            </defs>
+            <text x="90" y="190" font-size="16" fill="#1A5276" font-weight="700">大尺度风场 (U, V)</text>
+
+            <!-- 建筑间涡旋 -->
+            <path d="M 275,350 Q 310,330 335,360 Q 310,380 275,360" stroke="#E74C3C" stroke-width="2" fill="none" marker-end="url(#arrowRed)"/>
+            <text x="310" y="400" font-size="13" fill="#E74C3C" text-anchor="middle">涡旋</text>
+
+            <!-- 地形上升气流 -->
+            <path d="M 620,310 L 625,260" stroke="#27AE60" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
+            <path d="M 700,280 L 705,230" stroke="#27AE60" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
+            <text x="670" y="235" font-size="14" fill="#27AE60" font-weight="500">W ↑</text>
+
+            <!-- 热力通量箭头 -->
+            <path d="M 230,240 L 232,200" stroke="#E67E22" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrowOrange)"/>
+            <path d="M 375,260 L 377,220" stroke="#E67E22" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrowOrange)"/>
+            <defs>
+              <marker id="arrowOrange" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="#E67E22"/>
+              </marker>
+            </defs>
+            <text x="310" y="215" font-size="14" fill="#E67E22" text-anchor="middle">HFX ↑ 感热通量</text>
+
+            <!-- 地表标注 -->
+            <text x="55" y="475" font-size="13" fill="#1A5276" text-anchor="middle">z₀ ≈ 0.001m</text>
+            <text x="300" y="475" font-size="13" fill="#2C3E50" text-anchor="middle">z₀ ≈ 1m (LU_INDEX)</text>
+          </svg>
+          <div class="caption">图1 城市微气象环境中的多尺度风场与物理过程示意图</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-num">2 / 10</div>
+</div>
+
+<!-- ==================== SLIDE 3: 数值模式与降尺度 ==================== -->
+<div class="slide">
+  <div class="slide-header"><h2>二、数值天气预报与降尺度方法</h2></div>
+  <div class="slide-body">
+    <div class="two-col">
+      <div class="col">
+        <p style="font-size:22px; margin-bottom:20px;"><strong>WRF中尺度气象模式</strong>是当前应用最广泛的区域气象数值模型，采用<strong>嵌套降尺度</strong>策略逐步提高分辨率：</p>
+
+        <!-- WRF嵌套域图 -->
+        <div class="diagram-box" style="padding:20px;">
+          <svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg">
+            <!-- 最外域 d01 -->
+            <rect x="20" y="20" width="680" height="280" fill="#E8F6F3" stroke="#1ABC9C" stroke-width="2" rx="8"/>
+            <text x="40" y="52" font-size="18" fill="#1ABC9C" font-weight="700">d01  ~27km</text>
+
+            <!-- d02 -->
+            <rect x="80" y="55" width="520" height="220" fill="#EBF5FB" stroke="#3498DB" stroke-width="2" rx="6"/>
+            <text x="100" y="82" font-size="18" fill="#3498DB" font-weight="700">d02  ~9km</text>
+
+            <!-- d03 -->
+            <rect x="160" y="90" width="360" height="170" fill="#F9EBEA" stroke="#E74C3C" stroke-width="2" rx="5"/>
+            <text x="180" y="114" font-size="18" fill="#E74C3C" font-weight="700">d03  ~3km</text>
+
+            <!-- d04 核心域 -->
+            <rect x="240" y="125" width="200" height="110" fill="#FEF9E7" stroke="#F39C12" stroke-width="3" rx="4"/>
+            <text x="260" y="152" font-size="18" fill="#F39C12" font-weight="700">d04  ~1km</text>
+            <text x="260" y="175" font-size="15" fill="#7D6608">180×180网格</text>
+            <text x="260" y="195" font-size="15" fill="#7D6608">珠三角地区</text>
+            <text x="260" y="215" font-size="14" fill="#C0392B" font-weight="500">← 本研究使用</text>
+          </svg>
+          <div class="caption">图2 WRF嵌套域配置：从全球再分析数据逐步降尺度至1km</div>
+        </div>
+
+        <div class="ref-box" style="margin-top:10px;">
+          <strong>瓶颈</strong>：WRF d04已经是~1km分辨率，进一步提高到百米级需要<br>
+          LES/CFD模拟，计算成本增加<strong>100-1000倍</strong>，无法业务化运行。
+        </div>
+      </div>
+      <div class="col">
+        <p style="font-size:22px; margin-bottom:16px;"><strong>降尺度方法对比</strong>：</p>
+
+        <div class="table-title">表1 三类降尺度方法的优劣比较</div>
+        <table>
+          <tr><th>方法</th><th>精度</th><th>速度</th><th>局限性</th></tr>
+          <tr>
+            <td><strong>动力降尺度</strong><br><span class="small">（嵌套WRF/LES/CFD）</span></td>
+            <td>高</td>
+            <td>极慢<br><span class="small">小时~天级</span></td>
+            <td>计算资源需求大，<br>无法实时运行</td>
+          </tr>
+          <tr>
+            <td><strong>统计降尺度</strong><br><span class="small">（回归/插值）</span></td>
+            <td>低</td>
+            <td>快</td>
+            <td>无法恢复亚网格<br>尺度物理结构</td>
+          </tr>
+          <tr>
+            <td><strong>深度学习降尺度</strong><br><span class="small">（本研究）</span></td>
+            <td><span class="blue">较高</span></td>
+            <td><span class="blue">快</span><br><span class="small">秒级推理</span></td>
+            <td>需要高质量训练<br>数据，可解释性待验证</td>
+          </tr>
+        </table>
+
+        <p style="margin-top:24px; font-size:22px;"><strong>深度学习降尺度的前沿工作</strong>：</p>
+        <ul style="font-size:21px;">
+          <li><strong>FuXi-CFD</strong> (2025)：ViT判别式模型，1km→30m 三维风场降尺度，比CFD快1000倍</li>
+          <li><strong>SR3</strong>: 扩散模型用于气象超分辨率</li>
+          <li><strong>本研究</strong>: <span class="highlight">薛定谔桥</span>（生成式框架）用于3D风场超分</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="page-num">3 / 10</div>
+</div>
+
+<!-- ==================== SLIDE 4: WRF三维大气结构 ==================== -->
+<div class="slide">
+  <div class="slide-header"><h2>三、WRF模式的三维大气结构与风场变量</h2></div>
+  <div class="slide-body">
+    <div class="two-col">
+      <div class="col-wide">
+        <!-- 垂直结构图 -->
+        <div class="diagram-box">
+          <svg viewBox="0 0 820 520" xmlns="http://www.w3.org/2000/svg">
+            <!-- 背景 -->
+            <defs>
+              <linearGradient id="atmo" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#D6EAF8"/>
+                <stop offset="100%" stop-color="#EBF5FB"/>
+              </linearGradient>
+            </defs>
+            <rect x="60" y="20" width="740" height="480" fill="url(#atmo)" rx="8"/>
+
+            <!-- 地形 -->
+            <path d="M 60,480 L 60,440 Q 150,440 200,420 Q 280,390 320,400 Q 400,420 450,380 Q 520,330 560,360 Q 620,400 700,420 Q 760,430 800,440 L 800,480 Z" fill="#8B9A6B"/>
+            <path d="M 60,480 L 60,445 Q 150,445 200,425 Q 280,395 320,405 Q 400,425 450,385 Q 520,335 560,365 Q 620,405 700,425 Q 760,435 800,445 L 800,480 Z" fill="#7A8A5B" opacity="0.5"/>
+
+            <!-- eta层线 -->
+            <!-- ml0 ~10m -->
+            <path d="M 60,432 Q 150,432 200,413 Q 280,383 320,393 Q 400,413 450,373 Q 520,324 560,353 Q 620,393 700,413 Q 760,423 800,432" stroke="#E74C3C" stroke-width="2.5" fill="none"/>
+            <text x="810" y="436" font-size="14" fill="#E74C3C" font-weight="700">ml0 ~10m</text>
+
+            <!-- ml1 ~30m -->
+            <path d="M 60,418 Q 150,418 200,400 Q 280,372 320,381 Q 400,400 450,362 Q 520,316 560,343 Q 620,381 700,400 Q 760,412 800,418" stroke="#E67E22" stroke-width="2" fill="none" stroke-dasharray="8,4"/>
+            <text x="810" y="422" font-size="13" fill="#E67E22" font-weight="500">ml1 ~30m</text>
+
+            <!-- ml3 ~70m -->
+            <path d="M 60,390 Q 200,378 320,358 Q 450,330 560,318 Q 700,368 800,390" stroke="#F1C40F" stroke-width="2" fill="none" stroke-dasharray="8,4"/>
+            <text x="810" y="394" font-size="13" fill="#B7950B" font-weight="500">ml3 ~70m</text>
+
+            <!-- ml5 ~120m -->
+            <path d="M 60,350 Q 200,342 320,326 Q 450,305 560,296 Q 700,336 800,350" stroke="#27AE60" stroke-width="2" fill="none" stroke-dasharray="8,4"/>
+            <text x="810" y="354" font-size="13" fill="#27AE60" font-weight="500">ml5 ~120m</text>
+
+            <!-- ml10 ~300m -->
+            <path d="M 60,260 Q 200,255 320,248 Q 450,240 560,237 Q 700,252 800,260" stroke="#2980B9" stroke-width="2.5" fill="none"/>
+            <text x="810" y="264" font-size="14" fill="#2980B9" font-weight="700">ml10 ~300m</text>
+
+            <!-- PBLH -->
+            <path d="M 60,180 Q 200,160 400,170 Q 600,190 800,175" stroke="#8E44AD" stroke-width="2.5" stroke-dasharray="12,6" fill="none"/>
+            <text x="300" y="160" font-size="16" fill="#8E44AD" font-weight="700">PBLH（边界层顶）</text>
+
+            <!-- 自由大气标注 -->
+            <text x="120" y="80" font-size="18" fill="#2C3E50" font-weight="500">自由大气</text>
+            <text x="120" y="230" font-size="18" fill="#2C3E50" font-weight="500">行星边界层 (PBL)</text>
+
+            <!-- 风箭头 -->
+            <path d="M 100,100 L 200,95" stroke="#2980B9" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+            <path d="M 220,100 L 320,93" stroke="#2980B9" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+            <text x="165" y="85" font-size="14" fill="#2980B9">地转风</text>
+
+            <!-- 近地面风 -->
+            <path d="M 100,430 L 170,428" stroke="#C0392B" stroke-width="2" marker-end="url(#arrowRed)"/>
+            <text x="105" y="455" font-size="13" fill="#C0392B">摩擦减速</text>
+
+            <!-- 山地上升 -->
+            <path d="M 510,370 L 530,330" stroke="#27AE60" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
+            <path d="M 550,355 L 560,320" stroke="#27AE60" stroke-width="2" marker-end="url(#arrowGreen)"/>
+            <text x="520" y="310" font-size="14" fill="#27AE60" font-weight="500">W↑ 地形抬升</text>
+
+            <!-- 左侧高度标尺 -->
+            <line x1="45" y1="440" x2="45" y2="180" stroke="#555" stroke-width="1.5"/>
+            <line x1="40" y1="440" x2="50" y2="440" stroke="#555" stroke-width="1.5"/>
+            <line x1="40" y1="180" x2="50" y2="180" stroke="#555" stroke-width="1.5"/>
+            <text x="35" y="315" font-size="14" fill="#555" text-anchor="middle" transform="rotate(-90,35,315)">高度 (m AGL)</text>
+
+            <!-- η坐标说明 -->
+            <rect x="570" y="40" width="210" height="90" fill="#fff" stroke="#ccc" rx="6" opacity="0.9"/>
+            <text x="585" y="65" font-size="15" fill="#2C3E50" font-weight="700">Eta 地形跟随坐标</text>
+            <text x="585" y="87" font-size="14" fill="#555">η = 0  →  模式层顶（平坦）</text>
+            <text x="585" y="107" font-size="14" fill="#555">η = 1  →  地面（随地形）</text>
+            <text x="585" y="122" font-size="13" fill="#888">等η面跟随地形起伏</text>
+          </svg>
+          <div class="caption">图3 WRF模式垂直结构与本研究选取的6个eta模式层（ml0-ml10, ~10m-300m）</div>
+        </div>
+      </div>
+      <div class="col-narrow">
+        <p style="font-size:21px; margin-bottom:12px;"><strong>三个风分量</strong>：</p>
+
+        <div class="table-title">表2 目标变量</div>
+        <table style="font-size:19px;">
+          <tr><th>分量</th><th>方向</th><th>量级</th></tr>
+          <tr><td><strong>U</strong></td><td>东西(水平)</td><td>数~十几 m/s</td></tr>
+          <tr><td><strong>V</strong></td><td>南北(水平)</td><td>数~十几 m/s</td></tr>
+          <tr><td><strong>W</strong></td><td>垂直</td><td>0.01~0.3 m/s</td></tr>
+        </table>
+
+        <p style="font-size:21px; margin-top:20px; margin-bottom:8px;"><strong>6个垂直层级</strong>：</p>
+        <table style="font-size:18px;">
+          <tr><th>层级</th><th>高度</th><th>意义</th></tr>
+          <tr><td>ml0</td><td>~10m</td><td>气象观测</td></tr>
+          <tr><td>ml1</td><td>~30m</td><td>建筑平均高度</td></tr>
+          <tr><td>ml2</td><td>~50m</td><td>城市冠层顶</td></tr>
+          <tr><td>ml3</td><td>~70m</td><td>小型风机</td></tr>
+          <tr><td>ml5</td><td>~120m</td><td>大型风机</td></tr>
+          <tr><td>ml10</td><td>~300m</td><td>边界层中上</td></tr>
+        </table>
+
+        <p style="font-size:20px; margin-top:16px;">
+          共 <span class="blue">6层 × 3分量 = 18通道</span> 输出
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="page-num">4 / 10</div>
+</div>
+
+<!-- ==================== SLIDE 5: Research Gap & Motivation ==================== -->
+<div class="slide">
+  <div class="slide-header"><h2>四、研究缺口与研究动机</h2></div>
+  <div class="slide-body">
+    <div class="two-col">
+      <div class="col">
+        <p style="font-size:24px; font-weight:700; color:#1e3a5f; margin-bottom:16px;">Research Gap</p>
+
+        <div style="background:#FEF9E7; border-left:4px solid #F39C12; padding:16px 20px; margin-bottom:16px; border-radius:0 8px 8px 0;">
+          <p style="font-size:22px; margin-bottom:8px;"><strong>Gap 1：生成式方法在3D风场降尺度中的空白</strong></p>
+          <p style="font-size:19px; color:#666;">现有深度学习降尺度工作（如FuXi-CFD）主要基于<strong>判别式模型</strong>（ViT/CNN回归），输出确定性结果。生成式模型（扩散模型、薛定谔桥）在气象超分辨率中的应用尚处于起步阶段，在<strong>三维风场</strong>领域几乎为空白。</p>
+        </div>
+
+        <div style="background:#FDEDEC; border-left:4px solid #E74C3C; padding:16px 20px; margin-bottom:16px; border-radius:0 8px 8px 0;">
+          <p style="font-size:22px; margin-bottom:8px;"><strong>Gap 2：物理条件变量的利用不足</strong></p>
+          <p style="font-size:19px; color:#666;">FuXi-CFD仅使用地形高程和粗糙度作为输入条件，未充分利用WRF模式提供的丰富<strong>地表物理信息</strong>（辐射通量、感热/潜热通量、边界层高度等），这些变量包含驱动风场形成的关键物理过程。</p>
+        </div>
+
+        <div style="background:#EBF5FB; border-left:4px solid #2980B9; padding:16px 20px; margin-bottom:16px; border-radius:0 8px 8px 0;">
+          <p style="font-size:22px; margin-bottom:8px;"><strong>Gap 3：概率性预测的缺失</strong></p>
+          <p style="font-size:19px; color:#666;">城市风场受湍流影响具有内在<strong>随机性</strong>，判别式模型只能给出单一确定性输出，无法量化不确定性。生成式模型天然支持概率性预测（多次采样→分布估计）。</p>
+        </div>
+      </div>
+      <div class="col">
+        <p style="font-size:24px; font-weight:700; color:#1e3a5f; margin-bottom:16px;">Motivation & Innovation</p>
+
+        <div class="diagram-box">
+          <svg viewBox="0 0 700 440" xmlns="http://www.w3.org/2000/svg">
+            <!-- 判别式 vs 生成式 -->
+            <rect x="30" y="20" width="290" height="170" fill="#FDEDEC" stroke="#E74C3C" stroke-width="2" rx="10"/>
+            <text x="175" y="52" font-size="18" fill="#E74C3C" text-anchor="middle" font-weight="700">判别式方法 (FuXi-CFD)</text>
+            <text x="50" y="80" font-size="15" fill="#555">✓ 精度高 (水平风 &lt; 7%)</text>
+            <text x="50" y="102" font-size="15" fill="#555">✓ 推理速度快</text>
+            <text x="50" y="130" font-size="15" fill="#C0392B">✗ 输出确定性、无不确定性</text>
+            <text x="50" y="152" font-size="15" fill="#C0392B">✗ 条件变量利用有限</text>
+            <text x="50" y="174" font-size="15" fill="#C0392B">✗ 需大量CFD训练数据</text>
+
+            <rect x="380" y="20" width="290" height="170" fill="#EBF5FB" stroke="#2980B9" stroke-width="2" rx="10"/>
+            <text x="525" y="52" font-size="18" fill="#2980B9" text-anchor="middle" font-weight="700">生成式方法 (本研究)</text>
+            <text x="400" y="80" font-size="15" fill="#555">✓ 概率性建模，量化不确定性</text>
+            <text x="400" y="102" font-size="15" fill="#555">✓ 丰富物理条件变量 (10个)</text>
+            <text x="400" y="130" font-size="15" fill="#555">✓ WRF数据即可训练</text>
+            <text x="400" y="152" font-size="15" fill="#555">✓ 薛定谔桥：从LR出发</text>
+            <text x="400" y="174" font-size="15" fill="#888">△ 精度待验证</text>
+
+            <!-- 创新点 -->
+            <rect x="30" y="220" width="640" height="200" fill="#F0F5FA" stroke="#1e3a5f" stroke-width="2" rx="10"/>
+            <text x="350" y="252" font-size="20" fill="#1e3a5f" text-anchor="middle" font-weight="700">本研究的创新点</text>
+
+            <circle cx="70" cy="290" r="18" fill="#E74C3C"/>
+            <text x="70" y="296" font-size="16" fill="#fff" text-anchor="middle" font-weight="700">1</text>
+            <text x="100" y="286" font-size="16" fill="#333" font-weight="500">首次将薛定谔桥应用于三维城市风场超分辨率</text>
+            <text x="100" y="306" font-size="14" fill="#666">从LR出发的最优传输路径，比扩散模型更高效</text>
+
+            <circle cx="70" cy="345" r="18" fill="#2980B9"/>
+            <text x="70" y="351" font-size="16" fill="#fff" text-anchor="middle" font-weight="700">2</text>
+            <text x="100" y="341" font-size="16" fill="#333" font-weight="500">引入10个地表物理条件变量，提供完整物理环境信息</text>
+            <text x="100" y="361" font-size="14" fill="#666">辐射、通量、气压、边界层高度 → 物理驱动的超分辨率</text>
+
+            <circle cx="70" cy="400" r="18" fill="#27AE60"/>
+            <text x="70" y="406" font-size="16" fill="#fff" text-anchor="middle" font-weight="700">3</text>
+            <text x="100" y="396" font-size="16" fill="#333" font-weight="500">从2D风场自然扩展到3D多层（6层×U/V/W=18通道）</text>
+            <text x="100" y="416" font-size="14" fill="#666">渐进式验证框架：温度→2D风场→3D风场，逐步增加复杂度</text>
+          </svg>
+          <div class="caption">图4 判别式 vs 生成式降尺度方法对比与本研究创新点</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-num">5 / 10</div>
+</div>
+
+<!-- ==================== SLIDE 6: 研究目标 ==================== -->
+<div class="slide">
+  <div class="slide-header"><h2>五、研究目标与技术路线</h2></div>
+  <div class="slide-body">
+    <p style="font-size:24px; margin-bottom:20px;"><strong>总体目标</strong>：基于薛定谔桥生成式框架，利用WRF模式输出和地表物理条件，实现三维城市风场的快速超分辨率重建。</p>
+
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="num">18</div>
+        <div class="label">输出通道<br>(6层 × U/V/W)</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">10</div>
+        <div class="label">物理条件变量<br>(地形/辐射/通量/气压)</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">4×</div>
+        <div class="label">空间超分辨率<br>(45×45 → 180×180)</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">~300m</div>
+        <div class="label">垂直覆盖范围<br>(6个eta模式层)</div>
+      </div>
+    </div>
+
+    <p style="font-size:24px; margin-top:28px; margin-bottom:16px;"><strong>技术路线</strong>：</p>
+
+    <!-- 技术路线大图 -->
+    <div class="diagram-box" style="padding:24px;">
+      <svg viewBox="0 0 1700 360" xmlns="http://www.w3.org/2000/svg">
+        <!-- 数据准备 -->
+        <rect x="10" y="30" width="300" height="300" fill="#EBF5FB" stroke="#2980B9" stroke-width="2" rx="10"/>
+        <text x="160" y="62" font-size="20" fill="#1e3a5f" text-anchor="middle" font-weight="700">① 数据准备</text>
+        <text x="30" y="95" font-size="16" fill="#444">WRF d04模式输出</text>
+        <text x="30" y="118" font-size="14" fill="#666">• 提取6层U/V/W → Arakawa C去交错</text>
+        <text x="30" y="140" font-size="14" fill="#666">• 提取10个条件变量 (HGT, T2, ...)</text>
+        <text x="30" y="168" font-size="16" fill="#444">低分辨率模拟</text>
+        <text x="30" y="190" font-size="14" fill="#666">• HR(180²) → avg_pool(4×) → 45²</text>
+        <text x="30" y="212" font-size="14" fill="#666">• → bicubic插值 → LR(180²)</text>
+        <text x="30" y="240" font-size="16" fill="#444">标准化</text>
+        <text x="30" y="262" font-size="14" fill="#666">• z-score: (x - μ) / σ</text>
+        <text x="30" y="284" font-size="14" fill="#666">• 520个时间步 → npz文件</text>
+        <text x="30" y="310" font-size="14" fill="#666">• 分割: train 70% / valid 15% / test 15%</text>
+
+        <!-- 箭头 -->
+        <path d="M 320,180 L 370,180" stroke="#2980B9" stroke-width="3" marker-end="url(#arrowBlue)"/>
+
+        <!-- 模型架构 -->
+        <rect x="380" y="30" width="500" height="300" fill="#FEF9E7" stroke="#F39C12" stroke-width="2" rx="10"/>
+        <text x="630" y="62" font-size="20" fill="#7D6608" text-anchor="middle" font-weight="700">② 薛定谔桥模型</text>
+
+        <!-- 输入 -->
+        <rect x="400" y="90" width="140" height="50" fill="#3498DB" rx="6"/>
+        <text x="470" y="120" font-size="15" fill="#fff" text-anchor="middle" font-weight="500">LR风场 (18ch)</text>
+
+        <rect x="400" y="155" width="140" height="50" fill="#27AE60" rx="6"/>
+        <text x="470" y="185" font-size="15" fill="#fff" text-anchor="middle" font-weight="500">条件变量 (10ch)</text>
+
+        <!-- concat -->
+        <rect x="570" y="110" width="60" height="40" fill="#8E44AD" rx="6"/>
+        <text x="600" y="136" font-size="14" fill="#fff" text-anchor="middle" font-weight="500">cat</text>
+        <line x1="540" y1="115" x2="570" y2="125" stroke="#555" stroke-width="1.5"/>
+        <line x1="540" y1="180" x2="570" y2="140" stroke="#555" stroke-width="1.5"/>
+
+        <!-- UNet -->
+        <rect x="660" y="82" width="190" height="100" fill="#1e3a5f" rx="10"/>
+        <text x="755" y="115" font-size="18" fill="#fff" text-anchor="middle" font-weight="700">UNet</text>
+        <text x="755" y="138" font-size="14" fill="#AED6F1" text-anchor="middle">28ch in → 18ch out</text>
+        <text x="755" y="158" font-size="13" fill="#AED6F1" text-anchor="middle">[1,2,4,8,8] + attention</text>
+        <line x1="630" y1="130" x2="660" y2="130" stroke="#555" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+        <!-- SI -->
+        <rect x="660" y="200" width="190" height="75" fill="#2C3E50" rx="10"/>
+        <text x="755" y="228" font-size="16" fill="#fff" text-anchor="middle" font-weight="700">随机插值 (SI)</text>
+        <text x="755" y="252" font-size="13" fill="#AED6F1" text-anchor="middle">10步 · quadratic · L2 loss</text>
+        <line x1="755" y1="182" x2="755" y2="200" stroke="#555" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+        <!-- 薛定谔桥说明 -->
+        <text x="410" y="250" font-size="15" fill="#7D6608" font-weight="500">薛定谔桥特点：</text>
+        <text x="410" y="272" font-size="14" fill="#666">• 从LR出发（非随机噪声）</text>
+        <text x="410" y="292" font-size="14" fill="#666">• 最优传输路径，采样高效</text>
+        <text x="410" y="312" font-size="14" fill="#666">• 天然适配超分辨率任务</text>
+
+        <!-- 箭头 -->
+        <path d="M 890,180 L 940,180" stroke="#F39C12" stroke-width="3" marker-end="url(#arrowOrange)"/>
+
+        <!-- 输出与评估 -->
+        <rect x="950" y="30" width="300" height="300" fill="#E8F8F5" stroke="#1ABC9C" stroke-width="2" rx="10"/>
+        <text x="1100" y="62" font-size="20" fill="#117864" text-anchor="middle" font-weight="700">③ 输出与评估</text>
+
+        <text x="970" y="95" font-size="16" fill="#444">HR风场预测 (18通道)</text>
+        <text x="970" y="118" font-size="14" fill="#666">• 6层 × U/V/W</text>
+        <text x="970" y="140" font-size="14" fill="#666">• 空间分辨率与原始HR一致</text>
+
+        <text x="970" y="172" font-size="16" fill="#444">可视化</text>
+        <text x="970" y="194" font-size="14" fill="#666">• 水平风场对比 (LR / HR / Pred)</text>
+        <text x="970" y="216" font-size="14" fill="#666">• 垂直速度W对比</text>
+        <text x="970" y="238" font-size="14" fill="#666">• 垂直廓线分析</text>
+
+        <text x="970" y="270" font-size="16" fill="#444">定量评估（计划中）</text>
+        <text x="970" y="292" font-size="14" fill="#666">• RMSE / MAE / SSIM per channel</text>
+        <text x="970" y="314" font-size="14" fill="#666">• 频谱分析 / 基线对比</text>
+
+        <!-- 渐进式验证 -->
+        <rect x="1310" y="30" width="370" height="300" fill="#F5EEF8" stroke="#8E44AD" stroke-width="2" rx="10"/>
+        <text x="1495" y="62" font-size="20" fill="#6C3483" text-anchor="middle" font-weight="700">渐进式验证策略</text>
+
+        <rect x="1340" y="85" width="310" height="55" fill="#D5F5E3" stroke="#27AE60" stroke-width="1.5" rx="6"/>
+        <text x="1495" y="108" font-size="16" fill="#1E8449" text-anchor="middle" font-weight="500">阶段一：2D温度 (T2, 1ch) ✓</text>
+        <text x="1495" y="128" font-size="13" fill="#666" text-anchor="middle">框架可行性验证 + 消融实验</text>
+
+        <path d="M 1495,140 L 1495,155" stroke="#8E44AD" stroke-width="2" marker-end="url(#arrowPurple)"/>
+        <defs>
+          <marker id="arrowPurple" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#8E44AD"/>
+          </marker>
+        </defs>
+
+        <rect x="1340" y="158" width="310" height="55" fill="#D5F5E3" stroke="#27AE60" stroke-width="1.5" rx="6"/>
+        <text x="1495" y="181" font-size="16" fill="#1E8449" text-anchor="middle" font-weight="500">阶段二：2D风场 (U10/V10, 2ch) ✓</text>
+        <text x="1495" y="201" font-size="13" fill="#666" text-anchor="middle">多通道向量场验证</text>
+
+        <path d="M 1495,213 L 1495,228" stroke="#8E44AD" stroke-width="2" marker-end="url(#arrowPurple)"/>
+
+        <rect x="1340" y="231" width="310" height="55" fill="#FADBD8" stroke="#E74C3C" stroke-width="2" rx="6"/>
+        <text x="1495" y="254" font-size="16" fill="#C0392B" text-anchor="middle" font-weight="700">阶段三：3D风场 (18ch) ★当前</text>
+        <text x="1495" y="274" font-size="13" fill="#666" text-anchor="middle">6层×U/V/W + 10条件变量</text>
+
+        <path d="M 1260,180 L 1310,180" stroke="#8E44AD" stroke-width="2" stroke-dasharray="6,4"/>
+      </svg>
+      <div class="caption">图5 技术路线：数据准备 → 薛定谔桥模型训练 → 输出评估，采用渐进式验证策略</div>
+    </div>
+  </div>
+  <div class="page-num">6 / 10</div>
+</div>
+
+<!-- ==================== SLIDE 7: 条件变量 ==================== -->
+<div class="slide">
+  <div class="slide-header"><h2>六、地表物理条件变量体系</h2></div>
+  <div class="slide-body">
+    <p style="font-size:22px; margin-bottom:16px;">风场的形成由<strong>大尺度驱动 + 地形强迫 + 热力驱动 + 边界层过程</strong>共同决定。模型通过10个条件变量"理解"当前物理环境：</p>
+
+    <div class="two-col" style="gap:36px;">
+      <div class="col">
+        <!-- 物理过程框架图 -->
+        <div class="diagram-box" style="padding:16px;">
+          <svg viewBox="0 0 700 480" xmlns="http://www.w3.org/2000/svg">
+            <!-- 中心：风场 -->
+            <circle cx="350" cy="240" r="70" fill="#1e3a5f"/>
+            <text x="350" y="230" font-size="20" fill="#fff" text-anchor="middle" font-weight="700">三维风场</text>
+            <text x="350" y="255" font-size="16" fill="#AED6F1" text-anchor="middle">U / V / W</text>
+
+            <!-- 大尺度驱动 -->
+            <rect x="20" y="20" width="180" height="70" fill="#E74C3C" rx="8"/>
+            <text x="110" y="50" font-size="16" fill="#fff" text-anchor="middle" font-weight="500">大尺度驱动</text>
+            <text x="110" y="72" font-size="14" fill="#FADBD8" text-anchor="middle">PSFC (气压梯度力)</text>
+            <path d="M 200,65 L 290,195" stroke="#E74C3C" stroke-width="2.5" marker-end="url(#arrowRed)"/>
+
+            <!-- 地形强迫 -->
+            <rect x="500" y="20" width="180" height="90" fill="#27AE60" rx="8"/>
+            <text x="590" y="48" font-size="16" fill="#fff" text-anchor="middle" font-weight="500">地形强迫</text>
+            <text x="590" y="72" font-size="14" fill="#D5F5E3" text-anchor="middle">HGT (地形高度)</text>
+            <text x="590" y="92" font-size="14" fill="#D5F5E3" text-anchor="middle">LU_INDEX (粗糙度)</text>
+            <path d="M 505,95 L 410,195" stroke="#27AE60" stroke-width="2.5" marker-end="url(#arrowGreen)"/>
+
+            <!-- 热力驱动 -->
+            <rect x="530" y="220" width="160" height="140" fill="#F39C12" rx="8"/>
+            <text x="610" y="248" font-size="16" fill="#fff" text-anchor="middle" font-weight="500">热力驱动</text>
+            <text x="610" y="275" font-size="13" fill="#FEF9E7" text-anchor="middle">T2 (2m气温)</text>
+            <text x="610" y="295" font-size="13" fill="#FEF9E7" text-anchor="middle">TSK (地表温度)</text>
+            <text x="610" y="315" font-size="13" fill="#FEF9E7" text-anchor="middle">SWDOWN (短波辐射)</text>
+            <text x="610" y="335" font-size="13" fill="#FEF9E7" text-anchor="middle">GLW (长波辐射)</text>
+            <path d="M 530,280 L 420,255" stroke="#F39C12" stroke-width="2.5" marker-end="url(#arrowOrange)"/>
+
+            <!-- 地表通量 -->
+            <rect x="10" y="300" width="180" height="100" fill="#8E44AD" rx="8"/>
+            <text x="100" y="328" font-size="16" fill="#fff" text-anchor="middle" font-weight="500">地表通量</text>
+            <text x="100" y="355" font-size="14" fill="#E8DAEF" text-anchor="middle">HFX (感热通量)</text>
+            <text x="100" y="378" font-size="14" fill="#E8DAEF" text-anchor="middle">LH (潜热通量)</text>
+            <defs>
+              <marker id="arrowPurple2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="#8E44AD"/>
+              </marker>
+            </defs>
+            <path d="M 190,340 L 285,270" stroke="#8E44AD" stroke-width="2.5" marker-end="url(#arrowPurple2)"/>
+
+            <!-- 边界层 -->
+            <rect x="200" y="400" width="300" height="65" fill="#2980B9" rx="8"/>
+            <text x="350" y="428" font-size="16" fill="#fff" text-anchor="middle" font-weight="500">边界层结构</text>
+            <text x="350" y="450" font-size="14" fill="#D6EAF8" text-anchor="middle">PBLH (边界层高度) — 混合层"天花板"</text>
+            <path d="M 350,400 L 350,315" stroke="#2980B9" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+          </svg>
+          <div class="caption">图6 10个物理条件变量按作用机制分类</div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="table-title">表3 条件变量一览</div>
+        <table style="font-size:18px;">
+          <tr><th>类别</th><th>变量</th><th>含义</th><th>作用</th></tr>
+          <tr>
+            <td rowspan="2" style="background:#E8F8F5;"><strong>地形</strong></td>
+            <td>HGT</td><td>地形高度</td><td>机械抬升/绕流</td>
+          </tr>
+          <tr>
+            <td>LU_INDEX</td><td>土地利用</td><td>地表粗糙度</td>
+          </tr>
+          <tr>
+            <td rowspan="2" style="background:#FEF9E7;"><strong>热力</strong></td>
+            <td>T2</td><td>2m气温</td><td>热力环流</td>
+          </tr>
+          <tr>
+            <td>TSK</td><td>地表温度</td><td>感热驱动源</td>
+          </tr>
+          <tr>
+            <td rowspan="2" style="background:#FDEDEC;"><strong>辐射</strong></td>
+            <td>SWDOWN</td><td>短波辐射</td><td>对流驱动</td>
+          </tr>
+          <tr>
+            <td>GLW</td><td>长波辐射</td><td>夜间冷却</td>
+          </tr>
+          <tr>
+            <td rowspan="2" style="background:#F5EEF8;"><strong>通量</strong></td>
+            <td>HFX</td><td>感热通量</td><td>热对流动力</td>
+          </tr>
+          <tr>
+            <td>LH</td><td>潜热通量</td><td>蒸发冷却</td>
+          </tr>
+          <tr>
+            <td rowspan="2" style="background:#EBF5FB;"><strong>动力</strong></td>
+            <td>PSFC</td><td>地面气压</td><td>气压梯度力</td>
+          </tr>
+          <tr>
+            <td>PBLH</td><td>边界层高度</td><td>混合范围</td>
+          </tr>
+        </table>
+
+        <div class="ref-box" style="margin-top:16px; font-size:18px;">
+          <strong>物理逻辑示例</strong>：<br>
+          • 看到 <strong>HGT有山脊</strong> → 预测地形加速和W↑<br>
+          • 看到 <strong>SWDOWN高 + HFX大</strong> → 白天对流，湍流强<br>
+          • 看到 <strong>LU_INDEX=水体</strong> → 摩擦小，风速偏大<br>
+          • 看到 <strong>PBLH低</strong> → 夜间稳定层，风切变大
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-num">7 / 10</div>
+</div>
+
+<!-- ==================== SLIDE 8: 初步结果 ==================== -->
+<div class="slide">
+  <div class="slide-header"><h2>七、初步结果</h2></div>
+  <div class="slide-body">
+    <div class="two-col" style="gap:40px;">
+      <div class="col">
+        <div class="table-title">表4 训练配置与结果</div>
+        <table style="font-size:20px;">
+          <tr><th>参数</th><th>值</th></tr>
+          <tr><td>UNet 输入/输出</td><td>28ch → 18ch</td></tr>
+          <tr><td>inner_channel / res_blocks</td><td>32 / 1 (受限于CPU)</td></tr>
+          <tr><td>空间尺寸</td><td>128×128 (resize from 180²)</td></tr>
+          <tr><td>训练轮次</td><td>400 epochs</td></tr>
+          <tr><td>学习率 / batch_size</td><td>0.0005 / 2</td></tr>
+          <tr><td>训练设备</td><td>超算CPU节点 (128核)</td></tr>
+          <tr><td>总训练时间</td><td>~22.75 小时</td></tr>
+          <tr><td><strong>最佳loss</strong></td><td><strong class="highlight">0.0410</strong> (epoch 388)</td></tr>
+        </table>
+
+        <p style="font-size:22px; margin-top:24px; margin-bottom:12px;"><strong>可视化生成三类对比图：</strong></p>
+        <ul style="font-size:20px;">
+          <li><strong>水平风场(U,V)</strong>：6层 × 3列(LR/HR/Pred)，底色=风速，箭头=风向</li>
+          <li><strong>垂直速度(W)</strong>：RdBu_r色标，95百分位截断增强细节</li>
+          <li><strong>垂直廓线</strong>：U/W随高度变化的曲线对比</li>
+        </ul>
+
+        <p style="font-size:22px; margin-top:20px; margin-bottom:8px;"><strong>初步观察：</strong></p>
+        <ul style="font-size:20px;">
+          <li>水平风(U,V)：大尺度模式保持好，部分细节被恢复</li>
+          <li>垂直风(W)：量级极小(~0.01-0.3 m/s)，模型学习困难</li>
+          <li>预测有一定"颗粒感"— 生成式采样的随机性引入</li>
+        </ul>
+      </div>
+      <div class="col">
+        <!-- 结果示意框 -->
+        <div class="diagram-box" style="padding:20px;">
+          <svg viewBox="0 0 720 500" xmlns="http://www.w3.org/2000/svg">
+            <!-- 标题 -->
+            <text x="360" y="28" font-size="18" fill="#1e3a5f" text-anchor="middle" font-weight="700">水平风场(U,V)对比示意 — ml0层(~10m)</text>
+
+            <!-- LR -->
+            <rect x="20" y="50" width="210" height="180" fill="#f0f0f0" stroke="#999" stroke-width="1" rx="4"/>
+            <text x="125" y="72" font-size="15" fill="#666" text-anchor="middle">LR (45×45有效)</text>
+            <!-- 模拟模糊风场 -->
+            <rect x="40" y="85" width="170" height="130" fill="#D4E6F1" rx="3"/>
+            <text x="125" y="155" font-size="28" fill="#85929E" text-anchor="middle" font-weight="300">模糊</text>
+            <path d="M 60,130 L 110,125" stroke="#2980B9" stroke-width="1.5" marker-end="url(#arrowBlue)" opacity="0.5"/>
+            <path d="M 60,160 L 110,155" stroke="#2980B9" stroke-width="1.5" marker-end="url(#arrowBlue)" opacity="0.5"/>
+            <path d="M 120,130 L 170,125" stroke="#2980B9" stroke-width="1.5" marker-end="url(#arrowBlue)" opacity="0.5"/>
+            <path d="M 120,160 L 170,155" stroke="#2980B9" stroke-width="1.5" marker-end="url(#arrowBlue)" opacity="0.5"/>
+
+            <!-- HR -->
+            <rect x="255" y="50" width="210" height="180" fill="#f0f0f0" stroke="#27AE60" stroke-width="2" rx="4"/>
+            <text x="360" y="72" font-size="15" fill="#27AE60" text-anchor="middle" font-weight="500">HR Truth (180×180)</text>
+            <rect x="275" y="85" width="170" height="130" fill="#D5F5E3" rx="3"/>
+            <!-- 模拟清晰风场 -->
+            <path d="M 295,110 L 330,105" stroke="#1E8449" stroke-width="1.5" marker-end="url(#arrowGreen)"/>
+            <path d="M 295,135 L 340,128" stroke="#1E8449" stroke-width="1.5" marker-end="url(#arrowGreen)"/>
+            <path d="M 340,100 L 380,98" stroke="#1E8449" stroke-width="1.2" marker-end="url(#arrowGreen)"/>
+            <path d="M 335,140 L 385,142" stroke="#1E8449" stroke-width="1.2" marker-end="url(#arrowGreen)"/>
+            <path d="M 295,165 L 325,170" stroke="#1E8449" stroke-width="1.5" marker-end="url(#arrowGreen)"/>
+            <path d="M 350,160 L 395,165" stroke="#1E8449" stroke-width="1.2" marker-end="url(#arrowGreen)"/>
+            <path d="M 380,120 L 420,115" stroke="#1E8449" stroke-width="1.2" marker-end="url(#arrowGreen)"/>
+            <path d="M 310,185 L 360,190" stroke="#1E8449" stroke-width="1" marker-end="url(#arrowGreen)"/>
+            <text x="360" y="155" font-size="18" fill="#1E8449" text-anchor="middle" font-weight="300">精细细节</text>
+
+            <!-- Predicted -->
+            <rect x="490" y="50" width="210" height="180" fill="#f0f0f0" stroke="#E74C3C" stroke-width="2" rx="4"/>
+            <text x="595" y="72" font-size="15" fill="#E74C3C" text-anchor="middle" font-weight="500">Predicted</text>
+            <rect x="510" y="85" width="170" height="130" fill="#FADBD8" rx="3"/>
+            <path d="M 530,110 L 565,106" stroke="#C0392B" stroke-width="1.5" marker-end="url(#arrowRed)"/>
+            <path d="M 530,135 L 575,130" stroke="#C0392B" stroke-width="1.5" marker-end="url(#arrowRed)"/>
+            <path d="M 570,100 L 610,99" stroke="#C0392B" stroke-width="1.2" marker-end="url(#arrowRed)"/>
+            <path d="M 575,140 L 620,143" stroke="#C0392B" stroke-width="1.2" marker-end="url(#arrowRed)"/>
+            <path d="M 530,165 L 560,170" stroke="#C0392B" stroke-width="1.5" marker-end="url(#arrowRed)"/>
+            <path d="M 590,160 L 630,166" stroke="#C0392B" stroke-width="1.2" marker-end="url(#arrowRed)"/>
+            <text x="595" y="155" font-size="18" fill="#C0392B" text-anchor="middle" font-weight="300">恢复部分</text>
+
+            <!-- 下半部分：loss曲线示意 -->
+            <text x="360" y="270" font-size="18" fill="#1e3a5f" text-anchor="middle" font-weight="700">训练Loss收敛曲线</text>
+
+            <!-- 坐标轴 -->
+            <line x1="80" y1="460" x2="660" y2="460" stroke="#333" stroke-width="1.5"/>
+            <line x1="80" y1="460" x2="80" y2="290" stroke="#333" stroke-width="1.5"/>
+            <text x="370" y="490" font-size="14" fill="#555" text-anchor="middle">Epoch</text>
+            <text x="60" y="380" font-size="14" fill="#555" text-anchor="middle" transform="rotate(-90,60,380)">Loss</text>
+
+            <!-- loss曲线 -->
+            <path d="M 80,310 Q 120,350 180,400 Q 240,430 300,440 Q 380,445 460,445 Q 540,444 600,446 Q 640,445 660,446" stroke="#2980B9" stroke-width="2.5" fill="none"/>
+
+            <!-- 标注 -->
+            <line x1="600" y1="445" x2="600" y2="435" stroke="#E74C3C" stroke-width="1.5"/>
+            <circle cx="600" cy="445" r="4" fill="#E74C3C"/>
+            <text x="605" y="430" font-size="13" fill="#E74C3C">Best: 0.0410</text>
+            <text x="605" y="446" font-size="12" fill="#888">(epoch 388)</text>
+
+            <!-- 坐标标签 -->
+            <text x="80" y="476" font-size="12" fill="#888">0</text>
+            <text x="370" y="476" font-size="12" fill="#888">200</text>
+            <text x="650" y="476" font-size="12" fill="#888">400</text>
+            <text x="72" y="314" font-size="12" fill="#888" text-anchor="end">0.25</text>
+            <text x="72" y="450" font-size="12" fill="#888" text-anchor="end">0.04</text>
+          </svg>
+          <div class="caption">图7 水平风场对比示意与训练Loss收敛曲线</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-num">8 / 10</div>
+</div>
+
+<!-- ==================== SLIDE 9: 当前局限与改进方向 ==================== -->
+<div class="slide">
+  <div class="slide-header"><h2>八、当前局限与改进方向</h2></div>
+  <div class="slide-body">
+    <div class="two-col" style="gap:48px;">
+      <div class="col">
+        <p style="font-size:24px; font-weight:700; color:#C0392B; margin-bottom:16px;">当前局限</p>
+
+        <div style="background:#FDEDEC; padding:18px 22px; border-radius:10px; margin-bottom:14px;">
+          <p style="font-size:21px; margin-bottom:6px;"><strong>① 模型容量受限（CPU训练）</strong></p>
+          <p style="font-size:18px; color:#666;">inner_channel=32, res_blocks=1 — 18通道输出任务需要更大容量</p>
+        </div>
+
+        <div style="background:#FEF9E7; padding:18px 22px; border-radius:10px; margin-bottom:14px;">
+          <p style="font-size:21px; margin-bottom:6px;"><strong>② 空间尺寸有损</strong></p>
+          <p style="font-size:18px; color:#666;">180×180 resize到128×128训练，丢失空间信息</p>
+        </div>
+
+        <div style="background:#EBF5FB; padding:18px 22px; border-radius:10px; margin-bottom:14px;">
+          <p style="font-size:21px; margin-bottom:6px;"><strong>③ W分量学习困难</strong></p>
+          <p style="font-size:18px; color:#666;">W量级比U/V小1-2个数量级，在统一L2 loss中被主导</p>
+        </div>
+
+        <div style="background:#F5EEF8; padding:18px 22px; border-radius:10px; margin-bottom:14px;">
+          <p style="font-size:21px; margin-bottom:6px;"><strong>④ 训练数据为自降采样</strong></p>
+          <p style="font-size:18px; color:#666;">LR由HR降采样模拟（d03数据已删除），非真实低分辨率输入</p>
+        </div>
+
+        <div style="background:#E8F8F5; padding:18px 22px; border-radius:10px;">
+          <p style="font-size:21px; margin-bottom:6px;"><strong>⑤ 缺乏定量评估与基线对比</strong></p>
+          <p style="font-size:18px; color:#666;">仅有训练loss和定性可视化，缺少RMSE/MAE/SSIM等指标</p>
+        </div>
+      </div>
+      <div class="col">
+        <p style="font-size:24px; font-weight:700; color:#27AE60; margin-bottom:16px;">改进方向</p>
+
+        <div class="table-title">表5 近期改进计划（GPU迁移后）</div>
+        <table style="font-size:19px;">
+          <tr><th>改进</th><th>操作</th><th>预期效果</th></tr>
+          <tr>
+            <td><strong>增大容量</strong></td>
+            <td>inner_ch: 32→64<br>res_blocks: 1→2</td>
+            <td>提升18ch学习能力</td>
+          </tr>
+          <tr>
+            <td><strong>空间优化</strong></td>
+            <td>128² → 192²</td>
+            <td>192 > 180，不丢失信息</td>
+          </tr>
+          <tr>
+            <td><strong>混合精度</strong></td>
+            <td>启用AMP (fp16)</td>
+            <td>加速2-3×，省显存</td>
+          </tr>
+          <tr>
+            <td><strong>更多采样步</strong></td>
+            <td>n_timestep: 10→20</td>
+            <td>减少采样噪点</td>
+          </tr>
+          <tr>
+            <td><strong>定量评估</strong></td>
+            <td>test集逐通道指标</td>
+            <td>客观评价质量</td>
+          </tr>
+        </table>
+
+        <div class="table-title" style="margin-top:20px;">表6 中长期改进方向</div>
+        <table style="font-size:19px;">
+          <tr><th>方向</th><th>说明</th></tr>
+          <tr>
+            <td><strong>W分量加权</strong></td>
+            <td>loss中对W通道增加权重（如×10），或独立标准化</td>
+          </tr>
+          <tr>
+            <td><strong>基线对比</strong></td>
+            <td>bicubic插值 + 回归UNet baseline</td>
+          </tr>
+          <tr>
+            <td><strong>消融实验</strong></td>
+            <td>量化各条件变量对3D风场的贡献</td>
+          </tr>
+          <tr>
+            <td><strong>物理约束</strong></td>
+            <td>加入散度约束（质量守恒）</td>
+          </tr>
+          <tr>
+            <td><strong>频域损失</strong></td>
+            <td>参考FuXi-CFD，提升高频细节</td>
+          </tr>
+          <tr>
+            <td><strong>增加层数</strong></td>
+            <td>6层 → 更多层，密集覆盖边界层</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="page-num">9 / 10</div>
+</div>
+
+<!-- ==================== SLIDE 10: 总结与工作计划 ==================== -->
+<div class="slide">
+  <div class="slide-header"><h2>九、总结与工作计划</h2></div>
+  <div class="slide-body">
+    <div class="two-col" style="gap:48px;">
+      <div class="col">
+        <p style="font-size:24px; font-weight:700; color:#1e3a5f; margin-bottom:20px;">已完成工作</p>
+
+        <div class="timeline">
+          <div class="timeline-item done">
+            <h4>阶段一：2D温度超分辨率</h4>
+            <p>T2单通道，1001 epochs，完成消融实验（去辐射/去地形/去地表物理），验证薛定谔桥框架可行性</p>
+          </div>
+          <div class="timeline-item done">
+            <h4>阶段二：2D风场超分辨率</h4>
+            <p>U10/V10双通道，400 epochs，验证框架对向量场的处理能力，通用化数据加载逻辑</p>
+          </div>
+          <div class="timeline-item done">
+            <h4>阶段三：3D风场超分辨率（CPU版）</h4>
+            <p>6层×U/V/W=18通道 + 10条件变量，400 epochs，loss=0.0410，完整可视化流程</p>
+          </div>
+          <div class="timeline-item current">
+            <h4>当前：GPU迁移 & 模型升级</h4>
+            <p>迁移至GPU服务器，增大模型容量、空间尺寸、建立评估体系</p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <p style="font-size:24px; font-weight:700; color:#1e3a5f; margin-bottom:20px;">下一步工作计划</p>
+
+        <div style="background:#f7f9fc; border:1px solid #d0dbe8; border-radius:12px; padding:24px;">
+          <div style="margin-bottom:20px;">
+            <p style="font-size:21px; font-weight:700; color:#E74C3C; margin-bottom:6px;">🔴 近期（1-2周）</p>
+            <ul style="font-size:19px;">
+              <li>GPU环境搭建，扩大模型容量(inner_ch=64)</li>
+              <li>空间尺寸调整为192×192</li>
+              <li>建立定量评估体系(RMSE/MAE/SSIM)</li>
+            </ul>
+          </div>
+          <div style="margin-bottom:20px;">
+            <p style="font-size:21px; font-weight:700; color:#F39C12; margin-bottom:6px;">🟡 中期（2-4周）</p>
+            <ul style="font-size:19px;">
+              <li>W分量加权loss实验</li>
+              <li>基线对比实验（bicubic + 回归UNet）</li>
+              <li>条件变量消融实验</li>
+              <li>频谱分析</li>
+            </ul>
+          </div>
+          <div>
+            <p style="font-size:21px; font-weight:700; color:#27AE60; margin-bottom:6px;">🟢 长期</p>
+            <ul style="font-size:19px;">
+              <li>物理约束损失（散度约束）</li>
+              <li>增加垂直层数（→27层）</li>
+              <li>真实低分辨率数据（需重跑WRF保存d03）</li>
+              <li>论文撰写</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="ref-box" style="margin-top:24px;">
+          <strong>核心价值</strong>：首次将薛定谔桥生成式框架应用于三维城市风场超分辨率重建，并引入丰富的地表物理条件变量，为物理可解释的气象降尺度提供新范式。
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page-num">10 / 10</div>
+</div>
+
+<!-- ==================== 感谢页 ==================== -->
+<div class="slide slide-title">
+  <h1 style="font-size:52px;">谢谢！</h1>
+  <div class="subtitle" style="margin-top:24px;">欢迎提问与讨论</div>
+</div>
+
+</body>
+</html>
