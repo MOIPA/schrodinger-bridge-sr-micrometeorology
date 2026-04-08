@@ -1,0 +1,756 @@
+<!DOCTYPE html><html><head>
+      <title>项目工作报告-完整版</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:////Users/willian/.vscode/extensions/shd101wyy.markdown-preview-enhanced-0.8.22/crossnote/dependencies/katex/katex.min.css">
+      
+      
+      
+      
+      
+      <style>
+      code[class*=language-],pre[class*=language-]{color:#333;background:0 0;font-family:Consolas,"Liberation Mono",Menlo,Courier,monospace;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.4;-moz-tab-size:8;-o-tab-size:8;tab-size:8;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*=language-]{padding:.8em;overflow:auto;border-radius:3px;background:#f5f5f5}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal;background:#f5f5f5}.token.blockquote,.token.comment{color:#969896}.token.cdata{color:#183691}.token.doctype,.token.macro.property,.token.punctuation,.token.variable{color:#333}.token.builtin,.token.important,.token.keyword,.token.operator,.token.rule{color:#a71d5d}.token.attr-value,.token.regex,.token.string,.token.url{color:#183691}.token.atrule,.token.boolean,.token.code,.token.command,.token.constant,.token.entity,.token.number,.token.property,.token.symbol{color:#0086b3}.token.prolog,.token.selector,.token.tag{color:#63a35c}.token.attr-name,.token.class,.token.class-name,.token.function,.token.id,.token.namespace,.token.pseudo-class,.token.pseudo-element,.token.url-reference .token.variable{color:#795da3}.token.entity{cursor:help}.token.title,.token.title .token.punctuation{font-weight:700;color:#1d3e81}.token.list{color:#ed6a43}.token.inserted{background-color:#eaffea;color:#55a532}.token.deleted{background-color:#ffecec;color:#bd2c00}.token.bold{font-weight:700}.token.italic{font-style:italic}.language-json .token.property{color:#183691}.language-markup .token.tag .token.punctuation{color:#333}.language-css .token.function,code.language-css{color:#0086b3}.language-yaml .token.atrule{color:#63a35c}code.language-yaml{color:#183691}.language-ruby .token.function{color:#333}.language-markdown .token.url{color:#795da3}.language-makefile .token.symbol{color:#795da3}.language-makefile .token.variable{color:#183691}.language-makefile .token.builtin{color:#0086b3}.language-bash .token.keyword{color:#0086b3}pre[data-line]{position:relative;padding:1em 0 1em 3em}pre[data-line] .line-highlight-wrapper{position:absolute;top:0;left:0;background-color:transparent;display:block;width:100%}pre[data-line] .line-highlight{position:absolute;left:0;right:0;padding:inherit 0;margin-top:1em;background:hsla(24,20%,50%,.08);background:linear-gradient(to right,hsla(24,20%,50%,.1) 70%,hsla(24,20%,50%,0));pointer-events:none;line-height:inherit;white-space:pre}pre[data-line] .line-highlight:before,pre[data-line] .line-highlight[data-end]:after{content:attr(data-start);position:absolute;top:.4em;left:.6em;min-width:1em;padding:0 .5em;background-color:hsla(24,20%,50%,.4);color:#f4f1ef;font:bold 65%/1.5 sans-serif;text-align:center;vertical-align:.3em;border-radius:999px;text-shadow:none;box-shadow:0 1px #fff}pre[data-line] .line-highlight[data-end]:after{content:attr(data-end);top:auto;bottom:.4em}html body{font-family:'Helvetica Neue',Helvetica,'Segoe UI',Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ol,html body>ul{margin-bottom:16px}html body ol,html body ul{padding-left:2em}html body ol.no-list,html body ul.no-list{padding:0;list-style-type:none}html body ol ol,html body ol ul,html body ul ol,html body ul ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:700;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:700}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::after,html body code::before{letter-spacing:-.2em;content:'\00a0'}html body pre>code{padding:0;margin:0;word-break:normal;white-space:pre;background:0 0;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:after,html body pre code:before,html body pre tt:after,html body pre tt:before{content:normal}html body blockquote,html body dl,html body ol,html body p,html body pre,html body ul{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body code,html body pre{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview ul{list-style:disc}.markdown-preview ul ul{list-style:circle}.markdown-preview ul ul ul{list-style:square}.markdown-preview ol{list-style:decimal}.markdown-preview ol ol,.markdown-preview ul ol{list-style-type:lower-roman}.markdown-preview ol ol ol,.markdown-preview ol ul ol,.markdown-preview ul ol ol,.markdown-preview ul ul ol{list-style-type:lower-alpha}.markdown-preview .newpage,.markdown-preview .pagebreak{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center!important}.markdown-preview:not([data-for=preview]) .code-chunk .code-chunk-btn-group{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .status{display:none}.markdown-preview:not([data-for=preview]) .code-chunk .output-div{margin-bottom:16px}.markdown-preview .md-toc{padding:0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link div,.markdown-preview .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}.markdown-preview .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0;min-height:100vh}@media screen and (min-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode]) .markdown-preview{font-size:14px!important;padding:1em}}@media print{html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for=html-export]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,.66);border:4px solid rgba(150,150,150,.66);background-clip:content-box}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc{padding:0 16px}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link{display:inline;padding:.25rem 0}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link div,html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper .md-toc-link p{display:inline}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc .md-toc .md-toc-link-wrapper.highlighted .md-toc-link{font-weight:800}html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% - 300px);padding:2em calc(50% - 457px - 300px / 2);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for=html-export]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for=html-export]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+      <script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    // your code here
+  });
+</script>
+    </head>
+    <body for="html-export">
+      <div class="crossnote markdown-preview  ">
+      
+<h1 id="项目工作报告基于薛定谔桥的微气象超分辨率重建">项目工作报告：基于薛定谔桥的微气象超分辨率重建 </h1>
+<hr>
+<h2 id="一-项目概述">一、项目概述 </h2>
+<h3 id="11-研究目标">1.1 研究目标 </h3>
+<p>利用深度学习生成式模型（薛定谔桥 Schrödinger Bridge），从低分辨率气象场快速重建高分辨率气象场。研究区域为香港及珠三角地区（112.98°-114.65°E, 21.84°-23.39°N），数据来源为WRF中尺度气象模式d04域输出（水平分辨率~1km，180×180网格）。</p>
+<h3 id="12-技术路线">1.2 技术路线 </h3>
+<p>采用<strong>薛定谔桥</strong>（Schrödinger Bridge）作为生成框架，以UNet为骨干网络。薛定谔桥是一种基于最优传输理论的生成式建模方法，建模从低分辨率分布到高分辨率分布的概率传输路径。</p>
+<p>与传统扩散模型（从随机噪声出发）相比，薛定谔桥的优势在于：</p>
+<ul>
+<li>起点是低分辨率场（包含有用的先验信息），而非随机噪声</li>
+<li>传输路径更短，采样效率更高</li>
+<li>天然适合配对的超分辨率任务</li>
+</ul>
+<h3 id="13-参考论文">1.3 参考论文 </h3>
+<p><strong>FuXi-CFD</strong>（arXiv:2505.12732）：<em>An AI-Based Downscaling Framework for Generating Detailed Three-Dimensional Wind Fields</em></p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>FuXi-CFD</th>
+<th>我们的方案</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>生成框架</td>
+<td>判别式模型（Vision Transformer）</td>
+<td>生成式模型（薛定谔桥）</td>
+</tr>
+<tr>
+<td>训练数据</td>
+<td>12000+ CFD(RANS)模拟</td>
+<td>WRF模式输出</td>
+</tr>
+<tr>
+<td>输出</td>
+<td>u, v, w, k × 27层 = 108通道</td>
+<td>u, v, w × 6层 = 18通道</td>
+</tr>
+<tr>
+<td>精度</td>
+<td>水平风&lt;7%误差，垂直风~20%</td>
+<td>待完善定量评估</td>
+</tr>
+</tbody>
+</table>
+<p><strong>我们的差异化</strong>：使用生成式框架（非判别式）+ 引入丰富的地表物理条件变量。</p>
+<hr>
+<h2 id="二-完整工作历程">二、完整工作历程 </h2>
+<p>项目经历了三个阶段，逐步从单变量扩展到多变量多层：</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>阶段一（2D温度超分）→ 阶段二（2D风场超分）→ 阶段三（3D风场超分）
+    1通道输出            2通道输出              18通道输出
+</code></pre><hr>
+<h3 id="阶段一2d温度超分辨率基础验证">阶段一：2D温度超分辨率（基础验证） </h3>
+<h4 id="目标">目标 </h4>
+<p>验证薛定谔桥框架在气象超分任务上的可行性。</p>
+<h4 id="配置">配置 </h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>目标变量</td>
+<td>2米气温（T2），1通道</td>
+</tr>
+<tr>
+<td>条件变量</td>
+<td>20个（10个地表变量 + 9个模式层变量 + 1个LR温度）</td>
+</tr>
+<tr>
+<td>UNet输入</td>
+<td>21通道</td>
+</tr>
+<tr>
+<td>UNet输出</td>
+<td>1通道</td>
+</tr>
+<tr>
+<td>训练轮次</td>
+<td>1001 epochs</td>
+</tr>
+<tr>
+<td>批大小</td>
+<td>4</td>
+</tr>
+<tr>
+<td>学习率</td>
+<td>0.0001</td>
+</tr>
+</tbody>
+</table>
+<h4 id="消融实验">消融实验 </h4>
+<p>为理解不同类型条件变量的贡献，设计了4组消融实验：</p>
+<table>
+<thead>
+<tr>
+<th>实验</th>
+<th>移除的变量</th>
+<th>输入通道</th>
+<th>研究目的</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Baseline（全变量）</strong></td>
+<td>无</td>
+<td>21</td>
+<td>完整模型基准</td>
+</tr>
+<tr>
+<td><strong>去辐射</strong></td>
+<td>swdown, glw</td>
+<td>19</td>
+<td>辐射变量对温度超分的贡献</td>
+</tr>
+<tr>
+<td><strong>去地形</strong></td>
+<td>z(HGT), lu(LU_INDEX)</td>
+<td>19</td>
+<td>地形和土地利用的重要性</td>
+</tr>
+<tr>
+<td><strong>去地表物理</strong></td>
+<td>tsk, hfx, lh, psfc, pblh</td>
+<td>15</td>
+<td>地表通量和边界层信息的作用</td>
+</tr>
+</tbody>
+</table>
+<h4 id="阶段一成果">阶段一成果 </h4>
+<ul>
+<li>✅ 验证了薛定谔桥框架在气象超分任务上的有效性</li>
+<li>✅ 通过消融实验量化了不同条件变量的贡献</li>
+<li>✅ 建立了完整的数据处理→训练→推理→可视化流程</li>
+</ul>
+<hr>
+<h3 id="阶段二2d风场超分辨率多通道扩展">阶段二：2D风场超分辨率（多通道扩展） </h3>
+<h4 id="目标-1">目标 </h4>
+<p>从单变量（温度）扩展到多变量（风场U/V分量），验证框架处理向量场的能力。</p>
+<h4 id="配置-1">配置 </h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>目标变量</td>
+<td>10米U风(U10) + 10米V风(V10)，2通道</td>
+</tr>
+<tr>
+<td>条件变量</td>
+<td>24个（10个地表 + 12个模式层 + 2个LR风场）</td>
+</tr>
+<tr>
+<td>UNet输入</td>
+<td>26通道</td>
+</tr>
+<tr>
+<td>UNet输出</td>
+<td>2通道</td>
+</tr>
+<tr>
+<td>训练轮次</td>
+<td>400 epochs</td>
+</tr>
+<tr>
+<td>批大小</td>
+<td>4</td>
+</tr>
+<tr>
+<td>学习率</td>
+<td>0.0001</td>
+</tr>
+<tr>
+<td>空间尺寸</td>
+<td>128×128</td>
+</tr>
+</tbody>
+</table>
+<h4 id="关键技术点">关键技术点 </h4>
+<ul>
+<li>首次输出多通道（U和V），模型需要同时学习两个耦合的风分量</li>
+<li>数据集类实现了通用化的 <code>__getitem__</code>，支持动态推导LR变量名和动态切分通道</li>
+</ul>
+<h4 id="阶段二成果">阶段二成果 </h4>
+<ul>
+<li>✅ 成功扩展到2通道输出，验证了框架处理向量场的能力</li>
+<li>✅ 通用化的数据加载逻辑为后续3D扩展奠定基础</li>
+</ul>
+<hr>
+<h3 id="阶段三3d风场超分辨率当前最新工作">阶段三：3D风场超分辨率（当前最新工作） </h3>
+<h4 id="目标-2">目标 </h4>
+<p>参考FuXi-CFD论文思路，从2D风场扩展到3D多层风场重建，实现对6个垂直层的u/v/w三风分量的同步超分辨率。</p>
+<h4 id="配置-2">配置 </h4>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>目标变量</td>
+<td>6层 × U/V/W = 18通道</td>
+</tr>
+<tr>
+<td>条件变量</td>
+<td>10个地表物理变量</td>
+</tr>
+<tr>
+<td>UNet输入</td>
+<td>28通道（18 LR + 10条件）</td>
+</tr>
+<tr>
+<td>UNet输出</td>
+<td>18通道</td>
+</tr>
+<tr>
+<td>训练轮次</td>
+<td>400 epochs</td>
+</tr>
+<tr>
+<td>批大小</td>
+<td>2</td>
+</tr>
+<tr>
+<td>学习率</td>
+<td>0.0005</td>
+</tr>
+<tr>
+<td>空间尺寸</td>
+<td>128×128</td>
+</tr>
+<tr>
+<td>inner_channel</td>
+<td>32</td>
+</tr>
+<tr>
+<td>res_blocks</td>
+<td>1</td>
+</tr>
+<tr>
+<td>训练设备</td>
+<td>CPU（超算128核），约22.75小时</td>
+</tr>
+</tbody>
+</table>
+<h4 id="目标变量三维风场">目标变量：三维风场 </h4>
+<p><strong>三个风分量</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>分量</th>
+<th>物理含义</th>
+<th>典型量级</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>U（东西风）</td>
+<td>沿纬度方向，正值为西风</td>
+<td>数~十几 m/s</td>
+</tr>
+<tr>
+<td>V（南北风）</td>
+<td>沿经度方向，正值为南风</td>
+<td>数~十几 m/s</td>
+</tr>
+<tr>
+<td>W（垂直风）</td>
+<td>垂直方向，正值为上升</td>
+<td>0.01~0.3 m/s</td>
+</tr>
+</tbody>
+</table>
+<p><strong>6个垂直层级</strong>（WRF eta地形跟随坐标）：</p>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>近似高度</th>
+<th>物理意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ml0</td>
+<td>~10m</td>
+<td>最近地面层，标准气象观测高度</td>
+</tr>
+<tr>
+<td>ml1</td>
+<td>~30m</td>
+<td>城市建筑群平均高度</td>
+</tr>
+<tr>
+<td>ml2</td>
+<td>~50m</td>
+<td>城市冠层顶部</td>
+</tr>
+<tr>
+<td>ml3</td>
+<td>~70m</td>
+<td>小型风机轮毂高度</td>
+</tr>
+<tr>
+<td>ml5</td>
+<td>~120m</td>
+<td>大型风机轮毂高度</td>
+</tr>
+<tr>
+<td>ml10</td>
+<td>~300m</td>
+<td>边界层中上部</td>
+</tr>
+</tbody>
+</table>
+<h4 id="条件变量10个地表物理变量">条件变量：10个地表物理变量 </h4>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>物理含义</th>
+<th>对风场的影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HGT（地形高度）</td>
+<td>地面海拔高度</td>
+<td><strong>最核心</strong>。地形机械强迫：迎风坡上升、背风坡下沉、峡谷加速、山脊绕流</td>
+</tr>
+<tr>
+<td>LU_INDEX（土地利用）</td>
+<td>城市/森林/水体等分类</td>
+<td>决定地表粗糙度，城市摩擦大减速、水面摩擦小加速</td>
+</tr>
+<tr>
+<td>T2（2米气温）</td>
+<td>近地面气温</td>
+<td>温度空间差异驱动热力环流（热岛环流、海陆风）</td>
+</tr>
+<tr>
+<td>TSK（地表温度）</td>
+<td>地表皮肤温度</td>
+<td>直接热源，驱动感热通量，空间分布比T2更不均匀</td>
+</tr>
+<tr>
+<td>SWDOWN（短波辐射）</td>
+<td>太阳辐射</td>
+<td>白天加热→对流边界层→强湍流；夜间=0→稳定边界层</td>
+</tr>
+<tr>
+<td>GLW（长波辐射）</td>
+<td>大气下行红外辐射</td>
+<td>夜间辐射冷却→逆温层→抑制混合</td>
+</tr>
+<tr>
+<td>HFX（感热通量）</td>
+<td>地表→大气显热传递</td>
+<td>驱动热对流，城市HFX大→热岛环流动力源</td>
+</tr>
+<tr>
+<td>LH（潜热通量）</td>
+<td>蒸发消耗的潜热</td>
+<td>蒸发冷却效应，影响温度梯度和局地环流</td>
+</tr>
+<tr>
+<td>PSFC（地面气压）</td>
+<td>地面气压</td>
+<td>气压梯度力是驱动风的根本动力</td>
+</tr>
+<tr>
+<td>PBLH（边界层高度）</td>
+<td>湍流混合的"天花板"</td>
+<td>决定我们的6层是在同一混合环境还是跨越混合层顶</td>
+</tr>
+</tbody>
+</table>
+<h4 id="数据处理关键技术">数据处理关键技术 </h4>
+<p><strong>1. Arakawa C网格去交错</strong></p>
+<p>WRF将U/V/W存储在网格不同位置（边界上），需取相邻两点平均对齐到网格中心：</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>U_center = (U[:,:,:-1] + U[:,:,1:]) / 2    # x方向: 181→180
+V_center = (V[:,:-1,:] + V[:,1:,:]) / 2      # y方向: 181→180
+W_center[k] = (W[k] + W[k+1]) / 2            # z方向: nz+1→nz
+</code></pre><p><strong>2. 低分辨率模拟</strong></p>
+<p>因不具备真实低分辨率数据（d01-d03已删除），采用降采样模拟：</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>HR(180×180) → avg_pool(4×4) → 中间态(45×45) → bicubic插值 → LR(180×180)
+</code></pre><p><strong>3. 数据集结构</strong></p>
+<p>每个时间步一个npz文件，共520个样本（约21.7天），每个文件包含46个数组：</p>
+<ul>
+<li>18个HR风场 + 18个LR风场 + 10个条件变量</li>
+</ul>
+<h4 id="训练结果">训练结果 </h4>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>最佳epoch</td>
+<td>388</td>
+</tr>
+<tr>
+<td>最佳训练loss</td>
+<td>0.0410</td>
+</tr>
+<tr>
+<td>loss曲线</td>
+<td>稳定收敛，最终在0.04附近波动</td>
+</tr>
+</tbody>
+</table>
+<h4 id="可视化结果">可视化结果 </h4>
+<p>生成三类对比图：</p>
+<ol>
+<li><strong>水平风场(U,V)对比</strong>：6行(层级)×3列(LR 45×45 / HR真值 / 模型预测)，底色=风速，箭头=风向</li>
+<li><strong>垂直速度(W)对比</strong>：同布局，RdBu_r色标（红=上升、蓝=下沉），95百分位截断增强细节</li>
+<li><strong>垂直剖面</strong>：U和W随高度变化的曲线对比</li>
+</ol>
+<p><strong>初步观察</strong>：</p>
+<ul>
+<li>水平风场(U,V)：模型能恢复部分高分辨率细节纹理，大尺度模式保持良好</li>
+<li>垂直速度(W)：量级极小（比U/V小1-2个数量级），大部分区域接近0，模型学习存在困难</li>
+<li>预测结果存在一定"颗粒感"——这是生成式模型采样过程中随机性引入的高频噪点</li>
+</ul>
+<hr>
+<h2 id="三-三个阶段的演进对比">三、三个阶段的演进对比 </h2>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>阶段一（温度）</th>
+<th>阶段二（2D风场）</th>
+<th>阶段三（3D风场）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>目标变量</td>
+<td>T2 (1ch)</td>
+<td>U10, V10 (2ch)</td>
+<td>6层×U/V/W (18ch)</td>
+</tr>
+<tr>
+<td>条件变量</td>
+<td>20个</td>
+<td>24个</td>
+<td>10个</td>
+</tr>
+<tr>
+<td>UNet输入</td>
+<td>21ch</td>
+<td>26ch</td>
+<td>28ch</td>
+</tr>
+<tr>
+<td>UNet输出</td>
+<td>1ch</td>
+<td>2ch</td>
+<td>18ch</td>
+</tr>
+<tr>
+<td>训练轮次</td>
+<td>1001</td>
+<td>400</td>
+<td>400</td>
+</tr>
+<tr>
+<td>空间尺寸</td>
+<td>128×128</td>
+<td>128×128</td>
+<td>128×128</td>
+</tr>
+<tr>
+<td>消融实验</td>
+<td>✅ 3组</td>
+<td>✗</td>
+<td>✗</td>
+</tr>
+<tr>
+<td>数据准备</td>
+<td>wrf-python</td>
+<td>wrf-python + xarray</td>
+<td>直接读netCDF4</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="四-模型架构总结">四、模型架构总结 </h2>
+<p>所有阶段共享相同的底层架构：</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>                    ┌─────────────────┐
+                    │  NPZ数据(180²)  │
+                    └────────┬────────┘
+                             │ resize to 128×128
+                    ┌────────┴────────┐
+                    │                 │
+              LR目标场(N_t ch)  条件变量(N_c ch)
+                    │                 │
+                    │   ┌─────────────┘
+                    │   │
+              ┌─────▼───▼─────┐
+              │cat→(N_t+N_c)ch│
+              │               │
+              │  UNet + SI    │  ← 薛定谔桥（随机插值）
+              │               │
+              └───────┬───────┘
+                      │
+                HR预测 (N_t ch, 128×128)
+</code></pre><p><strong>UNet配置</strong>：</p>
+<ul>
+<li>channel_mults: [1, 2, 4, 8, 8]（5层下采样）</li>
+<li>inner_channel: 32</li>
+<li>attention: 在16×16分辨率处</li>
+<li>随机插值(SI): 10时间步, quadratic公式</li>
+</ul>
+<hr>
+<h2 id="五-当前存在的问题">五、当前存在的问题 </h2>
+<h3 id="51-数据层面">5.1 数据层面 </h3>
+<ol>
+<li><strong>训练数据为自降采样</strong>：LR由HR降采样模拟而非真实低分辨率模式输出（d01-d03数据因存储空间不足已删除），可能高估实际应用效果</li>
+<li><strong>空间尺寸有损</strong>：模型在128×128上训练，原始数据为180×180，resize过程丢失空间信息。应改为192×192（&gt;180且能被32整除）</li>
+<li><strong>数据量有限</strong>：仅520个样本（约21.7天），对18通道输出任务偏少</li>
+</ol>
+<h3 id="52-模型层面">5.2 模型层面 </h3>
+<ol start="4">
+<li><strong>模型容量受限</strong>：为在CPU上可行训练，使用了较小配置（inner_channel=32, res_blocks=1），可能不足以学好18通道输出</li>
+<li><strong>W分量学习困难</strong>：W的量级比U/V小1-2个数量级（标准差0.15 vs 4.4），在统一的L2 loss中被U/V主导，W的实际学习效果可能很差</li>
+<li><strong>颗粒感/噪点</strong>：生成式模型采样过程引入的随机性导致预测结果有高频噪点，尤其在模型容量小、采样步数少时更明显</li>
+</ol>
+<h3 id="53-评估层面">5.3 评估层面 </h3>
+<ol start="7">
+<li><strong>缺少定量评估</strong>：目前仅有训练loss和定性可视化，缺乏逐变量的RMSE、MAE、SSIM等定量指标</li>
+<li><strong>缺少基线对比</strong>：没有与双三次插值、纯回归UNet等基线方法做对比</li>
+</ol>
+<hr>
+<h2 id="六-未来改进方向">六、未来改进方向 </h2>
+<h3 id="61-近期可执行">6.1 近期可执行 </h3>
+<table>
+<thead>
+<tr>
+<th>改进项</th>
+<th>具体操作</th>
+<th>预期效果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>增大模型容量</strong></td>
+<td>inner_channel: 32→64, res_blocks: 1→2</td>
+<td>提升18通道的学习能力，减少颗粒感</td>
+</tr>
+<tr>
+<td><strong>空间尺寸优化</strong></td>
+<td>hr_data_shape: 128→192</td>
+<td>不丢失信息（192&gt;180），更准确的超分重建</td>
+</tr>
+<tr>
+<td><strong>启用混合精度</strong></td>
+<td>use_amp: true</td>
+<td>加速训练，降低显存占用</td>
+</tr>
+<tr>
+<td><strong>增加采样步数</strong></td>
+<td>n_timestep: 10→20或更多</td>
+<td>采样更充分，减少噪点/颗粒感</td>
+</tr>
+<tr>
+<td><strong>定量评估体系</strong></td>
+<td>在test集上逐变量计算RMSE/MAE/SSIM</td>
+<td>客观评价每个通道的超分质量</td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-中期改进">6.2 中期改进 </h3>
+<table>
+<thead>
+<tr>
+<th>改进项</th>
+<th>具体操作</th>
+<th>预期效果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>W分量加权</strong></td>
+<td>在loss中对W通道增加权重（如×10），或对W独立标准化</td>
+<td>改善W的学习效果</td>
+</tr>
+<tr>
+<td><strong>基线对比实验</strong></td>
+<td>实现bicubic插值baseline + 纯回归UNet baseline</td>
+<td>客观展示薛定谔桥的优劣势</td>
+</tr>
+<tr>
+<td><strong>增加消融实验</strong></td>
+<td>参照阶段一的消融设计，对3D风场做条件变量消融</td>
+<td>量化各条件变量对3D风场的贡献</td>
+</tr>
+<tr>
+<td><strong>增加训练数据</strong></td>
+<td>使用更多时间段的WRF输出</td>
+<td>提升模型泛化能力</td>
+</tr>
+</tbody>
+</table>
+<h3 id="63-长期方向">6.3 长期方向 </h3>
+<table>
+<thead>
+<tr>
+<th>改进项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>增加垂直层数</strong></td>
+<td>从6层扩展到更多层（参考FuXi-CFD的27层），更密集覆盖边界层</td>
+</tr>
+<tr>
+<td><strong>增加输出变量</strong></td>
+<td>加入温度T、湍动能TKE等变量，实现更完整的3D大气场重建</td>
+</tr>
+<tr>
+<td><strong>真实低分辨率数据</strong></td>
+<td>使用WRF的d01/d02/d03粗分辨率域作为输入（需要重新运行WRF模拟保存输出），更接近实际应用</td>
+</tr>
+<tr>
+<td><strong>物理约束损失</strong></td>
+<td>加入质量守恒（散度约束）、动量守恒等物理约束作为正则化项</td>
+</tr>
+<tr>
+<td><strong>频域损失</strong></td>
+<td>参考FuXi-CFD的频域损失设计，提升高频细节重建的准确性</td>
+</tr>
+<tr>
+<td><strong>多区域泛化</strong></td>
+<td>在不同城市/地形条件下训练和测试，验证模型的迁移能力</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="七-代码仓库结构">七、代码仓库结构 </h2>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>schrodinger-bridge-sr-micrometeorology/
+│
+├── configs/                          # 配置文件
+│   ├── schrodinger_bridge_model.yml  # 阶段一：温度超分
+│   ├── config_wind.yml               # 阶段二：2D风场
+│   ├── config_wind_3d.yml            # 阶段三：3D风场 ★当前
+│   ├── config_ablation_no_radiation.yml      # 消融：去辐射
+│   ├── config_ablation_no_static.yml         # 消融：去地形
+│   ├── config_ablation_no_surface_physics.yml # 消融：去地表物理
+│   └── config_baseline_all_vars.yml          # 消融：全变量基线
+│
+├── src/
+│   ├── dl_data/
+│   │   ├── dataset_2d_tm2m.py        # 基础数据集类
+│   │   ├── dataset_3d_wind.py        # 3D风场数据集（继承上者）
+│   │   └── dataloader.py             # 数据加载器工厂
+│   ├── dl_config/                    # 配置类定义与加载
+│   ├── dl_model/                     # UNet模型、薛定谔桥框架
+│   └── dl_train/                     # 训练优化器、EMA等
+│
+├── scripts/
+│   └── train_schrodinger_bridge_model.py  # 训练主脚本
+│
+├── prepare_wrf_data.py               # 阶段一数据准备
+├── prepare_wind_data.py              # 阶段二数据准备
+├── prepare_wind_data_3d.py           # 阶段三数据准备 ★
+├── visualize_wind_3d.py              # 3D风场可视化 ★
+├── task-wind-3d-train.sh             # SLURM训练脚本
+├── requirements.txt                  # 依赖包列表
+└── 3d-wind报告.md                    # 技术报告
+</code></pre><hr>
+<h2 id="八-运行环境">八、运行环境 </h2>
+<table>
+<thead>
+<tr>
+<th>环境</th>
+<th>详情</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>训练环境</strong></td>
+<td>超算CPU节点（amd_512分区，128核），conda环境tzq</td>
+</tr>
+<tr>
+<td><strong>Python版本</strong></td>
+<td>3.11</td>
+</tr>
+<tr>
+<td><strong>核心依赖</strong></td>
+<td>PyTorch≥2.0, numpy, netCDF4, matplotlib, scipy, pandas, scikit-learn</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="九-总结">九、总结 </h2>
+<p>本项目从2D温度超分出发，经过三个阶段迭代，已成功实现基于薛定谔桥的<strong>3D多层风场超分辨率重建</strong>（6层×3分量=18通道输出）。当前模型在CPU上完成了400 epoch训练，loss收敛至0.04，水平风场可视化效果合理。</p>
+<p><strong>核心价值</strong>：</p>
+<ul>
+<li>验证了薛定谔桥生成式框架在多通道气象超分任务上的可行性</li>
+<li>建立了完整的从数据准备到训练推理的技术流程</li>
+<li>引入了丰富的物理条件变量，为物理可解释的超分辨率提供了基础</li>
+</ul>
+<p><strong>下一步重点</strong>：增大模型容量、优化空间尺寸、建立定量评估体系、添加基线对比实验，向论文级别的结果推进。</p>
+
+      </div>
+      
+      
+    
+    
+    
+    
+    
+    
+  
+    </body></html>
