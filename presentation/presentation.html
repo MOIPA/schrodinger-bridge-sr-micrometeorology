@@ -169,10 +169,11 @@
   .small { font-size: 16px; color: var(--text3); }
 
   /* ===== LAYOUT ===== */
-  .two-col { display: flex; gap: 48px; }
+  .two-col { display: flex; gap: 28px; }
   .col { flex: 1; }
-  .col-wide { flex: 1.4; }
-  .col-narrow { flex: 0.6; }
+  .col-wide { flex: 1.5; }
+  .col-narrow { flex: 0.5; }
+  .svg-box svg { width: 100%; height: auto; display: block; }
 
   /* ===== TABLE ===== */
   table {
@@ -532,7 +533,7 @@
   <div class="slide-header"><h2><span class="num">06</span>地表物理条件变量体系</h2><div class="header-underline"></div></div>
   <div class="slide-body">
     <p style="font-size:22px; margin-bottom:14px;">风场 = <strong>大尺度驱动</strong> + <strong>地形强迫</strong> + <strong>热力驱动</strong> + <strong>边界层过程</strong>。模型通过10个变量"理解"物理环境：</p>
-    <div class="two-col" style="gap:40px;">
+    <div class="two-col">
       <div class="col-wide">
         <div class="svg-box" style="padding:0;">
           <svg id="fig-cond" width="860" height="540" viewBox="0 0 860 540"></svg>
@@ -572,8 +573,8 @@
   <div class="header-bar"></div>
   <div class="slide-header"><h2><span class="num">07</span>初步结果</h2><div class="header-underline"></div></div>
   <div class="slide-body">
-    <div class="two-col" style="gap:40px;">
-      <div class="col-narrow" style="flex:0.55;">
+    <div class="two-col" style="gap:24px;">
+      <div class="col-narrow" style="flex:0.5;">
         <table style="font-size:19px;">
           <tr><th>参数</th><th>值</th></tr>
           <tr><td>UNet 输入/输出</td><td>28ch → 18ch</td></tr>
@@ -593,7 +594,7 @@
           <li>预测有一定颗粒感 — 生成式采样的随机性</li>
         </ul>
       </div>
-      <div class="col-wide" style="flex:1.45;">
+      <div class="col-wide" style="flex:1.5;">
         <p style="font-size:20px; text-align:center; margin-bottom:12px; color:var(--text3);">水平风场(U,V) · ml0层(~10m) · 色底=风速，白色箭头=风向</p>
         <div class="img-compare-row">
           <div class="img-compare-item img-lr">
@@ -621,7 +622,7 @@
   <div class="header-bar"></div>
   <div class="slide-header"><h2><span class="num">08</span>当前局限与改进方向</h2><div class="header-underline"></div></div>
   <div class="slide-body">
-    <div class="two-col" style="gap:48px;">
+    <div class="two-col">
       <div class="col">
         <p style="font-size:24px; font-weight:700; color:var(--danger); margin-bottom:14px;">当前局限</p>
         <div class="gap-card" style="background:#FEF2F2; border-left:4px solid var(--danger);">
@@ -677,7 +678,7 @@
   <div class="header-bar"></div>
   <div class="slide-header"><h2><span class="num">09</span>总结与工作计划</h2><div class="header-underline"></div></div>
   <div class="slide-body">
-    <div class="two-col" style="gap:48px;">
+    <div class="two-col">
       <div class="col">
         <p style="font-size:22px; font-weight:700; color:var(--text); margin-bottom:16px;">已完成工作</p>
         <div class="timeline-v">
