@@ -441,7 +441,7 @@
     <div class="two-col" style="margin-top:8px;">
       <div class="col-wide">
         <div class="svg-box" style="padding:0;">
-          <svg id="fig-eta" width="900" height="560" viewBox="0 0 900 560"></svg>
+          <svg id="fig-eta" width="900" height="560" viewBox="0 0 1020 560"></svg>
           <div class="fig-caption">图3 WRF eta地形跟随坐标与本研究6个垂直层 (~10m–300m)</div>
         </div>
       </div>
@@ -679,60 +679,61 @@
   <div class="slide-body">
     <div class="two-col" style="gap:48px;">
       <div class="col">
-        <p style="font-size:24px; font-weight:700; color:var(--text); margin-bottom:20px;">已完成工作</p>
+        <p style="font-size:22px; font-weight:700; color:var(--text); margin-bottom:16px;">已完成工作</p>
         <div class="timeline-v">
-          <div class="tl-item">
+          <div class="tl-item" style="margin-bottom:18px;">
             <div class="tl-dot done"></div>
-            <h4>阶段一：2D温度超分辨率</h4>
-            <p>T2单通道，1001 epochs，3组消融实验，验证薛定谔桥框架可行性</p>
+            <h4 style="font-size:20px;">阶段一：2D温度超分辨率</h4>
+            <p style="font-size:17px;">T2单通道，1001 epochs，3组消融实验，验证框架可行性</p>
           </div>
-          <div class="tl-item">
+          <div class="tl-item" style="margin-bottom:18px;">
             <div class="tl-dot done"></div>
-            <h4>阶段二：2D风场超分辨率</h4>
-            <p>U10/V10双通道，400 epochs，验证向量场处理能力</p>
+            <h4 style="font-size:20px;">阶段二：2D风场超分辨率</h4>
+            <p style="font-size:17px;">U10/V10双通道，400 epochs，验证向量场处理能力</p>
           </div>
-          <div class="tl-item">
+          <div class="tl-item" style="margin-bottom:18px;">
             <div class="tl-dot done"></div>
-            <h4>阶段三：3D风场超分辨率</h4>
-            <p>6层×U/V/W=18通道 + 10条件变量，400 epochs，loss=0.0410</p>
+            <h4 style="font-size:20px;">阶段三：3D风场超分辨率</h4>
+            <p style="font-size:17px;">6层×U/V/W=18通道 + 10条件变量，400 epochs，loss=0.0410</p>
           </div>
-          <div class="tl-item">
+          <div class="tl-item" style="margin-bottom:0;">
             <div class="tl-dot current"></div>
-            <h4>当前：模型升级与评估体系</h4>
-            <p>增大模型容量、空间尺寸，建立定量评估</p>
+            <h4 style="font-size:20px;">当前：模型升级与评估体系</h4>
+            <p style="font-size:17px;">增大模型容量、空间尺寸，建立定量评估</p>
           </div>
+        </div>
+
+        <div class="callout" style="margin-top:24px; font-size:19px;">
+          <strong>核心价值</strong>：首次将薛定谔桥生成式框架应用于三维城市风场超分辨率，引入丰富物理条件变量，为气象降尺度提供新范式。
         </div>
       </div>
       <div class="col">
-        <p style="font-size:24px; font-weight:700; color:var(--text); margin-bottom:20px;">下一步工作计划</p>
-        <div class="plan-section">
-          <h4><span style="color:var(--danger);">&#9679;</span> 近期（1-2周）</h4>
-          <ul>
+        <p style="font-size:22px; font-weight:700; color:var(--text); margin-bottom:16px;">下一步工作计划</p>
+        <div class="plan-section" style="padding:16px 20px; margin-bottom:12px;">
+          <h4 style="font-size:19px;"><span style="color:var(--danger);">&#9679;</span> 近期（1-2周）</h4>
+          <ul style="font-size:18px;">
             <li>扩大模型容量 (inner_ch=64, res_blocks=2)</li>
             <li>空间尺寸调整为192×192</li>
             <li>建立定量评估体系 (RMSE/MAE/SSIM)</li>
           </ul>
         </div>
-        <div class="plan-section">
-          <h4><span style="color:var(--warm);">&#9679;</span> 中期（2-4周）</h4>
-          <ul>
+        <div class="plan-section" style="padding:16px 20px; margin-bottom:12px;">
+          <h4 style="font-size:19px;"><span style="color:var(--warm);">&#9679;</span> 中期（2-4周）</h4>
+          <ul style="font-size:18px;">
             <li>W分量加权loss实验</li>
             <li>基线对比实验 (bicubic + 回归UNet)</li>
             <li>条件变量消融实验</li>
             <li>频谱分析</li>
           </ul>
         </div>
-        <div class="plan-section">
-          <h4><span style="color:var(--success);">&#9679;</span> 长期</h4>
-          <ul>
+        <div class="plan-section" style="padding:16px 20px; margin-bottom:0;">
+          <h4 style="font-size:19px;"><span style="color:var(--success);">&#9679;</span> 长期</h4>
+          <ul style="font-size:18px;">
             <li>物理约束损失（散度约束）</li>
             <li>增加垂直层数（→27层）</li>
             <li>真实低分辨率数据（需重跑WRF保存d03）</li>
             <li>论文撰写</li>
           </ul>
-        </div>
-        <div class="callout" style="margin-top:12px;">
-          <strong>核心价值</strong>：首次将薛定谔桥生成式框架应用于三维城市风场超分辨率，引入丰富物理条件变量，为气象降尺度提供新范式。
         </div>
       </div>
     </div>
@@ -863,12 +864,12 @@ document.addEventListener('DOMContentLoaded', function() {
   (function(){
     var s = Snap('#fig-eta');
     var bgGrad = s.gradient("l(0,0,0,1)#DBEAFE-#EFF6FF-#F8FAFC");
-    s.rect(0,0,900,560).attr({fill:bgGrad});
+    s.rect(0,0,1020,560).attr({fill:bgGrad});
 
     // Terrain
-    s.path("M60,480 L60,445 Q150,442 200,425 Q280,395 320,405 Q400,425 470,380 Q540,340 580,365 Q640,400 720,420 Q780,435 860,445 L860,480 Z")
+    s.path("M60,480 L60,445 Q150,442 200,425 Q280,395 320,405 Q400,425 470,380 Q540,340 580,365 Q640,400 720,420 Q780,435 860,445 L960,450 L960,480 Z")
       .attr({fill:'#6EE7B7'});
-    s.path("M60,480 L60,450 Q150,448 200,430 Q280,400 320,410 Q400,430 470,385 Q540,345 580,370 Q640,405 720,425 Q780,440 860,450 L860,480 Z")
+    s.path("M60,480 L60,450 Q150,448 200,430 Q280,400 320,410 Q400,430 470,385 Q540,345 580,370 Q640,405 720,425 Q780,440 860,450 L960,455 L960,480 Z")
       .attr({fill:'#86EFAC', opacity:0.6});
 
     var layers = [
@@ -889,16 +890,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     layers.forEach(function(l){
       var pts = [];
-      for(var x=60; x<=860; x+=20){
-        pts.push(x+','+(terrainY(x)+l.dy));
+      for(var x=60; x<=960; x+=20){
+        pts.push(x+','+(terrainY(Math.min(x,860))+l.dy));
       }
       var attr = {fill:'none', stroke:l.color, strokeWidth:l.w};
       if(l.dash) attr.strokeDasharray = l.dash;
       s.polyline(pts.join(' ')).attr(attr);
-      s.text(866, terrainY(860)+l.dy+5).attr({text:l.name, 'font-size':'13px', fill:l.color, 'font-weight':'600', 'font-family':'Inter'});
+      s.text(966, terrainY(860)+l.dy+5).attr({text:l.name, 'font-size':'14px', fill:l.color, 'font-weight':'600', 'font-family':'Inter'});
     });
 
-    s.path("M60,200 Q200,180 400,190 Q600,210 860,185")
+    s.path("M60,200 Q200,180 400,190 Q600,210 960,185")
       .attr({fill:'none', stroke:'#7C3AED', strokeWidth:2.5, strokeDasharray:'14,7'});
     s.text(300,175).attr({text:'PBLH（边界层顶）', 'font-size':'17px', fill:'#7C3AED', 'font-weight':'700', 'font-family':'Noto Sans SC'});
 
