@@ -49,7 +49,7 @@
     position: absolute;
     bottom: 32px;
     right: 56px;
-    font-size: 16px;
+    font-size: 18px;
     color: var(--text3);
     font-weight: 300;
     letter-spacing: 2px;
@@ -131,7 +131,7 @@
     padding: 48px 80px 0;
   }
   .slide-header h2 {
-    font-size: 40px;
+    font-size: 42px;
     font-weight: 700;
     color: var(--text);
     letter-spacing: 1px;
@@ -156,7 +156,7 @@
   }
 
   /* ===== TEXT ===== */
-  p, li { font-size: 24px; line-height: 1.7; color: var(--text2); }
+  p, li { font-size: 26px; line-height: 1.7; color: var(--text2); }
   ul { padding-left: 28px; }
   li { margin-bottom: 6px; }
   strong { font-weight: 700; color: var(--text); }
@@ -166,7 +166,7 @@
   .hl-green { color: var(--success); font-weight: 700; }
   .hl-warm { color: var(--warm); font-weight: 700; }
   .hl-purple { color: var(--purple); font-weight: 700; }
-  .small { font-size: 16px; color: var(--text3); }
+  .small { font-size: 18px; color: var(--text3); }
 
   /* ===== LAYOUT ===== */
   .two-col { display: flex; gap: 28px; }
@@ -179,18 +179,18 @@
   table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 20px;
+    font-size: 22px;
     margin: 10px 0;
   }
   th {
     background: linear-gradient(135deg, var(--secondary), var(--accent));
     color: #fff;
-    padding: 12px 16px;
+    padding: 14px 18px;
     text-align: left;
     font-weight: 600;
   }
   td {
-    padding: 10px 16px;
+    padding: 12px 18px;
     color: var(--text2);
     border-bottom: 1px solid #E2E8F0;
   }
@@ -217,7 +217,7 @@
     background-clip: text;
   }
   .stat-card .label {
-    font-size: 16px;
+    font-size: 18px;
     color: var(--text2);
     margin-top: 6px;
     line-height: 1.4;
@@ -230,7 +230,7 @@
     padding: 16px 22px;
     margin: 14px 0;
     border-radius: 0 12px 12px 0;
-    font-size: 21px;
+    font-size: 23px;
     color: var(--text2);
   }
 
@@ -240,8 +240,8 @@
     padding: 18px 22px;
     margin-bottom: 14px;
   }
-  .gap-card h4 { font-size: 21px; margin-bottom: 6px; }
-  .gap-card p { font-size: 18px; line-height: 1.5; color: var(--text2); }
+  .gap-card h4 { font-size: 23px; margin-bottom: 6px; }
+  .gap-card p { font-size: 20px; line-height: 1.5; color: var(--text2); }
 
   /* ===== TIMELINE ===== */
   .timeline-v {
@@ -281,7 +281,7 @@
     box-shadow: 0 4px 24px rgba(0,0,0,0.06);
   }
   .fig-caption {
-    font-size: 15px;
+    font-size: 17px;
     color: var(--text3);
     text-align: center;
     padding: 8px 0 12px;
@@ -448,14 +448,14 @@
       </div>
       <div class="col-narrow">
         <p style="font-size:21px; margin-bottom:12px;"><strong>三个风分量</strong></p>
-        <table style="font-size:18px;">
+        <table style="font-size:20px;">
           <tr><th>分量</th><th>方向</th><th>量级</th></tr>
           <tr><td><span class="hl-blue">U</span></td><td>东西(水平)</td><td>数~十几 m/s</td></tr>
           <tr><td><span class="hl-cyan">V</span></td><td>南北(水平)</td><td>数~十几 m/s</td></tr>
           <tr><td><span class="hl-green">W</span></td><td>垂直</td><td>0.01~0.3 m/s</td></tr>
         </table>
         <p style="font-size:21px; margin-top:20px; margin-bottom:10px;"><strong>6个垂直层级</strong></p>
-        <table style="font-size:17px;">
+        <table style="font-size:19px;">
           <tr><th>层级</th><th>高度</th><th>应用意义</th></tr>
           <tr><td>ml0</td><td>~10m</td><td>气象观测高度</td></tr>
           <tr><td>ml1</td><td>~30m</td><td>建筑平均高度</td></tr>
@@ -534,14 +534,14 @@
   <div class="slide-body">
     <p style="font-size:22px; margin-bottom:14px;">风场 = <strong>大尺度驱动</strong> + <strong>地形强迫</strong> + <strong>热力驱动</strong> + <strong>边界层过程</strong>。模型通过10个变量"理解"物理环境：</p>
     <div class="two-col">
-      <div class="col-wide">
+      <div class="col">
         <div class="svg-box" style="padding:0;">
           <svg id="fig-cond" width="860" height="540" viewBox="0 0 860 540"></svg>
           <div class="fig-caption">图6 10个物理条件变量驱动风场形成的机制关系</div>
         </div>
       </div>
-      <div class="col-narrow">
-        <table style="font-size:17px;">
+      <div class="col">
+        <table style="font-size:19px;">
           <tr><th>类别</th><th>变量</th><th>含义</th><th>作用</th></tr>
           <tr><td rowspan="2" style="background:#ECFDF5;"><strong>地形</strong></td><td>HGT</td><td>地形高度</td><td>机械抬升/绕流</td></tr>
           <tr><td>LU_INDEX</td><td>土地利用</td><td>粗糙度</td></tr>
@@ -554,7 +554,7 @@
           <tr><td rowspan="2" style="background:#EFF6FF;"><strong>动力</strong></td><td>PSFC</td><td>地面气压</td><td>气压梯度力</td></tr>
           <tr><td>PBLH</td><td>边界层高度</td><td>混合范围</td></tr>
         </table>
-        <div class="callout" style="margin-top:14px; font-size:18px;">
+        <div class="callout" style="margin-top:14px; font-size:20px;">
           <strong>物理逻辑示例</strong>：<br>
           HGT有山脊 → W↑ 地形上升<br>
           SWDOWN高+HFX大 → 白天对流强<br>
@@ -575,7 +575,7 @@
   <div class="slide-body">
     <div class="two-col" style="gap:24px;">
       <div class="col-narrow" style="flex:0.5;">
-        <table style="font-size:19px;">
+        <table style="font-size:21px;">
           <tr><th>参数</th><th>值</th></tr>
           <tr><td>UNet 输入/输出</td><td>28ch → 18ch</td></tr>
           <tr><td>inner_channel</td><td>32</td></tr>
@@ -587,7 +587,7 @@
           <tr><td><strong>最佳loss</strong></td><td><span class="hl-blue" style="font-size:22px;">0.0410</span></td></tr>
         </table>
         <p style="font-size:20px; margin-top:20px; margin-bottom:8px;"><strong>初步观察</strong></p>
-        <ul style="font-size:19px;">
+        <ul style="font-size:21px;">
           <li>水平风(U,V)大尺度模式保持良好</li>
           <li>模型能恢复部分HR细节纹理</li>
           <li>W分量量级极小，学习难度大</li>
@@ -610,7 +610,7 @@
             <div class="img-label">Model Prediction</div>
           </div>
         </div>
-        <p style="font-size:16px; text-align:center; margin-top:14px; color:var(--text3);">LR场明显模糊 → HR场有精细空间结构 → 模型预测恢复了大部分高分辨率细节与风向分布</p>
+        <p style="font-size:18px; text-align:center; margin-top:14px; color:var(--text3);">LR场明显模糊 → HR场有精细空间结构 → 模型预测恢复了大部分高分辨率细节与风向分布</p>
       </div>
     </div>
   </div>
@@ -649,7 +649,7 @@
       <div class="col">
         <p style="font-size:24px; font-weight:700; color:var(--success); margin-bottom:14px;">改进方向</p>
         <p style="font-size:20px; font-weight:600; color:var(--text); margin-bottom:8px;">近期改进</p>
-        <table style="font-size:18px;">
+        <table style="font-size:20px;">
           <tr><th>改进</th><th>操作</th><th>预期</th></tr>
           <tr><td><strong>增大容量</strong></td><td>inner_ch→64, res→2</td><td>提升18ch学习能力</td></tr>
           <tr><td><strong>空间优化</strong></td><td>128²→192²</td><td>192>180，不丢信息</td></tr>
@@ -657,7 +657,7 @@
           <tr><td><strong>定量评估</strong></td><td>逐通道指标</td><td>客观评价</td></tr>
         </table>
         <p style="font-size:20px; font-weight:600; color:var(--text); margin-top:18px; margin-bottom:8px;">中长期方向</p>
-        <table style="font-size:18px;">
+        <table style="font-size:20px;">
           <tr><th>方向</th><th>说明</th></tr>
           <tr><td><strong>W分量加权</strong></td><td>loss中W通道增加权重(×10)或独立标准化</td></tr>
           <tr><td><strong>基线对比</strong></td><td>bicubic + 回归UNet baseline</td></tr>
@@ -685,42 +685,42 @@
           <div class="tl-item" style="margin-bottom:18px;">
             <div class="tl-dot done"></div>
             <h4 style="font-size:20px;">阶段一：2D温度超分辨率</h4>
-            <p style="font-size:17px;">T2单通道，1001 epochs，3组消融实验，验证框架可行性</p>
+            <p style="font-size:19px;">T2单通道，1001 epochs，3组消融实验，验证框架可行性</p>
           </div>
           <div class="tl-item" style="margin-bottom:18px;">
             <div class="tl-dot done"></div>
             <h4 style="font-size:20px;">阶段二：2D风场超分辨率</h4>
-            <p style="font-size:17px;">U10/V10双通道，400 epochs，验证向量场处理能力</p>
+            <p style="font-size:19px;">U10/V10双通道，400 epochs，验证向量场处理能力</p>
           </div>
           <div class="tl-item" style="margin-bottom:18px;">
             <div class="tl-dot done"></div>
             <h4 style="font-size:20px;">阶段三：3D风场超分辨率</h4>
-            <p style="font-size:17px;">6层×U/V/W=18通道 + 10条件变量，400 epochs，loss=0.0410</p>
+            <p style="font-size:19px;">6层×U/V/W=18通道 + 10条件变量，400 epochs，loss=0.0410</p>
           </div>
           <div class="tl-item" style="margin-bottom:0;">
             <div class="tl-dot current"></div>
             <h4 style="font-size:20px;">当前：模型升级与评估体系</h4>
-            <p style="font-size:17px;">增大模型容量、空间尺寸，建立定量评估</p>
+            <p style="font-size:19px;">增大模型容量、空间尺寸，建立定量评估</p>
           </div>
         </div>
 
-        <div class="callout" style="margin-top:24px; font-size:19px;">
+        <div class="callout" style="margin-top:24px; font-size:21px;">
           <strong>核心价值</strong>：首次将薛定谔桥生成式框架应用于三维城市风场超分辨率，引入丰富物理条件变量，为气象降尺度提供新范式。
         </div>
       </div>
       <div class="col">
         <p style="font-size:22px; font-weight:700; color:var(--text); margin-bottom:16px;">下一步工作计划</p>
         <div class="plan-section" style="padding:16px 20px; margin-bottom:12px;">
-          <h4 style="font-size:19px;"><span style="color:var(--danger);">&#9679;</span> 近期（1-2周）</h4>
-          <ul style="font-size:18px;">
+          <h4 style="font-size:21px;"><span style="color:var(--danger);">&#9679;</span> 近期（1-2周）</h4>
+          <ul style="font-size:20px;">
             <li>扩大模型容量 (inner_ch=64, res_blocks=2)</li>
             <li>空间尺寸调整为192×192</li>
             <li>建立定量评估体系 (RMSE/MAE/SSIM)</li>
           </ul>
         </div>
         <div class="plan-section" style="padding:16px 20px; margin-bottom:12px;">
-          <h4 style="font-size:19px;"><span style="color:var(--warm);">&#9679;</span> 中期（2-4周）</h4>
-          <ul style="font-size:18px;">
+          <h4 style="font-size:21px;"><span style="color:var(--warm);">&#9679;</span> 中期（2-4周）</h4>
+          <ul style="font-size:20px;">
             <li>W分量加权loss实验</li>
             <li>基线对比实验 (bicubic + 回归UNet)</li>
             <li>条件变量消融实验</li>
@@ -728,8 +728,8 @@
           </ul>
         </div>
         <div class="plan-section" style="padding:16px 20px; margin-bottom:0;">
-          <h4 style="font-size:19px;"><span style="color:var(--success);">&#9679;</span> 长期</h4>
-          <ul style="font-size:18px;">
+          <h4 style="font-size:21px;"><span style="color:var(--success);">&#9679;</span> 长期</h4>
+          <ul style="font-size:20px;">
             <li>物理约束损失（散度约束）</li>
             <li>增加垂直层数（→27层）</li>
             <li>真实低分辨率数据（需重跑WRF保存d03）</li>
