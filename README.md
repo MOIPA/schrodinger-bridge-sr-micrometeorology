@@ -87,3 +87,108 @@
     ```
     *   **注意**: 请将 `path/to/your/checkpoint.pth` 替换为您实际保存的断点文件路径，并将 `path/to/your/data.npz` 替换为您想要测试的任意一个 `.npz` 文件的路径。
 *   **输出**: 脚本会生成一张PNG图片，图中包含低分辨率输入、高分辨率真实值、以及模型的高分辨率预测结果，所有图像都绘制在真实的地理地图背景上。
+
+
+
+### 评估
+
+
+⏺ 评估脚本和SLURM提交脚本都写好了。     
+                                                                                                                                  
+  生成了两个文件
+                                                                                                                                                                                                  
+  scripts/evaluate_wind_3d.py — 评估脚本，功能：
+  1. 加载训练好的模型，在test集上跑推理                                                                                                                                                           
+  2. 反标准化回物理单位（m/s）                        
+  3. 同时计算bicubic baseline（直接用LR数据当预测，不需要额外训练）
+  4. 逐通道算 RMSE / MAE / SSIM / Correlation                      
+  5. 按风分量(U/V/W) 和层级(ml0~ml10) 分组汇总
+  6. 输出到终端 + 保存 metrics.json + metrics.csv                                                                                                                                                 
+   
+  task-eval-wind-3d.sh — SLURM提交脚本                                                                                                                                                            
+                                                      
+  在超算上运行
+
+  # 1. git同步后
+  cd /public3/home/scg4074/tzq/git/schrodinger-bridge-sr-micrometeorology
+
+  # 2. 检查行尾（防止dos换行问题）
+  sed -i 's/\r$//' task-eval-wind-3d.sh
+
+  # 3. 提交
+  sbatch task-eval-wind-3d.sh
+
+  输出示例大概长这样：
+  Variable       | Model RMSE  Bicubic   | Model MAE   Bicubic   | Model SSIM  Bicubic   | Model Corr  Bicubic
+  hr_u_ml0       |      0.8234    1.2567 |      0.6123    0.9845 |      0.9312    0.8567 |      0.9856    0.9523
+  hr_v_ml0       |      0.7891    1.1234 |      ...
+  hr_w_ml0       |      0.0345    0.0678 |      ...
+  ...
+  分组汇总:
+    Component U     : RMSE 1.23±0.34 (bicubic 1.89±0.45) | SSIM 0.92±0.03 ...
+    Component W     : RMSE 0.04±0.01 (bicubic 0.07±0.02) | ...
+    Level ml0       : ...
+
+  这样就有了模型 vs bicubic 的逐通道对比表，可以直接放PPT和论文。
+
+
+
+
+⏺ 全部验证通过。清理多余的pending任务：
+
+⏺ 全部完成！总结一下生成的文件：
+
+  代码改动（1个文件）
+
+  src/dl_model/si_follmer/si_follmer_framework.py — 3处改动：
+  - SIFollmerConfig 添加 channel_weights 可选字段
+  - __init__ 解析权重为 [1,C,1,1] 的buffer
+  - forward 的L2 loss乘以通道权重
+
+  旧配置（没有channel_weights）完全不受影响，走 None 分支。
+
+  新建文件（13个）
+
+  ┌─────────────────────────────────────────────────────┬────────────────────────────────────────┐
+  │                        文件                         │                  用途                  │
+  ├─────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ W加权实验                                           │                                        │
+  ├─────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ configs/config_wind_3d_wloss.yml                    │ W权重=10，U/V=1                        │
+  ├─────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ task-wind-3d-wloss.sh                               │ SLURM提交                              │
+  ├─────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ 消融实验（5组）                                     │                                        │
+  ├─────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ configs/config_wind_3d_ablation_all.yml             │ 对照组（全10个条件变量，in_ch=28）     │
+  ├─────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ configs/config_wind_3d_ablation_no_terrain.yml      │ 去HGT+LU（in_ch=26）                   │
+  ├─────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ configs/config_wind_3d_ablation_no_thermal.yml      │ 去T2/TSK/SWDOWN/GLW/HFX/LH（in_ch=22） │
+  ├─────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ configs/config_wind_3d_ablation_no_pblh.yml         │ 去PBLH（in_ch=27）                     │
+  ├─────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ configs/config_wind_3d_ablation_no_pressure.yml     │ 去PSFC（in_ch=27）                     │
+  ├─────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ task-ablation-all.sh ~ task-ablation-no-pressure.sh │ 5个SLURM脚本                           │
+  ├─────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ 批量提交                                            │                                        │
+  ├─────────────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ submit_all_experiments.sh                           │ 一键提交全部6个实验                    │
+  └─────────────────────────────────────────────────────┴────────────────────────────────────────┘
+
+  在超算上运行
+
+  cd /public3/home/scg4074/tzq/git/schrodinger-bridge-sr-micrometeorology
+
+  # 修复行尾
+  sed -i 's/\r$//' task-*.sh submit_all_experiments.sh
+
+  # 一键提交全部6个实验
+  chmod +x submit_all_experiments.sh
+  ./submit_all_experiments.sh
+
+  # 查看队列
+  squeue -u $USER
+
+  6个实验会并行排队，每个约22小时。训练完后用 evaluate_wind_3d.py 对每组模型跑评估，就能出消融对比表了。

@@ -1,6 +1,7 @@
 import copy
 import dataclasses
 import sys
+import typing
 import warnings
 from functools import partial
 from logging import getLogger
@@ -89,6 +90,7 @@ class SIFollmerConfig(YamlConfig):
     eps: float
     formula: Literal["linear", "quadratic"]
     loss_type: Literal["L2"] = "L2"
+    channel_weights: typing.Optional[list] = None  # 通道加权，如 [1,1,10, 1,1,10, ...]
 
 
 class StochasticInterpolantFollmer(nn.Module):
@@ -110,6 +112,14 @@ class StochasticInterpolantFollmer(nn.Module):
         self.net = neural_net
         self.dtype = torch.float32
         self._set_alpha_beta_gamma()
+
+        # 通道加权 (用于 W 分量加权等)
+        if self.c.channel_weights is not None:
+            w = torch.tensor(self.c.channel_weights, dtype=self.dtype)
+            self.register_buffer("channel_weights", w.view(1, -1, 1, 1))
+            logger.info(f"Channel weights enabled: {self.c.channel_weights}")
+        else:
+            self.channel_weights = None
 
     def _set_alpha_beta_gamma(self):
         # Time index is from 0 to T (t is an N+1 size array)
@@ -243,7 +253,10 @@ class StochasticInterpolantFollmer(nn.Module):
         b_est = self.net(yt=yt, y_cond=y_cond, gamma=t)
 
         if self.c.loss_type == "L2":
-            return torch.mean((b_true - b_est) ** 2)
+            diff_sq = (b_true - b_est) ** 2
+            if self.channel_weights is not None:
+                diff_sq = diff_sq * self.channel_weights
+            return torch.mean(diff_sq)
         else:
             raise NotImplementedError(
                 f"{self.c.loss_type} loss type is not implemented."
