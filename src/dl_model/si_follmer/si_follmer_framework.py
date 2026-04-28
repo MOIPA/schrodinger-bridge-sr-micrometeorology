@@ -91,6 +91,7 @@ class SIFollmerConfig(YamlConfig):
     formula: Literal["linear", "quadratic"]
     loss_type: Literal["L2"] = "L2"
     channel_weights: typing.Optional[list] = None  # 通道加权，如 [1,1,10, 1,1,10, ...]
+    divergence_weight: float = 0.0  # 散度物理约束权重，0 表示不启用
 
 
 class StochasticInterpolantFollmer(nn.Module):
@@ -120,6 +121,10 @@ class StochasticInterpolantFollmer(nn.Module):
             logger.info(f"Channel weights enabled: {self.c.channel_weights}")
         else:
             self.channel_weights = None
+
+        # 散度物理约束
+        if self.c.divergence_weight > 0:
+            logger.info(f"Divergence constraint enabled: weight={self.c.divergence_weight}")
 
     def _set_alpha_beta_gamma(self):
         # Time index is from 0 to T (t is an N+1 size array)
@@ -236,6 +241,34 @@ class StochasticInterpolantFollmer(nn.Module):
 
         return bF
 
+    def _calc_divergence_loss(self, pred: torch.Tensor) -> torch.Tensor:
+        """
+        计算水平散度约束 loss。
+        pred: [B, 18, H, W]，通道顺序为 [U0,V0,W0, U1,V1,W1, ..., U5,V5,W5]
+        水平散度 = ∂U/∂x + ∂V/∂y（中心差分，像素单位）
+        对每层分别计算，取所有层平均。
+        """
+        div_loss = torch.tensor(0.0, device=pred.device, dtype=pred.dtype)
+        n_levels = pred.shape[1] // 3  # 6 层
+
+        for i in range(n_levels):
+            u = pred[:, i * 3, :, :]      # [B, H, W]
+            v = pred[:, i * 3 + 1, :, :]  # [B, H, W]
+
+            # 中心差分: ∂U/∂x（沿 x/W 维度）
+            du_dx = (u[:, :, 2:] - u[:, :, :-2]) / 2.0  # [B, H, W-2]
+            # 中心差分: ∂V/∂y（沿 y/H 维度）
+            dv_dy = (v[:, 2:, :] - v[:, :-2, :]) / 2.0  # [B, H-2, W]
+
+            # 对齐尺寸：取公共区域 [B, H-2, W-2]
+            du_dx_crop = du_dx[:, 1:-1, :]   # [B, H-2, W-2]
+            dv_dy_crop = dv_dy[:, :, 1:-1]   # [B, H-2, W-2]
+
+            divergence = du_dx_crop + dv_dy_crop  # [B, H-2, W-2]
+            div_loss = div_loss + torch.mean(divergence ** 2)
+
+        return div_loss / n_levels
+
     def forward(
         self, y0: torch.Tensor, y1: torch.Tensor, y_cond: torch.Tensor, **kwargs
     ):
@@ -256,7 +289,14 @@ class StochasticInterpolantFollmer(nn.Module):
             diff_sq = (b_true - b_est) ** 2
             if self.channel_weights is not None:
                 diff_sq = diff_sq * self.channel_weights
-            return torch.mean(diff_sq)
+            data_loss = torch.mean(diff_sq)
+
+            # 散度物理约束
+            if self.c.divergence_weight > 0:
+                div_loss = self._calc_divergence_loss(b_est)
+                return data_loss + self.c.divergence_weight * div_loss
+            else:
+                return data_loss
         else:
             raise NotImplementedError(
                 f"{self.c.loss_type} loss type is not implemented."

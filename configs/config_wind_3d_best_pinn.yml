@@ -1,0 +1,194 @@
+# Best config: NoPBLH (9 cond vars) + W-weighted loss + Divergence constraint (PINN)
+# 消融实验最佳配置 + W分量加权 + 水平散度物理约束
+#
+# 训练命令:
+#   python scripts/train_schrodinger_bridge_model.py \
+#     --config_path configs/config_wind_3d_best_pinn.yml \
+#     --experiment_name ExperimentSchrodingerBridge3dWind \
+#     --device cpu
+
+data:
+  biases:
+    hr_u_ml0: -1.95426
+    hr_v_ml0: 2.778181
+    hr_w_ml0: -0.005726
+    lr_u_ml0: -1.95424
+    lr_v_ml0: 2.778251
+    lr_w_ml0: -0.00573
+    hr_u_ml1: -2.236401
+    hr_v_ml1: 3.337655
+    hr_w_ml1: -0.005083
+    lr_u_ml1: -2.236384
+    lr_v_ml1: 3.337749
+    lr_w_ml1: -0.005087
+    hr_u_ml2: -2.376027
+    hr_v_ml2: 3.760786
+    hr_w_ml2: -0.003274
+    lr_u_ml2: -2.37602
+    lr_v_ml2: 3.760872
+    lr_w_ml2: -0.003278
+    hr_u_ml3: -2.451712
+    hr_v_ml3: 4.141908
+    hr_w_ml3: -0.000605
+    lr_u_ml3: -2.451715
+    lr_v_ml3: 4.141976
+    lr_w_ml3: -0.000607
+    hr_u_ml5: -2.441044
+    hr_v_ml5: 4.68079
+    hr_w_ml5: 0.005137
+    lr_u_ml5: -2.441062
+    lr_v_ml5: 4.680834
+    lr_w_ml5: 0.005142
+    hr_u_ml10: -2.472078
+    hr_v_ml10: 3.227569
+    hr_w_ml10: 0.008199
+    lr_u_ml10: -2.472082
+    lr_v_ml10: 3.227579
+    lr_w_ml10: 0.008219
+    t2: 301.998962
+    z: 37.488346
+    lu: 16.725618
+    tsk: 303.561615
+    swdown: 269.639557
+    glw: 431.122955
+    hfx: 42.14484
+    lh: 96.566574
+    psfc: 99869.882812
+    pblh: 525.545227
+  scales:
+    hr_u_ml0: 4.402796
+    hr_v_ml0: 3.525334
+    hr_w_ml0: 0.148159
+    lr_u_ml0: 4.364602
+    lr_v_ml0: 3.472649
+    lr_w_ml0: 0.083609
+    hr_u_ml1: 5.105578
+    hr_v_ml1: 3.983906
+    hr_w_ml1: 0.191652
+    lr_u_ml1: 5.07354
+    lr_v_ml1: 3.939374
+    lr_w_ml1: 0.105055
+    hr_u_ml2: 5.622042
+    hr_v_ml2: 4.207778
+    hr_w_ml2: 0.220411
+    lr_u_ml2: 5.597043
+    lr_v_ml2: 4.172642
+    lr_w_ml2: 0.12159
+    hr_u_ml3: 6.141271
+    hr_v_ml3: 4.357533
+    hr_w_ml3: 0.247615
+    lr_u_ml3: 6.121758
+    lr_v_ml3: 4.329672
+    lr_w_ml3: 0.137457
+    hr_u_ml5: 7.334366
+    hr_v_ml5: 4.558024
+    hr_w_ml5: 0.295489
+    lr_u_ml5: 7.32196
+    lr_v_ml5: 4.538525
+    lr_w_ml5: 0.168024
+    hr_u_ml10: 7.964198
+    hr_v_ml10: 4.241252
+    hr_w_ml10: 0.334629
+    lr_u_ml10: 7.956287
+    lr_v_ml10: 4.225603
+    lr_w_ml10: 0.198061
+    t2: 2.14623
+    z: 79.458443
+    lu: 9.772256
+    tsk: 4.892428
+    swdown: 347.248718
+    glw: 14.475859
+    hfx: 85.938927
+    lh: 118.271515
+    psfc: 908.404907
+    pblh: 357.77951
+  discarded_minute_range:
+  - 1
+  - 30
+  dtype: float32
+  hr_cropped_shape:
+  - 128
+  - 128
+  hr_data_shape:
+  - 128
+  - 128
+  # 条件变量: 9个（去掉PBLH，消融实验最佳）
+  input_variable_names:
+  - t2
+  - z
+  - lu
+  - tsk
+  - swdown
+  - glw
+  - hfx
+  - lh
+  - psfc
+  is_clipped: false
+  max_clipped_value: null
+  min_clipped_value: null
+  missing_value: 0.0
+  target_variable_names:
+  - hr_u_ml0
+  - hr_v_ml0
+  - hr_w_ml0
+  - hr_u_ml1
+  - hr_v_ml1
+  - hr_w_ml1
+  - hr_u_ml2
+  - hr_v_ml2
+  - hr_w_ml2
+  - hr_u_ml3
+  - hr_v_ml3
+  - hr_w_ml3
+  - hr_u_ml5
+  - hr_v_ml5
+  - hr_w_ml5
+  - hr_u_ml10
+  - hr_v_ml10
+  - hr_w_ml10
+loader:
+  batch_size: 2
+  dl_data_ver: wrf_3d_v1
+  num_workers: 4
+  seed: 42
+  train_valid_test_ratios:
+  - 0.7
+  - 0.145
+  - 0.155
+model:
+  attn_res:
+  - 16
+  channel_mults:
+  - 1
+  - 2
+  - 4
+  - 8
+  - 8
+  channels_each_head: 16
+  dropout: 0.2
+  in_channel: 27    # 18 (LR wind) + 9 (cond vars, no PBLH)
+  inner_channel: 32
+  max_period: 10.0
+  out_channel: 18
+  res_blocks: 1
+  resblock_updown: true
+si:
+  eps: 0.2
+  formula: quadratic
+  loss_type: L2
+  n_timestep: 10
+  # W分量加权: 每组(U,V,W)中 W 权重=10
+  channel_weights: [1,1,10, 1,1,10, 1,1,10, 1,1,10, 1,1,10, 1,1,10]
+  # 散度物理约束权重 (PINN)
+  divergence_weight: 0.1
+train:
+  early_stopping_patience: 400
+  ema_decay: null
+  epochs: 400
+  learning_rate: 0.0005
+  loss:
+    loss_name: L2
+  optim_name: AdamW
+  save_interval: 100
+  seed: 78268
+  use_amp: false
