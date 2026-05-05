@@ -116,7 +116,7 @@ class StochasticInterpolantFollmer(nn.Module):
 
         # 通道加权 (用于 W 分量加权等)
         if self.c.channel_weights is not None:
-            w = torch.tensor(self.c.channel_weights, dtype=self.dtype)
+            w = torch.tensor(self.c.channel_weights, dtype=self.dtype, device=self.device)
             self.register_buffer("channel_weights", w.view(1, -1, 1, 1))
             logger.info(f"Channel weights enabled: {self.c.channel_weights}")
         else:
@@ -248,7 +248,7 @@ class StochasticInterpolantFollmer(nn.Module):
         水平散度 = ∂U/∂x + ∂V/∂y（中心差分，像素单位）
         对每层分别计算，取所有层平均。
         """
-        div_loss = torch.tensor(0.0, device=pred.device, dtype=pred.dtype)
+        div_loss = torch.zeros(1, device=pred.device, dtype=pred.dtype).squeeze()
         n_levels = pred.shape[1] // 3  # 6 层
 
         for i in range(n_levels):
