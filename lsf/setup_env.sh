@@ -1,7 +1,10 @@
 #!/bin/bash
 # ============================================
 # 环境初始化脚本 — 首次在新服务器上执行一次即可
-# 用法: bash lsf/setup_env.sh
+# ============================================
+# 注意：必须在 GPU 节点的交互式 session 里执行！
+#   bsub -q 723090ib -gpu num=1 -Is /bin/bash
+#   bash lsf/setup_env.sh
 # ============================================
 
 echo "=== Setting up environment ==="
@@ -18,16 +21,21 @@ echo ""
 echo "Creating conda environment 'wind3d'..."
 conda create -n wind3d python=3.10 -y
 
-# 3. 激活环境并安装依赖
-conda activate wind3d
+# 3. 激活并安装（用 source activate，脚本里 conda activate 不生效）
+source activate wind3d
 
 # PyTorch (CUDA 11.8)
+echo "Installing PyTorch..."
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 
 # 其他依赖
+echo "Installing other dependencies..."
 pip install numpy pandas pyyaml tqdm matplotlib scipy
 
 echo ""
-echo "=== Environment setup complete ==="
-echo "To activate: module load anaconda/3 cuda/11.8.0 && conda activate wind3d"
-echo "Test GPU: python -c \"import torch; print(torch.cuda.is_available(), torch.cuda.get_device_name(0))\""
+echo "=== Verifying ==="
+python -c "import torch; print('CUDA available:', torch.cuda.is_available()); print('GPU:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'N/A')"
+
+echo ""
+echo "=== Done! ==="
+echo "以后使用只需: module load anaconda/3 cuda/11.8.0 && source activate wind3d"
