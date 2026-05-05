@@ -54,25 +54,25 @@ def optimize_si(
 
             if use_amp:
                 with torch.cuda.amp.autocast(enabled=True):
-                    loss = si.forward(y0=batch["y0"], y1=batch["y"], y_cond=batch["x"])
-                
+                    loss = si.forward(y0=y0, y1=y1, y_cond=y_cond)
+
                 scaler.scale(loss).backward()
                 scaler.step(optimizer)
                 scaler.update()
             else:
                 # Standard CPU training forward and backward pass
-                loss = si.forward(y0=batch["y0"], y1=batch["y"], y_cond=batch["x"])
+                loss = si.forward(y0=y0, y1=y1, y_cond=y_cond)
                 loss.backward()
                 optimizer.step()
-    
+
             if ema.decay is not None and 0.0 < ema.decay < 1.0:
                 ema.update_model_average(current_model=si.net, ma_model=ema_net)
 
-            else:
-                with torch.no_grad(), torch.autocast(
-                    device_type=device_type, dtype=torch.float16, enabled=use_amp
-                ):
-                    loss = si(y0=y0, y1=y1, y_cond=y_cond)
+        else:
+            with torch.no_grad(), torch.autocast(
+                device_type=device_type, dtype=torch.float16, enabled=use_amp
+            ):
+                loss = si(y0=y0, y1=y1, y_cond=y_cond)
             
         loss_meter.update(loss.item(), n=batch["x"].shape[0])
     logger.info(f"{mode} error: avg loss = {loss_meter.avg:.8f}")
