@@ -154,7 +154,7 @@ data:
   - hr_v_ml10
   - hr_w_ml10
 loader:
-  batch_size: 2
+  batch_size: 8
   dl_data_ver: wrf_3d_v1
   num_workers: 4
   seed: 42
@@ -196,4 +196,4 @@ train:
   optim_name: AdamW
   save_interval: 100
   seed: 78268
-  use_amp: false
+  use_amp: true

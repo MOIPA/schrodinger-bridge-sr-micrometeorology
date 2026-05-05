@@ -1,0 +1,37 @@
+#!/bin/bash
+# ============================================
+# LSF 训练脚本 — Final 实验
+# 192×192 + inner_ch=64 + W加权 + PINN + GPU
+# ============================================
+#BSUB -q 723090ib
+#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -n 4
+#BSUB -R "rusage[mem=32000]"
+#BSUB -J final_train
+#BSUB -o logs/final_train_%J.out
+#BSUB -e logs/final_train_%J.err
+
+# --- 环境 ---
+module load anaconda/3
+module load cuda/11.8.0
+source activate wind3d
+
+# --- 切换到项目目录（改成你的实际路径）---
+cd $LS_SUBCWD
+
+# --- 创建日志目录 ---
+mkdir -p logs
+
+echo "=== Final: 192x192 + inner_ch=64 + W-weighted + PINN (GPU) ==="
+echo "Host: $(hostname)"
+echo "GPU:  $(nvidia-smi --query-gpu=name,memory.total --format=csv,noheader)"
+echo "Start: $(date)"
+echo ""
+
+python scripts/train_schrodinger_bridge_model.py \
+  --config_path configs/config_wind_3d_final.yml \
+  --experiment_name ExperimentSchrodingerBridge3dWind \
+  --device cuda:0
+
+echo ""
+echo "End: $(date)"
