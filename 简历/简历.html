@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人简历 - 汤子晴</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", "SimSun", sans-serif;
+            background: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 20px auto;
+            background: #fff;
+            padding: 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        /* Header */
+        .header {
+            background: #2c3e5a;
+            color: #fff;
+            padding: 15px 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .header .subtitle {
+            font-size: 14px;
+            font-family: "Times New Roman", serif;
+            font-style: italic;
+            opacity: 0.8;
+            margin-left: 10px;
+        }
+
+        .header-line {
+            height: 4px;
+            background: linear-gradient(to right, #2c3e5a, #4a6fa5, #2c3e5a);
+        }
+
+        /* Content */
+        .content {
+            padding: 25px 40px 40px;
+        }
+
+        /* Personal Info */
+        .personal-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .info-left {
+            flex: 1;
+        }
+
+        .info-left .name {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e5a;
+            margin-bottom: 12px;
+        }
+
+        .info-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 30px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .info-details .label {
+            letter-spacing: 2px;
+        }
+
+        .photo {
+            width: 110px;
+            height: 140px;
+            border: 2px solid #e0e0e0;
+            overflow: hidden;
+            flex-shrink: 0;
+            margin-left: 20px;
+        }
+
+        .photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 18px;
+        }
+
+        .section-title {
+            display: inline-flex;
+            align-items: center;
+            background: #2c3e5a;
+            color: #fff;
+            padding: 5px 18px 5px 12px;
+            border-radius: 3px;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            position: relative;
+            clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%);
+            padding-right: 28px;
+        }
+
+        .section-title .icon {
+            margin-right: 8px;
+            font-size: 14px;
+        }
+
+        /* Education */
+        .edu-item, .work-item, .research-item {
+            margin-bottom: 12px;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #2c3e5a;
+            margin-bottom: 4px;
+        }
+
+        .item-header .time {
+            min-width: 160px;
+        }
+
+        .item-header .org {
+            flex: 1;
+            text-align: center;
+        }
+
+        .item-header .role {
+            text-align: right;
+            min-width: 160px;
+        }
+
+        .item-detail {
+            font-size: 13px;
+            color: #555;
+            padding-left: 8px;
+            margin-top: 4px;
+        }
+
+        .item-detail ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .item-detail ul li {
+            position: relative;
+            padding-left: 14px;
+            margin-bottom: 3px;
+            line-height: 1.7;
+        }
+
+        .item-detail ul li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #2c3e5a;
+            font-weight: bold;
+        }
+
+        .item-detail .sub-list {
+            padding-left: 14px;
+        }
+
+        .item-detail .sub-list li {
+            padding-left: 0;
+        }
+
+        .item-detail .sub-list li::before {
+            content: none;
+        }
+
+        /* Skills */
+        .skills-list {
+            font-size: 13px;
+            color: #555;
+            padding-left: 8px;
+        }
+
+        .skills-list li {
+            position: relative;
+            padding-left: 14px;
+            margin-bottom: 4px;
+            list-style: none;
+            line-height: 1.7;
+        }
+
+        .skills-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #2c3e5a;
+            font-weight: bold;
+        }
+
+        .tech-tag {
+            display: inline-block;
+            background: #eef2f7;
+            color: #2c3e5a;
+            padding: 1px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            margin: 2px 3px 2px 0;
+        }
+
+        /* Self evaluation */
+        .evaluation {
+            font-size: 13px;
+            color: #555;
+            padding-left: 8px;
+            line-height: 1.8;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            padding: 10px;
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+        }
+
+        /* Print styles */
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                margin: 0;
+                padding: 0;
+            }
+            .page {
+                margin: 0;
+                box-shadow: none;
+                width: 100%;
+                min-height: 100vh;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- Header -->
+        <div class="header">
+            <h1>个人简历</h1>
+            <span class="subtitle">Personal Resume</span>
+        </div>
+        <div class="header-line"></div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Personal Info -->
+            <div class="personal-info">
+                <div class="info-left">
+                    <div class="name">汤子晴</div>
+                    <div class="info-details">
+                        <div><span class="label">手 机 号：</span>18360221629</div>
+                        <div><span class="label">性　　别：</span>女</div>
+                        <div><span class="label">邮　　箱：</span>1575116355@qq.com</div>
+                        <div><span class="label">年　　龄：</span>29岁</div>
+                    </div>
+                </div>
+                <div class="photo">
+                    <img src="简历头像.png" alt="证件照">
+                </div>
+            </div>
+
+            <!-- Education -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="icon">&#127891;</span> 教育经历
+                </div>
+                <div class="edu-item">
+                    <div class="item-header">
+                        <span class="time">2025.09 – 2027.06（预计）</span>
+                        <span class="org">南京大学</span>
+                        <span class="role">大气科学（硕士）</span>
+                    </div>
+                    <div class="item-detail">
+                        <ul>
+                            <li>研究方向：基于深度学习的气象数据超分辨率重建</li>
+                            <li>核心课程：机器学习、大气动力学、数值天气预报</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="edu-item">
+                    <div class="item-header">
+                        <span class="time">2015.09 – 2019.06</span>
+                        <span class="org">南京大学金陵学院</span>
+                        <span class="role">计算机科学与技术（本科）</span>
+                    </div>
+                    <div class="item-detail">
+                        <ul>
+                            <li>核心课程：操作系统（85/100）、移动PC编程（90/100）、信息安全（85/100）、网络应用开发（87/100）</li>
+                            <li>校内荣誉：校级软件设计竞赛一等奖（2017）、3D算法竞赛省级二等奖（2018）、连续3年获校级奖学金</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Research -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="icon">&#128300;</span> 科研经历
+                </div>
+                <div class="research-item">
+                    <div class="item-header">
+                        <span class="time">2025.09 – 至今</span>
+                        <span class="org">三维风场超分辨率重建研究</span>
+                        <span class="role">核心研究者</span>
+                    </div>
+                    <div class="item-detail">
+                        <ul>
+                            <li>基于生成式扩散模型（Stochastic Interpolant框架），将WRF 3km三维风场超分辨率重建为1km，服务低空经济飞行安全需求</li>
+                            <li>设计通道加权Loss解决U/V/W三分量量级不平衡问题，W分量RMSE降低24.6%，SSIM提升74.2%</li>
+                            <li>引入物理信息约束（PINN），在损失函数中加入水平散度约束，确保模型输出满足质量守恒</li>
+                            <li>完成10个气象条件变量的消融实验，系统评估各变量贡献，最终模型RMSE较基线降低约24%</li>
+                            <li>技术栈：Python/PyTorch/WRF/NumPy/Matplotlib</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Work Experience -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="icon">&#128188;</span> 工作经历
+                </div>
+                <div class="work-item">
+                    <div class="item-header">
+                        <span class="time">2022.03 – 2025.08</span>
+                        <span class="org">江苏中车数字科技有限公司</span>
+                        <span class="role">软件开发工程师</span>
+                    </div>
+                    <div class="item-detail">
+                        <ul>
+                            <li>参与苏州S1/S6号线地铁调度系统开发，采用Spring Boot框架构建分布式服务，实现日均处理10万+车次指令</li>
+                            <li>设计工单管理系统，通过Redis缓存优化查询效率，降低运维人工派单错误率</li>
+                            <li>完成列车控制指令模块开发，支持多线路并发调度，提升系统稳定性</li>
+                            <li>技术栈：Java/MySQL/Redis/Docker/Kubernetes</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="work-item">
+                    <div class="item-header">
+                        <span class="time">2020.09 – 2022.02</span>
+                        <span class="org">江苏智海云舟有限公司</span>
+                        <span class="role">测试工程师</span>
+                    </div>
+                    <div class="item-detail">
+                        <ul>
+                            <li>搭建Postman+Jenkins持续集成测试框架，编写接口测试用例，提升缺陷拦截率</li>
+                            <li>参与社区团购Web端测试，使用Selenium实现UI自动化</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="icon">&#128736;</span> 技术能力
+                </div>
+                <ul class="skills-list">
+                    <li>编程语言：Python（掌握）/Java（掌握）/SQL</li>
+                    <li>深度学习：PyTorch/扩散模型/UNet/物理信息神经网络（PINN）</li>
+                    <li>开发框架：Spring Boot/Django</li>
+                    <li>数据处理：NumPy/Pandas/Matplotlib/NetCDF</li>
+                    <li>数据库与中间件：MySQL/Redis</li>
+                    <li>其他：Git/Docker/Jenkins/Linux/WRF气象模式</li>
+                </ul>
+            </div>
+
+            <!-- Self Evaluation -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="icon">&#11088;</span> 自我评价
+                </div>
+                <div class="evaluation">
+                    具备计算机科学本科与大气科学研究生的跨学科背景，兼具工程开发能力和科研素养。拥有近5年软件开发与测试经验，熟悉分布式系统设计与高并发场景。研究生期间深入掌握深度学习与气象数据处理，具备将AI技术应用于实际场景的能力。学习能力强，善于快速适应新领域。
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">第 1/1 页</div>
+    </div>
+</body>
+</html>
