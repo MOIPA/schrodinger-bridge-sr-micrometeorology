@@ -91,7 +91,8 @@ class SIFollmerConfig(YamlConfig):
     formula: Literal["linear", "quadratic"]
     loss_type: Literal["L2"] = "L2"
     channel_weights: typing.Optional[list] = None  # 通道加权，如 [1,1,10, 1,1,10, ...]
-    divergence_weight: float = 0.0  # 散度物理约束权重，0 表示不启用
+    divergence_weight: float = 0.0  # 三维散度约束权重（∂U/∂x+∂V/∂y+∂W/∂z=0），0 表示不启用
+    vorticity_weight: float = 0.0  # 涡度约束权重（大尺度涡度守恒），0 表示不启用
 
 
 class StochasticInterpolantFollmer(nn.Module):
@@ -122,9 +123,13 @@ class StochasticInterpolantFollmer(nn.Module):
         else:
             self.channel_weights = None
 
-        # 散度物理约束
+        # 三维散度物理约束 (∂U/∂x + ∂V/∂y + ∂W/∂z = 0)
         if self.c.divergence_weight > 0:
-            logger.info(f"Divergence constraint enabled: weight={self.c.divergence_weight}")
+            logger.info(f"3D Divergence constraint enabled: weight={self.c.divergence_weight}")
+
+        # 涡度约束 (大尺度涡度守恒)
+        if self.c.vorticity_weight > 0:
+            logger.info(f"Vorticity constraint enabled: weight={self.c.vorticity_weight}")
 
     def _set_alpha_beta_gamma(self):
         # Time index is from 0 to T (t is an N+1 size array)
@@ -241,12 +246,11 @@ class StochasticInterpolantFollmer(nn.Module):
 
         return bF
 
-    def _calc_divergence_loss(self, pred: torch.Tensor) -> torch.Tensor:
+    def _calc_3d_divergence_loss(self, pred: torch.Tensor) -> torch.Tensor:
         """
-        计算水平散度约束 loss。
+        三维散度约束：∂U/∂x + ∂V/∂y + ∂W/∂z = 0
         pred: [B, 18, H, W]，通道顺序为 [U0,V0,W0, U1,V1,W1, ..., U5,V5,W5]
-        水平散度 = ∂U/∂x + ∂V/∂y（中心差分，像素单位）
-        对每层分别计算，取所有层平均。
+        水平导数用中心差分，垂直导数用层间中心差分。
         """
         div_loss = torch.zeros(1, device=pred.device, dtype=pred.dtype).squeeze()
         n_levels = pred.shape[1] // 3  # 6 层
@@ -254,20 +258,64 @@ class StochasticInterpolantFollmer(nn.Module):
         for i in range(n_levels):
             u = pred[:, i * 3, :, :]      # [B, H, W]
             v = pred[:, i * 3 + 1, :, :]  # [B, H, W]
+            w = pred[:, i * 3 + 2, :, :]  # [B, H, W]
 
-            # 中心差分: ∂U/∂x（沿 x/W 维度）
+            # 水平中心差分
             du_dx = (u[:, :, 2:] - u[:, :, :-2]) / 2.0  # [B, H, W-2]
-            # 中心差分: ∂V/∂y（沿 y/H 维度）
             dv_dy = (v[:, 2:, :] - v[:, :-2, :]) / 2.0  # [B, H-2, W]
 
-            # 对齐尺寸：取公共区域 [B, H-2, W-2]
+            # 垂直中心差分 ∂W/∂z
+            if 0 < i < n_levels - 1:
+                w_above = pred[:, (i + 1) * 3 + 2, :, :]
+                w_below = pred[:, (i - 1) * 3 + 2, :, :]
+                dw_dz = (w_above - w_below) / 2.0
+            elif i == 0:
+                w_above = pred[:, 1 * 3 + 2, :, :]
+                dw_dz = w_above - w  # 底层前向差分
+            else:
+                w_below = pred[:, (i - 1) * 3 + 2, :, :]
+                dw_dz = w - w_below  # 顶层后向差分
+
+            # 对齐到公共区域 [B, H-2, W-2]
             du_dx_crop = du_dx[:, 1:-1, :]   # [B, H-2, W-2]
             dv_dy_crop = dv_dy[:, :, 1:-1]   # [B, H-2, W-2]
+            dw_dz_crop = dw_dz[:, 1:-1, 1:-1]  # [B, H-2, W-2]
 
-            divergence = du_dx_crop + dv_dy_crop  # [B, H-2, W-2]
+            divergence = du_dx_crop + dv_dy_crop + dw_dz_crop
             div_loss = div_loss + torch.mean(divergence ** 2)
 
         return div_loss / n_levels
+
+    def _calc_vorticity_loss(self, pred: torch.Tensor) -> torch.Tensor:
+        """
+        涡度约束：模型修正场不应引入虚假的大尺度涡度。
+        pred: [B, 18, H, W]，通道顺序为 [U0,V0,W0, ...]
+        对每层计算 ζ = ∂V/∂x - ∂U/∂y，经 avg_pool 提取大尺度分量后惩罚。
+        物理依据：NS 方程的运动学部分——大尺度涡度在无粘条件下守恒。
+        """
+        vort_loss = torch.zeros(1, device=pred.device, dtype=pred.dtype).squeeze()
+        n_levels = pred.shape[1] // 3
+
+        for i in range(n_levels):
+            u = pred[:, i * 3, :, :]
+            v = pred[:, i * 3 + 1, :, :]
+
+            dv_dx = (v[:, :, 2:] - v[:, :, :-2]) / 2.0  # [B, H, W-2]
+            du_dy = (u[:, 2:, :] - u[:, :-2, :]) / 2.0  # [B, H-2, W]
+
+            dv_dx_crop = dv_dx[:, 1:-1, :]  # [B, H-2, W-2]
+            du_dy_crop = du_dy[:, :, 1:-1]  # [B, H-2, W-2]
+
+            zeta = dv_dx_crop - du_dy_crop  # [B, H-2, W-2]
+
+            # avg_pool 提取大尺度涡度（kernel=4，抑制小尺度噪声）
+            zeta_coarse = torch.nn.functional.avg_pool2d(
+                zeta.unsqueeze(1), kernel_size=4
+            ).squeeze(1)
+
+            vort_loss = vort_loss + torch.mean(zeta_coarse ** 2)
+
+        return vort_loss / n_levels
 
     def forward(
         self, y0: torch.Tensor, y1: torch.Tensor, y_cond: torch.Tensor, **kwargs
@@ -291,12 +339,18 @@ class StochasticInterpolantFollmer(nn.Module):
                 diff_sq = diff_sq * self.channel_weights
             data_loss = torch.mean(diff_sq)
 
-            # 散度物理约束
+            # NS 运动学约束
+            total_loss = data_loss
+
             if self.c.divergence_weight > 0:
-                div_loss = self._calc_divergence_loss(b_est)
-                return data_loss + self.c.divergence_weight * div_loss
-            else:
-                return data_loss
+                div_loss = self._calc_3d_divergence_loss(b_est)
+                total_loss = total_loss + self.c.divergence_weight * div_loss
+
+            if self.c.vorticity_weight > 0:
+                vort_loss = self._calc_vorticity_loss(b_est)
+                total_loss = total_loss + self.c.vorticity_weight * vort_loss
+
+            return total_loss
         else:
             raise NotImplementedError(
                 f"{self.c.loss_type} loss type is not implemented."
