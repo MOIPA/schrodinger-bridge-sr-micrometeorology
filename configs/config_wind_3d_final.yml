@@ -187,9 +187,9 @@ si:
   channel_weights: [1,1,10, 1,1,10, 1,1,10, 1,1,10, 1,1,10, 1,1,10]
   divergence_weight: 0.1
 train:
-  early_stopping_patience: 600
+  early_stopping_patience: 1000
   ema_decay: null
-  epochs: 600
+  epochs: 1000
   learning_rate: 0.0005
   loss:
     loss_name: L2
