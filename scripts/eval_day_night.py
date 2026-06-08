@@ -129,12 +129,9 @@ def main():
     target_names = config.data.target_variable_names
     input_names = config.data.input_variable_names
 
-    # swdown 在输入条件变量中的位置
-    swdown_cond_idx = input_names.index("swdown")
-    # y_cond 的通道布局: [LR wind (18ch)] + [cond vars (9ch)]
-    n_lr = len(target_names)  # 18
-    swdown_channel = n_lr + swdown_cond_idx
-    logger.info(f"swdown 位于 y_cond 第 {swdown_channel} 通道 (LR={n_lr}ch + cond_idx={swdown_cond_idx})")
+    # y_cond (batch["x"]) 只包含条件变量，布局 = input_variable_names 的顺序
+    swdown_channel = input_names.index("swdown")
+    logger.info(f"swdown 位于 y_cond 第 {swdown_channel} 通道 (共 {len(input_names)} 个条件变量)")
 
     config_infer = copy.deepcopy(config)
     config_infer.data.hr_cropped_shape = config_infer.data.hr_data_shape
