@@ -1,0 +1,20 @@
+#!/bin/bash
+#BSUB -q 723090ib
+#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -n 4
+#BSUB -R "rusage[mem=32000]"
+#BSUB -J day_night
+#BSUB -o logs/day_night_%J.out
+#BSUB -e logs/day_night_%J.err
+
+module load anaconda/3
+module load cuda/11.8.0
+source activate wind3d
+cd $LS_SUBCWD
+mkdir -p logs
+
+python scripts/eval_day_night.py \
+  --config_path configs/config_wind_3d_final.yml \
+  --checkpoint_path data/DL_result/ExperimentSchrodingerBridge3dWind/config_wind_3d_final/checkpoint.pth \
+  --device cuda:0
+
