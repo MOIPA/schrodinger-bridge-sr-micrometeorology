@@ -2,6 +2,7 @@ import glob
 import typing
 from logging import getLogger
 
+import numpy as np
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
@@ -61,6 +62,12 @@ def make_dataloaders_and_samplers(
         all_file_paths, loader_config.train_valid_test_ratios
     )
 
+    day_night_filter = getattr(dataset_config, "day_night_filter", "all")
+    dict_file_paths = _filter_paths_by_day_night(
+        dict_file_paths,
+        day_night_filter,
+    )
+
     return _make_dataloaders_and_samplers(
         dataset_initializer=dataset_initializer,
         dict_file_paths=dict_file_paths,
@@ -70,6 +77,34 @@ def make_dataloaders_and_samplers(
         world_size=world_size,
         rank=rank,
     )
+
+
+def _filter_paths_by_day_night(
+    dict_file_paths: dict[str, list[str]],
+    day_night_filter: str,
+) -> dict[str, list[str]]:
+    """Filter file paths by day/night based on swdown value in each npz file."""
+    if day_night_filter == "all":
+        return dict_file_paths
+
+    day_threshold = 50.0
+    night_threshold = 5.0
+
+    for kind, paths in dict_file_paths.items():
+        filtered = []
+        for p in paths:
+            with np.load(p) as data:
+                swdown_mean = data["swdown"].mean()
+            if day_night_filter == "day" and swdown_mean > day_threshold:
+                filtered.append(p)
+            elif day_night_filter == "night" and swdown_mean < night_threshold:
+                filtered.append(p)
+        logger.info(
+            f"{kind}: {len(filtered)}/{len(paths)} samples kept after "
+            f"day_night_filter={day_night_filter}"
+        )
+        dict_file_paths[kind] = filtered
+    return dict_file_paths
 
 
 def _split_paths_into_train_valid_test(

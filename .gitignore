@@ -121,3 +121,4 @@ prepare_npz_wind_3d
 
 # bsub logs
 logs/
+*.tar.gz

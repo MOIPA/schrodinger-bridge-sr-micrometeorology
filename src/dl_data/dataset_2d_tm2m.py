@@ -37,9 +37,11 @@ class Dataset2dTemperature2mConfig(BaseDatasetConfig):
     dataset_name: typing.ClassVar[str] = "Dataset2dTemperature2m"
     dtype: str
     discarded_minute_range: list[float]
+    day_night_filter: str = "all"  # "day", "night", or "all"
 
     def __post_init__(self):
         assert self.dtype == "float16" or self.dtype == "float32"
+        assert self.day_night_filter in ("day", "night", "all")
 
 
 class Dataset2dTemperature2m(Dataset):
