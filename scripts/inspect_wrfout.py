@@ -13,7 +13,6 @@ This script:
 import argparse
 import os
 import sys
-from collections import defaultdict
 
 import numpy as np
 
@@ -26,20 +25,20 @@ except ImportError:
 
 # Variables needed for each NS equation term
 NS_REQUIRED = {
-    # 3 Momentum equations: ∂U/∂t + U·∇U + V·∇U + W·∇U = -(1/ρ)∂P/∂x + fV + ν∇²U
+    # 3 Momentum equations: dU/dt + U*grad(U) = -(1/rho)*grad(P) + fV + nu*laplacian(U)
     "time_derivative": {
-        "desc": "∂U/∂t, ∂V/∂t, ∂W/∂t",
+        "desc": "dU/dt, dV/dt, dW/dt",
         "needs": ["U", "V", "W"],
         "needs_time": True,
     },
     "advection": {
-        "desc": "U·∇U + V·∇V + W·∇W (3D advection)",
+        "desc": "U*grad(U) + V*grad(V) + W*grad(W) (3D advection)",
         "needs": ["U", "V", "W"],
         "needs_3d": True,
     },
     "pressure_gradient": {
-        "desc": "-(1/ρ)∇P (3D pressure gradient)",
-        "needs": ["P", "PB", "T"],  # P_total = P + PB, ρ = P/(R·T)
+        "desc": "-(1/rho)*grad(P) (3D pressure gradient)",
+        "needs": ["P", "PB", "T"],  # P_total = P + PB, rho = P/(R*T)
         "needs_3d": True,
     },
     "coriolis": {
@@ -47,12 +46,12 @@ NS_REQUIRED = {
         "needs": ["U", "V", "XLAT"],
     },
     "turbulent_viscosity": {
-        "desc": "ν∇²U (turbulent diffusion)",
+        "desc": "nu*laplacian(U) (turbulent diffusion)",
         "needs": ["TKE", "KM", "KH"],  # Eddy viscosity from PBL scheme
         "needs_3d": True,
     },
     "continuity": {
-        "desc": "∇·u = 0 (3D divergence)",
+        "desc": "div(u) = 0 (3D divergence)",
         "needs": ["U", "V", "W"],
         "needs_3d": True,
     },
@@ -209,7 +208,7 @@ def inspect_wrfout(file_path):
 
     wind_3d = u_ok and v_ok and w_ok
     pressure_3d = p_ok and pb_ok
-    density = p_ok and pb_ok and t_ok  # ρ = (P+PB)/(R_d·T)
+    density = p_ok and pb_ok and t_ok  # rho = (P+PB)/(R_d*T)
     eddy_visc = tke_ok or km_ok
 
     print(f"\n  {'Term':<30s} {'Required':<30s} {'Available':<10s}")
