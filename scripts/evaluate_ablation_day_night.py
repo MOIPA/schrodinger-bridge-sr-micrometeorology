@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.dl_config.config_loader import load_config
 from src.dl_data.dataloader import make_dataloaders_and_samplers
-from src.dl_model.ddpm.unet_ddpm_v01 import UNetDDPMVer01
+from src.dl_model.model_maker import make_model
 from src.dl_model.si_follmer.si_follmer_framework import StochasticInterpolantFollmer
 
 logger = getLogger(__name__)
@@ -137,7 +137,7 @@ def evaluate_checkpoint(config_path, checkpoint_path, device, eval_filter):
     print("  Test samples: {}".format(len(test_loader.dataset)))
 
     # Build model
-    model = UNetDDPMVer01(config.model)
+    model = make_model(config.model)
     checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
     model.load_state_dict(checkpoint["model_state_dict"])
     model.to(device)
