@@ -1,0 +1,206 @@
+##              Data Share          ##
+##++++++++++++++++++++++++++++++++
+#> dataDIR = /fsb/home/yutingwang/share/
+##++++++++++++++++++++++++++++++++
+
+
+#@ Observation datasets: $dataDIR/Data_Observations
+#>===========================
+  No.01: CNS_AQ_Monitoring_Hourly
+  #-----------------------
+        ** China National Air Quality Monitoring Data
+        -- storage: single site [one file for each site, each year]
+            -- date: 2013 to 2025
+            -- resolution: hourly
+        -- statoins: see "Stations_Info.xlsx"
+ 
+
+  No.02: CNS_AirQuality_2014-2026
+  #-----------------------
+        ** China National Air Quality Monitoring Data
+        -- address: https://quotsoft.net/air/
+        -- storage: all site [one file for all sites, one day]
+        -- date: 2014 to 2026
+        -- resolution: hourly
+        -- stations: see Stations_List/
+        -- site: urban [City_site/]  &  non-urban separation [Other_site/]
+        ## It includes 24-hour averages for all variables & MDA8 O3.
+  
+      
+  No.03: NOAA_NCEI_GHCNhourly   [## surface Met. observatons; raw data; China]
+  #-----------------------
+        ** Global Historical Climatology Network hourly (GHCNh)
+            -- address: https://www.ncei.noaa.gov/products/global-historical-climatology-network-hourly
+            -- raw data format: see documentation in doc/
+            -- date: 1970 to 2026 [4/22]
+            -- resolution: hourly / 3 hr
+            -- codes:
+                    * download_ghcnh_byYear.m   [To download China stations by year]
+                    * extract_ghcnh_raw.py          [To extract met-variables from raw 'psv' files]
+                    * find_stations_plot.py         [To find stations for specific year & region]
+
+
+  No.04: GHCNh_China_new        [## extracted from the raw GHCNh: NOAA_NCEI_GHCNhourly]
+  #-----------------------
+        ** Global Historical Climatology Network hourly [China]
+        ** Exracted from the raw GHCNh data (NOAA_NCEI_GHCNhourly) using "extract_ghcnh_raw.py"
+        -- date: 1970 to 2026 [4/22]
+        -- table head:
+            #----------------------
+            # Date:       obs. date [yyyy-mm-dd HH:MM:SS; UTC];   
+            # Lat:        Latitude;  
+            # Lon:        Longitude
+            # Elev:       obs. height [m];  
+            # T[C]:       2-m air temperature [C]; 
+            # Td[C]:      dew point temperature [C];
+            # Psfc[hPa]:  station level pressure [hPa];    
+            # slp[hPa]:   sea level pressure [hPa];
+            # RH[%]:      relative humidity [%];   
+            # gust[m/s]:  gust wind [m/s];
+            # WS[m/s]:    wind speed [m/s];  
+            # WD[deg]:    wind direction [deg];
+            # Twet[C]:    wet bulb temperature [C]; 
+            # vis[km]:    visibility [km];
+            # dP3h[hPa]:  3hr pressure change [hPa];   
+            # Prec6h[mm]: 6hr precipitation [mm];
+            #----------------------
+        -- ** WD=999 --> calm wind [it should be deleted .or. you can change it to any degree you want (e.g., 0 / 360).]
+    
+
+  No.05: NOAA_IGRA_Sounding   [GPS sounding; China]
+  #-----------------------  
+    ** Integrated Global Radiosonde Archive (IGRA);  [usually at UTC 00Z & 12Z]
+        -- address: https://www.ncei.noaa.gov/products/weather-balloon/integrated-global-radiosonde-archive
+                    https://www.ncei.noaa.gov/data/igra/access/data-por/
+                    https://www.ncei.noaa.gov/data/igra/access/derived-por/
+                    https://www.ncei.noaa.gov/data/igra/doc/igra2-readme.txt
+        -- data incl.:
+            ## monthly_mean: Monthly means are organized into one file per variable and time of day (0000 and 1200 UTC) [ surface layer + 15 standard pressure levels]
+            ## data: Individual soundings, organized into one file per station [see "igra2-data-format.txt"]
+            ## derived: Assorted humidity and stability parameters, derived from the IGRA soundings [see "igra2-derived-format.txt"]
+            
+            ** monthly mean:   all global statons
+            ** data / derived: only download for China
+        -- stations:
+            ## CH: stations of the mainland China
+            ## HK: statoins of the Hong Kong, China
+            ## TW: stations of the Taiwan, China
+
+        -- Format /Stations info.: see doc/
+        -- date: to 2026-04
+
+        ** Last download:  2026-06-04 
+
+
+
+#@ Emissions:  $dataDIR/Data_Emission/
+#>===========================
+  No.01: MEIC_v2.0_China_monthly
+  #-----------------------
+    ** MEIC China Air Pollutants [v2.0]
+        -- address:         http://meicmodel.org.cn/
+        -- date:            1990, 1995, 2000, 2005, 2010, 2015, 2020, 2023
+        -- resolution:      monthly; 0.25 degree
+        -- VOC speciation:  CB05 & RADM2
+
+  No.02: MIXv2_Asia 
+  #-----------------------
+    ** MIXv2   [NOAA & MEIC Team]
+        -- address:     http://meicmodel.org.cn/
+        -- date:        2010, 2015, 2017
+        -- resolution:  monthly; 0.1 degree
+
+  No.03 SEIM_Global
+  #-----------------------
+    ** SEIM: Global Shipping Emission Inventory Model
+        -- address:     http://meicmodel.org.cn/?page_id=1426&lang=en
+        -- date:        2017
+        -- resolution:  annually; 0.5 degree
+
+
+#@ WPS Geographical Static Data [v4]: $dataDIR/WPS_GeoStatic/
+#>===========================
+  No.01: WPS_GeoStatic
+  #-----------------------
+    ** Geographical Static Data
+    -- address: https://www2.mmm.ucar.edu/wrf/users/download/get_sources_wps_geog.html
+    -- including ALL　Mandatory (high-res) & Optional & Specific
+        +++++++++++++++++++++++++ 
+        *** When you have your own static data (e.g., custom land use, soil type, ...) that you 
+            want to use instead of or in addition to the sahred "WPS_GeoStatic" data, 
+            set the "geog_data_path" in your "namelist.wps" as a list of paths (ordered by priority);
+            & you must also update the corresponding "filename" field in "GEOGRID.TBL" to match your custom
+            subdirectory name, unless your data directory uses exactly the same name as the standard dataset.
+            --------------------- 
+            -- geog_data_path = 'path/to/your/own/data/', '/fsb/home/yutingwang/share/WPS_GeoStatic/'
+            --------------------- 
+        +++++++++++++++++++++++++ 
+
+
+#@ Reanalysis/Analysis:
+#>===========================
+  No.01: 
+  #-----------------------
+
+
+
+#@ WRF Simulations: $dataDir/Data_WRFout
+#>===========================
+  #NOTES:
+  #++++++++++++++++++++++
+  *** When analyzing these data, it's better to remove the boundary buffer zones of each domain. 
+  *** The boundary gird points (buffer region) are 5 for the mesoscale domain (d01-d04) & 24 for the LES domain.
+  #++++++++++++++++++++++
+  
+  No.01: case01_Shenzhen
+  #-----------------------
+  (1) meso_202007_myj
+    ** One month mesoscle simulation for Shenzhen, with MYU PBL scheme.
+    -- resolution: 27/9/3/1 km for d01/d02/d03/d04; hourly for d01-d03 & 10-min for d04
+ 
+  (2) meso_202007_ysu
+    ** Same as (1) "meso_202007_myj", but with YSU PBL scheme.
+
+  
+  (3) les_20200730
+    ** Mesoscale & microscale coupled modeling
+    -- including:
+        ++ meso-myj:     mesoscale simulation with MYJ pbl scheme   [dx: 27/9/3/1 km]
+        ++ meso-ysu:     mesoscale simulation with YSU pbl scheme   [dx: 27/9/3/1 km]
+        ++ les_100m-myj: large-eddy simulation forced by "meso-myj" [dx: 111 m]
+        ++ les_100m-ysu: large-eddy simulation forced by "meso-ysu" [dx: 111 m]
+    
+    -- resolution: MESO: 27/9/3/1 km for d01/d02/d03/d04; hourly for d01-d03, 10-min for d04; 
+                   LES: ~111m & 1-min for LES
+
+  (4) les_20200713
+    ** Mesoscale & microscale coupled modeling
+    -- including:
+        ++ meso-myj:         mesoscale simulation with MYJ PBL scheme [dx: 27/9/3/1 km]
+        ++ meso-ysu:         mesoscale simulation with YSU PBL scheme [dx: 27/9/3/1 km]
+        ++ les_100m-myj:     large-eddy simulation forced by "meso-myj" & MODIS@500m    [dx: 111m]
+        ++ les_100m_gld-ysu: large-eddy simulation forced by "meso-ysu" & GlobeLand@30m [dx: 111m]
+        ++ les_30m_gld-ysu:  large-eddy simulation forced by "meso-ysu" & GlobeLand@30m [dx: 37 m]
+                             **Note: About 4 hours of "les_30m_gld-ysu" simulation output have been lost from the storage hard disks.
+
+    -- resolution: MESO: 27/9/3/1 km for d01/d02/d03/d04; hourly for d01-d03, 10-min for d04; 
+                   LES: ~111m & 1-min for LES
+
+
+  No.02: case02_Typhoon_WindFarm
+  #-----------------------
+    ** Meso- & micro-scale coupled modeling for wind farm during Typhoon Mujigae (200909).
+    -- including:
+        ++ meso_Muji:         4-day mesoscale simulation  [res.: 27/9/3/1 km for d01-d04; hourly for d01-d03 & 10-min for d04]
+        ++ les_100m_20090910: 1-day LES [res.: 111m & 1-min]
+        ++ les_100m_20090911: 1-day LES [res.: 111m & 1-min] @The cell-perturbation intensity is different from "les_100m_20090910"
+
+  
+
+#@ China Boundaries:  $dataDIR/China_Boundaries 
+#>===================================
+  No.01: gadm 
+  #-----------------------
+        ** Global Administrative Boundaries Series (GADM)
+            -- https://geodata.ucdavis.edu/gadm/gadm4.1/shp/gadm41_CHN_shp.zip
+            -- https://docs.gmt-china.org/latest/dataset/gadm/index.html
