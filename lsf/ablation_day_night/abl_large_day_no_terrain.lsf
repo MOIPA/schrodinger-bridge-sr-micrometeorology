@@ -1,0 +1,34 @@
+#!/bin/bash
+# ============================================
+# LSF — Day/Night Ablation Large (192x192, 64ch): NoTerrain (day)
+# 192x192 + inner_ch=64 + pure L2 + GPU
+# ============================================
+#BSUB -q 723090ib
+#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -n 4
+#BSUB -R "rusage[mem=32000]"
+#BSUB -J abl_large_day_no_terrain
+#BSUB -o logs/abl_large_day_no_terrain_%J.out
+#BSUB -e logs/abl_large_day_no_terrain_%J.err
+
+module load anaconda/3
+module load cuda/11.8.0
+source activate wind3d
+
+cd $LS_SUBCWD
+mkdir -p logs
+
+echo "=== Ablation: NoTerrain | Filter: day | Large (192x192, 64ch) ==="
+echo "Config: configs/config_wind_3d_ablation_no_terrain_day_large.yml"
+echo "Host: $(hostname)"
+echo "GPU:  $(nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null || echo 'N/A')"
+echo "Start: $(date)"
+echo ""
+
+python scripts/train_schrodinger_bridge_model.py \
+  --config_path configs/config_wind_3d_ablation_no_terrain_day_large.yml \
+  --experiment_name ExperimentSchrodingerBridge3dWind \
+  --device cuda:0
+
+echo ""
+echo "End: $(date)"
