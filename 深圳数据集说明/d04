@@ -1,0 +1,676 @@
+python3 scripts/inspect_wrfout.py   --data_dir /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_myj   --domain d04
+Found 744 WRF output files for d04
+
+======================================================================
+File: /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_myj/wrfout_d04_2020-07-01_00:00:00
+======================================================================
+
+--- Global Attributes ---
+  TITLE:  OUTPUT FROM WRF V4.2.1 MODEL
+  START_DATE: 2020-06-30_00:00:00
+  SIMULATION_START_DATE: 2020-06-30_00:00:00
+  GRIDTYPE: C
+  DX: 1000.0
+  DY: 1000.0
+  DT: 2.465937614440918
+  WEST-EAST_GRID_DIMENSION: 121
+  SOUTH-NORTH_GRID_DIMENSION: 100
+  BOTTOM-TOP_GRID_DIMENSION: 62
+
+--- Dimensions ---
+  Time: 6
+  south_north: 99
+  west_east: 120
+  bottom_top_stag: 62
+  bottom_top: 61
+  soil_layers_stag: 4
+  south_north_stag: 100
+  DateStrLen: 19
+  west_east_stag: 121
+
+--- All Variables (112 total) ---
+  AKHS                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m s-1
+  AKMS                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m s-1
+  ALBBCK               dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  ALBEDO               dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=-
+  AREA2D               dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m2
+  C1F                  dims=('Time', 'bottom_top_stag')              shape=(6, 62)                        units=Dimensionless
+  C1H                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=Dimensionless
+  C2F                  dims=('Time', 'bottom_top_stag')              shape=(6, 62)                        units=Pa
+  C2H                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=Pa
+  C3F                  dims=('Time', 'bottom_top_stag')              shape=(6, 62)                        units=Dimensionless
+  C3H                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=Dimensionless
+  C4F                  dims=('Time', 'bottom_top_stag')              shape=(6, 62)                        units=Pa
+  C4H                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=Pa
+  CD                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  CF1                  dims=('Time',)                                shape=(6,)                           units=
+  CF2                  dims=('Time',)                                shape=(6,)                           units=
+  CF3                  dims=('Time',)                                shape=(6,)                           units=
+  CFN                  dims=('Time',)                                shape=(6,)                           units=
+  CFN1                 dims=('Time',)                                shape=(6,)                           units=
+  CK                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  CLAT                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=degree_north
+  CLDFRA               dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=
+  COSALPHA             dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  COSZEN               dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=dimensionless
+  DN                   dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=
+  DNW                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=
+  DX2D                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m
+  DZS                  dims=('Time', 'soil_layers_stag')             shape=(6, 4)                         units=m
+  E                    dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=s-1
+  EL_PBL               dims=('Time', 'bottom_top_stag', 'south_north', 'west_east') shape=(6, 62, 99, 120)               units=m
+  EXCH_H               dims=('Time', 'bottom_top_stag', 'south_north', 'west_east') shape=(6, 62, 99, 120)               units=m2 s-1
+  EXCH_M               dims=('Time', 'bottom_top_stag', 'south_north', 'west_east') shape=(6, 62, 99, 120)               units=m2 s-1
+  F                    dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=s-1
+  FNM                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=
+  FNP                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=
+  GRDFLX               dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=W m-2
+  HFX                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=W m-2
+  HGT                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m
+  ITIMESTEP            dims=('Time',)                                shape=(6,)                           units=
+  LAI                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m-2/m-2
+  LAKEMASK             dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  LANDMASK             dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  LH                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=W m-2
+  LU_INDEX             dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  MF_VX_INV            dims=('Time', 'south_north_stag', 'west_east') shape=(6, 100, 120)                  units=
+  MU                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=Pa
+  MUB                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=Pa
+  NOAHRES              dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=W m{-2}
+  OLR                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=W m-2
+  P                    dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=Pa
+  P00                  dims=('Time',)                                shape=(6,)                           units=Pa
+  PB                   dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=Pa
+  PBLH                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m
+  PC                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=Pa
+  PCB                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=Pa
+  PH                   dims=('Time', 'bottom_top_stag', 'south_north', 'west_east') shape=(6, 62, 99, 120)               units=m2 s-2
+  PHB                  dims=('Time', 'bottom_top_stag', 'south_north', 'west_east') shape=(6, 62, 99, 120)               units=m2 s-2
+  PSFC                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=Pa
+  P_STRAT              dims=('Time',)                                shape=(6,)                           units=Pa
+  P_TOP                dims=('Time',)                                shape=(6,)                           units=Pa
+  Q2                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=kg kg-1
+  QCLOUD               dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=kg kg-1
+  QFX                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=kg m-2 s-1
+  QRAIN                dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=kg kg-1
+  QVAPOR               dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=kg kg-1
+  RAINCV               dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=mm
+  RAINNCV              dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=mm
+  RDN                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=
+  RDNW                 dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=
+  RDX                  dims=('Time',)                                shape=(6,)                           units=m-1
+  RDY                  dims=('Time',)                                shape=(6,)                           units=m-1
+  REFL_10CM            dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=dBZ
+  RESM                 dims=('Time',)                                shape=(6,)                           units=
+  RMOL                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  SINALPHA             dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  SMCREL               dims=('Time', 'soil_layers_stag', 'south_north', 'west_east') shape=(6, 4, 99, 120)                units=
+  SR                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=-
+  T                    dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=K
+  T00                  dims=('Time',)                                shape=(6,)                           units=K
+  T2                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=K
+  TH2                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=K
+  THM                  dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=K
+  TKE                  dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=m2 s-2
+  TKE_PBL              dims=('Time', 'bottom_top_stag', 'south_north', 'west_east') shape=(6, 62, 99, 120)               units=m2 s-2
+  TLP                  dims=('Time',)                                shape=(6,)                           units=
+  TLP_STRAT            dims=('Time',)                                shape=(6,)                           units=K
+  TMN                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=K
+  TSK                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=K
+  TSLB                 dims=('Time', 'soil_layers_stag', 'south_north', 'west_east') shape=(6, 4, 99, 120)                units=K
+  Times                dims=('Time', 'DateStrLen')                   shape=(6, 19)                        units=
+  U                    dims=('Time', 'bottom_top', 'south_north', 'west_east_stag') shape=(6, 61, 99, 121)               units=m s-1
+  U10                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m s-1
+  U10E                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m s-1
+  UST                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m s-1
+  V                    dims=('Time', 'bottom_top', 'south_north_stag', 'west_east') shape=(6, 61, 100, 120)              units=m s-1
+  V10                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m s-1
+  V10E                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m s-1
+  VAR                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  W                    dims=('Time', 'bottom_top_stag', 'south_north', 'west_east') shape=(6, 62, 99, 120)               units=m s-1
+  XLAND                dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  XLAT                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=degree_north
+  XLAT_U               dims=('Time', 'south_north', 'west_east_stag') shape=(6, 99, 121)                   units=degree_north
+  XLAT_V               dims=('Time', 'south_north_stag', 'west_east') shape=(6, 100, 120)                  units=degree_north
+  XLONG                dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=degree_east
+  XLONG_U              dims=('Time', 'south_north', 'west_east_stag') shape=(6, 99, 121)                   units=degree_east
+  XLONG_V              dims=('Time', 'south_north_stag', 'west_east') shape=(6, 100, 120)                  units=degree_east
+  XTIME                dims=('Time',)                                shape=(6,)                           units=minutes since 2020-06-30 00:00:00
+  ZETATOP              dims=('Time',)                                shape=(6,)                           units=
+  ZNU                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=
+  ZNW                  dims=('Time', 'bottom_top_stag')              shape=(6, 62)                        units=
+  ZOL                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  ZS                   dims=('Time', 'soil_layers_stag')             shape=(6, 4)                         units=m
+
+--- NS Equation Variable Check ---
+
+  FOUND:
+    U            -> U           shape=(6, 61, 99, 121)
+    V            -> V           shape=(6, 61, 100, 120)
+    W            -> W           shape=(6, 62, 99, 120)
+    P            -> P           shape=(6, 61, 99, 120)
+    PB           -> PB          shape=(6, 61, 99, 120)
+    T            -> T           shape=(6, 61, 99, 120)
+    PH           -> PH          shape=(6, 62, 99, 120)
+    PHB          -> PHB         shape=(6, 62, 99, 120)
+    TKE          -> TKE         shape=(6, 61, 99, 120)
+    KM           -> EXCH_M      shape=(6, 62, 99, 120)
+    KH           -> EXCH_H      shape=(6, 62, 99, 120)
+    XLAT         -> XLAT        shape=(6, 99, 120)
+    XLONG        -> XLONG       shape=(6, 99, 120)
+    HGT          -> HGT         shape=(6, 99, 120)
+    PSFC         -> PSFC        shape=(6, 99, 120)
+    PBLH         -> PBLH        shape=(6, 99, 120)
+    Q2           -> Q2          shape=(6, 99, 120)
+    T2           -> T2          shape=(6, 99, 120)
+    U10          -> U10         shape=(6, 99, 120)
+    V10          -> V10         shape=(6, 99, 120)
+    HFX          -> HFX         shape=(6, 99, 120)
+    LH           -> LH          shape=(6, 99, 120)
+    UST          -> UST         shape=(6, 99, 120)
+    QFX          -> QFX         shape=(6, 99, 120)
+
+  MISSING: ['SWDOWN', 'GLW', 'RAINC', 'RAINNC']
+
+--- Time Dimension ---
+  Time steps in file: 6
+  First: 2020-07-01_00:00:00, Last: 2020-07-01_00:50:00
+  Output interval: ~10.0 min
+
+--- Vertical Levels ---
+  bottom_top levels: 61
+
+--- 3D Variables (have bottom_top dimension) ---
+  Count: 23
+    C1H
+    C2H
+    C3H
+    C4H
+    CLDFRA
+    DN
+    DNW
+    FNM
+    FNP
+    P
+    PB
+    QCLOUD
+    QRAIN
+    QVAPOR
+    RDN
+    RDNW
+    REFL_10CM
+    T
+    THM
+    TKE
+    U
+    V
+    ZNU
+
+======================================================================
+NS EQUATION FEASIBILITY ASSESSMENT
+======================================================================
+
+  Term                           Required                       Available 
+  ----------------------------------------------------------------------
+  time_derivative                dU/dt, dV/dt, dW/dt            YES       
+  advection                      U*grad(U) + V*grad(V) + W*grad(W) (3D advection) YES       
+  pressure_gradient              -(1/rho)*grad(P) (3D pressure gradient) YES       
+  coriolis                       fV, -fU (Coriolis force)       YES       
+  turbulent_viscosity            nu*laplacian(U) (turbulent diffusion) YES       
+  continuity                     div(u) = 0 (3D divergence)     YES       
+
+  >> 6/6 NS equation terms can be constrained
+
+======================================================================
+File: /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_myj/wrfout_d04_2020-07-16_12:00:00
+======================================================================
+
+--- Global Attributes ---
+  TITLE:  OUTPUT FROM WRF V4.2.1 MODEL
+  START_DATE: 2020-07-16_00:00:00
+  SIMULATION_START_DATE: 2020-07-15_00:00:00
+  GRIDTYPE: C
+  DX: 1000.0
+  DY: 1000.0
+  DT: 2.306666612625122
+  WEST-EAST_GRID_DIMENSION: 121
+  SOUTH-NORTH_GRID_DIMENSION: 100
+  BOTTOM-TOP_GRID_DIMENSION: 62
+
+--- Dimensions ---
+  Time: 6
+  south_north: 99
+  west_east: 120
+  bottom_top_stag: 62
+  bottom_top: 61
+  soil_layers_stag: 4
+  DateStrLen: 19
+  west_east_stag: 121
+  south_north_stag: 100
+
+--- All Variables (104 total) ---
+  AKHS                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m s-1
+  AKMS                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m s-1
+  ALBBCK               dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  ALBEDO               dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=-
+  AREA2D               dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m2
+  C1F                  dims=('Time', 'bottom_top_stag')              shape=(6, 62)                        units=Dimensionless
+  C1H                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=Dimensionless
+  C2F                  dims=('Time', 'bottom_top_stag')              shape=(6, 62)                        units=Pa
+  C2H                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=Pa
+  C3F                  dims=('Time', 'bottom_top_stag')              shape=(6, 62)                        units=Dimensionless
+  C3H                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=Dimensionless
+  C4F                  dims=('Time', 'bottom_top_stag')              shape=(6, 62)                        units=Pa
+  C4H                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=Pa
+  CD                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  CF1                  dims=('Time',)                                shape=(6,)                           units=
+  CF2                  dims=('Time',)                                shape=(6,)                           units=
+  CF3                  dims=('Time',)                                shape=(6,)                           units=
+  CFN                  dims=('Time',)                                shape=(6,)                           units=
+  CFN1                 dims=('Time',)                                shape=(6,)                           units=
+  CK                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  CLDFRA               dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=
+  DN                   dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=
+  DNW                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=
+  DX2D                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m
+  DZS                  dims=('Time', 'soil_layers_stag')             shape=(6, 4)                         units=m
+  E                    dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=s-1
+  EL_PBL               dims=('Time', 'bottom_top_stag', 'south_north', 'west_east') shape=(6, 62, 99, 120)               units=m
+  EXCH_H               dims=('Time', 'bottom_top_stag', 'south_north', 'west_east') shape=(6, 62, 99, 120)               units=m2 s-1
+  EXCH_M               dims=('Time', 'bottom_top_stag', 'south_north', 'west_east') shape=(6, 62, 99, 120)               units=m2 s-1
+  F                    dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=s-1
+  FNM                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=
+  FNP                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=
+  GRDFLX               dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=W m-2
+  HFX                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=W m-2
+  HGT                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m
+  ITIMESTEP            dims=('Time',)                                shape=(6,)                           units=
+  LAKEMASK             dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  LANDMASK             dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  LH                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=W m-2
+  LU_INDEX             dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  MU                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=Pa
+  MUB                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=Pa
+  NOAHRES              dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=W m{-2}
+  OLR                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=W m-2
+  P                    dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=Pa
+  P00                  dims=('Time',)                                shape=(6,)                           units=Pa
+  PB                   dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=Pa
+  PBLH                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m
+  PC                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=Pa
+  PCB                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=Pa
+  PH                   dims=('Time', 'bottom_top_stag', 'south_north', 'west_east') shape=(6, 62, 99, 120)               units=m2 s-2
+  PHB                  dims=('Time', 'bottom_top_stag', 'south_north', 'west_east') shape=(6, 62, 99, 120)               units=m2 s-2
+  PSFC                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=Pa
+  P_STRAT              dims=('Time',)                                shape=(6,)                           units=Pa
+  P_TOP                dims=('Time',)                                shape=(6,)                           units=Pa
+  Q2                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=kg kg-1
+  QCLOUD               dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=kg kg-1
+  QFX                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=kg m-2 s-1
+  QRAIN                dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=kg kg-1
+  QVAPOR               dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=kg kg-1
+  RAINCV               dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=mm
+  RAINNCV              dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=mm
+  RDN                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=
+  RDNW                 dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=
+  RDX                  dims=('Time',)                                shape=(6,)                           units=m-1
+  RDY                  dims=('Time',)                                shape=(6,)                           units=m-1
+  REFL_10CM            dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=dBZ
+  RESM                 dims=('Time',)                                shape=(6,)                           units=
+  RMOL                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  SMCREL               dims=('Time', 'soil_layers_stag', 'south_north', 'west_east') shape=(6, 4, 99, 120)                units=
+  T                    dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=K
+  T00                  dims=('Time',)                                shape=(6,)                           units=K
+  T2                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=K
+  TH2                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=K
+  THM                  dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=K
+  TKE                  dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=m2 s-2
+  TKE_PBL              dims=('Time', 'bottom_top_stag', 'south_north', 'west_east') shape=(6, 62, 99, 120)               units=m2 s-2
+  TLP                  dims=('Time',)                                shape=(6,)                           units=
+  TLP_STRAT            dims=('Time',)                                shape=(6,)                           units=K
+  TSK                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=K
+  TSLB                 dims=('Time', 'soil_layers_stag', 'south_north', 'west_east') shape=(6, 4, 99, 120)                units=K
+  Times                dims=('Time', 'DateStrLen')                   shape=(6, 19)                        units=
+  U                    dims=('Time', 'bottom_top', 'south_north', 'west_east_stag') shape=(6, 61, 99, 121)               units=m s-1
+  U10                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m s-1
+  U10E                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m s-1
+  UST                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m s-1
+  V                    dims=('Time', 'bottom_top', 'south_north_stag', 'west_east') shape=(6, 61, 100, 120)              units=m s-1
+  V10                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m s-1
+  V10E                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m s-1
+  VAR                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  W                    dims=('Time', 'bottom_top_stag', 'south_north', 'west_east') shape=(6, 62, 99, 120)               units=m s-1
+  XLAND                dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  XLAT                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=degree_north
+  XLAT_U               dims=('Time', 'south_north', 'west_east_stag') shape=(6, 99, 121)                   units=degree_north
+  XLAT_V               dims=('Time', 'south_north_stag', 'west_east') shape=(6, 100, 120)                  units=degree_north
+  XLONG                dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=degree_east
+  XLONG_U              dims=('Time', 'south_north', 'west_east_stag') shape=(6, 99, 121)                   units=degree_east
+  XLONG_V              dims=('Time', 'south_north_stag', 'west_east') shape=(6, 100, 120)                  units=degree_east
+  XTIME                dims=('Time',)                                shape=(6,)                           units=minutes since 2020-07-15 00:00:00
+  ZETATOP              dims=('Time',)                                shape=(6,)                           units=
+  ZNU                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=
+  ZNW                  dims=('Time', 'bottom_top_stag')              shape=(6, 62)                        units=
+  ZOL                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  ZS                   dims=('Time', 'soil_layers_stag')             shape=(6, 4)                         units=m
+
+--- NS Equation Variable Check ---
+
+  FOUND:
+    U            -> U           shape=(6, 61, 99, 121)
+    V            -> V           shape=(6, 61, 100, 120)
+    W            -> W           shape=(6, 62, 99, 120)
+    P            -> P           shape=(6, 61, 99, 120)
+    PB           -> PB          shape=(6, 61, 99, 120)
+    T            -> T           shape=(6, 61, 99, 120)
+    PH           -> PH          shape=(6, 62, 99, 120)
+    PHB          -> PHB         shape=(6, 62, 99, 120)
+    TKE          -> TKE         shape=(6, 61, 99, 120)
+    KM           -> EXCH_M      shape=(6, 62, 99, 120)
+    KH           -> EXCH_H      shape=(6, 62, 99, 120)
+    XLAT         -> XLAT        shape=(6, 99, 120)
+    XLONG        -> XLONG       shape=(6, 99, 120)
+    HGT          -> HGT         shape=(6, 99, 120)
+    PSFC         -> PSFC        shape=(6, 99, 120)
+    PBLH         -> PBLH        shape=(6, 99, 120)
+    Q2           -> Q2          shape=(6, 99, 120)
+    T2           -> T2          shape=(6, 99, 120)
+    U10          -> U10         shape=(6, 99, 120)
+    V10          -> V10         shape=(6, 99, 120)
+    HFX          -> HFX         shape=(6, 99, 120)
+    LH           -> LH          shape=(6, 99, 120)
+    UST          -> UST         shape=(6, 99, 120)
+    QFX          -> QFX         shape=(6, 99, 120)
+
+  MISSING: ['SWDOWN', 'GLW', 'RAINC', 'RAINNC']
+
+--- Time Dimension ---
+  Time steps in file: 6
+  First: 2020-07-16_12:00:00, Last: 2020-07-16_12:50:00
+  Output interval: ~10.0 min
+
+--- Vertical Levels ---
+  bottom_top levels: 61
+
+--- 3D Variables (have bottom_top dimension) ---
+  Count: 23
+    C1H
+    C2H
+    C3H
+    C4H
+    CLDFRA
+    DN
+    DNW
+    FNM
+    FNP
+    P
+    PB
+    QCLOUD
+    QRAIN
+    QVAPOR
+    RDN
+    RDNW
+    REFL_10CM
+    T
+    THM
+    TKE
+    U
+    V
+    ZNU
+
+======================================================================
+NS EQUATION FEASIBILITY ASSESSMENT
+======================================================================
+
+  Term                           Required                       Available 
+  ----------------------------------------------------------------------
+  time_derivative                dU/dt, dV/dt, dW/dt            YES       
+  advection                      U*grad(U) + V*grad(V) + W*grad(W) (3D advection) YES       
+  pressure_gradient              -(1/rho)*grad(P) (3D pressure gradient) YES       
+  coriolis                       fV, -fU (Coriolis force)       YES       
+  turbulent_viscosity            nu*laplacian(U) (turbulent diffusion) YES       
+  continuity                     div(u) = 0 (3D divergence)     YES       
+
+  >> 6/6 NS equation terms can be constrained
+
+======================================================================
+File: /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_myj/wrfout_d04_2020-07-01_02:00:00
+======================================================================
+
+--- Global Attributes ---
+  TITLE:  OUTPUT FROM WRF V4.2.1 MODEL
+  START_DATE: 2020-06-30_00:00:00
+  SIMULATION_START_DATE: 2020-06-30_00:00:00
+  GRIDTYPE: C
+  DX: 1000.0
+  DY: 1000.0
+  DT: 2.2241666316986084
+  WEST-EAST_GRID_DIMENSION: 121
+  SOUTH-NORTH_GRID_DIMENSION: 100
+  BOTTOM-TOP_GRID_DIMENSION: 62
+
+--- Dimensions ---
+  Time: 6
+  south_north: 99
+  west_east: 120
+  bottom_top_stag: 62
+  bottom_top: 61
+  soil_layers_stag: 4
+  south_north_stag: 100
+  DateStrLen: 19
+  west_east_stag: 121
+
+--- All Variables (112 total) ---
+  AKHS                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m s-1
+  AKMS                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m s-1
+  ALBBCK               dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  ALBEDO               dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=-
+  AREA2D               dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m2
+  C1F                  dims=('Time', 'bottom_top_stag')              shape=(6, 62)                        units=Dimensionless
+  C1H                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=Dimensionless
+  C2F                  dims=('Time', 'bottom_top_stag')              shape=(6, 62)                        units=Pa
+  C2H                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=Pa
+  C3F                  dims=('Time', 'bottom_top_stag')              shape=(6, 62)                        units=Dimensionless
+  C3H                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=Dimensionless
+  C4F                  dims=('Time', 'bottom_top_stag')              shape=(6, 62)                        units=Pa
+  C4H                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=Pa
+  CD                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  CF1                  dims=('Time',)                                shape=(6,)                           units=
+  CF2                  dims=('Time',)                                shape=(6,)                           units=
+  CF3                  dims=('Time',)                                shape=(6,)                           units=
+  CFN                  dims=('Time',)                                shape=(6,)                           units=
+  CFN1                 dims=('Time',)                                shape=(6,)                           units=
+  CK                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  CLAT                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=degree_north
+  CLDFRA               dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=
+  COSALPHA             dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  COSZEN               dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=dimensionless
+  DN                   dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=
+  DNW                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=
+  DX2D                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m
+  DZS                  dims=('Time', 'soil_layers_stag')             shape=(6, 4)                         units=m
+  E                    dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=s-1
+  EL_PBL               dims=('Time', 'bottom_top_stag', 'south_north', 'west_east') shape=(6, 62, 99, 120)               units=m
+  EXCH_H               dims=('Time', 'bottom_top_stag', 'south_north', 'west_east') shape=(6, 62, 99, 120)               units=m2 s-1
+  EXCH_M               dims=('Time', 'bottom_top_stag', 'south_north', 'west_east') shape=(6, 62, 99, 120)               units=m2 s-1
+  F                    dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=s-1
+  FNM                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=
+  FNP                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=
+  GRDFLX               dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=W m-2
+  HFX                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=W m-2
+  HGT                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m
+  ITIMESTEP            dims=('Time',)                                shape=(6,)                           units=
+  LAI                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m-2/m-2
+  LAKEMASK             dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  LANDMASK             dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  LH                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=W m-2
+  LU_INDEX             dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  MF_VX_INV            dims=('Time', 'south_north_stag', 'west_east') shape=(6, 100, 120)                  units=
+  MU                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=Pa
+  MUB                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=Pa
+  NOAHRES              dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=W m{-2}
+  OLR                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=W m-2
+  P                    dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=Pa
+  P00                  dims=('Time',)                                shape=(6,)                           units=Pa
+  PB                   dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=Pa
+  PBLH                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m
+  PC                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=Pa
+  PCB                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=Pa
+  PH                   dims=('Time', 'bottom_top_stag', 'south_north', 'west_east') shape=(6, 62, 99, 120)               units=m2 s-2
+  PHB                  dims=('Time', 'bottom_top_stag', 'south_north', 'west_east') shape=(6, 62, 99, 120)               units=m2 s-2
+  PSFC                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=Pa
+  P_STRAT              dims=('Time',)                                shape=(6,)                           units=Pa
+  P_TOP                dims=('Time',)                                shape=(6,)                           units=Pa
+  Q2                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=kg kg-1
+  QCLOUD               dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=kg kg-1
+  QFX                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=kg m-2 s-1
+  QRAIN                dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=kg kg-1
+  QVAPOR               dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=kg kg-1
+  RAINCV               dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=mm
+  RAINNCV              dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=mm
+  RDN                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=
+  RDNW                 dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=
+  RDX                  dims=('Time',)                                shape=(6,)                           units=m-1
+  RDY                  dims=('Time',)                                shape=(6,)                           units=m-1
+  REFL_10CM            dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=dBZ
+  RESM                 dims=('Time',)                                shape=(6,)                           units=
+  RMOL                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  SINALPHA             dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  SMCREL               dims=('Time', 'soil_layers_stag', 'south_north', 'west_east') shape=(6, 4, 99, 120)                units=
+  SR                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=-
+  T                    dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=K
+  T00                  dims=('Time',)                                shape=(6,)                           units=K
+  T2                   dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=K
+  TH2                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=K
+  THM                  dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=K
+  TKE                  dims=('Time', 'bottom_top', 'south_north', 'west_east') shape=(6, 61, 99, 120)               units=m2 s-2
+  TKE_PBL              dims=('Time', 'bottom_top_stag', 'south_north', 'west_east') shape=(6, 62, 99, 120)               units=m2 s-2
+  TLP                  dims=('Time',)                                shape=(6,)                           units=
+  TLP_STRAT            dims=('Time',)                                shape=(6,)                           units=K
+  TMN                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=K
+  TSK                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=K
+  TSLB                 dims=('Time', 'soil_layers_stag', 'south_north', 'west_east') shape=(6, 4, 99, 120)                units=K
+  Times                dims=('Time', 'DateStrLen')                   shape=(6, 19)                        units=
+  U                    dims=('Time', 'bottom_top', 'south_north', 'west_east_stag') shape=(6, 61, 99, 121)               units=m s-1
+  U10                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m s-1
+  U10E                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m s-1
+  UST                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m s-1
+  V                    dims=('Time', 'bottom_top', 'south_north_stag', 'west_east') shape=(6, 61, 100, 120)              units=m s-1
+  V10                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m s-1
+  V10E                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=m s-1
+  VAR                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  W                    dims=('Time', 'bottom_top_stag', 'south_north', 'west_east') shape=(6, 62, 99, 120)               units=m s-1
+  XLAND                dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  XLAT                 dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=degree_north
+  XLAT_U               dims=('Time', 'south_north', 'west_east_stag') shape=(6, 99, 121)                   units=degree_north
+  XLAT_V               dims=('Time', 'south_north_stag', 'west_east') shape=(6, 100, 120)                  units=degree_north
+  XLONG                dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=degree_east
+  XLONG_U              dims=('Time', 'south_north', 'west_east_stag') shape=(6, 99, 121)                   units=degree_east
+  XLONG_V              dims=('Time', 'south_north_stag', 'west_east') shape=(6, 100, 120)                  units=degree_east
+  XTIME                dims=('Time',)                                shape=(6,)                           units=minutes since 2020-06-30 00:00:00
+  ZETATOP              dims=('Time',)                                shape=(6,)                           units=
+  ZNU                  dims=('Time', 'bottom_top')                   shape=(6, 61)                        units=
+  ZNW                  dims=('Time', 'bottom_top_stag')              shape=(6, 62)                        units=
+  ZOL                  dims=('Time', 'south_north', 'west_east')     shape=(6, 99, 120)                   units=
+  ZS                   dims=('Time', 'soil_layers_stag')             shape=(6, 4)                         units=m
+
+--- NS Equation Variable Check ---
+
+  FOUND:
+    U            -> U           shape=(6, 61, 99, 121)
+    V            -> V           shape=(6, 61, 100, 120)
+    W            -> W           shape=(6, 62, 99, 120)
+    P            -> P           shape=(6, 61, 99, 120)
+    PB           -> PB          shape=(6, 61, 99, 120)
+    T            -> T           shape=(6, 61, 99, 120)
+    PH           -> PH          shape=(6, 62, 99, 120)
+    PHB          -> PHB         shape=(6, 62, 99, 120)
+    TKE          -> TKE         shape=(6, 61, 99, 120)
+    KM           -> EXCH_M      shape=(6, 62, 99, 120)
+    KH           -> EXCH_H      shape=(6, 62, 99, 120)
+    XLAT         -> XLAT        shape=(6, 99, 120)
+    XLONG        -> XLONG       shape=(6, 99, 120)
+    HGT          -> HGT         shape=(6, 99, 120)
+    PSFC         -> PSFC        shape=(6, 99, 120)
+    PBLH         -> PBLH        shape=(6, 99, 120)
+    Q2           -> Q2          shape=(6, 99, 120)
+    T2           -> T2          shape=(6, 99, 120)
+    U10          -> U10         shape=(6, 99, 120)
+    V10          -> V10         shape=(6, 99, 120)
+    HFX          -> HFX         shape=(6, 99, 120)
+    LH           -> LH          shape=(6, 99, 120)
+    UST          -> UST         shape=(6, 99, 120)
+    QFX          -> QFX         shape=(6, 99, 120)
+
+  MISSING: ['SWDOWN', 'GLW', 'RAINC', 'RAINNC']
+
+--- Time Dimension ---
+  Time steps in file: 6
+  First: 2020-07-01_02:00:00, Last: 2020-07-01_02:50:00
+  Output interval: ~10.0 min
+
+--- Vertical Levels ---
+  bottom_top levels: 61
+
+--- 3D Variables (have bottom_top dimension) ---
+  Count: 23
+    C1H
+    C2H
+    C3H
+    C4H
+    CLDFRA
+    DN
+    DNW
+    FNM
+    FNP
+    P
+    PB
+    QCLOUD
+    QRAIN
+    QVAPOR
+    RDN
+    RDNW
+    REFL_10CM
+    T
+    THM
+    TKE
+    U
+    V
+    ZNU
+
+======================================================================
+NS EQUATION FEASIBILITY ASSESSMENT
+======================================================================
+
+  Term                           Required                       Available 
+  ----------------------------------------------------------------------
+  time_derivative                dU/dt, dV/dt, dW/dt            YES       
+  advection                      U*grad(U) + V*grad(V) + W*grad(W) (3D advection) YES       
+  pressure_gradient              -(1/rho)*grad(P) (3D pressure gradient) YES       
+  coriolis                       fV, -fU (Coriolis force)       YES       
+  turbulent_viscosity            nu*laplacian(U) (turbulent diffusion) YES       
+  continuity                     div(u) = 0 (3D divergence)     YES       
+
+  >> 6/6 NS equation terms can be constrained
+
+======================================================================
+FINAL SUMMARY
+======================================================================
+Total wrfout files: 744
+
+File inspected: wrfout_d04_2020-07-01_00:00:00
+Time steps: 6
+Vertical levels: 61
+
+Key findings for NS equation:
+  time_derivative          : YES
+  advection                : YES
+  pressure_gradient        : YES
+  coriolis                 : YES
+  turbulent_viscosity      : YES
+  continuity               : YES
+
+  *** ALL 6 NS equation terms can be constrained! ***
+
+To check a different domain, use --domain d03
+To check LES data, use --domain les_100m
