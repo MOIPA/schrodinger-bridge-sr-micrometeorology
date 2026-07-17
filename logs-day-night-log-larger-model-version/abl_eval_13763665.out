@@ -1,0 +1,90 @@
+=== Day/Night Ablation Evaluation (10 models) ===
+Host: m002
+GPU:  NVIDIA GeForce RTX 3090, 24576 MiB
+Start: Wed Jul 15 20:58:26 CST 2026
+
+
+============================================================
+Evaluating: abl_day_all  (filter=day)
+  Config:     configs/config_wind_3d_ablation_all_day.yml
+  Checkpoint: data/DL_result/ExperimentSchrodingerBridge3dWind/config_wind_3d_ablation_all_day/checkpoint.pth
+============================================================
+  Test samples: 37
+
+End: Wed Jul 15 20:58:54 CST 2026
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@m002>
+Subject: Job 13763665: <abl_eval> in cluster <hpc> Done
+
+Job <abl_eval> was submitted from host <login1> by user <ytw_tangzq> in cluster <hpc> at Wed Jul 15 20:58:24 2026
+Job was executed on host(s) <6*m002>, in queue <723090ib>, as user <ytw_tangzq> in cluster <hpc> at Wed Jul 15 20:58:24 2026
+</fsb/home/yutingwang/ytw_tangzq> was used as the home directory.
+</fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology> was used as the working directory.
+Started at Wed Jul 15 20:58:24 2026
+Terminated at Wed Jul 15 20:58:54 2026
+Results reported at Wed Jul 15 20:58:54 2026
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+# ============================================
+# LSF 评估脚本 — Day/Night 消融实验 (10 models)
+# ============================================
+#BSUB -q 723090ib
+#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -n 4
+#BSUB -R "rusage[mem=32000]"
+#BSUB -J abl_eval
+#BSUB -o logs/abl_eval_%J.out
+#BSUB -e logs/abl_eval_%J.err
+
+module load anaconda/3
+module load cuda/11.8.0
+source activate wind3d
+
+cd $LS_SUBCWD
+mkdir -p logs
+mkdir -p results/ablation_day_night
+
+echo "=== Day/Night Ablation Evaluation (10 models) ==="
+echo "Host: $(hostname)"
+echo "GPU:  $(nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null || echo 'N/A')"
+echo "Start: $(date)"
+echo ""
+
+python scripts/evaluate_ablation_day_night.py \
+  --checkpoint_base_dir data/DL_result/ExperimentSchrodingerBridge3dWind \
+  --results_dir results/ablation_day_night \
+  --device cuda:0
+
+echo ""
+echo "End: $(date)"
+
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   5.59 sec.
+    Max Memory :                                 162 MB
+    Average Memory :                             162.00 MB
+    Total Requested Memory :                     32000.00 MB
+    Delta Memory :                               31838.00 MB
+    Max Swap :                                   -
+    Max Processes :                              4
+    Max Threads :                                5
+    Run time :                                   30 sec.
+    Turnaround time :                            30 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <logs/abl_eval_13763665.err> for stderr output of this job.
+
