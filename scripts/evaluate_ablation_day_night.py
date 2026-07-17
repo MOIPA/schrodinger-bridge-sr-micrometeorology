@@ -180,6 +180,8 @@ def main():
     parser.add_argument("--checkpoint_base_dir", type=str,
                         default=os.path.join(ROOT_DIR, "data", "DL_result",
                                              "ExperimentSchrodingerBridge3dWind"))
+    parser.add_argument("--suffix", type=str, default="",
+                        help="Config file suffix (e.g., '_large' for large model)")
     args = parser.parse_args()
 
     os.makedirs(args.results_dir, exist_ok=True)
@@ -188,11 +190,12 @@ def main():
 
     for abl in ABLATIONS:
         for filt in FILTERS:
-            config_path = "configs/config_wind_3d_ablation_{}_{}.yml".format(abl, filt)
-            exp_name = "abl_{}_{}".format(filt, abl)
+            config_path = "configs/config_wind_3d_ablation_{}_{}{}.yml".format(
+                abl, filt, args.suffix)
+            exp_name = "abl_{}_{}{}".format(filt, abl, args.suffix)
             checkpoint_path = os.path.join(
                 args.checkpoint_base_dir,
-                "config_wind_3d_ablation_{}_{}".format(abl, filt),
+                "config_wind_3d_ablation_{}_{}{}".format(abl, filt, args.suffix),
                 "checkpoint.pth",
             )
 

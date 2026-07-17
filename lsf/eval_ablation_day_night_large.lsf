@@ -1,0 +1,35 @@
+#!/bin/bash
+# ============================================
+# LSF 评估 — Day/Night 消融实验 Large Model (10 models)
+# 192x192 + inner_ch=64 + 600 epochs
+# ============================================
+#BSUB -q 723090ib
+#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -n 4
+#BSUB -R "rusage[mem=32000]"
+#BSUB -J abl_eval_large
+#BSUB -o logs/abl_eval_large_%J.out
+#BSUB -e logs/abl_eval_large_%J.err
+
+module load anaconda/3
+module load cuda/11.8.0
+source activate wind3d
+
+cd $LS_SUBCWD
+mkdir -p logs
+mkdir -p results/ablation_day_night
+
+echo "=== Day/Night Ablation Evaluation — Large Model (10 models) ==="
+echo "Host: $(hostname)"
+echo "GPU:  $(nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null || echo 'N/A')"
+echo "Start: $(date)"
+echo ""
+
+python scripts/evaluate_ablation_day_night.py \
+  --checkpoint_base_dir data/DL_result/ExperimentSchrodingerBridge3dWind \
+  --results_dir results/ablation_day_night \
+  --suffix _large \
+  --device cuda:0
+
+echo ""
+echo "End: $(date)"

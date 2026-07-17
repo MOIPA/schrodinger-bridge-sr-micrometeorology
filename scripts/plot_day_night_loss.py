@@ -58,12 +58,22 @@ def find_log_files(log_dir):
     for fname in sorted(os.listdir(log_dir)):
         if not fname.endswith(".out"):
             continue
-        # Parse: abl_day_all_13742366.out -> day, all
-        parts = fname.replace(".out", "").split("_")
-        if len(parts) < 4:
+        # Patterns: abl_day_all_13742366.out or abl_large_day_all_13763903.out
+        name = fname.replace(".out", "")
+        # Remove job ID suffix
+        name = re.sub(r"_\d+$", "", name)
+        # Split and extract filter + ablation
+        parts = name.split("_")  # ['abl'] or ['abl','large']
+        if "large" in parts:
+            filt = parts[2]   # abl_large_day_all -> day
+            abl = "_".join(parts[3:])  # all, no_terrain, etc.
+        else:
+            filt = parts[1]   # abl_day_all -> day
+            abl = "_".join(parts[2:])
+        if filt not in ("day", "night"):
             continue
-        filt = parts[1]  # day or night
-        abl = "_".join(parts[2:-1])  # all, no_terrain, no_thermal, etc.
+        if abl not in ABL_LABELS:
+            continue
         key = (filt, abl)
         files[key] = os.path.join(log_dir, fname)
     return files
