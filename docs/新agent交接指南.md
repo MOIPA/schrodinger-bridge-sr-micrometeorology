@@ -34,20 +34,39 @@ ls prepare_npz_wind_3d_sz/ | wc -l                    # 应为 8928
 ls prepare_npz_wind_3d_sz/ | sed 's/_.*//' | sort | uniq -c   # myj 4464 + ysu 4464
 # 2. 日志尾部（biases/scales 统计 + 昼夜样本数）
 tail -40 logs/prep_sz_nohup.out
-# 3. 抽查一个 npz 的 key 和 shape（应为 45 个 key，全部 (96,112)）
-#    key: 18 个 hr_* + 18 个 lr_* + t2/z/lu/tsk/hfx/lh/psfc/pblh + swdown(合成)
+# 3. 抽查一个 npz 的 key 和 shape（应为 53 个 key，全部 (96,112)）
+#    key: 18 hr_* 风 + 18 lr_* 风 + 8 条件 HR + 8 条件 LR(lr_t2 等) + swdown(合成)
 ```
+
+> **重要：预处理脚本已于 2026-08-25 升级（新增条件变量的 LR 版本 lr_t2/lr_z/...，
+> 用于"全低精度输入"实验）。旧输出目录的 npz 没有这些 key，必须删除重跑：
+> `rm -rf prepare_npz_wind_3d_sz/` 后重新 nohup 全量（约 1 小时），再抄统计量。
+> 别用跳过逻辑（skip-if-exists 会跳过旧文件导致 key 缺失）。**
 
 ### 下一步路线图
 
 | 步骤 | 做什么 | 关键点 |
 |------|--------|--------|
-| 1 | 验证预处理结果 | 上表 |
-| 2 | 建数据软链 | `ln -s ~/.../prepare_npz_wind_3d_sz data/DL_data/wrf_3d_v1_sz`（训练读取 `data/DL_data/<dl_data_ver>`） |
-| 3 | 写深圳配置 | `configs/深圳/`（模板见下） |
-| 4 | 训练 | LSF 提交（见 §6） |
-| 5 | 评估 | `scripts/evaluate_ablation_day_night.py` 类似流程 |
-| 6 | **NS 全约束实验** | 深圳数据支持完整动量方程（见 §5）——这是本次适配的核心目标 |
+| 1 | **删除旧输出重跑预处理**（脚本已升级） | `rm -rf prepare_npz_wind_3d_sz/` + nohup 全量 ~1h，见上方警示 |
+| 2 | 验证预处理结果 + 抄统计量 | 上表；biases/scales 在日志尾部，**必须写进配置** |
+| 3 | 建数据软链 | `ln -s ~/.../prepare_npz_wind_3d_sz data/DL_data/wrf_3d_v1_sz`（训练读取 `data/DL_data/<dl_data_ver>`） |
+| 4 | 写深圳配置 | `configs/深圳/`（模板见下） |
+| 5 | 训练 | LSF 提交（见 §6），可多 GPU 并行 |
+| 6 | 评估 | `scripts/evaluate_ablation_day_night.py` 类似流程 |
+| 7 | **NS 全约束实验** | 深圳数据支持完整动量方程（见 §5）——这是本次适配的核心目标 |
+
+### 第一轮深圳实验矩阵（2026-08-25 与用户确认的设计）
+
+| 实验 | 模型 | 条件精度 | 物理约束 | 目的 |
+|------|------|:---:|:---:|------|
+| Baseline | inner_ch 128 (~19M) | HR | 无 | 主模型（先 64ch 冒烟跑通配置） |
+| LR-cond | inner_ch 128 | **全 LR**（input_variable_names 用 lr_* 版本） | 无 | 部署真实场景（全 3km 输入） |
+| 昼夜消融 | inner_ch 128 | HR | 无 | 深圳昼夜对比（合成 swdown 过滤） |
+| PINN-NS | inner_ch 128 | HR | 运动学 + 动量残差 | 完整 NS 约束（核心目标） |
+
+训练参数：batch 8-16、epochs 150-300 + early stopping、`channel_weights: [1,1,10,...]`（W 加权）、
+`attn_res: [16]` 不用改（按 ds 倍数触发，96×112 下正常）、96/112 均 16 倍数满足 4 次下采样。
+AMP 不支持（代码没实现混合精度），96×112 域小不需要。
 
 ### 深圳配置模板（在 `configs/深圳/` 新建）
 
@@ -56,8 +75,8 @@ tail -40 logs/prep_sz_nohup.out
 - `model.in_channel: 26`（18 LR + 8 条件：t2, z, lu, tsk, hfx, lh, psfc, pblh；**无 swdown/glw**）
 - `model.out_channel: 18`（不变）
 - `data.hr_data_shape: [96, 112]`、`data.hr_cropped_shape: [96, 112]`（深圳域，非方形！）
-- `data.input_variable_names`：t2, z, lu, tsk, hfx, lh, psfc, pblh（8 个，去掉 swdown/glw）
-- `data.biases / data.scales`：用预处理日志打印的深圳统计量（**必须替换，香港的不能用**）
+- `data.input_variable_names`：8 个——HR 条件用 `t2, z, lu, tsk, hfx, lh, psfc, pblh`；全 LR 实验用 `lr_t2, lr_z, lr_lu, lr_tsk, lr_hfx, lr_lh, lr_psfc, lr_pblh`（in_channel 都是 26 = 18 风 + 8 条件）
+- `data.biases / data.scales`：用预处理日志打印的深圳统计量（**必须替换，香港的不能用**；HR 和 lr_* 版本都有各自统计量）
 - `loader.dl_data_ver: wrf_3d_v1_sz`（配合软链）
 - `data.day_night_filter`：all / day / night 均可（swdown 为合成值，过滤逻辑不变）
 - `si.divergence_weight / vorticity_weight`：默认 0（消融纯 L2）；NS 实验再加

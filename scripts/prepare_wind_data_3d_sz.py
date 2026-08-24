@@ -11,6 +11,9 @@
      不作为模型条件变量；模型条件变量为 t2, z, lu, tsk, hfx, lh, psfc, pblh）
   3. 每个 wrfout 文件含 6 个 10-min 时次，全部提取（香港是每小时一个文件）
   4. myj/ysu 时间戳相同，输出文件名加 scheme 前缀（单一目录）
+  5. 条件变量同时生成 HR 和 LR 两个版本（lr_* = 4x 平均池化降采样再插回，
+     与风场 LR 处理一致；lu 是类别变量用最近邻）——用于"全低精度输入"实验，
+     配置里 input_variable_names 选 lr_* 版本即可，模型结构零改动
 
 运行（服务器，pytorch-gpu 环境有 netCDF4）：
   /fs00/software/anaconda/3/envs/pytorch-gpu/bin/python scripts/prepare_wind_data_3d_sz.py \
@@ -114,12 +117,22 @@ def crop_pad(field2d):
     return np.pad(field, ((0, pad_y), (0, pad_x)), mode='edge')
 
 
-def create_lr_field(hr_data, base_shape):
-    """HR -> LR：平均池化降采样再双三次插值回原始尺寸。"""
+def create_lr_field(hr_data, base_shape, mode='avg'):
+    """HR -> LR：降采样再插值回原始尺寸（与风场 LR 处理一致）。
+
+    mode='avg'：平均池化 + 双三次插回（连续变量）
+    mode='nearest'：最近邻降采样 + 最近邻插回（类别变量，如 lu）
+    """
     hr_tensor = torch.from_numpy(hr_data).float().unsqueeze(0).unsqueeze(0)
-    lr_tensor = F.avg_pool2d(hr_tensor, kernel_size=DOWNSAMPLING_FACTOR)
-    lr_interp = F.interpolate(lr_tensor, size=base_shape, mode='bicubic',
-                              align_corners=False)
+    lr_size = (base_shape[0] // DOWNSAMPLING_FACTOR,
+               base_shape[1] // DOWNSAMPLING_FACTOR)
+    if mode == 'avg':
+        lr_tensor = F.avg_pool2d(hr_tensor, kernel_size=DOWNSAMPLING_FACTOR)
+        lr_interp = F.interpolate(lr_tensor, size=base_shape, mode='bicubic',
+                                  align_corners=False)
+    else:
+        lr_tensor = F.interpolate(hr_tensor, size=lr_size, mode='nearest')
+        lr_interp = F.interpolate(lr_tensor, size=base_shape, mode='nearest')
     return lr_interp.squeeze().numpy()
 
 
@@ -179,7 +192,12 @@ def process_wrf_file(wrf_file_path, out_dir, lon_deg, lat_deg, scheme):
                 if var_np.ndim > 2:
                     var_np = var_np.squeeze()
                 if var_np.shape == (99, 120) or var_np.shape[-2:] == (99, 120):
-                    npz_output_data[npz_name] = crop_pad(var_np)
+                    var_hr = crop_pad(var_np)
+                    npz_output_data[npz_name] = var_hr
+                    # LR 版本：lu 是类别变量用最近邻，其余用平均池化
+                    lr_mode = 'nearest' if npz_name == 'lu' else 'avg'
+                    npz_output_data['lr_' + npz_name] = create_lr_field(
+                        var_hr, TARGET_SHAPE, mode=lr_mode)
                 else:
                     print("--> 警告: 条件变量 '{}' shape {} 异常，跳过".format(
                         npz_name, var_np.shape))
