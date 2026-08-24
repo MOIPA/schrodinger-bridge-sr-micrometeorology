@@ -7,7 +7,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONFIG_DIR = os.path.join(BASE_DIR, "configs")
 FULLDAY_ABLATION_DIR = "香港-全天消融"
-LSF_DIR = os.path.join(BASE_DIR, "lsf", "ablation_day_night")
+LSF_DIR = os.path.join(BASE_DIR, "lsf", "昼夜消融", "训练任务")
 
 ABLATION_BASES = {
     "all": "config_wind_3d_ablation_all.yml",
@@ -126,7 +126,7 @@ def main():
             lsf_path = os.path.join(LSF_DIR, "{}.lsf".format(job_name))
             with open(lsf_path, "w") as f:
                 f.write(lsf_content)
-            print("  LSF:  lsf/ablation_day_night/{}.lsf".format(job_name))
+            print("  LSF:  lsf/昼夜消融/训练任务/{}.lsf".format(job_name))
 
     # Submit-all script
     submit_all = os.path.join(LSF_DIR, "submit_all{}.sh".format(suffix))
@@ -136,11 +136,11 @@ def main():
     for abl_name in ABLATION_BASES:
         for filter_name in FILTERS:
             job_name = "{}{}_{}".format(job_prefix, filter_name, abl_name)
-            lines.append("bsub < lsf/ablation_day_night/{}.lsf".format(job_name))
+            lines.append("bsub < lsf/昼夜消融/训练任务/{}.lsf".format(job_name))
     with open(submit_all, "w") as f:
         f.write("\n".join(lines) + "\n")
     os.chmod(submit_all, 0o755)
-    print("\nSubmit-all: lsf/ablation_day_night/submit_all{}.sh".format(suffix))
+    print("\nSubmit-all: lsf/昼夜消融/训练任务/submit_all{}.sh".format(suffix))
 
 
 if __name__ == "__main__":
