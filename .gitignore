@@ -122,3 +122,5 @@ prepare_npz_wind_3d
 # bsub logs
 logs/
 *.tar.gz
+# Shenzhen npz output
+prepare_npz_wind_3d_sz
