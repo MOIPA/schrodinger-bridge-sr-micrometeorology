@@ -1,5 +1,0 @@
-RUN: source /fs00/software/anaconda/3.sh
-Traceback (most recent call last):
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/evaluate_ablation_day_night.py", line 29, in <module>
-    from src.dl_model.si_follmer.si_follmer_framework import SIFollmer
-ImportError: cannot import name 'SIFollmer' from 'src.dl_model.si_follmer.si_follmer_framework' (/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_model/si_follmer/si_follmer_framework.py)

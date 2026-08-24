@@ -1,10 +1,0 @@
-RUN: source /fs00/software/anaconda/3.sh
-  0%|          | 0/37 [00:00<?, ?it/s]  8%|▊         | 3/37 [00:00<00:01, 21.44it/s] 16%|█▌        | 6/37 [00:00<00:01, 21.92it/s] 24%|██▍       | 9/37 [00:00<00:01, 22.12it/s] 32%|███▏      | 12/37 [00:00<00:01, 22.24it/s] 41%|████      | 15/37 [00:00<00:00, 22.31it/s] 49%|████▊     | 18/37 [00:00<00:00, 22.03it/s] 57%|█████▋    | 21/37 [00:00<00:00, 21.66it/s] 65%|██████▍   | 24/37 [00:01<00:00, 22.01it/s] 73%|███████▎  | 27/37 [00:01<00:00, 21.80it/s] 81%|████████  | 30/37 [00:01<00:00, 22.07it/s] 89%|████████▉ | 33/37 [00:01<00:00, 22.37it/s] 97%|█████████▋| 36/37 [00:01<00:00, 21.85it/s]100%|██████████| 37/37 [00:01<00:00, 21.90it/s]
-Traceback (most recent call last):
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/evaluate_ablation_day_night.py", line 339, in <module>
-    main()
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/evaluate_ablation_day_night.py", line 210, in main
-    results = evaluate_checkpoint(config_path, checkpoint_path,
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/evaluate_ablation_day_night.py", line 140, in evaluate_checkpoint
-    model = UNetDDPMVer01(config.model)
-TypeError: UNetDDPMVer01.__init__() missing 9 required positional arguments: 'inner_channel', 'out_channel', 'res_blocks', 'channel_mults', 'attn_res', 'channels_each_head', 'dropout', 'resblock_updown', and 'max_period'
