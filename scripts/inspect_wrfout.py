@@ -9,6 +9,8 @@ This script:
   2. Checks for key NS-related variables (P, PB, TKE, KM, KH, etc.)
   3. Reports vertical levels, time steps, and spatial dimensions
   4. Computes what fraction of NS equation terms can now be constrained
+
+Python 2/3 compatible, ASCII only.
 """
 import argparse
 import os
@@ -100,36 +102,44 @@ def find_variable(nc, target):
 
 def inspect_wrfout(file_path):
     """Inspect a single WRF output file."""
-    print(f"\n{'='*70}")
-    print(f"File: {file_path}")
-    print(f"{'='*70}")
+    line = "=" * 70
+    print("")
+    print(line)
+    print("File: {}".format(file_path))
+    print(line)
 
     nc = Dataset(file_path, "r")
+    n_variables = len(nc.variables)
 
     # 1. Global attributes
-    print("\n--- Global Attributes ---")
+    print("")
+    print("--- Global Attributes ---")
     for attr in ["TITLE", "START_DATE", "SIMULATION_START_DATE", "GRIDTYPE",
                   "DX", "DY", "DT", "WEST-EAST_GRID_DIMENSION",
                   "SOUTH-NORTH_GRID_DIMENSION", "BOTTOM-TOP_GRID_DIMENSION"]:
         if attr in nc.ncattrs():
-            print(f"  {attr}: {getattr(nc, attr)}")
+            print("  {}: {}".format(attr, getattr(nc, attr)))
 
     # 2. Dimensions
-    print("\n--- Dimensions ---")
+    print("")
+    print("--- Dimensions ---")
     for dim_name, dim in nc.dimensions.items():
-        print(f"  {dim_name}: {len(dim)}")
+        print("  {}: {}".format(dim_name, len(dim)))
 
     # 3. All variables with dimensions and shape
-    print(f"\n--- All Variables ({len(nc.variables)} total) ---")
+    print("")
+    print("--- All Variables ({} total) ---".format(n_variables))
     for var_name, var in nc.variables.items():
         dims = var.dimensions
         shape = var.shape
         units = getattr(var, "units", "")
         desc = getattr(var, "description", "")
-        print(f"  {var_name:<20s} dims={str(dims):<40s} shape={str(shape):<30s} units={units}")
+        print("  {:<20s} dims={:<40s} shape={:<30s} units={}".format(
+            var_name, str(dims), str(shape), units))
 
     # 4. Check what's available for NS equation
-    print(f"\n--- NS Equation Variable Check ---")
+    print("")
+    print("--- NS Equation Variable Check ---")
     found = {}
     missing = []
     for var_name in VAR_ALIASES:
@@ -145,53 +155,61 @@ def inspect_wrfout(file_path):
         else:
             missing.append(var_name)
 
-    print("\n  FOUND:")
+    print("")
+    print("  FOUND:")
     for k, v in found.items():
-        print(f"    {k:<12s} -> {v['alias']:<10s}  shape={v['shape']}")
+        print("    {:<12s} -> {:<10s}  shape={}".format(k, v["alias"], v["shape"]))
 
-    print(f"\n  MISSING: {missing}")
+    print("")
+    print("  MISSING: {}".format(missing))
 
     # 5. Check time dimension
     has_time = "Time" in nc.dimensions
     n_times = len(nc.dimensions["Time"]) if has_time else 1
-    print(f"\n--- Time Dimension ---")
-    print(f"  Time steps in file: {n_times}")
+    print("")
+    print("--- Time Dimension ---")
+    print("  Time steps in file: {}".format(n_times))
     if has_time and n_times > 1:
         times = nc.variables["Times"]
         if len(times.shape) == 2:
-            first = "".join([b.decode() for b in times[0]])
-            last = "".join([b.decode() for b in times[-1]])
-            print(f"  First: {first}, Last: {last}")
+            first = "".join([b.decode() if isinstance(b, bytes) else b
+                             for b in times[0]])
+            last = "".join([b.decode() if isinstance(b, bytes) else b
+                            for b in times[-1]])
+            print("  First: {}, Last: {}".format(first, last))
             dt_minutes = None
             try:
                 from datetime import datetime
                 t0 = datetime.strptime(first, "%Y-%m-%d_%H:%M:%S")
                 t1 = datetime.strptime(last, "%Y-%m-%d_%H:%M:%S")
-                dt_minutes = (t1 - t0).total_seconds() / 60 / (n_times - 1)
-                print(f"  Output interval: ~{dt_minutes:.1f} min")
+                dt_minutes = (t1 - t0).total_seconds() / 60.0 / (n_times - 1)
+                print("  Output interval: ~{:.1f} min".format(dt_minutes))
             except Exception:
                 pass
 
     # 6. Check vertical levels
     has_bottom_top = "bottom_top" in nc.dimensions
     n_levels = len(nc.dimensions["bottom_top"]) if has_bottom_top else 0
-    print(f"\n--- Vertical Levels ---")
-    print(f"  bottom_top levels: {n_levels}")
+    print("")
+    print("--- Vertical Levels ---")
+    print("  bottom_top levels: {}".format(n_levels))
 
     # 7. Check 3D variables (those with bottom_top dimension)
-    print(f"\n--- 3D Variables (have bottom_top dimension) ---")
+    print("")
+    print("--- 3D Variables (have bottom_top dimension) ---")
     vars_3d = []
     for var_name, var in nc.variables.items():
         if "bottom_top" in var.dimensions:
             vars_3d.append(var_name)
-    print(f"  Count: {len(vars_3d)}")
+    print("  Count: {}".format(len(vars_3d)))
     for v in sorted(vars_3d):
-        print(f"    {v}")
+        print("    {}".format(v))
 
     # 8. Summary: what NS terms can be computed
-    print(f"\n{'='*70}")
+    print("")
+    print(line)
     print("NS EQUATION FEASIBILITY ASSESSMENT")
-    print(f"{'='*70}")
+    print(line)
 
     u_ok = "U" in found and found["U"]["ndim"] >= 3
     v_ok = "V" in found and found["V"]["ndim"] >= 3
@@ -211,8 +229,9 @@ def inspect_wrfout(file_path):
     density = p_ok and pb_ok and t_ok  # rho = (P+PB)/(R_d*T)
     eddy_visc = tke_ok or km_ok
 
-    print(f"\n  {'Term':<30s} {'Required':<30s} {'Available':<10s}")
-    print(f"  {'-'*70}")
+    print("")
+    print("  {:<30s} {:<30s} {:<10s}".format("Term", "Required", "Available"))
+    print("  " + "-" * 70)
 
     terms_status = {}
     for term_name, req in NS_REQUIRED.items():
@@ -233,17 +252,24 @@ def inspect_wrfout(file_path):
 
         status = "YES" if av else "MISSING"
         terms_status[term_name] = av
-        print(f"  {term_name:<30s} {req['desc']:<30s} {status:<10s}")
+        print("  {:<30s} {:<30s} {:<10s}".format(
+            term_name, req["desc"], status))
 
     n_available = sum(terms_status.values())
     n_total = len(terms_status)
-    print(f"\n  >> {n_available}/{n_total} NS equation terms can be constrained")
+    print("")
+    print("  >> {}/{} NS equation terms can be constrained".format(
+        n_available, n_total))
+
+    # Extra: geopotential height for computing physical heights of levels
+    if ph_ok or phb_ok:
+        print("  >> PH/PHB present: geopotential height available for level mapping")
 
     nc.close()
 
     return {
         "file": file_path,
-        "n_variables": len(nc.variables if not nc.isopen() else []),  # already closed
+        "n_variables": n_variables,
         "found": dict(found),
         "missing": missing,
         "has_time": has_time,
@@ -258,22 +284,24 @@ def scan_directory(data_dir, domain="d04", max_files=5):
     """Scan WRF output directory for files."""
     # WRF output naming: wrfout_d04_YYYY-MM-DD_HH:MM:SS
     wrf_files = []
+    prefix = "wrfout_" + domain
     for root, dirs, files in os.walk(data_dir):
         for f in files:
-            if f"wrfout_{domain}" in f:
+            if prefix in f:
                 wrf_files.append(os.path.join(root, f))
     wrf_files.sort()
 
-    print(f"Found {len(wrf_files)} WRF output files for {domain}")
+    print("Found {} WRF output files for {}".format(len(wrf_files), domain))
 
     if len(wrf_files) == 0:
-        print(f"\nSearching for any wrfout files...")
+        print("")
+        print("Searching for any wrfout files...")
         for root, dirs, files in os.walk(data_dir):
             for f in files:
                 if "wrfout" in f:
                     wrf_files.append(os.path.join(root, f))
         wrf_files.sort()
-        print(f"Found {len(wrf_files)} wrfout files total")
+        print("Found {} wrfout files total".format(len(wrf_files)))
 
     # Inspect a few sample files
     results = []
@@ -308,13 +336,14 @@ def main():
     args = parser.parse_args()
 
     if not os.path.isdir(args.data_dir):
-        print(f"ERROR: Directory not found: {args.data_dir}")
+        print("ERROR: Directory not found: {}".format(args.data_dir))
         sys.exit(1)
 
     wrf_files, results = scan_directory(args.data_dir, args.domain, args.max_files)
 
     if len(wrf_files) == 0:
-        print("\nNo WRF output files found. Check the path and domain.")
+        print("")
+        print("No WRF output files found. Check the path and domain.")
         print("Example usage:")
         print("  python scripts/inspect_wrfout.py \\")
         print("    --data_dir /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_myj \\")
@@ -322,32 +351,42 @@ def main():
         sys.exit(1)
 
     # Print final summary
-    print(f"\n{'='*70}")
+    print("")
+    line = "=" * 70
+    print(line)
     print("FINAL SUMMARY")
-    print(f"{'='*70}")
-    print(f"Total wrfout files: {len(wrf_files)}")
+    print(line)
+    print("Total wrfout files: {}".format(len(wrf_files)))
 
     if results:
         r = results[0]
-        print(f"\nFile inspected: {os.path.basename(r['file'])}")
-        print(f"Time steps: {r['n_times']}")
-        print(f"Vertical levels: {r['n_levels']}")
+        print("")
+        print("File inspected: {}".format(os.path.basename(r["file"])))
+        print("Time steps: {}".format(r["n_times"]))
+        print("Vertical levels: {}".format(r["n_levels"]))
 
-        print(f"\nKey findings for NS equation:")
+        print("")
+        print("Key findings for NS equation:")
         for term in ["time_derivative", "advection", "pressure_gradient",
                       "coriolis", "turbulent_viscosity", "continuity"]:
             status = "YES" if r["terms_status"].get(term) else "MISSING"
-            print(f"  {term:<25s}: {status}")
+            print("  {:<25s}: {}".format(term, status))
 
         if r["n_terms_available"] == 6:
-            print(f"\n  *** ALL 6 NS equation terms can be constrained! ***")
+            print("")
+            print("  *** ALL 6 NS equation terms can be constrained! ***")
         elif r["n_terms_available"] >= 4:
-            print(f"\n  *** {r['n_terms_available']}/6 terms available - major improvement over current data ***")
+            print("")
+            print("  *** {}/6 terms available - major improvement over current data ***".format(
+                r["n_terms_available"]))
         else:
-            print(f"\n  *** Only {r['n_terms_available']}/6 terms available - limited improvement ***")
+            print("")
+            print("  *** Only {}/6 terms available - limited improvement ***".format(
+                r["n_terms_available"]))
 
-    print(f"\nTo check a different domain, use --domain d03")
-    print(f"To check LES data, use --domain les_100m")
+    print("")
+    print("To check a different domain, use --domain d03")
+    print("To check LES data, use --domain les_100m")
 
 
 if __name__ == "__main__":
