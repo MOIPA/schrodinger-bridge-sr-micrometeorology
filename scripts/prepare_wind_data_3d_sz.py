@@ -327,7 +327,7 @@ def main():
         all_npz.extend(created)
 
     if not args.skip_stats:
-        compute_stats(all_npz, [os.path.join(args.output_base, s) for s in schemes])
+        compute_stats(all_npz, [args.output_base])
 
     print("\n完成。")
 
