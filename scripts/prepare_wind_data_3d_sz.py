@@ -199,6 +199,8 @@ def process_wrf_file(wrf_file_path, out_dir, lon_deg, lat_deg, scheme):
             # myj/ysu 时间戳相同，文件名加 scheme 前缀避免冲突
             output_filename = scheme + "_" + timestamps[t].strftime('%Y%m%dT%H%M%S') + ".npz"
             output_filepath = os.path.join(out_dir, output_filename)
+            if os.path.exists(output_filepath):
+                continue  # 断点续跑：已生成的跳过
             np.savez_compressed(output_filepath, **npz_output_data)
             created.append(output_filepath)
 
