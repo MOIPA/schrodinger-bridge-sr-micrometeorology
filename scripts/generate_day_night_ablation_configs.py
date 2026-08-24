@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Generate day/night ablation configs (small or large model)."""
 import argparse
 import yaml
@@ -5,6 +6,7 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONFIG_DIR = os.path.join(BASE_DIR, "configs")
+FULLDAY_ABLATION_DIR = "香港-全天消融"
 LSF_DIR = os.path.join(BASE_DIR, "lsf", "ablation_day_night")
 
 ABLATION_BASES = {
@@ -75,6 +77,7 @@ def main():
         suffix = "_large"
         size_label = "Large (192x192, 64ch)"
         job_prefix = "abl_large_"
+        out_subdir = "香港-昼夜消融-大模型"
     else:
         resolution = 128
         inner_ch = 32
@@ -82,12 +85,14 @@ def main():
         suffix = ""
         size_label = "Small (128x128, 32ch)"
         job_prefix = "abl_"
+        out_subdir = "香港-昼夜消融-小模型"
 
-    os.makedirs(CONFIG_DIR, exist_ok=True)
+    out_dir = os.path.join(CONFIG_DIR, out_subdir)
+    os.makedirs(out_dir, exist_ok=True)
     os.makedirs(LSF_DIR, exist_ok=True)
 
     for abl_name, base_file in ABLATION_BASES.items():
-        base_path = os.path.join(CONFIG_DIR, base_file)
+        base_path = os.path.join(CONFIG_DIR, FULLDAY_ABLATION_DIR, base_file)
         with open(base_path) as f:
             config = yaml.safe_load(f)
 
@@ -101,14 +106,14 @@ def main():
 
             out_name = "config_wind_3d_ablation_{}_{}{}.yml".format(
                 abl_name, filter_name, suffix)
-            out_path = os.path.join(CONFIG_DIR, out_name)
+            out_path = os.path.join(out_dir, out_name)
             with open(out_path, "w") as f:
                 yaml.safe_dump(config, f, default_flow_style=False, sort_keys=False)
-            print("Config: {}".format(out_name))
+            print("Config: {}/{}".format(out_subdir, out_name))
 
             # Generate LSF script
             job_name = "{}{}_{}".format(job_prefix, filter_name, abl_name)
-            config_path = "configs/" + out_name
+            config_path = "configs/{}/{}".format(out_subdir, out_name)
             lsf_content = LSF_TEMPLATE.format(
                 size_label=size_label,
                 abl_desc=ABL_DESC[abl_name],

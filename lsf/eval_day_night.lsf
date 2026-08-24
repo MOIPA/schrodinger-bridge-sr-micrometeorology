@@ -14,7 +14,7 @@ cd $LS_SUBCWD
 mkdir -p logs
 
 python scripts/eval_day_night.py \
-  --config_path configs/config_wind_3d_final.yml \
+  --config_path configs/香港-基础/config_wind_3d_final.yml \
   --checkpoint_path data/DL_result/ExperimentSchrodingerBridge3dWind/config_wind_3d_final/checkpoint.pth \
   --device cuda:0
 

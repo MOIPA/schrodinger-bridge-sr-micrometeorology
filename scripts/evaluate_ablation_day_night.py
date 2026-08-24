@@ -188,10 +188,13 @@ def main():
 
     all_results = {}
 
+    subdir = ("香港-昼夜消融-大模型" if args.suffix == "_large"
+              else "香港-昼夜消融-小模型")
+
     for abl in ABLATIONS:
         for filt in FILTERS:
-            config_path = "configs/config_wind_3d_ablation_{}_{}{}.yml".format(
-                abl, filt, args.suffix)
+            config_path = "configs/{}/config_wind_3d_ablation_{}_{}{}.yml".format(
+                subdir, abl, filt, args.suffix)
             exp_name = "abl_{}_{}{}".format(filt, abl, args.suffix)
             checkpoint_path = os.path.join(
                 args.checkpoint_base_dir,

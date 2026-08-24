@@ -19,14 +19,14 @@ cd $LS_SUBCWD
 mkdir -p logs
 
 echo "=== Ablation: NoThermal | Filter: night | Large (192x192, 64ch) ==="
-echo "Config: configs/config_wind_3d_ablation_no_thermal_night_large.yml"
+echo "Config: configs/香港-昼夜消融-大模型/config_wind_3d_ablation_no_thermal_night_large.yml"
 echo "Host: $(hostname)"
 echo "GPU:  $(nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null || echo 'N/A')"
 echo "Start: $(date)"
 echo ""
 
 python scripts/train_schrodinger_bridge_model.py \
-  --config_path configs/config_wind_3d_ablation_no_thermal_night_large.yml \
+  --config_path configs/香港-昼夜消融-大模型/config_wind_3d_ablation_no_thermal_night_large.yml \
   --experiment_name ExperimentSchrodingerBridge3dWind \
   --device cuda:0
 

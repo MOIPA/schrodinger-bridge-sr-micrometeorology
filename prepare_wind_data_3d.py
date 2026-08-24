@@ -267,7 +267,7 @@ def main():
             for key in all_data.keys():
                 all_data[key].append(data[key])
 
-    print("\n--- 数据集统计结果 (用于更新 config_wind_3d.yml) ---")
+    print("\n--- 数据集统计结果 (用于更新 configs/香港-基础/config_wind_3d.yml) ---")
     print("请将以下 'biases' 和 'scales' 内容复制到您的配置文件中：\n")
 
     print("  biases:")

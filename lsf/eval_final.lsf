@@ -25,7 +25,7 @@ echo "=== Evaluating Final Model ==="
 echo "Start: $(date)"
 
 python scripts/evaluate_wind_3d.py \
-  --config_path configs/config_wind_3d_final.yml \
+  --config_path configs/香港-基础/config_wind_3d_final.yml \
   --checkpoint_path ${BASE}/config_wind_3d_final/checkpoint.pth \
   --experiment_name ${EXP} \
   --device cuda:0 \

@@ -29,7 +29,7 @@ echo "Start: $(date)"
 echo ""
 
 python scripts/train_schrodinger_bridge_model.py \
-  --config_path configs/config_wind_3d_final.yml \
+  --config_path configs/香港-基础/config_wind_3d_final.yml \
   --experiment_name ExperimentSchrodingerBridge3dWind \
   --device cuda:0
 
