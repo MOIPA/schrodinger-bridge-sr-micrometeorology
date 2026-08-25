@@ -1,0 +1,10 @@
+===== 1. 提交 bsub =====
+Job <14001288> is submitted to queue <723090ib>.
+
+===== 2. 等待 90 秒后查看任务状态 =====
+JOBID    USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
+14001288 ytw_tangzq PEND  723090ib   login1         -        sz_smoke   Aug 25 11:24
+
+===== 3. 训练日志首段 =====
+(尚无日志文件,稍后跑 13 号检查)
+===== 完成 =====
