@@ -9,50 +9,50 @@ JOBID    USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
 
 ===== 2. 各任务 loss 进度 =====
 --- sz_smoke ---
-日志: logs/sz_smoke_a100_14002828.out (2026-08-25 15:58:18)
-train error: avg loss = 0.07176952
-Epoch 40 / 50
-train error: avg loss = 0.06941859
-Epoch 41 / 50
+日志: logs/sz_smoke_a100_14002828.out (2026-08-25 16:17:36)
+train error: avg loss = 0.06727386
+Epoch 47 / 50
+train error: avg loss = 0.06839132
+Epoch 48 / 50
 异常检查:
-train error: avg loss = 0.07176952
-train error: avg loss = 0.06941859
+train error: avg loss = 0.06727386
+train error: avg loss = 0.06839132
 --- sz_baseline ---
-日志: logs/sz_baseline_14002862.out (2026-08-25 15:59:54)
-train error: avg loss = 0.07749688
-Epoch 52 / 300
-train error: avg loss = 0.07738861
-Epoch 53 / 300
+日志: logs/sz_baseline_14002862.out (2026-08-25 16:17:16)
+train error: avg loss = 0.18337591
+Epoch 61 / 300
+train error: avg loss = 0.07262419
+Epoch 62 / 300
 异常检查:
-train error: avg loss = 0.07749688
-train error: avg loss = 0.07738861
+train error: avg loss = 0.18337591
+train error: avg loss = 0.07262419
 --- sz_lrcond ---
-日志: logs/sz_lrcond_14002863.out (2026-08-25 16:00:03)
-train error: avg loss = 0.06733675
-Epoch 52 / 300
-train error: avg loss = 0.11458646
-Epoch 53 / 300
+日志: logs/sz_lrcond_14002863.out (2026-08-25 16:17:29)
+train error: avg loss = 0.19252434
+Epoch 61 / 300
+train error: avg loss = 0.06578099
+Epoch 62 / 300
 异常检查:
-train error: avg loss = 0.06733675
-train error: avg loss = 0.11458646
+train error: avg loss = 0.19252434
+train error: avg loss = 0.06578099
 --- sz_day ---
 (无日志)
 --- sz_pinn ---
 (无日志)
 --- sz_night ---
-日志: logs/sz_night_14002866.out (2026-08-25 15:59:17)
-train error: avg loss = 0.10220917
-Epoch 43 / 300
-train error: avg loss = 0.10282772
-Epoch 44 / 300
+日志: logs/sz_night_14002866.out (2026-08-25 16:18:27)
+train error: avg loss = 0.09421076
+Epoch 51 / 300
+train error: avg loss = 0.09040882
+Epoch 52 / 300
 异常检查:
-train error: avg loss = 0.10220917
-train error: avg loss = 0.10282772
+train error: avg loss = 0.09421076
+train error: avg loss = 0.09040882
 
 ===== 3. 完成情况(各任务 checkpoint) =====
-config_wind_3d_sz_baseline: 2026-08-25 15:59:54 3.6G
-config_wind_3d_sz_lrcond: 2026-08-25 15:58:08 3.6G
+config_wind_3d_sz_baseline: 2026-08-25 16:11:30 3.6G
+config_wind_3d_sz_lrcond: 2026-08-25 16:11:44 3.6G
 config_wind_3d_sz_day: (尚无 checkpoint)
 config_wind_3d_sz_pinn: (尚无 checkpoint)
-config_wind_3d_sz_night: 2026-08-25 15:56:55 3.6G
+config_wind_3d_sz_night: 2026-08-25 16:18:27 3.6G
 ===== 完成 =====
