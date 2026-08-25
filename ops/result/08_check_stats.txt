@@ -1,7 +1,34 @@
 ===== 1. 统计进程(未结束则稍后再跑本脚本) =====
-25405 /fs00/software/anaconda/3/envs/pytorch-gpu/bin/python scripts/compute_stats_sz.py --data_dir prepare_npz_wind_3d_sz
+(统计已结束)
 
 ===== 2. 统计日志全文 =====
+M-fM-^VM-^GM-dM-;M-6M-fM-^UM-0: 8928
+M-hM-?M-^[M-eM-:M-&: 1000/8928
+M-hM-?M-^[M-eM-:M-&: 2000/8928
+M-hM-?M-^[M-eM-:M-&: 3000/8928
+M-hM-?M-^[M-eM-:M-&: 4000/8928
+M-hM-?M-^[M-eM-:M-&: 5000/8928
+M-hM-?M-^[M-eM-:M-&: 6000/8928
+M-hM-?M-^[M-eM-:M-&: 7000/8928
+Traceback (most recent call last):
+  File "scripts/compute_stats_sz.py", line 81, in <module>
+    main()
+  File "scripts/compute_stats_sz.py", line 43, in main
+    with np.load(npz_path) as data:
+  File "/fs00/software/anaconda/3/envs/pytorch-gpu/lib/python3.7/site-packages/numpy/lib/npyio.py", line 444, in load
+    pickle_kwargs=pickle_kwargs)
+  File "/fs00/software/anaconda/3/envs/pytorch-gpu/lib/python3.7/site-packages/numpy/lib/npyio.py", line 193, in __init__
+    _zip = zipfile_factory(fid)
+  File "/fs00/software/anaconda/3/envs/pytorch-gpu/lib/python3.7/site-packages/numpy/lib/npyio.py", line 119, in zipfile_factory
+    return zipfile.ZipFile(file, *args, **kwargs)
+  File "/fs00/software/anaconda/3/envs/pytorch-gpu/lib/python3.7/zipfile.py", line 1258, in __init__
+    self._RealGetContents()
+  File "/fs00/software/anaconda/3/envs/pytorch-gpu/lib/python3.7/zipfile.py", line 1325, in _RealGetContents
+    raise BadZipFile("File is not a zip file")
+zipfile.BadZipFile: File is not a zip file
 
 ===== 3. 日志最后 3 行(确认是否完成) =====
+  File "/fs00/software/anaconda/3/envs/pytorch-gpu/lib/python3.7/zipfile.py", line 1325, in _RealGetContents
+    raise BadZipFile("File is not a zip file")
+zipfile.BadZipFile: File is not a zip file
 ===== 完成 =====
