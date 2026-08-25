@@ -1,0 +1,62 @@
+===== 1. logs/ 目录内容 (按时间排序) =====
+total 258
+-rw-r--r-- 1 ytw_tangzq yutingwang   803 Aug 24 22:49 prep_sz_nohup.out
+-rw-r--r-- 1 ytw_tangzq yutingwang  1961 Aug 24 22:06 prep_sz_13999655.out
+-rw-r--r-- 1 ytw_tangzq yutingwang  1961 Aug 24 21:51 prep_sz_13999610.out
+-rw-r--r-- 1 ytw_tangzq yutingwang 11704 Jul 17 20:51 abl_eval_large_13776008.out
+-rw-r--r-- 1 ytw_tangzq yutingwang 22630 Jul 17 20:51 abl_eval_large_13776008.err
+--- logs/ 总文件数 ---
+5
+
+===== 2. 项目根目录的 nohup/out 文件 =====
+
+===== 3. 输出目录时间分布 =====
+--- 最新 5 个文件 ---
+total 10515456
+-rw-r--r-- 1 ytw_tangzq yutingwang 1764555 Aug 24 22:52 ysu_20200710T175000.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang 1766396 Aug 24 22:52 ysu_20200710T174000.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang 1774192 Aug 24 22:52 ysu_20200710T155000.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang 1768395 Aug 24 22:52 ysu_20200710T173000.npz
+--- 最早 3 个文件 ---
+-rw-r--r-- 1 ytw_tangzq yutingwang 1816843 Aug 24 22:37 myj_20200701T002000.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang 1814770 Aug 24 22:37 myj_20200701T001000.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang 1810236 Aug 24 22:37 myj_20200701T000000.npz
+
+===== 4. 各 scheme 覆盖时间范围 =====
+--- ysu 最早 ---
+ysu_20200701T000000.npz
+ysu_20200701T001000.npz
+--- ysu 最晚 ---
+ysu_20200710T174000.npz
+ysu_20200710T175000.npz
+--- myj 最早 ---
+myj_20200701T000000.npz
+myj_20200701T001000.npz
+--- myj 最晚 ---
+myj_20200731T234000.npz
+myj_20200731T235000.npz
+--- 数量: myj / ysu / 其他 ---
+4464
+1404
+0
+
+===== 5. 当前 python 进程 =====
+root      1330  0.0  0.0 574288 16412 ?        Ssl  Jul31   2:22 /usr/bin/python2 -Es /usr/sbin/tuned -l -P
+root      1547  0.1  0.0 2799684 70796 ?       Sl   Jul31  45:26 /usr/bin/python3 /usr/lpp/mmfs/bin/mmsysmon.py
+
+===== 6. 内存与磁盘 =====
+              total        used        free      shared  buff/cache   available
+Mem:             94          24          55           2          14          67
+Swap:             5           0           5
+Filesystem      Size  Used Avail Use% Mounted on
+fsb             1.3P  858T  406T  68% /fsb
+fs00            3.3T  2.6T  760G  78% /fs00
+
+===== 7. 预处理脚本 OUTPUT_BASE 与 git 版本 =====
+40:OUTPUT_BASE = "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_wind_3d_sz"
+306:    parser.add_argument("--output_base", default=OUTPUT_BASE)
+9fd0502 add LR condition variables for all-low-res input experiment
+2bdcd13 skip existing npz for resumable runs
+1dd6274 fix stats output label
+
+===== 完成 =====
