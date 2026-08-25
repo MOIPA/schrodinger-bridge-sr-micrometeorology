@@ -1,0 +1,10 @@
+===== 1. bjobs 状态 =====
+JOBID    USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
+14001288 ytw_tangzq PEND  723090ib   login1         -        sz_smoke   Aug 25 11:24
+
+===== 2. 训练日志 =====
+(尚无日志文件)
+
+===== 3. 错误日志 =====
+(无 err 文件)
+===== 完成 =====
