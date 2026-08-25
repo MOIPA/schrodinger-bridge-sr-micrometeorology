@@ -1,0 +1,130 @@
+===== 1. prep_sz_nohup.out 全文 =====
+803 logs/prep_sz_nohup.out
+M-hM->M-^SM-eM-^EM-%M-gM-^[M-.M-eM-=M-^U: /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_myj
+M-hM->M-^SM-eM-^GM-:M-gM-^[M-.M-eM-=M-^U: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_wind_3d_sz
+M-eM-^_M-^_M-eM-9M-3M-eM-^]M-^GM-gM-;M-^OM-gM-:M-,M-eM-:M-&: lon=114.122 lat=22.497
+M-eM->M-^EM-eM-$M-^DM-gM-^PM-^FM-fM-^VM-^GM-dM-;M-6M-fM-^UM-0: 744
+  M-hM-?M-^[M-eM-:M-&: 50/744
+  M-hM-?M-^[M-eM-:M-&: 100/744
+  M-hM-?M-^[M-eM-:M-&: 150/744
+  M-hM-?M-^[M-eM-:M-&: 200/744
+  M-hM-?M-^[M-eM-:M-&: 250/744
+  M-hM-?M-^[M-eM-:M-&: 300/744
+  M-hM-?M-^[M-eM-:M-&: 350/744
+  M-hM-?M-^[M-eM-:M-&: 400/744
+  M-hM-?M-^[M-eM-:M-&: 450/744
+  M-hM-?M-^[M-eM-:M-&: 500/744
+  M-hM-?M-^[M-eM-:M-&: 550/744
+  M-hM-?M-^[M-eM-:M-&: 600/744
+  M-hM-?M-^[M-eM-:M-&: 650/744
+  M-hM-?M-^[M-eM-:M-&: 700/744
+scheme myj: M-gM-^TM-^_M-fM-^HM-^P 4464 M-dM-8M-* npz
+M-hM->M-^SM-eM-^EM-%M-gM-^[M-.M-eM-=M-^U: /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_ysu
+M-hM->M-^SM-eM-^GM-:M-gM-^[M-.M-eM-=M-^U: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_wind_3d_sz
+M-eM-^_M-^_M-eM-9M-3M-eM-^]M-^GM-gM-;M-^OM-gM-:M-,M-eM-:M-&: lon=114.122 lat=22.497
+M-eM->M-^EM-eM-$M-^DM-gM-^PM-^FM-fM-^VM-^GM-dM-;M-6M-fM-^UM-0: 744
+
+===== 2. prep_sz_13999610.out (8-24 21:51) =====
+M-hM->M-^SM-eM-^EM-%M-gM-^[M-.M-eM-=M-^U: /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_myj
+M-hM->M-^SM-eM-^GM-:M-gM-^[M-.M-eM-=M-^U: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_wind_3d_sz
+M-eM-^_M-^_M-eM-9M-3M-eM-^]M-^GM-gM-;M-^OM-gM-:M-,M-eM-:M-&: lon=114.122 lat=22.497
+M-eM->M-^EM-eM-$M-^DM-gM-^PM-^FM-fM-^VM-^GM-dM-;M-6M-fM-^UM-0: 744
+Terminated
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@m002>
+Subject: Job 13999610: <prep_sz> in cluster <hpc> Exited
+
+Job <prep_sz> was submitted from host <login1> by user <ytw_tangzq> in cluster <hpc> at Mon Aug 24 21:47:27 2026
+Job was executed on host(s) <6*m002>, in queue <723090ib>, as user <ytw_tangzq> in cluster <hpc> at Mon Aug 24 21:47:29 2026
+</fsb/home/yutingwang/ytw_tangzq> was used as the home directory.
+</fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology> was used as the working directory.
+Started at Mon Aug 24 21:47:29 2026
+Terminated at Mon Aug 24 21:51:23 2026
+Results reported at Mon Aug 24 21:51:23 2026
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+cd ~/schrodinger-bridge-sr-micrometeorology && /fs00/software/anaconda/3/envs/pytorch-gpu/bin/python scripts/prepare_wind_data_3d_sz.py --scheme both --workers 4
+------------------------------------------------------------
+
+Exited with exit code 143.
+
+Resource usage summary:
+
+    CPU time :                                   5010.00 sec.
+    Max Memory :                                 419 MB
+    Average Memory :                             299.20 MB
+    Total Requested Memory :                     16000.00 MB
+    Delta Memory :                               15581.00 MB
+    Max Swap :                                   -
+    Max Processes :                              7
+    Max Threads :                                199
+    Run time :                                   234 sec.
+    Turnaround time :                            236 sec.
+
+The output (if any) is above this job summary.
+
+
+===== 3. prep_sz_13999655.out (8-24 22:06) =====
+M-hM->M-^SM-eM-^EM-%M-gM-^[M-.M-eM-=M-^U: /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_myj
+M-hM->M-^SM-eM-^GM-:M-gM-^[M-.M-eM-=M-^U: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_wind_3d_sz
+M-eM-^_M-^_M-eM-9M-3M-eM-^]M-^GM-gM-;M-^OM-gM-:M-,M-eM-:M-&: lon=114.122 lat=22.497
+M-eM->M-^EM-eM-$M-^DM-gM-^PM-^FM-fM-^VM-^GM-dM-;M-6M-fM-^UM-0: 744
+Terminated
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@m002>
+Subject: Job 13999655: <prep_sz> in cluster <hpc> Exited
+
+Job <prep_sz> was submitted from host <login1> by user <ytw_tangzq> in cluster <hpc> at Mon Aug 24 22:03:06 2026
+Job was executed on host(s) <6*m002>, in queue <723090ib>, as user <ytw_tangzq> in cluster <hpc> at Mon Aug 24 22:03:07 2026
+</fsb/home/yutingwang/ytw_tangzq> was used as the home directory.
+</fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology> was used as the working directory.
+Started at Mon Aug 24 22:03:07 2026
+Terminated at Mon Aug 24 22:06:54 2026
+Results reported at Mon Aug 24 22:06:54 2026
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+cd ~/schrodinger-bridge-sr-micrometeorology && /fs00/software/anaconda/3/envs/pytorch-gpu/bin/python scripts/prepare_wind_data_3d_sz.py --scheme both --workers 4
+------------------------------------------------------------
+
+Exited with exit code 143.
+
+Resource usage summary:
+
+    CPU time :                                   4857.00 sec.
+    Max Memory :                                 406 MB
+    Average Memory :                             338.80 MB
+    Total Requested Memory :                     16000.00 MB
+    Delta Memory :                               15594.00 MB
+    Max Swap :                                   -
+    Max Processes :                              7
+    Max Threads :                                199
+    Run time :                                   227 sec.
+    Turnaround time :                            228 sec.
+
+The output (if any) is above this job summary.
+
+
+===== 4. ysu 缺失范围确认 =====
+--- 7-10 的 ysu(应到 1750,查 1800 以后) ---
+(无 7-10 18:00+)
+--- 7-11 起 ysu 数量 ---
+0
+0
+0
+
+===== 5. ysu 原始 wrfout 文件(应 744 个) =====
+837
+wrfout_d01_2020-07-01_00:00:00
+wrfout_d01_2020-07-02_00:00:00
+wrfout_d04_2020-07-31_22:00:00
+wrfout_d04_2020-07-31_23:00:00
+
+===== 完成 =====
