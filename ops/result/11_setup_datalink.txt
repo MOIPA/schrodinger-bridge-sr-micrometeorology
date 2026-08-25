@@ -1,12 +1,12 @@
 ===== 1. 建数据软链 =====
-(新建)
+(已存在)
 lrwxrwxrwx 1 ytw_tangzq yutingwang 93 Aug 25 11:11 data/DL_data/wrf_3d_v1_sz -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_wind_3d_sz
 软链内 npz 数:
 8928
 
 ===== 2. 冒烟验证(配置加载 + dataloader + 模型前向,CPU) =====
 Traceback (most recent call last):
-  File "<stdin>", line 5, in <module>
-ImportError: cannot import name 'SchrodingerBridgeModelConfig' from 'src.dl_config.schrodinger_bridge_model_config' (/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_config/schrodinger_bridge_model_config.py)
+  File "<stdin>", line 7, in <module>
+ImportError: cannot import name 'SIFollmerFramework' from 'src.dl_model.si_follmer.si_follmer_framework' (/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_model/si_follmer/si_follmer_framework.py)
 
 ===== 完成 =====
