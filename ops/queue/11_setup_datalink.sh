@@ -29,7 +29,8 @@ os.environ['PYTHONPATH'] = os.getcwd()
 import torch
 from src.dl_config.schrodinger_bridge_model_config import ExperimentSchrodingerBridge3dWindConfig
 from src.dl_data.dataloader import make_dataloaders_and_samplers
-from src.dl_model.si_follmer.si_follmer_framework import SIFollmerFramework
+from src.dl_model.model_maker import make_model
+from src.dl_model.si_follmer.si_follmer_framework import StochasticInterpolantFollmer
 
 cfg = ExperimentSchrodingerBridge3dWindConfig.load('configs/深圳/config_wind_3d_sz_smoke.yml')
 loaders, _ = make_dataloaders_and_samplers(
@@ -48,7 +49,8 @@ y1 = torch.stack([ds[i]['y'] for i in range(2)])
 y_cond = torch.stack([ds[i]['x'] for i in range(2)])
 print('y0', tuple(y0.shape), 'y1', tuple(y1.shape), 'y_cond', tuple(y_cond.shape))
 
-si = SIFollmerFramework(cfg.si, cfg.model)
+net = make_model(cfg.model)
+si = StochasticInterpolantFollmer(config=cfg.si, neural_net=net)
 si = si.eval()
 with torch.no_grad():
     loss = si(y0, y1, y_cond)
