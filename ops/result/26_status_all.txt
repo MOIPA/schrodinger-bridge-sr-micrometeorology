@@ -1,58 +1,71 @@
 ===== 1. 所有任务 =====
 JOBID    USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
-14002828 ytw_tangzq RUN   83a100ib   login1      8*m001      sz_smoke   Aug 25 14:04
 14002862 ytw_tangzq RUN   83a100ib   login1      8*m001      sz_baseline Aug 25 14:13
 14002863 ytw_tangzq RUN   83a100ib   login1      8*m001      sz_lrcond  Aug 25 14:13
 14002866 ytw_tangzq RUN   72rtxib    login1      4*g006      sz_night   Aug 25 14:13
-14002864 ytw_tangzq PEND  62v100ib   login1         -        sz_day     Aug 25 14:13
-14002865 ytw_tangzq PEND  62v100ib   login1         -        sz_pinn    Aug 25 14:13
+14002864 ytw_tangzq RUN   62v100ib   login1      5*n002      sz_day     Aug 25 14:13
+14002865 ytw_tangzq RUN   62v100ib   login1      5*n002      sz_pinn    Aug 25 14:13
 
 ===== 2. 各任务 loss 进度 =====
 --- sz_smoke ---
-日志: logs/sz_smoke_a100_14002828.out (2026-08-25 16:17:36)
-train error: avg loss = 0.06727386
-Epoch 47 / 50
-train error: avg loss = 0.06839132
-Epoch 48 / 50
+日志: logs/sz_smoke_a100_14002828.out (2026-08-25 16:28:40)
+Epoch 50 / 50
+train error: avg loss = 0.06628317
+Epoch 51 / 50
+train error: avg loss = 0.06683981
 异常检查:
-train error: avg loss = 0.06727386
-train error: avg loss = 0.06839132
+train error: avg loss = 0.06683981
+cd ~/schrodinger-bridge-sr-micrometeorology && module load anaconda/3 && module load cuda/11.8.0 && source activate wind3d && python scripts/train_schrodinger_bridge_model.py --config_path configs/深圳/config_wind_3d_sz_smoke.yml --experiment_name ExperimentSchrodingerBridge3dWind --device cuda:0
 --- sz_baseline ---
-日志: logs/sz_baseline_14002862.out (2026-08-25 16:17:16)
-train error: avg loss = 0.18337591
-Epoch 61 / 300
-train error: avg loss = 0.07262419
-Epoch 62 / 300
+日志: logs/sz_baseline_14002862.out (2026-08-25 20:53:05)
+train error: avg loss = 0.10810048
+Epoch 214 / 300
+train error: avg loss = 0.05071528
+Epoch 215 / 300
 异常检查:
-train error: avg loss = 0.18337591
-train error: avg loss = 0.07262419
+train error: avg loss = 0.10810048
+train error: avg loss = 0.05071528
 --- sz_lrcond ---
-日志: logs/sz_lrcond_14002863.out (2026-08-25 16:17:29)
-train error: avg loss = 0.19252434
-Epoch 61 / 300
-train error: avg loss = 0.06578099
-Epoch 62 / 300
+日志: logs/sz_lrcond_14002863.out (2026-08-25 20:53:43)
+train error: avg loss = 0.04775319
+Epoch 215 / 300
+train error: avg loss = 0.04610990
+Epoch 216 / 300
 异常检查:
-train error: avg loss = 0.19252434
-train error: avg loss = 0.06578099
+train error: avg loss = 0.04775319
+train error: avg loss = 0.04610990
 --- sz_day ---
-(无日志)
---- sz_pinn ---
-(无日志)
---- sz_night ---
-日志: logs/sz_night_14002866.out (2026-08-25 16:18:27)
-train error: avg loss = 0.09421076
-Epoch 51 / 300
-train error: avg loss = 0.09040882
-Epoch 52 / 300
+日志: logs/sz_day_14002864.out (2026-08-25 20:52:20)
+train error: avg loss = 0.34976204
+Epoch 21 / 300
+train error: avg loss = 0.25830224
+Epoch 22 / 300
 异常检查:
-train error: avg loss = 0.09421076
-train error: avg loss = 0.09040882
+train error: avg loss = 0.34976204
+train error: avg loss = 0.25830224
+--- sz_pinn ---
+日志: logs/sz_pinn_14002865.out (2026-08-25 20:50:17)
+train error: avg loss = 0.11233555
+Epoch 11 / 300
+train error: avg loss = 1.04564328
+Epoch 12 / 300
+异常检查:
+train error: avg loss = 0.11233555
+train error: avg loss = 1.04564328
+--- sz_night ---
+日志: logs/sz_night_14002866.out (2026-08-25 20:52:00)
+train error: avg loss = 0.05246107
+Epoch 166 / 300
+train error: avg loss = 0.05110968
+Epoch 167 / 300
+异常检查:
+train error: avg loss = 0.05246107
+train error: avg loss = 0.05110968
 
 ===== 3. 完成情况(各任务 checkpoint) =====
-config_wind_3d_sz_baseline: 2026-08-25 16:11:30 3.6G
-config_wind_3d_sz_lrcond: 2026-08-25 16:11:44 3.6G
-config_wind_3d_sz_day: (尚无 checkpoint)
-config_wind_3d_sz_pinn: (尚无 checkpoint)
-config_wind_3d_sz_night: 2026-08-25 16:18:27 3.6G
+config_wind_3d_sz_baseline: 2026-08-25 20:29:55 3.6G
+config_wind_3d_sz_lrcond: 2026-08-25 20:53:43 3.6G
+config_wind_3d_sz_day: 2026-08-25 20:18:21 3.6G
+config_wind_3d_sz_pinn: 2026-08-25 20:45:39 3.6G
+config_wind_3d_sz_night: 2026-08-25 20:30:43 3.6G
 ===== 完成 =====
