@@ -1,0 +1,3 @@
+===== 07 启动状态 =====
+Tue Aug 25 10:44:40 CST 2026
+25405 nohup /fs00/software/anaconda/3/envs/pytorch-gpu/bin/python scripts/compute_stats_sz.py --data_dir prepare_npz_wind_3d_sz
