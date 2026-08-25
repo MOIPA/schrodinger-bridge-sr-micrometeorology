@@ -1,0 +1,35 @@
+===== 1. 删除损坏文件 =====
+已删除。当前 npz 数:
+8926
+
+===== 2. 重生成缺失 npz (skip-existing,只补 2 个) =====
+输入目录: /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_ysu
+输出目录: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_wind_3d_sz
+域平均经纬度: lon=114.122 lat=22.497
+待处理文件数: 744
+  进度: 50/744
+  进度: 100/744
+  进度: 150/744
+  进度: 200/744
+  进度: 250/744
+  进度: 300/744
+  进度: 350/744
+  进度: 400/744
+  进度: 450/744
+  进度: 500/744
+  进度: 550/744
+  进度: 600/744
+  进度: 650/744
+  进度: 700/744
+scheme ysu: 生成 2 个 npz
+
+完成。
+
+===== 3. 重扫损坏 =====
+--- 检查文件数: 8928
+--- 损坏文件数: 0
+
+===== 4. 修复的 2 个文件 =====
+-rw-r--r-- 1 ytw_tangzq yutingwang 1775109 Aug 25 10:57 prepare_npz_wind_3d_sz/ysu_20200719T061000.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang 1775929 Aug 25 10:57 prepare_npz_wind_3d_sz/ysu_20200719T070000.npz
+===== 完成 =====
