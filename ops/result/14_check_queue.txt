@@ -1,0 +1,11 @@
+===== 1. 任务详情(含 PEND 原因) =====
+JOBID    USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
+14001288 ytw_tangzq PEND  723090ib   login1         -        sz_smoke   Aug 25 11:24
+
+===== 2. 队列资源统计 =====
+QUEUE_NAME      PRIO STATUS          MAX JL/U JL/P JL/H NJOBS  PEND   RUN  SUSP 
+723090ib         30  Open:Active       -    -    -    -    84    36    48     0
+
+===== 3. 队列里有多少任务在排队 =====
+2
+===== 完成 =====
