@@ -1,0 +1,26 @@
+===== 1. 杀 723090ib 旧任务 14001288 =====
+Job <14001288> is being terminated
+
+===== 2. 等 3 分钟让 GPU 任务出首个 loss =====
+
+===== 3. 当前任务状态 =====
+
+===== 4. GPU 训练日志 (14002792) =====
+--- 尾部 15 行 ---
+    Delta Memory :                               15947.00 MB
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                22
+    Run time :                                   235 sec.
+    Turnaround time :                            235 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <logs/sz_smoke_14002792.err> for stderr output of this job.
+
+--- avg loss 摘要 ---
+===== 完成 =====
