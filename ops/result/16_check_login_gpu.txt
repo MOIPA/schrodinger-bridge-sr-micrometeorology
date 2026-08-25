@@ -1,0 +1,12 @@
+===== 1. 登录节点 GPU =====
+ops/queue/16_check_login_gpu.sh: line 10: nvidia-smi: command not found
+---
+ops/queue/16_check_login_gpu.sh: line 12: nvidia-smi: command not found
+
+===== 2. 我的排队任务 =====
+JOBID    USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
+14001288 ytw_tangzq PEND  723090ib   login1         -        sz_smoke   Aug 25 11:24
+
+===== 3. 排队时间 =====
+ Eligible pending time (seconds):	8287
+===== 完成 =====
