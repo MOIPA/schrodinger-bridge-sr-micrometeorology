@@ -1,0 +1,7 @@
+===== 1. 统计进程(未结束则稍后再跑本脚本) =====
+25405 /fs00/software/anaconda/3/envs/pytorch-gpu/bin/python scripts/compute_stats_sz.py --data_dir prepare_npz_wind_3d_sz
+
+===== 2. 统计日志全文 =====
+
+===== 3. 日志最后 3 行(确认是否完成) =====
+===== 完成 =====
