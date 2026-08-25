@@ -1,5 +1,5 @@
 ===== 04 启动状态 =====
-Tue Aug 25 10:23:17 CST 2026
-25404 nohup /fs00/software/anaconda/3/envs/pytorch-gpu/bin/python scripts/prepare_wind_data_3d_sz.py --scheme ysu --workers 4
+Tue Aug 25 10:33:27 CST 2026
+15491 nohup /fs00/software/anaconda/3/envs/pytorch-gpu/bin/python scripts/prepare_wind_data_3d_sz.py --scheme ysu --workers 4
 --- 当前 ysu 数量 ---
-1404
+2627
