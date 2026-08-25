@@ -1,0 +1,80 @@
+===== 1. bjobs -p (PEND 原因) =====
+JOBID    USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
+14001288 ytw_tan PEND  723090ib   login1                  sz_smoke   Aug 25 11:24
+ Job slot limit reached: 1 host;
+ Not specified in job submission: 288 hosts;
+ Unable to reach batch server: 3 hosts;
+ Load information unavailable: 35 hosts;
+ Closed by LSF administrator: 14 hosts;
+
+===== 2. bjobs -l 任务详情 =====
+
+Job <14001288>, Job Name <sz_smoke>, User <ytw_tangzq>, Project <default>, Stat
+                          us <PEND>, Queue <723090ib>, Job Priority <50>, Comma
+                          nd <cd ~/schrodinger-bridge-sr-micrometeorology && mo
+                          dule load anaconda/3 && module load cuda/11.8.0 && so
+                          urce activate wind3d && python scripts/train_schrodin
+                          ger_bridge_model.py --config_path configs/深圳/conf
+                          ig_wind_3d_sz_smoke.yml --experiment_name ExperimentS
+                          chrodingerBridge3dWind --device cuda:0>
+Tue Aug 25 11:24:22 2026: Submitted from host <login1>, CWD <$HOME/schrodinger-
+                          bridge-sr-micrometeorology>, Output File <logs/sz_smo
+                          ke_14001288.out>, Error File <logs/sz_smoke_14001288.
+                          err>, 6 Task(s), Requested Resources <rusage[mem=3200
+                          0]>, Login Shell </bin/bash>, Requested GPU <num=1:mo
+                          de=exclusive_process>;
+ PENDING REASONS:
+ Job slot limit reached: 1 host;
+ Not specified in job submission: 288 hosts;
+ Unable to reach batch server: 3 hosts;
+ Load information unavailable: 35 hosts;
+ Closed by LSF administrator: 14 hosts;
+
+
+ PENDING TIME DETAILS:
+ Eligible pending time (seconds):	8108
+ Ineligible pending time (seconds):	0
+
+ SCHEDULING PARAMETERS:
+           r15s   r1m  r15m   ut      pg    io   ls    it    tmp    swp    mem
+ loadSched   -     -     -     -       -     -    -     -     -      -      -  
+ loadStop    -     -     -     -       -     -    -     -     -      -      -  
+
+ RESOURCE REQUIREMENT DETAILS:
+ Combined: select[(ngpus>0) && (type == local)] order[!-slots:-maxslots] rusage
+                          [mem=32000.00:ngpus_physical=1.00] span[ptile=48]
+ Effective: -
+
+ GPU REQUIREMENT DETAILS:
+ Combined: num=1:mode=exclusive_process:mps=no:j_exclusive=yes:gvendor=nvidia
+ Effective: -
+
+
+===== 3. 队列中所有用户任务 =====
+JOBID    USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
+13998082 dyx_yangxq RUN   723090ib   login1      6*m002      s-AB-20    Aug 24 14:34
+13998085 dyx_yangxq RUN   723090ib   login1      6*m002      s-AB-40    Aug 24 14:36
+13998086 dyx_yangxq RUN   723090ib   login1      6*m002      s-AB-45    Aug 24 14:36
+13998090 dyx_yangxq RUN   723090ib   login1      6*m002      f-AB-20    Aug 24 14:38
+13998091 dyx_yangxq RUN   723090ib   login1      6*m002      f-AB-40    Aug 24 14:39
+13998092 dyx_yangxq RUN   723090ib   login1      6*m002      f-AB-45    Aug 24 14:40
+14000182 dyx_yangxq RUN   723090ib   login1      6*m002      s-0        Aug 25 00:30
+14000183 dyx_yangxq RUN   723090ib   login1      6*m002      s-10       Aug 25 00:30
+14000184 dyx_yangxq PEND  723090ib   login1         -        s-15       Aug 25 00:30
+14000185 dyx_yangxq PEND  723090ib   login1         -        s-25       Aug 25 00:32
+14000188 dyx_yangxq PEND  723090ib   login1         -        s-30       Aug 25 00:33
+14000191 dyx_yangxq PEND  723090ib   login1         -        s-35       Aug 25 00:34
+14000193 dyx_yangxq PEND  723090ib   login1         -        s-42       Aug 25 00:38
+14001288 ytw_tangzq PEND  723090ib   login1         -        sz_smoke   Aug 25 11:24
+
+===== 4. 队列限制 =====
+No resource usage found.
+
+===== 5. 所有 GPU 相关队列 =====
+QUEUE_NAME      PRIO STATUS          MAX JL/U JL/P JL/H NJOBS  PEND   RUN  SUSP 
+723090ib         30  Open:Active       -    -    -    -    84    36    48     0
+
+===== 6. 我的任务提交命令确认 =====
+JOBID    USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
+14001288 ytw_tangzq PEND  723090ib   login1         -        sz_smoke   Aug 25 11:24
+===== 完成 =====
