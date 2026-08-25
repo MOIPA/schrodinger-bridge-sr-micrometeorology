@@ -27,11 +27,11 @@ import sys, os
 out = sys.argv[1]
 os.environ['PYTHONPATH'] = os.getcwd()
 import torch
-from src.dl_config.schrodinger_bridge_model_config import SchrodingerBridgeModelConfig
+from src.dl_config.schrodinger_bridge_model_config import ExperimentSchrodingerBridge3dWindConfig
 from src.dl_data.dataloader import make_dataloaders_and_samplers
 from src.dl_model.si_follmer.si_follmer_framework import SIFollmerFramework
 
-cfg = SchrodingerBridgeModelConfig.load('configs/深圳/config_wind_3d_sz_smoke.yml')
+cfg = ExperimentSchrodingerBridge3dWindConfig.load('configs/深圳/config_wind_3d_sz_smoke.yml')
 loaders, _ = make_dataloaders_and_samplers(
     root_dir=os.getcwd(), loader_config=cfg.loader,
     dataset_config=cfg.data, world_size=None, rank=None)
