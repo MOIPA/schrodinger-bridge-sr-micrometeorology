@@ -1,0 +1,63 @@
+===== 1. 服务器时间 =====
+Tue Aug 25 10:14:08 CST 2026
+
+===== 2. nohup 预处理进程 (PID 26565) =====
+  PID     ELAPSED CMD
+(PID 26565 不存在)
+(无运行中的预处理进程)
+
+===== 3. 输出目录 npz 数量 =====
+5868
+--- 按 scheme 统计 ---
+   4464 myj
+   1404 ysu
+
+===== 4. 日志尾部 (logs/prep_sz_nohup.out) =====
+
+===== 5. 抽查 npz 的 key (检查是否有 lr_* 条件变量) =====
+--- npz 总数: 5868
+--- 示例文件: prepare_npz_wind_3d_sz/myj_20200701T000000.npz
+--- key 数: 53
+--- keys: hr_u_ml0, hr_v_ml0, hr_w_ml0, lr_u_ml0, lr_v_ml0, lr_w_ml0, hr_u_ml1, hr_v_ml1, hr_w_ml1, lr_u_ml1, lr_v_ml1, lr_w_ml1, hr_u_ml2, hr_v_ml2, hr_w_ml2, lr_u_ml2, lr_v_ml2, lr_w_ml2, hr_u_ml3, hr_v_ml3, hr_w_ml3, lr_u_ml3, lr_v_ml3, lr_w_ml3, hr_u_ml5, hr_v_ml5, hr_w_ml5, lr_u_ml5, lr_v_ml5, lr_w_ml5, hr_u_ml10, hr_v_ml10, hr_w_ml10, lr_u_ml10, lr_v_ml10, lr_w_ml10, t2, lr_t2, z, lr_z, lu, lr_lu, tsk, lr_tsk, hfx, lr_hfx, lh, lr_lh, psfc, lr_psfc, pblh, lr_pblh, swdown
+--- lr_* 条件变量 key 数: 26
+    lr_u_ml0 (96, 112)
+    lr_v_ml0 (96, 112)
+    lr_w_ml0 (96, 112)
+    lr_u_ml1 (96, 112)
+    lr_v_ml1 (96, 112)
+    lr_w_ml1 (96, 112)
+    lr_u_ml2 (96, 112)
+    lr_v_ml2 (96, 112)
+    lr_w_ml2 (96, 112)
+    lr_u_ml3 (96, 112)
+    lr_v_ml3 (96, 112)
+    lr_w_ml3 (96, 112)
+    lr_u_ml5 (96, 112)
+    lr_v_ml5 (96, 112)
+    lr_w_ml5 (96, 112)
+    lr_u_ml10 (96, 112)
+    lr_v_ml10 (96, 112)
+    lr_w_ml10 (96, 112)
+    lr_t2 (96, 112)
+    lr_z (96, 112)
+    lr_lu (96, 112)
+    lr_tsk (96, 112)
+    lr_hfx (96, 112)
+    lr_lh (96, 112)
+    lr_psfc (96, 112)
+    lr_pblh (96, 112)
+--- 前50个文件中含 lr_ key 的文件数: 50 / 50
+
+===== 6. 服务器仓库状态 =====
+?? ops/result/01_check_prep.txt
+--- 最近提交 ---
+96bc427 fix: mkdir ops/result before writing output (git doesn't track empty dirs)
+2002de1 add ops channel: check-script for server prep status
+c328d7b test
+0635ccb emphasize real low-res (native d03) experiments as mandatory follow-up
+9fd0502 add LR condition variables for all-low-res input experiment
+--- 分支同步情况 ---
+## main
+?? ops/result/01_check_prep.txt
+
+===== 完成 =====
