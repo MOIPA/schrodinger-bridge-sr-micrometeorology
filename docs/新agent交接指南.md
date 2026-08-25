@@ -94,10 +94,10 @@ AMP 不支持（代码没实现混合精度），96×112 域小不需要。
 
 复制 `configs/香港-昼夜消融-小模型/config_wind_3d_ablation_all_day.yml` 修改：
 
-- `model.in_channel: 26`（18 LR + 8 条件：t2, z, lu, tsk, hfx, lh, psfc, pblh；**无 swdown/glw**）
+- `model.in_channel: 44`（⚠️ 修正：UNet forward 是 `torch.cat([yt, y_cond])`，故 in_channel = 18(yt) + 26(全部输入) = **44**；香港 28 = 18+10 同理。旧文档写的 26 有误，已由 2026-08-25 深圳冒烟测试发现并修正）
 - `model.out_channel: 18`（不变）
 - `data.hr_data_shape: [96, 112]`、`data.hr_cropped_shape: [96, 112]`（深圳域，非方形！）
-- `data.input_variable_names`：8 个——HR 条件用 `t2, z, lu, tsk, hfx, lh, psfc, pblh`；全 LR 实验用 `lr_t2, lr_z, lr_lu, lr_tsk, lr_hfx, lr_lh, lr_psfc, lr_pblh`（in_channel 都是 26 = 18 风 + 8 条件）
+- `data.input_variable_names`：8 个——HR 条件用 `t2, z, lu, tsk, hfx, lh, psfc, pblh`；全 LR 实验用 `lr_t2, lr_z, lr_lu, lr_tsk, lr_hfx, lr_lh, lr_psfc, lr_pblh`（in_channel 都是 44，见上条修正）
 - `data.biases / data.scales`：用预处理日志打印的深圳统计量（**必须替换，香港的不能用**；HR 和 lr_* 版本都有各自统计量）
 - `loader.dl_data_ver: wrf_3d_v1_sz`（配合软链）
 - `data.day_night_filter`：all / day / night 均可（swdown 为合成值，过滤逻辑不变）
