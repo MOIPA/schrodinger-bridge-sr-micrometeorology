@@ -1,0 +1,94 @@
+===== 1. 队列描述(找 GPU 信息) =====
+
+SHARE_INFO_FOR: e52643tgb!/
+ USER/GROUP   SHARES  PRIORITY  STARTED  RESERVED  CPU_TIME  RUN_TIME   ADJUST  GPU_RUN_TIME
+root=       99999   33333.000      0        0         0.0        0       0.000             0
+xgwan=      10000      34.225      0        0    785386.1   701831       0.000             0
+wsxu=           1       0.333      0        0         0.0        0       0.000             0
+wanbo=          1       0.333      0        0         0.0        0       0.000             0
+wyzhang=        1       0.333      0        0         0.0        0       0.000             0
+dyxing          1       0.333      0        0         0.0        0       0.000             0
+--
+
+SHARE_INFO_FOR: e52692v2ib!/
+ USER/GROUP   SHARES  PRIORITY  STARTED  RESERVED  CPU_TIME  RUN_TIME   ADJUST  GPU_RUN_TIME
+root=       99999   33333.000      0        0         0.0        0       0.000             0
+qhwang      10000       9.728     10        0   2372284.8  2744856       0.000             0
+jiansun=    30000       7.726    249       39  13554691.0  1955583       0.000             0
+wsxu=           1       0.333      0        0         0.0        0       0.000             0
+wanbo=          1       0.333      0        0         0.0        0       0.000             0
+wyzhang=        1       0.333      0        0         0.0        0       0.000             0
+--
+
+SHARE_INFO_FOR: e52680v3ib!/
+ USER/GROUP   SHARES  PRIORITY  STARTED  RESERVED  CPU_TIME  RUN_TIME   ADJUST  GPU_RUN_TIME
+root=       99999   33333.000      0        0         0.0        0       0.000             0
+zhanghj=    26000       0.647    336        0 196592720.0  4980009       0.000             0
+wsxu=           1       0.333      0        0         0.0        0       0.000             0
+wanbo=          1       0.333      0        0         0.0        0       0.000             0
+wyzhang=        1       0.333      0        0         0.0        0       0.000             0
+dyxing          1       0.333      0        0         0.0        0       0.000             0
+--
+
+SHARE_INFO_FOR: e5v3ib!/
+ USER/GROUP   SHARES  PRIORITY  STARTED  RESERVED  CPU_TIME  RUN_TIME   ADJUST  GPU_RUN_TIME
+root=       999999  333333.000      0        0         0.0        0       0.000             0
+yaoge123=   100000   29376.018      0        0         5.6     2072       0.000             0
+hfding      10000    3333.333      0        0         0.0        0       0.000             0
+wsxu=        1000     333.333      0        0         0.0        0       0.000             0
+wanbo=       1000     333.333      0        0         0.0        0       0.000             0
+wyzhang=     1000     333.333      0        0         0.0        0       0.000             0
+--
+
+SHARE_INFO_FOR: e52630v4!/
+ USER/GROUP   SHARES  PRIORITY  STARTED  RESERVED  CPU_TIME  RUN_TIME   ADJUST  GPU_RUN_TIME
+root=       99999   33333.000      0        0         0.0        0       0.000             0
+dyxing       2000     666.667      0        0         0.0        0       0.000             0
+wsxu=           1       0.333      0        0         0.0        0       0.000             0
+wanbo=          1       0.333      0        0         0.0        0       0.000             0
+wyzhang=        1       0.333      0        0         0.0        0       0.000             0
+jiansun=        1       0.333      0        0         0.0        0       0.000             0
+--
+
+SHARE_INFO_FOR: e52640v4!/
+ USER/GROUP   SHARES  PRIORITY  STARTED  RESERVED  CPU_TIME  RUN_TIME   ADJUST  GPU_RUN_TIME
+root=       99999   33333.000      0        0         0.0        0       0.000             0
+jxli         1000      11.407      8        0    281222.1    30764       0.000             0
+wsxu=           1       0.333      0        0         0.0        0       0.000             0
+wanbo=          1       0.333      0        0         0.0        0       0.000             0
+wyzhang=        1       0.333      0        0         0.0        0       0.000             0
+dyxing          1       0.333      0        0         0.0        0       0.000             0
+--
+
+===== 2. 逐个测试提交(候选 GPU 队列) =====
+--- 72rtxib ---
+Job <14001777> is submitted to queue <72rtxib>.
+--- 83a100ib ---
+Job <14001778> is submitted to queue <83a100ib>.
+--- 62v100ib ---
+Job <14001779> is submitted to queue <62v100ib>.
+--- 945090ib ---
+Job <14001780> is submitted to queue <945090ib>.
+--- 9654p6000ib ---
+Job <14001781> is submitted to queue <9654p6000ib>.
+--- 734090ib ---
+Job <14001782> is submitted to queue <734090ib>.
+--- 7552v100 ---
+Job <14001783> is submitted to queue <7552v100>.
+--- 6148v100ib ---
+Job <14001784> is submitted to queue <6148v100ib>.
+--- e5v4p100ib ---
+Job <14001785> is submitted to queue <e5v4p100ib>.
+--- 7k83 ---
+Job <14001786> is submitted to queue <7k83>.
+
+===== 3. 等 15 秒看测试任务状态 =====
+JOBID    USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
+14001288 ytw_tangzq PEND  723090ib   login1         -        sz_smoke   Aug 25 11:24
+14001779 ytw_tangzq PEND  62v100ib   login1         -        probe_test Aug 25 13:46
+14001783 ytw_tangzq PEND  7552v100   login1         -        probe_test Aug 25 13:46
+14001786 ytw_tangzq PEND  7k83       login1         -        probe_test Aug 25 13:46
+
+===== 4. 当前 723090ib 任务 =====
+14001288 ytw_tangzq PEND  723090ib   login1         -        sz_smoke   Aug 25 11:24
+===== 完成 =====
