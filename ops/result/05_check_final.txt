@@ -1,21 +1,17 @@
 ===== 1. 服务器时间 =====
-Tue Aug 25 10:38:53 CST 2026
+Tue Aug 25 10:40:57 CST 2026
 ===== 2. 预处理进程(应为空/已结束) =====
-15491 /fs00/software/anaconda/3/envs/pytorch-gpu/bin/python scripts/prepare_wind_data_3d_sz.py --scheme ysu --workers 4
-15515 /fs00/software/anaconda/3/envs/pytorch-gpu/bin/python scripts/prepare_wind_data_3d_sz.py --scheme ysu --workers 4
-15517 /fs00/software/anaconda/3/envs/pytorch-gpu/bin/python scripts/prepare_wind_data_3d_sz.py --scheme ysu --workers 4
-15518 /fs00/software/anaconda/3/envs/pytorch-gpu/bin/python scripts/prepare_wind_data_3d_sz.py --scheme ysu --workers 4
-15519 /fs00/software/anaconda/3/envs/pytorch-gpu/bin/python scripts/prepare_wind_data_3d_sz.py --scheme ysu --workers 4
+(进程已结束)
 ===== 3. npz 总数与 scheme 分布(期望 8928 = 4464+4464) =====
-8532
+8928
    4464 myj
-   4069 ysu
+   4464 ysu
 ===== 4. ysu 最新文件(应到 7-31 23:50) =====
-ysu_20200729T061000.npz
-ysu_20200729T062000.npz
+ysu_20200731T234000.npz
+ysu_20200731T235000.npz
 ===== 5. 续跑日志尾部(biases/scales/昼夜统计,抄进深圳配置) =====
 ===== 6. 最新 npz 写入时间 =====
-total 15192448
--rw-r--r-- 1 ytw_tangzq yutingwang  486165 Aug 25 10:38 ysu_20200729T063000.npz
--rw-r--r-- 1 ytw_tangzq yutingwang 1815505 Aug 25 10:38 ysu_20200729T054000.npz
+total 15997056
+-rw-r--r-- 1 ytw_tangzq yutingwang 1775108 Aug 25 10:39 ysu_20200731T235000.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang 1774956 Aug 25 10:39 ysu_20200731T234000.npz
 ===== 完成 =====
