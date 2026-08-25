@@ -1,0 +1,154 @@
+===== 1. 续跑日志文件信息 =====
+-rw-r--r-- 1 ytw_tangzq yutingwang 3238 Aug 25 10:40 logs/prep_sz_ysu_resume.out
+
+===== 2. 日志全文 =====
+M-hM->M-^SM-eM-^EM-%M-gM-^[M-.M-eM-=M-^U: /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_ysu
+M-hM->M-^SM-eM-^GM-:M-gM-^[M-.M-eM-=M-^U: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_wind_3d_sz
+M-eM-^_M-^_M-eM-9M-3M-eM-^]M-^GM-gM-;M-^OM-gM-:M-,M-eM-:M-&: lon=114.122 lat=22.497
+M-eM->M-^EM-eM-$M-^DM-gM-^PM-^FM-fM-^VM-^GM-dM-;M-6M-fM-^UM-0: 744
+  M-hM-?M-^[M-eM-:M-&: 50/744
+  M-hM-?M-^[M-eM-:M-&: 100/744
+  M-hM-?M-^[M-eM-:M-&: 150/744
+  M-hM-?M-^[M-eM-:M-&: 200/744
+  M-hM-?M-^[M-eM-:M-&: 250/744
+  M-hM-?M-^[M-eM-:M-&: 300/744
+  M-hM-?M-^[M-eM-:M-&: 350/744
+  M-hM-?M-^[M-eM-:M-&: 400/744
+  M-hM-?M-^[M-eM-:M-&: 450/744
+  M-hM-?M-^[M-eM-:M-&: 500/744
+  M-hM-?M-^[M-eM-:M-&: 550/744
+  M-hM-?M-^[M-eM-:M-&: 600/744
+  M-hM-?M-^[M-eM-:M-&: 650/744
+  M-hM-?M-^[M-eM-:M-&: 700/744
+scheme ysu: M-gM-^TM-^_M-fM-^HM-^P 1837 M-dM-8M-* npz
+
+M-eM-<M-^@M-eM-'M-^KM-hM-.M-!M-gM-.M-^WM-gM-;M-^_M-hM-.M-!M-iM-^GM-^O (1837 M-dM-8M-*M-fM-^VM-^GM-dM-;M-6)...
+
+--- M-fM-^UM-0M-fM-^MM-.M-iM-^[M-^FM-gM-;M-^_M-hM-.M-!M-gM-;M-^SM-fM-^^M-^\ (M-gM-^TM-(M-dM-:M-^NM-fM-^[M-4M-fM-^VM-0 config) ---
+  biases:
+    hfx: 49.988185
+    hr_u_ml0: -0.769400
+    hr_u_ml1: -0.854764
+    hr_u_ml10: -0.739716
+    hr_u_ml2: -0.864391
+    hr_u_ml3: -0.849214
+    hr_u_ml5: -0.798061
+    hr_v_ml0: 3.707013
+    hr_v_ml1: 4.297657
+    hr_v_ml10: 4.725024
+    hr_v_ml2: 4.554077
+    hr_v_ml3: 4.690968
+    hr_v_ml5: 4.806265
+    hr_w_ml0: -0.005720
+    hr_w_ml1: -0.007889
+    hr_w_ml10: -0.004128
+    hr_w_ml2: -0.009117
+    hr_w_ml3: -0.009411
+    hr_w_ml5: -0.008633
+    lh: 101.170017
+    lr_hfx: 49.981490
+    lr_lh: 101.168392
+    lr_lu: 13.291667
+    lr_pblh: 498.807325
+    lr_psfc: 100197.901005
+    lr_t2: 302.372244
+    lr_tsk: 304.113781
+    lr_u_ml0: -0.769427
+    lr_u_ml1: -0.854787
+    lr_u_ml10: -0.739711
+    lr_u_ml2: -0.864416
+    lr_u_ml3: -0.849233
+    lr_u_ml5: -0.798058
+    lr_v_ml0: 3.707450
+    lr_v_ml1: 4.297985
+    lr_v_ml10: 4.725049
+    lr_v_ml2: 4.554334
+    lr_v_ml3: 4.691172
+    lr_v_ml5: 4.806398
+    lr_w_ml0: -0.005726
+    lr_w_ml1: -0.007896
+    lr_w_ml10: -0.004129
+    lr_w_ml2: -0.009124
+    lr_w_ml3: -0.009418
+    lr_w_ml5: -0.008639
+    lr_z: 46.932178
+    lu: 13.271856
+    pblh: 498.862206
+    psfc: 100197.785005
+    swdown: 318.530066
+    t2: 302.372257
+    tsk: 304.113927
+    z: 46.942367
+  scales:
+    hfx: 106.517938
+    hr_u_ml0: 3.424674
+    hr_u_ml1: 3.859128
+    hr_u_ml10: 4.830826
+    hr_u_ml2: 4.068872
+    hr_u_ml3: 4.207099
+    hr_u_ml5: 4.414811
+    hr_v_ml0: 2.781635
+    hr_v_ml1: 3.005771
+    hr_v_ml10: 3.129782
+    hr_v_ml2: 3.095634
+    hr_v_ml3: 3.129137
+    hr_v_ml5: 3.134052
+    hr_w_ml0: 0.148763
+    hr_w_ml1: 0.189167
+    hr_w_ml10: 0.234685
+    hr_w_ml2: 0.206558
+    hr_w_ml3: 0.216427
+    hr_w_ml5: 0.228826
+    lh: 107.362977
+    lr_hfx: 93.835481
+    lr_lh: 93.555041
+    lr_lu: 4.841665
+    lr_pblh: 284.469413
+    lr_psfc: 844.529118
+    lr_t2: 1.884320
+    lr_tsk: 4.760095
+    lr_u_ml0: 3.378568
+    lr_u_ml1: 3.824772
+    lr_u_ml10: 4.820212
+    lr_u_ml2: 4.042483
+    lr_u_ml3: 4.186089
+    lr_u_ml5: 4.400064
+    lr_v_ml0: 2.704024
+    lr_v_ml1: 2.943384
+    lr_v_ml10: 3.106079
+    lr_v_ml2: 3.044215
+    lr_v_ml3: 3.085408
+    lr_v_ml5: 3.100947
+    lr_w_ml0: 0.077995
+    lr_w_ml1: 0.098184
+    lr_w_ml10: 0.124976
+    lr_w_ml2: 0.107858
+    lr_w_ml3: 0.112733
+    lr_w_ml5: 0.119017
+    lr_z: 74.091197
+    lu: 4.821964
+    pblh: 306.717843
+    psfc: 963.391035
+    swdown: 366.526076
+    t2: 1.960458
+    tsk: 5.147197
+    z: 85.115224
+
+  M-fM-^XM-<M-eM-$M-^\M-fM- M-7M-fM-^\M-,M-fM-^UM-0: day=951 night=849 twilight/other=37
+  M-hM->M-^SM-eM-^GM-:M-gM-^[M-.M-eM-=M-^U: ['/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_wind_3d_sz']
+
+M-eM-.M-^LM-fM-^HM-^PM-cM-^@M-^B
+
+--- 日志行数 ---
+136 logs/prep_sz_ysu_resume.out
+
+===== 3. 当前预处理进程 =====
+(无进程)
+
+===== 4. 输出目录现状 =====
+8928
+total 15997056
+-rw-r--r-- 1 ytw_tangzq yutingwang 1775108 Aug 25 10:39 ysu_20200731T235000.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang 1774956 Aug 25 10:39 ysu_20200731T234000.npz
+
+===== 完成 =====
