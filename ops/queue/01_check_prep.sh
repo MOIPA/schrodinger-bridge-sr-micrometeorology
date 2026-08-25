@@ -4,6 +4,7 @@
 # 结果写入 ops/result/01_check_prep.txt,然后 git add/commit/push 回传
 
 cd ~/schrodinger-bridge-sr-micrometeorology || exit 1
+mkdir -p ops/result || exit 1
 OUT=ops/result/01_check_prep.txt
 : > "$OUT"
 
