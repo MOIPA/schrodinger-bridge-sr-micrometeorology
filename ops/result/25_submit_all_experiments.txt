@@ -1,0 +1,30 @@
+===== 1. 提交 5 个训练任务 =====
+--- baseline -> 83a100ib ---
+Job <14002862> is submitted to queue <83a100ib>.
+--- lrcond -> 83a100ib ---
+Job <14002863> is submitted to queue <83a100ib>.
+--- day -> 62v100ib ---
+Job <14002864> is submitted to queue <62v100ib>.
+--- pinn -> 62v100ib ---
+Job <14002865> is submitted to queue <62v100ib>.
+--- night -> 72rtxib ---
+Job <14002866> is submitted to queue <72rtxib>.
+
+===== 2. 等 60 秒后的任务列表 =====
+JOBID    USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
+14002828 ytw_tangzq RUN   83a100ib   login1      8*m001      sz_smoke   Aug 25 14:04
+14002862 ytw_tangzq RUN   83a100ib   login1      8*m001      sz_baseline Aug 25 14:13
+14002863 ytw_tangzq RUN   83a100ib   login1      8*m001      sz_lrcond  Aug 25 14:13
+14002866 ytw_tangzq RUN   72rtxib    login1      4*g006      sz_night   Aug 25 14:13
+14002864 ytw_tangzq PEND  62v100ib   login1         -        sz_day     Aug 25 14:13
+14002865 ytw_tangzq PEND  62v100ib   login1         -        sz_pinn    Aug 25 14:13
+
+===== 3. 提交摘要 =====
+任务名 -> 配置 -> 队列:
+  sz_baseline -> baseline -> 83a100ib (A100)
+  sz_lrcond   -> lrcond   -> 83a100ib (A100)
+  sz_day      -> day      -> 62v100ib (V100)
+  sz_pinn     -> pinn     -> 62v100ib (V100)
+  sz_night    -> night    -> 72rtxib  (TITAN RTX)
+(另有 sz_smoke 在 83a100ib 跑冒烟)
+===== 完成 =====
