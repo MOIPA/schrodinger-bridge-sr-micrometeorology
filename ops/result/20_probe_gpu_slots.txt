@@ -1,0 +1,21 @@
+===== 1. 清理遗留 probe 任务 =====
+Job <14001779> is being terminated
+Job <14001783> is being terminated
+Job <14001786> is being terminated
+
+===== 2. 带 GPU 请求的探测任务 =====
+--- 72rtxib ---
+Job <14002747> is submitted to queue <72rtxib>.
+--- 83a100ib ---
+Job <14002749> is submitted to queue <83a100ib>.
+--- 945090ib ---
+Job <14002752> is submitted to queue <945090ib>.
+--- 6148v100ib ---
+Job <14002754> is submitted to queue <6148v100ib>.
+--- e5v4p100ib ---
+Job <14002756> is submitted to queue <e5v4p100ib>.
+
+===== 3. 等 40 秒后状态 =====
+JOBID    USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
+14001288 ytw_tangzq PEND  723090ib   login1         -        sz_smoke   Aug 25 11:24
+===== 完成 =====
