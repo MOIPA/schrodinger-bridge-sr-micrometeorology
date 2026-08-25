@@ -1,0 +1,75 @@
+===== 1. wind3d env torch/CUDA 版本 =====
+torch 2.6.0+cu118 cuda 11.8
+archs []
+
+===== 2. 候选队列 GPU 类型(bqueues -l 摘要) =====
+--- 83a100ib ---
+  -- CPU: 2*Platinum 8358, GPU: 8*Tesla A100 SXM4 40GB, RAM: 512GB, NET: 200Gb HDR InfiniBand
+
+PARAMETERS/STATISTICS
+PRIO NICE STATUS          MAX JL/U JL/P JL/H NJOBS  PEND   RUN SSUSP USUSP  RSV PJOBS 
+--
+ USER/GROUP   SHARES  PRIORITY  STARTED  RESERVED  CPU_TIME  RUN_TIME   ADJUST  GPU_RUN_TIME
+--- 945090ib ---
+  -- CPU: 2*EPYC 9454, GPU: 8*GeForce RTX 5090 32GB, RAM: 768GB, NET: 100Gb HDR100 InfiniBand
+
+PARAMETERS/STATISTICS
+PRIO NICE STATUS          MAX JL/U JL/P JL/H NJOBS  PEND   RUN SSUSP USUSP  RSV PJOBS 
+--
+ USER/GROUP   SHARES  PRIORITY  STARTED  RESERVED  CPU_TIME  RUN_TIME   ADJUST  GPU_RUN_TIME
+--- 62v100ib ---
+  -- CPU: 2*Gold 6148, GPU: 8*Tesla V100 SXM2 32GB, RAM: 768GB, NET: 100Gb EDR InfiniBand
+
+PARAMETERS/STATISTICS
+PRIO NICE STATUS          MAX JL/U JL/P JL/H NJOBS  PEND   RUN SSUSP USUSP  RSV PJOBS 
+--
+ USER/GROUP   SHARES  PRIORITY  STARTED  RESERVED  CPU_TIME  RUN_TIME   ADJUST  GPU_RUN_TIME
+--- e5v4p100ib ---
+  -- CPU: 2*E5-2660v4, GPU: 2*Tesla P100 PCIe 16GB, RAM: 128GB, NET: 56Gb FDR InfiniBand
+
+PARAMETERS/STATISTICS
+PRIO NICE STATUS          MAX JL/U JL/P JL/H NJOBS  PEND   RUN SSUSP USUSP  RSV PJOBS 
+--
+ USER/GROUP   SHARES  PRIORITY  STARTED  RESERVED  CPU_TIME  RUN_TIME   ADJUST  GPU_RUN_TIME
+--- 72rtxib ---
+  -- CPU: 1*EPYC 7302, GPU: 4*TITAN RTX 24GB, RAM: 256GB, NET: 100Gb HDR100 InfiniBand
+
+PARAMETERS/STATISTICS
+PRIO NICE STATUS          MAX JL/U JL/P JL/H NJOBS  PEND   RUN SSUSP USUSP  RSV PJOBS 
+--
+ USER/GROUP   SHARES  PRIORITY  STARTED  RESERVED  CPU_TIME  RUN_TIME   ADJUST  GPU_RUN_TIME
+
+===== 3. 提交 smoke 训练到 83a100ib =====
+Job <14002828> is submitted to queue <83a100ib>.
+
+===== 4. 轮询等待(最长 9 分钟) =====
+[30s] STAT=RUN  LOSS=无 ERR=无
+[60s] STAT=RUN  LOSS=无 ERR=无
+[90s] STAT=RUN  LOSS=无 ERR=无
+[120s] STAT=RUN  LOSS=无 ERR=无
+[150s] STAT=RUN  LOSS=无 ERR=无
+[180s] STAT=RUN  LOSS=无 ERR=无
+[210s] STAT=RUN  LOSS=无 ERR=无
+[240s] STAT=RUN  LOSS=无 ERR=无
+[270s] STAT=RUN  LOSS=无 ERR=无
+[300s] STAT=RUN  LOSS=无 ERR=无
+[330s] STAT=RUN  LOSS=无 ERR=无
+[360s] STAT=RUN  LOSS=train error: avg loss = 0.37427961 ERR=无
+>>> 出现 avg loss,退出等待
+
+===== 5. 最终状态与日志尾部 =====
+14002828 ytw_tangzq RUN   83a100ib   login1      8*m001      sz_smoke   Aug 25 14:04
+日志: logs/sz_smoke_a100_14002828.out
+**************************************************
+
+Train start: 2026-08-25 06:07:36.935006+00:00 UTC
+Saving interval = 100
+EMA decay rate = None
+Epoch 1 / 50
+train error: avg loss = 0.37427961
+Best loss is updated and ES count is reset.
+Checkpoint saved to '/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridge3dWind/config_wind_3d_sz_smoke/checkpoint.pth'
+Elapsed time = 177.0727677345276 sec
+----------
+Epoch 2 / 50
+===== 完成 =====
