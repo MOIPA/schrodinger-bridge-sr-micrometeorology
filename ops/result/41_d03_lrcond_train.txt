@@ -1,0 +1,32 @@
+===== 1. 验证配置可加载 =====
+配置加载 OK
+  in_channel: 44 (预期 44)
+  dl_data_ver: wrf_3d_v1_sz_d03
+  input 前4个: ['lr_u_ml0', 'lr_v_ml0', 'lr_w_ml0', 'lr_u_ml1'] ...
+
+===== 2. 自动选空闲队列(PEND=0 且 RUN 最少,避开已有任务) =====
+  72rtxib: PEND=0 RUN=4
+  e5v4p100ib: PEND=0 RUN=14
+  9654p6000ib: PEND=0 RUN=0
+  6148v100ib: PEND=0 RUN=0
+  7552v100: PEND=0 RUN=0
+  7k83: PEND=0 RUN=0
+  83a100ib: PEND=128 RUN=56
+>>> 选中队列: 9654p6000ib
+
+===== 3. 提交 lrcond-d03 训练 =====
+Job <14005112> is submitted to queue <9654p6000ib>.
+
+===== 4. 等 3 分钟看启动情况 =====
+14005109 ytw_tangzq RUN   72rtxib    login1      4*g006      sz_d03base Aug 26 14:42
+日志: logs/sz_d03lrcond_14005112.out
+
+
+PS:
+
+Read file <logs/sz_d03lrcond_14005112.err> for stderr output of this job.
+
+CUDA error: no kernel image is available for execution on the device
+Traceback (most recent call last):
+RuntimeError: CUDA error: no kernel image is available for execution on the device
+===== 完成 =====
