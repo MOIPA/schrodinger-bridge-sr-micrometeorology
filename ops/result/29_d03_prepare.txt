@@ -1,6 +1,18 @@
+===== 0. scipy 检查(预处理需要,自动安装) =====
+pytorch-gpu 无 scipy,自动安装中(约 1-2 分钟)...
+Installing collected packages: scipy
+Successfully installed scipy-1.7.3
+scipy 1.7.3 OK
+
 ===== 1. 冒烟测试(处理 1 个 d03 文件 = 24 时次) =====
-警告: 未找到 scipy,无法插值。pip install scipy
-错误:需要 scipy 做插值。退出。
+    main()
+  File "scripts/prepare_wind_data_3d_sz_d03.py", line 410, in main
+    created.extend(_worker(t))
+  File "scripts/prepare_wind_data_3d_sz_d03.py", line 293, in _worker
+    d04_index, d04_lon, d04_lat)
+  File "scripts/prepare_wind_data_3d_sz_d03.py", line 205, in process_d03_file
+    "d03 质量点网格 {} 与去交错场 {} 不符".format(d03_lon.shape, base_shape)
+AssertionError: d03 质量点网格 (120, 150) 与去交错场 (61, 120, 150) 不符
 
 ===== 2. 冒烟结果验证 =====
 冒烟产出: 0 个 npz
