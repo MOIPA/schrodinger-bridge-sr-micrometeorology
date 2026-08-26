@@ -241,6 +241,8 @@ def main():
                                              "ExperimentSchrodingerBridge3dWind"))
     parser.add_argument("--d03", action="store_true",
                         help="d03 跨域模式:现有模型评估在原生 d03 数据(实验#2)")
+    parser.add_argument("--d03train", action="store_true",
+                        help="d03 真实场景模式:评估在 d03 上训练的模型(实验#3)")
     args = parser.parse_args()
 
     os.makedirs(args.results_dir, exist_ok=True)
@@ -253,6 +255,14 @@ def main():
             ("pinn", "config_wind_3d_sz_d03_baseline.yml", "all"),
             ("lrcond", "config_wind_3d_sz_d03_lrcond.yml", "all"),
         ]
+    elif args.d03train:
+        # 真实场景:在 d03 上训练的模型,评估在 d03 测试集
+        eval_items = [
+            ("baseline", "config_wind_3d_sz_d03_baseline.yml", "all"),
+            ("lrcond", "config_wind_3d_sz_d03_lrcond.yml", "all"),
+            ("pinn", "config_wind_3d_sz_d03_pinn.yml", "all"),
+            ("lrcond_pinn", "config_wind_3d_sz_d03_lrcond_pinn.yml", "all"),
+        ]
     else:
         eval_items = [
             (exp, "config_wind_3d_sz_{}.yml".format(exp),
@@ -262,9 +272,15 @@ def main():
 
     for exp, cfg_name, filt in eval_items:
         config_path = os.path.join(ROOT_DIR, "configs", CONFIG_SUBDIR, cfg_name)
-        checkpoint_path = os.path.join(args.checkpoint_base_dir,
-                                       "config_wind_3d_sz_{}".format(exp),
-                                       "checkpoint.pth")
+        if args.d03train:
+            checkpoint_path = os.path.join(
+                args.checkpoint_base_dir,
+                "config_wind_3d_sz_d03_{}".format(exp),
+                "checkpoint.pth")
+        else:
+            checkpoint_path = os.path.join(args.checkpoint_base_dir,
+                                           "config_wind_3d_sz_{}".format(exp),
+                                           "checkpoint.pth")
 
         if not os.path.exists(checkpoint_path):
             print("[SKIP] Checkpoint not found: {}".format(checkpoint_path))
@@ -272,13 +288,16 @@ def main():
 
         if args.d03:
             key = "{}_d03".format(exp)
+        elif args.d03train:
+            key = "{}_d03train".format(exp)
         else:
             key = "{}_{}".format(exp, filt) if filt != "all" else exp
 
         print("")
         print("=" * 60)
         print("Evaluating: {} (filter={}, data={})".format(
-            exp, filt, "d03" if args.d03 else "d04"))
+            exp, filt, "d03" if args.d03 else
+            ("d03train" if args.d03train else "d04")))
         print("  Config:     {}".format(config_path))
         print("  Checkpoint: {}".format(checkpoint_path))
         print("=" * 60)
