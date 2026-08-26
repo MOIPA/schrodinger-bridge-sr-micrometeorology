@@ -1,26 +1,33 @@
 ===== 0. scipy 检查(预处理需要,自动安装) =====
-pytorch-gpu 无 scipy,自动安装中(约 1-2 分钟)...
-Installing collected packages: scipy
-Successfully installed scipy-1.7.3
 scipy 1.7.3 OK
 
 ===== 1. 冒烟测试(处理 1 个 d03 文件 = 24 时次) =====
-    main()
-  File "scripts/prepare_wind_data_3d_sz_d03.py", line 410, in main
-    created.extend(_worker(t))
-  File "scripts/prepare_wind_data_3d_sz_d03.py", line 293, in _worker
-    d04_index, d04_lon, d04_lat)
-  File "scripts/prepare_wind_data_3d_sz_d03.py", line 205, in process_d03_file
-    "d03 质量点网格 {} 与去交错场 {} 不符".format(d03_lon.shape, base_shape)
-AssertionError: d03 质量点网格 (120, 150) 与去交错场 (61, 120, 150) 不符
+域平均经纬度: lon=114.402 lat=22.479
+构建 d04 时次索引...
+  d04 时次数: 4464, 参考网格: (99, 120)
+待处理 d03 文件数: 1
+  d03 网格: (120, 150) (去交错后 (120, 150))
+scheme myj: 生成 24 个 npz
+
+完成。
 
 ===== 2. 冒烟结果验证 =====
-冒烟产出: 0 个 npz
-验证: 失败,不启动全量
+冒烟产出: 24 个 npz
+npz keys 数: 53
+hr_u_ml0 shape: (96, 112)  lr_u_ml0 shape: (96, 112)
+lr_t2 shape: (96, 112)  swdown: 465.4215087890625
+含非有限值 key: 无
+lr_u_ml0 std: 0.6982  hr_u_ml0 std: 0.8935 (真实 d03 更平滑则 lr 略小)
+验证: 通过,启动全量
 
 ===== 3. 启动全量后台任务 =====
-冒烟未通过,不启动全量。请把 ops/result/29_d03_prepare.txt 发给我
+已启动全量预处理 (PID 5509), 日志 logs/prep_d03_full.log
 
 ===== 4. 5 秒后冒烟产物清单 =====
-共 0 个文件
+myj_20200701T000000.npz
+myj_20200701T010000.npz
+myj_20200701T020000.npz
+myj_20200701T030000.npz
+myj_20200701T040000.npz
+共 24 个文件
 ===== 完成 =====
