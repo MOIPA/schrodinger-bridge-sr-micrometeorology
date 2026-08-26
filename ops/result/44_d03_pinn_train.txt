@@ -1,0 +1,36 @@
+===== 1. 检查是否已有训练(防重复提交) =====
+无既有 checkpoint,继续
+
+===== 2. 验证配置可加载 =====
+配置加载 OK
+  in_channel: 44 (预期 44)
+  dl_data_ver: wrf_3d_v1_sz_d03
+  div/vort: 0.1 0.05 (预期 0.1/0.05)
+  条件前4个: ['t2', 'z', 'lu', 'tsk'] (预期 HR 条件)
+
+===== 3. 选兼容队列(PEND=0 且 RUN 最少,排除 P6000) =====
+  72rtxib: PEND=0 RUN=4
+  e5v4p100ib: PEND=0 RUN=14
+  6148v100ib: PEND=0 RUN=0
+  7552v100: PEND=0 RUN=0
+  7k83: PEND=0 RUN=0
+  83a100ib: PEND=128 RUN=56
+>>> 选中队列: 6148v100ib
+
+===== 4. 提交 pinn-d03 训练 =====
+Job <14005151> is submitted to queue <6148v100ib>.
+
+===== 5. 等 3 分钟确认启动 =====
+14005109 ytw_tangzq RUN   72rtxib    login1      4*g006      sz_d03base Aug 26 14:42
+14005115 ytw_tangzq RUN   e5v4p100ib login1      14*x002     sz_d03lrcond Aug 26 14:56
+14005151 ytw_tangzq RUN   6148v100ib login1      40*x003     sz_d03pinn Aug 26 15:06
+日志: logs/sz_d03pinn_14005151.out
+**************************************************
+Train model
+**************************************************
+
+Train start: 2026-08-26 07:08:34.229680+00:00 UTC
+Saving interval = 100
+EMA decay rate = None
+Epoch 1 / 300
+===== 完成 =====
