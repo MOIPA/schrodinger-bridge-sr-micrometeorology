@@ -1,0 +1,29 @@
+===== 1. 清理失败任务 =====
+(任务已不在队列,无需清理)
+已清理旧日志
+
+===== 2. 选兼容队列(P6000 已排除) =====
+  72rtxib: PEND=0 RUN=4
+  e5v4p100ib: PEND=0 RUN=0
+  6148v100ib: PEND=0 RUN=0
+  7552v100: PEND=0 RUN=0
+  7k83: PEND=0 RUN=0
+  83a100ib: PEND=128 RUN=56
+>>> 选中队列: e5v4p100ib
+
+===== 3. 重提交 lrcond-d03 训练 =====
+Job <14005115> is submitted to queue <e5v4p100ib>.
+
+===== 4. 等 3 分钟确认启动 =====
+14005109 ytw_tangzq RUN   72rtxib    login1      4*g006      sz_d03base Aug 26 14:42
+14005115 ytw_tangzq RUN   e5v4p100ib login1      14*x002     sz_d03lrcond Aug 26 14:56
+日志: logs/sz_d03lrcond_14005115.out
+**************************************************
+Train model
+**************************************************
+
+Train start: 2026-08-26 06:59:27.305797+00:00 UTC
+Saving interval = 100
+EMA decay rate = None
+Epoch 1 / 300
+===== 完成 =====
