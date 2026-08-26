@@ -22,6 +22,10 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
+plt.rcParams["font.sans-serif"] = ["PingFang SC", "Hiragino Sans GB", "Heiti TC",
+                                   "Arial Unicode MS", "DejaVu Sans"]
+plt.rcParams["axes.unicode_minus"] = False
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 MODEL_COLORS = {
