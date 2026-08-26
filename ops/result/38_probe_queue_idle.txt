@@ -1,29 +1,28 @@
 ===== 1. 候选 GPU 队列状态 (NJOBS PEND RUN SUSP) =====
 队列名: NJOBS PEND RUN SUSP  (PEND 越少越空闲)
 -----------------------------------------------------
-83a100ib: 200 136 64 0
-62v100ib: 5 0 5 0
+83a100ib: 896 832 64 0
+62v100ib: 100 90 10 0
 72rtxib: 0 0 0 0
 e5v4p100ib: 0 0 0 0
 9654p6000ib: 0 0 0 0
 6148v100ib: 0 0 0 0
 7552v100: 0 0 0 0
-734090ib: 96 0 96 0
+734090ib: 184 56 128 0
 7k83: 0 0 0 0
 
 ===== 2. 我的任务排队情况 =====
 JOBID    USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
-14002865 ytw_tangzq RUN   62v100ib   login1      5*n002      sz_pinn    Aug 25 14:13
-14005097 ytw_tangzq PEND  83a100ib   login1         -        sz_d03_eval Aug 26 14:12
+14006939 ytw_tangzq PEND  83a100ib   login1         -        sz_d03_eval_final Aug 26 22:07
 
 ===== 3. 推荐排序(按 PEND 数升序) =====
-136 64 83a100ib
-0 5 62v100ib
+832 64 83a100ib
+90 10 62v100ib
 0 0 72rtxib
 0 0 e5v4p100ib
 0 0 9654p6000ib
 0 0 6148v100ib
 0 0 7552v100
-0 96 734090ib
+56 128 734090ib
 0 0 7k83
 ===== 完成 =====
