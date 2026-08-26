@@ -38,9 +38,9 @@ MODEL_COLORS = {
 }
 MODEL_LABELS = {
     "baseline": "baseline",
-    "lrcond": "lrcond",
-    "pinn": "pinn",
-    "lrcond_pinn": "lrcond+pinn",
+    "lrcond": "allLR",
+    "pinn": "phys",
+    "lrcond_pinn": "allLR+phys",
     "day": "day",
     "night": "night",
 }
@@ -98,7 +98,7 @@ def fig_cross_matrix(out_dir):
     ax.set_xticks([0, 1])
     ax.set_xticklabels(["d04 (模拟)", "d03 (真实)"], fontsize=11)
     ax.set_yticks(range(4))
-    ax.set_yticklabels(["baseline", "lrcond", "pinn", "lrcond+pinn"], fontsize=11)
+    ax.set_yticklabels(["baseline", "allLR", "phys", "allLR+phys"], fontsize=11)
     ax.set_xlabel("评估数据", fontsize=12)
     ax.set_ylabel("训练数据均为 d04 (模拟低精度)", fontsize=11)
     for i in range(4):
@@ -135,7 +135,7 @@ def fig_cross_domain(out_dir):
         ax.text(i, max(a, b) + 0.030, "+{:.0f}%".format(100 * (b - a) / a),
                 ha="center", fontsize=10, fontweight="bold", color="#8B0000")
     ax.set_xticks(x)
-    ax.set_xticklabels(["baseline", "lrcond", "pinn"], fontsize=12)
+    ax.set_xticklabels(["baseline", "allLR", "phys"], fontsize=12)
     ax.set_ylabel("RMSE (标准化)", fontsize=11)
     ax.set_title("跨域分布偏移:模拟训练模型在真实 3km 输入上的退化", fontsize=12, fontweight="bold")
     ax.legend(fontsize=10)
@@ -173,7 +173,7 @@ def fig_d03_samedomain(out_dir):
     print("saved fig_d03_samedomain.png")
 
 
-def fig_pinn_mid_vs_final(out_dir):
+def fig_phys_mid_vs_final(out_dir):
     """pinn 中途(171ep) vs 最终(300ep) checkpoint 对比——训练不稳定证据。"""
     labels = ["171ep\n(中途)", "300ep\n(最终)"]
     rmse = [0.1626, 0.2053]
@@ -190,9 +190,9 @@ def fig_pinn_mid_vs_final(out_dir):
     fig.suptitle("物理约束训练后期不稳定:最终 checkpoint 明显劣于中途 (pinn, d04)",
                  fontsize=12, fontweight="bold")
     plt.tight_layout(rect=[0, 0, 1, 0.92])
-    fig.savefig(os.path.join(out_dir, "fig_pinn_mid_vs_final.png"), dpi=150)
+    fig.savefig(os.path.join(out_dir, "fig_phys_mid_vs_final.png"), dpi=150)
     plt.close(fig)
-    print("saved fig_pinn_mid_vs_final.png")
+    print("saved fig_phys_mid_vs_final.png")
 
 
 def main():
@@ -205,7 +205,7 @@ def main():
     fig_cross_matrix(args.out_dir)
     fig_cross_domain(args.out_dir)
     fig_d03_samedomain(args.out_dir)
-    fig_pinn_mid_vs_final(args.out_dir)
+    fig_phys_mid_vs_final(args.out_dir)
 
 
 if __name__ == "__main__":
