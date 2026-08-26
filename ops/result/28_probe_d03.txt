@@ -1,0 +1,72 @@
+===== 1. 评估任务 sz_eval 状态 =====
+14004762 ytw_tangzq RUN   83a100ib   login1      8*m001      sz_eval    Aug 26 09:23
+评估日志: logs/sz_eval_14004762.out (2026-08-26 09:25:30)
+Evaluating: baseline (filter=all)
+  Test samples: 1384
+--- 日志尾部 ---
+Evaluating: baseline (filter=all)
+  Config:     /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/config_wind_3d_sz_baseline.yml
+  Checkpoint: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridge3dWind/config_wind_3d_sz_baseline/checkpoint.pth
+============================================================
+  Test samples: 1384
+--- sz_eval 已产出 ---
+total 2
+drwxr-xr-x 2 ytw_tangzq yutingwang 4096 Aug 26 09:26 .
+drwxr-xr-x 8 ytw_tangzq yutingwang 4096 Aug 26 09:24 ..
+-rw-r--r-- 1 ytw_tangzq yutingwang 1259 Aug 26 09:26 baseline_metrics.json
+
+===== 2. d03 wrfout 文件清单 =====
+--- meso_202007_myj ---
+/fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_myj/wrfout_d03_2020-07-01_00:00:00
+/fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_myj/wrfout_d03_2020-07-02_00:00:00
+d03 文件数: 31
+各域文件数:      31 01;     31 02;     31 03;    744 04;
+--- meso_202007_ysu ---
+/fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_ysu/wrfout_d03_2020-07-01_00:00:00
+/fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_ysu/wrfout_d03_2020-07-02_00:00:00
+d03 文件数: 31
+各域文件数:      31 01;     31 02;     31 03;    744 04;
+
+===== 3. 单个 d03 文件结构详情 =====
+### meso_202007_myj: d03 共 31 个文件
+  文件: wrfout_d03_2020-07-01_00:00:00
+  Times 个数: 24, 前4个: ['2020-07-01_00:00:00', '2020-07-01_01:00:00', '2020-07-01_02:00:00', '2020-07-01_03:00:00']
+  XLAT     shape=(24, 120, 150)
+  XLONG    shape=(24, 120, 150)
+  U        shape=(24, 61, 120, 151)
+  V        shape=(24, 61, 121, 150)
+  W        shape=(24, 62, 120, 150)
+  T2       shape=(24, 120, 150)
+  HGT      shape=(24, 120, 150)
+  LU_INDEX shape=(24, 120, 150)
+  TSK      shape=(24, 120, 150)
+  HFX      shape=(24, 120, 150)
+  LH       shape=(24, 120, 150)
+  PSFC     shape=(24, 120, 150)
+  PBLH     shape=(24, 120, 150)
+  SWDOWN   (缺失)
+  GLW      (缺失)
+  ZNU      shape=(24, 61)
+  ZNW      shape=(24, 62)
+### meso_202007_ysu: d03 共 31 个文件
+  文件: wrfout_d03_2020-07-01_00:00:00
+  Times 个数: 24, 前4个: ['2020-07-01_00:00:00', '2020-07-01_01:00:00', '2020-07-01_02:00:00', '2020-07-01_03:00:00']
+  XLAT     shape=(24, 120, 150)
+  XLONG    shape=(24, 120, 150)
+  U        shape=(24, 61, 120, 151)
+  V        shape=(24, 61, 121, 150)
+  W        shape=(24, 62, 120, 150)
+  T2       shape=(24, 120, 150)
+  HGT      shape=(24, 120, 150)
+  LU_INDEX shape=(24, 120, 150)
+  TSK      shape=(24, 120, 150)
+  HFX      shape=(24, 120, 150)
+  LH       shape=(24, 120, 150)
+  PSFC     shape=(24, 120, 150)
+  PBLH     shape=(24, 120, 150)
+  SWDOWN   shape=(24, 120, 150)
+  GLW      shape=(24, 120, 150)
+  ZNU      shape=(24, 61)
+  ZNW      shape=(24, 62)
+### d04 参考 XLAT shape: (6, 99, 120)  XLONG shape: (6, 99, 120)
+===== 完成 =====
