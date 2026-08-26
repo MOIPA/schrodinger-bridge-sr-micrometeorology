@@ -1,0 +1,29 @@
+===== 1. 检查数据/配置 =====
+d03 npz: 1488 (预期 1488)
+配置 OK
+
+===== 2. 验证配置可加载(in_channel=44 等) =====
+配置加载 OK
+  in_channel: 44 (预期 44)
+  inner_channel: 128
+  dl_data_ver: wrf_3d_v1_sz_d03
+  epochs: 300
+  input_variables: 26 个
+
+===== 3. 自动选空闲队列 =====
+  72rtxib: PEND=0 RUN=0
+>>> 选中队列: 72rtxib
+
+===== 4. 提交 d03 训练 =====
+Job <14005109> is submitted to queue <72rtxib>.
+
+===== 5. 等 3 分钟看启动情况 =====
+14005109 ytw_tangzq RUN   72rtxib    login1      4*g006      sz_d03base Aug 26 14:42
+日志: logs/sz_d03base_14005109.out
+**************************************************
+
+Train start: 2026-08-26 06:44:36.022220+00:00 UTC
+Saving interval = 100
+EMA decay rate = None
+Epoch 1 / 300
+===== 完成 =====
