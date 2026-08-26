@@ -1,5 +1,17 @@
 ===== 1. 跨域评估任务状态 =====
-14005097 ytw_tangzq PEND  83a100ib   login1         -        sz_d03_eval Aug 26 14:12
+14005104 ytw_tangzq RUN   72rtxib    login1      4*g006      sz_d03_eval Aug 26 14:29
+日志: logs/sz_d03_eval_14005104.out (2026-08-26 14:30:58)
+--- 评估进度 ---
+Evaluating: baseline (filter=all, data=d03)
+  Test samples: 231
+--- 日志尾部(含跨域对比表) ---
+
+============================================================
+Evaluating: baseline (filter=all, data=d03)
+  Config:     /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/config_wind_3d_sz_d03_baseline.yml
+  Checkpoint: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridge3dWind/config_wind_3d_sz_baseline/checkpoint.pth
+============================================================
+  Test samples: 231
 
 ===== 2. 已产出结果 =====
 (尚无结果)
