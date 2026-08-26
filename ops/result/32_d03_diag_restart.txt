@@ -1,0 +1,24 @@
+===== 1. 进程诊断 =====
+--- prep 相关进程 ---
+(无输出 = 进程已死)
+--- PID 文件记录 ---
+5509
+
+===== 2. 日志尾部 15 行(找死因) =====
+输入目录: /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_myj
+输出目录: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_wind_3d_sz_d03
+域平均经纬度: lon=114.402 lat=22.479
+构建 d04 时次索引...
+  d04 时次数: 4464, 参考网格: (99, 120)
+待处理 d03 文件数: 31
+
+===== 3. 产物状态 =====
+已生成 npz: 322 / 预期 1488
+最新文件: myj_20200716T150000.npz (2026-08-26 09:52:03)
+
+===== 4. 重启判断 =====
+>>> 进程已死,重启全量(workers 4,断点续跑,跳过已生成的 322 个)
+>>> 用 setsid 启动,彻底脱离终端会话(防手机断开时被清理)
+已重启 (PID 16654), 日志 logs/prep_d03_full.log
+--- 20 秒后日志头部 ---
+===== 完成 =====
