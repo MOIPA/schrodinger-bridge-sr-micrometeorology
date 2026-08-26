@@ -9,6 +9,25 @@ OUT=ops/result/29_d03_prepare.txt
 
 PY=/fs00/software/anaconda/3/envs/pytorch-gpu/bin/python
 
+echo "===== 0. scipy 检查(预处理需要,自动安装) =====" >> "$OUT"
+if $PY -c "import scipy" 2>/dev/null; then
+  $PY -c "import scipy; print('scipy', scipy.__version__, 'OK')" >> "$OUT"
+else
+  echo "pytorch-gpu 无 scipy,自动安装中(约 1-2 分钟)..." >> "$OUT"
+  $PY -m pip install scipy 2>&1 | tail -2 >> "$OUT"
+  if ! $PY -c "import scipy" 2>/dev/null; then
+    echo "直接安装失败,尝试 --user 安装..." >> "$OUT"
+    $PY -m pip install --user scipy 2>&1 | tail -2 >> "$OUT"
+  fi
+  if $PY -c "import scipy" 2>/dev/null; then
+    $PY -c "import scipy; print('scipy', scipy.__version__, 'OK')" >> "$OUT"
+  else
+    echo ">>> scipy 仍不可用,预处理无法进行。请手动执行:" >> "$OUT"
+    echo "    /fs00/software/anaconda/3/envs/pytorch-gpu/bin/python -m pip install scipy" >> "$OUT"
+  fi
+fi
+
+echo "" >> "$OUT"
 echo "===== 1. 冒烟测试(处理 1 个 d03 文件 = 24 时次) =====" >> "$OUT"
 $PY scripts/prepare_wind_data_3d_sz_d03.py --scheme myj --limit 1 --workers 4 --skip_stats 2>&1 | tail -8 >> "$OUT"
 
