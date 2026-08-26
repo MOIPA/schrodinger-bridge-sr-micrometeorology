@@ -1,6 +1,12 @@
 ===== 1. d03 预处理进度 =====
 状态: 运行中 (PID 24026)
-已生成 npz: 707 / 预期 1488
+已生成 npz: 776 / 预期 1488
+输入目录: /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_ysu
+输出目录: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_wind_3d_sz_d03
+域平均经纬度: lon=114.402 lat=22.479
+构建 d04 时次索引...
+  d04 时次数: 4464, 参考网格: (99, 120)
+待处理 d03 文件数: 31
 
 ===== 2. 评估任务 sz_eval 进度 =====
 (不在队列,可能已结束)
