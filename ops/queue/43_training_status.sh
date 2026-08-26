@@ -1,5 +1,5 @@
 #!/bin/bash
-# 43_training_status.sh — 三个训练任务总进度(pinn / d03base / d03lrcond)
+# 43_training_status.sh — 训练任务总进度(pinn / d03base / d03lrcond / d03pinn)
 # 手机执行: bash ops/queue/43_training_status.sh (随时可跑)
 cd ~/schrodinger-bridge-sr-micrometeorology || exit 1
 mkdir -p ops/result
@@ -7,14 +7,14 @@ OUT=ops/result/43_training_status.txt
 : > "$OUT"
 
 echo "===== 1. 任务状态 =====" >> "$OUT"
-bjobs -w 2>/dev/null | grep -a -E "sz_pinn|sz_d03base|sz_d03lrcond" | head -6 >> "$OUT"
-if ! bjobs -w 2>/dev/null | grep -a -E "sz_pinn|sz_d03base|sz_d03lrcond" >/dev/null; then
-  echo "(三个任务都不在队列,可能全部结束)" >> "$OUT"
+bjobs -w 2>/dev/null | grep -a -E "sz_pinn|sz_d03base|sz_d03lrcond|sz_d03pinn" | head -8 >> "$OUT"
+if ! bjobs -w 2>/dev/null | grep -a -E "sz_pinn|sz_d03base|sz_d03lrcond|sz_d03pinn" >/dev/null; then
+  echo "(训练任务都不在队列,可能全部结束)" >> "$OUT"
 fi
 
 echo "" >> "$OUT"
 echo "===== 2. 各任务训练进度 =====" >> "$OUT"
-for name in sz_pinn sz_d03base sz_d03lrcond; do
+for name in sz_pinn sz_d03base sz_d03lrcond sz_d03pinn; do
   echo "--- $name ---" >> "$OUT"
   LATEST=$(ls -t logs/${name}_*.out 2>/dev/null | grep -v cpu | head -1)
   if [ -z "$LATEST" ]; then
@@ -29,7 +29,7 @@ done
 
 echo "" >> "$OUT"
 echo "===== 3. checkpoint 情况 =====" >> "$OUT"
-for d in config_wind_3d_sz_pinn config_wind_3d_sz_d03_baseline config_wind_3d_sz_d03_lrcond; do
+for d in config_wind_3d_sz_pinn config_wind_3d_sz_d03_baseline config_wind_3d_sz_d03_lrcond config_wind_3d_sz_d03_pinn; do
   CKPT=data/DL_result/ExperimentSchrodingerBridge3dWind/$d/checkpoint.pth
   if [ -f "$CKPT" ]; then
     echo "$d: $(stat -c %y "$CKPT" | cut -d. -f1) $(du -h "$CKPT" | cut -f1)" >> "$OUT"
