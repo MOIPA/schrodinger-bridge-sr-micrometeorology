@@ -1,0 +1,14 @@
+===== 1. 检查各 checkpoint 是否存在 =====
+  baseline: 3.6G OK
+  lrcond: 3.6G OK
+  day: 3.6G OK
+  night: 3.6G OK
+  pinn: 3.6G OK
+
+===== 2. 提交评估任务到 83a100ib (A100) =====
+Job <14004762> is submitted to queue <83a100ib>.
+
+===== 3. 任务状态 =====
+14004762 ytw_tangzq PEND  83a100ib   login1         -        sz_eval    Aug 26 09:23
+(任务跑完后结果在 results/sz_eval/,评估日志在 logs/sz_eval_*.out)
+===== 完成 =====
