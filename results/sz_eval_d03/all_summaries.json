@@ -1,0 +1,119 @@
+{
+  "baseline_d03": {
+    "experiment": "baseline",
+    "filter": "all",
+    "config": "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/\u6df1\u5733/config_wind_3d_sz_d03_baseline.yml",
+    "checkpoint": "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridge3dWind/config_wind_3d_sz_baseline/checkpoint.pth",
+    "results": {
+      "n_samples": 231,
+      "by_component": {
+        "U": {
+          "rmse": 0.11838345229625702,
+          "mae": 0.07998893037438393,
+          "ssim": 0.9992259542147318,
+          "corr": 0.9948015014330546,
+          "bias": 0.011323476831118265
+        },
+        "V": {
+          "rmse": 0.14458770056565604,
+          "mae": 0.09563737114270528,
+          "ssim": 0.999140202999115,
+          "corr": 0.9848866164684296,
+          "bias": 0.014783700307210287
+        },
+        "W": {
+          "rmse": 0.4615260461966197,
+          "mae": 0.26064712802569073,
+          "ssim": 0.965466300646464,
+          "corr": 0.8043006857236227,
+          "bias": -0.0012970047537237406
+        },
+        "Overall": {
+          "rmse": 0.24149906635284424,
+          "mae": 0.14542447651425996,
+          "ssim": 0.9879441526201036,
+          "corr": 0.9279962678750356,
+          "bias": 0.008270057461534938
+        }
+      }
+    }
+  },
+  "pinn_d03": {
+    "experiment": "pinn",
+    "filter": "all",
+    "config": "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/\u6df1\u5733/config_wind_3d_sz_d03_baseline.yml",
+    "checkpoint": "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridge3dWind/config_wind_3d_sz_pinn/checkpoint.pth",
+    "results": {
+      "n_samples": 231,
+      "by_component": {
+        "U": {
+          "rmse": 0.12990357105930647,
+          "mae": 0.09015932182470958,
+          "ssim": 0.9958444635073344,
+          "corr": 0.9944426417350769,
+          "bias": 0.038550938169161476
+        },
+        "V": {
+          "rmse": 0.1553372467557589,
+          "mae": 0.10646217937270801,
+          "ssim": 0.997407466173172,
+          "corr": 0.9838995039463043,
+          "bias": 0.0444908340771993
+        },
+        "W": {
+          "rmse": 0.43884030481179553,
+          "mae": 0.25035257637500763,
+          "ssim": 0.6503194520870844,
+          "corr": 0.8229537705580393,
+          "bias": -0.006890707882121205
+        },
+        "Overall": {
+          "rmse": 0.24136037420895365,
+          "mae": 0.14899135919080841,
+          "ssim": 0.8811904605891969,
+          "corr": 0.9337653054131402,
+          "bias": 0.02538368812141319
+        }
+      }
+    }
+  },
+  "lrcond_d03": {
+    "experiment": "lrcond",
+    "filter": "all",
+    "config": "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/\u6df1\u5733/config_wind_3d_sz_d03_lrcond.yml",
+    "checkpoint": "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridge3dWind/config_wind_3d_sz_lrcond/checkpoint.pth",
+    "results": {
+      "n_samples": 231,
+      "by_component": {
+        "U": {
+          "rmse": 0.12193373218178749,
+          "mae": 0.08296783392628033,
+          "ssim": 0.9988641540209452,
+          "corr": 0.9947601755460104,
+          "bias": 0.009734307726224264
+        },
+        "V": {
+          "rmse": 0.14906912297010422,
+          "mae": 0.09785273298621178,
+          "ssim": 0.998757561047872,
+          "corr": 0.9841469625631968,
+          "bias": 0.022473384936650593
+        },
+        "W": {
+          "rmse": 0.5283689200878143,
+          "mae": 0.2974138557910919,
+          "ssim": 0.8355983197689056,
+          "corr": 0.7417267660299937,
+          "bias": -0.004289666113133232
+        },
+        "Overall": {
+          "rmse": 0.26645725841323536,
+          "mae": 0.159411474234528,
+          "ssim": 0.944406678279241,
+          "corr": 0.9068779680464003,
+          "bias": 0.009306008849913875
+        }
+      }
+    }
+  }
+}

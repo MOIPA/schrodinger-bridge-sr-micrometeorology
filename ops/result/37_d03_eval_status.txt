@@ -1,18 +1,50 @@
 ===== 1. 跨域评估任务状态 =====
-14005104 ytw_tangzq RUN   72rtxib    login1      4*g006      sz_d03_eval Aug 26 14:29
-日志: logs/sz_d03_eval_14005104.out (2026-08-26 14:30:58)
+(不在队列,可能已结束)
+日志: logs/sz_d03_eval_14005104.out (2026-08-26 14:33:47)
 --- 评估进度 ---
 Evaluating: baseline (filter=all, data=d03)
   Test samples: 231
---- 日志尾部(含跨域对比表) ---
-
-============================================================
-Evaluating: baseline (filter=all, data=d03)
-  Config:     /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/config_wind_3d_sz_d03_baseline.yml
-  Checkpoint: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridge3dWind/config_wind_3d_sz_baseline/checkpoint.pth
-============================================================
+  Saved: results/sz_eval_d03/baseline_d03_metrics.json
+Evaluating: pinn (filter=all, data=d03)
   Test samples: 231
+  Saved: results/sz_eval_d03/pinn_d03_metrics.json
+Evaluating: lrcond (filter=all, data=d03)
+  Test samples: 231
+  Saved: results/sz_eval_d03/lrcond_d03_metrics.json
+--- 日志尾部(含跨域对比表) ---
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   256.16 sec.
+    Max Memory :                                 6608 MB
+    Average Memory :                             4278.40 MB
+    Total Requested Memory :                     32000.00 MB
+    Delta Memory :                               25392.00 MB
+    Max Swap :                                   -
+    Max Processes :                              7
+    Max Threads :                                56
+    Run time :                                   236 sec.
+    Turnaround time :                            237 sec.
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file <logs/sz_d03_eval_14005104.err> for stderr output of this job.
+
 
 ===== 2. 已产出结果 =====
-(尚无结果)
+total 131
+drwxr-xr-x 2 ytw_tangzq yutingwang 4096 Aug 26 14:33 .
+drwxr-xr-x 9 ytw_tangzq yutingwang 4096 Aug 26 14:30 ..
+-rw-r--r-- 1 ytw_tangzq yutingwang 4049 Aug 26 14:33 all_summaries.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 1262 Aug 26 14:31 baseline_d03_metrics.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 1252 Aug 26 14:33 lrcond_d03_metrics.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 1251 Aug 26 14:32 pinn_d03_metrics.json
+(若含 all_summaries.json 且任务不在队列 = 已全部完成)
 ===== 完成 =====
