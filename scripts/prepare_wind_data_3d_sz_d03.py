@@ -196,8 +196,8 @@ def process_d03_file(wrf_file_path, out_dir, lon_deg, lat_deg, scheme,
         # d03 参考网格坐标(质量点)
         d03_lon = np.array(ncfile.variables['XLONG'][0], dtype=np.float64)
         d03_lat = np.array(ncfile.variables['XLAT'][0], dtype=np.float64)
-        # 去交错后 U 基准 shape(质量点网格)
-        base_shape = destagger_u(ncfile.variables['U'][0]).shape
+        # 去交错后 U 基准 shape(质量点网格):U 是 (T, bottom_top, sn, we_stag)
+        base_shape = destagger_u(ncfile.variables['U'][0][0]).shape
         # XLONG 若带 Time 轴则取第一个时次
         if d03_lon.ndim > 2:
             d03_lon, d03_lat = d03_lon[0], d03_lat[0]
