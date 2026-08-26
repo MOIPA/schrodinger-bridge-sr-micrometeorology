@@ -1,0 +1,13 @@
+===== 1. 建数据软链 wrf_3d_v1_sz_d03 =====
+lrwxrwxrwx 1 ytw_tangzq yutingwang 97 Aug 26 14:12 data/DL_data/wrf_3d_v1_sz_d03 -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_wind_3d_sz_d03
+软链数据 npz 数: 1488
+
+===== 2. 检查配置与 checkpoint =====
+
+===== 3. 提交跨域评估任务到 83a100ib =====
+Job <14005097> is submitted to queue <83a100ib>.
+
+===== 4. 任务状态 =====
+14005097 ytw_tangzq PEND  83a100ib   login1         -        sz_d03_eval Aug 26 14:12
+(任务跑完结果在 results/sz_eval_d03/,评估日志在 logs/sz_d03_eval_*.out)
+===== 完成 =====
