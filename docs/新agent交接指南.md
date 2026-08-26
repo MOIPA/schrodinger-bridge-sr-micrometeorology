@@ -23,41 +23,25 @@
 
 ## 1. 当前状态与下一步（最重要）
 
-### 正在进行的：深圳数据预处理
+### 正在进行的：深圳 d03 真实场景训练（实验 #3，2026-08-26）
 
-- 服务器登录节点后台进程（nohup，PID 26565），2026-08-24 22:06 启动，约 45 分钟，**现在应已完成**
-- 脚本：`scripts/prepare_wind_data_3d_sz.py`，日志：服务器 `logs/prep_sz_nohup.out`
-- 输出：服务器 `~/schrodinger-bridge-sr-micrometeorology/prepare_npz_wind_3d_sz/`（**8928 个 npz**）
-- 预期统计：myj 4464 + ysu 4464；昼夜各约 4000+（7 月太阳几何划分）
+- ✅ **已完成**：d04 第一轮 5 实验 + 评估、d03 跨域评估（分布偏移量化 +62~46% RMSE）、d03 全量预处理（1488 npz）+ 统计——全部数字见成果记录文档 §4-§6
+- 🔄 **4 个训练任务并行**：
+  - `sz_pinn`：d04 pinn 继续训练（>171 ep，62v100ib，V100 慢）
+  - `sz_d03base`：d03 baseline（72rtxib RUN）
+  - `sz_d03lrcond`：d03 lrcond（42 重提交后 RUN）
+  - `sz_d03pinn`：d03 pinn（配置已就绪，用 44 脚本提交）
+- 随时看进度：`bash ops/queue/43_training_status.sh`（bjobs + 日志尾部 + checkpoint，自动回传）
 
-### 验证步骤（用户重连服务器后第一步）
-
-```bash
-# 1. 数量
-ls prepare_npz_wind_3d_sz/ | wc -l                    # 应为 8928
-ls prepare_npz_wind_3d_sz/ | sed 's/_.*//' | sort | uniq -c   # myj 4464 + ysu 4464
-# 2. 日志尾部（biases/scales 统计 + 昼夜样本数）
-tail -40 logs/prep_sz_nohup.out
-# 3. 抽查一个 npz 的 key 和 shape（应为 53 个 key，全部 (96,112)）
-#    key: 18 hr_* 风 + 18 lr_* 风 + 8 条件 HR + 8 条件 LR(lr_t2 等) + swdown(合成)
-```
-
-> **重要：预处理脚本已于 2026-08-25 升级（新增条件变量的 LR 版本 lr_t2/lr_z/...，
-> 用于"全低精度输入"实验）。旧输出目录的 npz 没有这些 key，必须删除重跑：
-> `rm -rf prepare_npz_wind_3d_sz/` 后重新 nohup 全量（约 1 小时），再抄统计量。
-> 别用跳过逻辑（skip-if-exists 会跳过旧文件导致 key 缺失）。**
-
-### 下一步路线图
+### 当前下一步路线图
 
 | 步骤 | 做什么 | 关键点 |
 |------|--------|--------|
-| 1 | **删除旧输出重跑预处理**（脚本已升级） | `rm -rf prepare_npz_wind_3d_sz/` + nohup 全量 ~1h，见上方警示 |
-| 2 | 验证预处理结果 + 抄统计量 | 上表；biases/scales 在日志尾部，**必须写进配置** |
-| 3 | 建数据软链 | `ln -s ~/.../prepare_npz_wind_3d_sz data/DL_data/wrf_3d_v1_sz`（训练读取 `data/DL_data/<dl_data_ver>`） |
-| 4 | 写深圳配置 | `configs/深圳/`（模板见下） |
-| 5 | 训练 | LSF 提交（见 §6），可多 GPU 并行 |
-| 6 | 评估 | `scripts/evaluate_ablation_day_night.py` 类似流程 |
-| 7 | **NS 全约束实验** | 深圳数据支持完整动量方程（见 §5）——这是本次适配的核心目标 |
+| 1 | **提交 pinn-d03**（44 脚本） | 补齐 d03 三件套 baseline/lrcond/pinn，与 d04 侧同口径 |
+| 2 | **pinn 最终 checkpoint 重评** | 300 ep 完成后重跑 d04+d03 评估（§5/§6 现在是 171ep 数字） |
+| 3 | **完整四格交叉矩阵评估** | 扩展 `scripts/evaluate_sz_experiments.py` 支持 d03 模型：训练 d04/d03 × 评估 d04/d03，回答"真实场景训练能否收回偏移损失" |
+| 4 | 物理指标（div/vort 残差对比） | pinn vs baseline 直接量化约束满足度 |
+| 5 | **NS 全约束实验** | 深圳数据支持完整动量方程（见 §4）——本次适配的核心目标 |
 
 > ## ⚠️ 真实低精度数据（原生 d03）—— 后续必须做，不能跳过
 >
