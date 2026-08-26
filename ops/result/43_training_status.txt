@@ -1,43 +1,42 @@
 ===== 1. 任务状态 =====
-14002865 ytw_tangzq RUN   62v100ib   login1      5*n002      sz_pinn    Aug 25 14:13
-14005704 ytw_tangzq RUN   7552v100   login1      12*o004     sz_d03lrpin Aug 26 16:22
-14005109 ytw_tangzq RUN   72rtxib    login1      4*g006      sz_d03base Aug 26 14:42
-14005115 ytw_tangzq RUN   e5v4p100ib login1      14*x002     sz_d03lrcond Aug 26 14:56
-14005151 ytw_tangzq RUN   6148v100ib login1      40*x003     sz_d03pinn Aug 26 15:06
+(训练任务都不在队列,可能全部结束)
 
 ===== 2. 各任务训练进度 =====
 --- sz_pinn ---
-日志: logs/sz_pinn_14002865.out (2026-08-26 16:22:59)
-train error: avg loss = 0.09250630
-Epoch 263 / 300
-train error: avg loss = 0.06052650
-Epoch 264 / 300
+日志: logs/sz_pinn_14002865.out (2026-08-26 19:22:34)
+Epoch 300 / 300
+train error: avg loss = 0.09531122
+Epoch 301 / 300
+train error: avg loss = 0.05426265
 --- sz_d03base ---
-日志: logs/sz_d03base_14005109.out (2026-08-26 16:25:58)
-train error: avg loss = 2.06054596
-Epoch 112 / 300
-train error: avg loss = 1.99366429
-Epoch 113 / 300
+日志: logs/sz_d03base_14005109.out (2026-08-26 19:15:35)
+Epoch 300 / 300
+train error: avg loss = 0.08811569
+Epoch 301 / 300
+train error: avg loss = 0.09062422
 --- sz_d03lrcond ---
-日志: logs/sz_d03lrcond_14005115.out (2026-08-26 16:25:22)
-train error: avg loss = 3.86602721
-Epoch 72 / 300
-train error: avg loss = 3.85163794
-Epoch 73 / 300
+日志: logs/sz_d03lrcond_14005115.out (2026-08-26 20:56:20)
+Epoch 300 / 300
+train error: avg loss = 0.35011773
+Epoch 301 / 300
+train error: avg loss = 0.14843045
 --- sz_d03pinn ---
-日志: logs/sz_d03pinn_14005151.out (2026-08-26 16:26:14)
-train error: avg loss = 4.51854211
-Epoch 92 / 300
-train error: avg loss = 3.82374528
-Epoch 93 / 300
+日志: logs/sz_d03pinn_14005151.out (2026-08-26 19:20:21)
+Epoch 300 / 300
+train error: avg loss = 0.10986462
+Epoch 301 / 300
+train error: avg loss = 0.10995561
 --- sz_d03lrpin ---
-日志: logs/sz_d03lrpin_14005704.out (2026-08-26 16:26:18)
-Epoch 1 / 300
+日志: logs/sz_d03lrpin_14005704.out (2026-08-26 20:48:35)
+Epoch 300 / 300
+train error: avg loss = 0.12812438
+Epoch 301 / 300
+train error: avg loss = 0.12653062
 
 ===== 3. checkpoint 情况 =====
-config_wind_3d_sz_pinn: 2026-08-26 12:58:53 3.6G
-config_wind_3d_sz_d03_baseline: 2026-08-26 15:38:48 3.6G
-config_wind_3d_sz_d03_lrcond: 2026-08-26 16:06:43 3.6G
-config_wind_3d_sz_d03_pinn: 2026-08-26 15:57:25 3.6G
-config_wind_3d_sz_d03_lrcond_pinn: (尚无 checkpoint)
+config_wind_3d_sz_pinn: 2026-08-26 19:10:20 3.6G
+config_wind_3d_sz_d03_baseline: 2026-08-26 19:10:03 3.6G
+config_wind_3d_sz_d03_lrcond: 2026-08-26 20:49:00 3.6G
+config_wind_3d_sz_d03_pinn: 2026-08-26 19:12:41 3.6G
+config_wind_3d_sz_d03_lrcond_pinn: 2026-08-26 20:41:26 3.6G
 ===== 完成 =====
