@@ -213,8 +213,29 @@ def process_d03_file(wrf_file_path, out_dir, lon_deg, lat_deg, scheme,
                 return created
             surf_cache[wrf_name] = ncfile.variables[wrf_name][:]
 
+        # 文件级快速跳过:所有应生成的时次都已存在,则整个文件跳过(不读大数组)
+        should_gen = []
         for t in range(n_t):
             ts = timestamps[t]
+            if (ts.minute != 0) or (ts.second != 0):
+                continue
+            if ts not in d04_index:
+                continue
+            fname = scheme + "_" + ts.strftime('%Y%m%dT%H%M%S') + ".npz"
+            if not os.path.exists(os.path.join(out_dir, fname)):
+                should_gen.append(t)
+        if not should_gen:
+            print("  文件全部时次已生成,跳过: {}".format(
+                os.path.basename(wrf_file_path)))
+            return created
+
+        for t in range(n_t):
+            ts = timestamps[t]
+            # 时次级跳过:先检查再计算(已生成的时次零计算,不读 d04、不插值)
+            output_filename = scheme + "_" + ts.strftime('%Y%m%dT%H%M%S') + ".npz"
+            output_filepath = os.path.join(out_dir, output_filename)
+            if os.path.exists(output_filepath):
+                continue
             # 只处理整点(d03 小时级输出;防 10-min 残余)
             if (ts.minute != 0) or (ts.second != 0):
                 continue
@@ -274,10 +295,6 @@ def process_d03_file(wrf_file_path, out_dir, lon_deg, lat_deg, scheme,
                     raise ValueError("变量 '{}' 维度 {} 与目标 {} 不匹配".format(
                         key, value.shape, TARGET_SHAPE))
 
-            output_filename = scheme + "_" + ts.strftime('%Y%m%dT%H%M%S') + ".npz"
-            output_filepath = os.path.join(out_dir, output_filename)
-            if os.path.exists(output_filepath):
-                continue  # 断点续跑:已生成的跳过
             np.savez_compressed(output_filepath, **npz_output_data)
             created.append(output_filepath)
     finally:
