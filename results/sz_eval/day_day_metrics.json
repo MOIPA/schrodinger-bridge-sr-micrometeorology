@@ -1,0 +1,39 @@
+{
+  "experiment": "day",
+  "filter": "day",
+  "config": "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/\u6df1\u5733/config_wind_3d_sz_day.yml",
+  "checkpoint": "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridge3dWind/config_wind_3d_sz_day/checkpoint.pth",
+  "results": {
+    "n_samples": 699,
+    "by_component": {
+      "U": {
+        "rmse": 0.08462902903556824,
+        "mae": 0.06108636098603407,
+        "ssim": 0.9970990717411041,
+        "corr": 0.9975641568501791,
+        "bias": 0.027116358280181885
+      },
+      "V": {
+        "rmse": 0.09529354919989903,
+        "mae": 0.07022763664523761,
+        "ssim": 0.9986994167168936,
+        "corr": 0.9944507479667664,
+        "bias": 0.03240036964416504
+      },
+      "W": {
+        "rmse": 0.2987844372789065,
+        "mae": 0.17948042849699655,
+        "ssim": 0.9771582186222076,
+        "corr": 0.9186661342779795,
+        "bias": -0.0036157218273729086
+      },
+      "Overall": {
+        "rmse": 0.15956900517145792,
+        "mae": 0.10359814204275608,
+        "ssim": 0.9909855690267351,
+        "corr": 0.9702270130316416,
+        "bias": 0.01863366869899134
+      }
+    }
+  }
+}
