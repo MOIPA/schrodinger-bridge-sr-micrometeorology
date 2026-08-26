@@ -239,15 +239,29 @@ def main():
     parser.add_argument("--checkpoint_base_dir", type=str,
                         default=os.path.join(ROOT_DIR, "data", "DL_result",
                                              "ExperimentSchrodingerBridge3dWind"))
+    parser.add_argument("--d03", action="store_true",
+                        help="d03 跨域模式:现有模型评估在原生 d03 数据(实验#2)")
     args = parser.parse_args()
 
     os.makedirs(args.results_dir, exist_ok=True)
     all_results = {}
 
-    for exp in EXPERIMENTS:
-        filters = FILTERS if exp in FULL_MODELS else [exp]
-        config_path = os.path.join(ROOT_DIR, "configs", CONFIG_SUBDIR,
-                                   "config_wind_3d_sz_{}.yml".format(exp))
+    if args.d03:
+        # 跨域:baseline/pinn 用 HR 条件配置,lrcond 用 d03 全低精度条件配置
+        eval_items = [
+            ("baseline", "config_wind_3d_sz_d03_baseline.yml", "all"),
+            ("pinn", "config_wind_3d_sz_d03_baseline.yml", "all"),
+            ("lrcond", "config_wind_3d_sz_d03_lrcond.yml", "all"),
+        ]
+    else:
+        eval_items = [
+            (exp, "config_wind_3d_sz_{}.yml".format(exp),
+             filt if exp in FULL_MODELS else exp)
+            for exp in EXPERIMENTS for filt in FILTERS
+        ]
+
+    for exp, cfg_name, filt in eval_items:
+        config_path = os.path.join(ROOT_DIR, "configs", CONFIG_SUBDIR, cfg_name)
         checkpoint_path = os.path.join(args.checkpoint_base_dir,
                                        "config_wind_3d_sz_{}".format(exp),
                                        "checkpoint.pth")
@@ -256,31 +270,59 @@ def main():
             print("[SKIP] Checkpoint not found: {}".format(checkpoint_path))
             continue
 
-        for filt in filters:
+        if args.d03:
+            key = "{}_d03".format(exp)
+        else:
             key = "{}_{}".format(exp, filt) if filt != "all" else exp
-            print("")
-            print("=" * 60)
-            print("Evaluating: {} (filter={})".format(exp, filt))
-            print("  Config:     {}".format(config_path))
-            print("  Checkpoint: {}".format(checkpoint_path))
-            print("=" * 60)
 
-            results = evaluate_checkpoint(config_path, checkpoint_path,
-                                          args.device, filt)
+        print("")
+        print("=" * 60)
+        print("Evaluating: {} (filter={}, data={})".format(
+            exp, filt, "d03" if args.d03 else "d04"))
+        print("  Config:     {}".format(config_path))
+        print("  Checkpoint: {}".format(checkpoint_path))
+        print("=" * 60)
 
-            all_results[key] = {
-                "experiment": exp,
-                "filter": filt,
-                "config": config_path,
-                "checkpoint": checkpoint_path,
-                "results": results,
-            }
-            out_path = os.path.join(args.results_dir, "{}_metrics.json".format(key))
-            with open(out_path, "w") as f:
-                json.dump(all_results[key], f, indent=2)
-            print("  Saved: {}".format(out_path))
+        results = evaluate_checkpoint(config_path, checkpoint_path,
+                                      args.device, filt)
+
+        all_results[key] = {
+            "experiment": exp,
+            "filter": filt,
+            "config": config_path,
+            "checkpoint": checkpoint_path,
+            "results": results,
+        }
+        out_path = os.path.join(args.results_dir, "{}_metrics.json".format(key))
+        with open(out_path, "w") as f:
+            json.dump(all_results[key], f, indent=2)
+        print("  Saved: {}".format(out_path))
 
     print_table(all_results)
+
+    if args.d03:
+        # 跨域对比:d03 结果 vs d04 全量结果(分布偏移量化)
+        d04_path = os.path.join(ROOT_DIR, "results", "sz_eval", "all_summaries.json")
+        if os.path.exists(d04_path):
+            with open(d04_path) as f:
+                d04 = json.load(f)
+            print("")
+            print("=" * 90)
+            print("CROSS-DOMAIN: d03 (native) vs d04 (simulated) — Overall RMSE")
+            print("=" * 90)
+            header = "{:<12} {:>12} {:>12} {:>12} {:>10}".format(
+                "Model", "d04 RMSE", "d03 RMSE", "delta", "d03/d04")
+            print(header)
+            print("-" * len(header))
+            for exp in ["baseline", "lrcond", "pinn"]:
+                d04_key = exp
+                d03_key = "{}_d03".format(exp)
+                if d04_key in d04 and d03_key in all_results:
+                    r4 = d04[d04_key]["results"]["by_component"]["Overall"]["rmse"]
+                    r3 = all_results[d03_key]["results"]["by_component"]["Overall"]["rmse"]
+                    print("{:<12} {:>12.4f} {:>12.4f} {:>+12.4f} {:>10.2f}x".format(
+                        exp, r4, r3, r3 - r4, r3 / r4))
+            print("=" * 90)
 
     combined_path = os.path.join(args.results_dir, "all_summaries.json")
     with open(combined_path, "w") as f:
