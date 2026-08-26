@@ -1,9 +1,5 @@
 ===== 1. 所有任务 =====
 JOBID    USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
-14002862 ytw_tangzq RUN   83a100ib   login1      8*m001      sz_baseline Aug 25 14:13
-14002863 ytw_tangzq RUN   83a100ib   login1      8*m001      sz_lrcond  Aug 25 14:13
-14002866 ytw_tangzq RUN   72rtxib    login1      4*g006      sz_night   Aug 25 14:13
-14002864 ytw_tangzq RUN   62v100ib   login1      5*n002      sz_day     Aug 25 14:13
 14002865 ytw_tangzq RUN   62v100ib   login1      5*n002      sz_pinn    Aug 25 14:13
 
 ===== 2. 各任务 loss 进度 =====
@@ -17,55 +13,55 @@ train error: avg loss = 0.06683981
 train error: avg loss = 0.06683981
 cd ~/schrodinger-bridge-sr-micrometeorology && module load anaconda/3 && module load cuda/11.8.0 && source activate wind3d && python scripts/train_schrodinger_bridge_model.py --config_path configs/深圳/config_wind_3d_sz_smoke.yml --experiment_name ExperimentSchrodingerBridge3dWind --device cuda:0
 --- sz_baseline ---
-日志: logs/sz_baseline_14002862.out (2026-08-25 20:53:05)
-train error: avg loss = 0.10810048
-Epoch 214 / 300
-train error: avg loss = 0.05071528
-Epoch 215 / 300
+日志: logs/sz_baseline_14002862.out (2026-08-25 23:30:59)
+Epoch 300 / 300
+train error: avg loss = 0.11243187
+Epoch 301 / 300
+train error: avg loss = 0.05663979
 异常检查:
-train error: avg loss = 0.10810048
-train error: avg loss = 0.05071528
+train error: avg loss = 0.05663979
+cd ~/schrodinger-bridge-sr-micrometeorology && module load anaconda/3 && module load cuda/11.8.0 && source activate wind3d && python scripts/train_schrodinger_bridge_model.py --config_path configs/深圳/config_wind_3d_sz_baseline.yml --experiment_name ExperimentSchrodingerBridge3dWind --device cuda:0
 --- sz_lrcond ---
-日志: logs/sz_lrcond_14002863.out (2026-08-25 20:53:43)
-train error: avg loss = 0.04775319
-Epoch 215 / 300
-train error: avg loss = 0.04610990
-Epoch 216 / 300
+日志: logs/sz_lrcond_14002863.out (2026-08-25 23:29:54)
+Epoch 300 / 300
+train error: avg loss = 0.04558682
+Epoch 301 / 300
+train error: avg loss = 0.04743347
 异常检查:
-train error: avg loss = 0.04775319
-train error: avg loss = 0.04610990
+train error: avg loss = 0.04743347
+cd ~/schrodinger-bridge-sr-micrometeorology && module load anaconda/3 && module load cuda/11.8.0 && source activate wind3d && python scripts/train_schrodinger_bridge_model.py --config_path configs/深圳/config_wind_3d_sz_lrcond.yml --experiment_name ExperimentSchrodingerBridge3dWind --device cuda:0
 --- sz_day ---
-日志: logs/sz_day_14002864.out (2026-08-25 20:52:20)
-train error: avg loss = 0.34976204
-Epoch 21 / 300
-train error: avg loss = 0.25830224
-Epoch 22 / 300
+日志: logs/sz_day_14002864.out (2026-08-26 08:24:17)
+Epoch 300 / 300
+train error: avg loss = 0.05188347
+Epoch 301 / 300
+train error: avg loss = 0.05186394
 异常检查:
-train error: avg loss = 0.34976204
-train error: avg loss = 0.25830224
+train error: avg loss = 0.05186394
+cd ~/schrodinger-bridge-sr-micrometeorology && module load anaconda/3 && module load cuda/11.8.0 && source activate wind3d && python scripts/train_schrodinger_bridge_model.py --config_path configs/深圳/config_wind_3d_sz_day.yml --experiment_name ExperimentSchrodingerBridge3dWind --device cuda:0
 --- sz_pinn ---
-日志: logs/sz_pinn_14002865.out (2026-08-25 20:50:17)
-train error: avg loss = 0.11233555
-Epoch 11 / 300
-train error: avg loss = 1.04564328
-Epoch 12 / 300
+日志: logs/sz_pinn_14002865.out (2026-08-26 09:11:05)
+train error: avg loss = 0.05590333
+Epoch 170 / 300
+train error: avg loss = 0.05492624
+Epoch 171 / 300
 异常检查:
-train error: avg loss = 0.11233555
-train error: avg loss = 1.04564328
+train error: avg loss = 0.05590333
+train error: avg loss = 0.05492624
 --- sz_night ---
-日志: logs/sz_night_14002866.out (2026-08-25 20:52:00)
-train error: avg loss = 0.05246107
-Epoch 166 / 300
-train error: avg loss = 0.05110968
-Epoch 167 / 300
+日志: logs/sz_night_14002866.out (2026-08-26 02:19:41)
+Epoch 300 / 300
+train error: avg loss = 0.04033559
+Epoch 301 / 300
+train error: avg loss = 0.04056440
 异常检查:
-train error: avg loss = 0.05246107
-train error: avg loss = 0.05110968
+train error: avg loss = 0.04056440
+cd ~/schrodinger-bridge-sr-micrometeorology && module load anaconda/3 && module load cuda/11.8.0 && source activate wind3d && python scripts/train_schrodinger_bridge_model.py --config_path configs/深圳/config_wind_3d_sz_night.yml --experiment_name ExperimentSchrodingerBridge3dWind --device cuda:0
 
 ===== 3. 完成情况(各任务 checkpoint) =====
-config_wind_3d_sz_baseline: 2026-08-25 20:29:55 3.6G
-config_wind_3d_sz_lrcond: 2026-08-25 20:53:43 3.6G
-config_wind_3d_sz_day: 2026-08-25 20:18:21 3.6G
-config_wind_3d_sz_pinn: 2026-08-25 20:45:39 3.6G
-config_wind_3d_sz_night: 2026-08-25 20:30:43 3.6G
+config_wind_3d_sz_baseline: 2026-08-25 22:33:07 3.6G
+config_wind_3d_sz_lrcond: 2026-08-25 22:53:02 3.6G
+config_wind_3d_sz_day: 2026-08-26 08:07:24 3.6G
+config_wind_3d_sz_pinn: 2026-08-26 09:11:05 3.6G
+config_wind_3d_sz_night: 2026-08-26 00:30:19 3.6G
 ===== 完成 =====
