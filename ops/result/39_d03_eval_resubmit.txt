@@ -1,0 +1,20 @@
+===== 1. 杀掉 83a100ib 上排队的评估任务 =====
+Job <14005097> is being terminated
+已杀: 14005097
+
+===== 2. 自动选空闲队列(按验证优先级,PEND=0 才选) =====
+  72rtxib: PEND=0 RUN=0
+>>> 选中队列: 72rtxib
+
+===== 3. 重提交跨域评估到 72rtxib =====
+Job <14005104> is submitted to queue <72rtxib>.
+
+===== 4. 任务状态 + pinn 训练进度 =====
+JOBID    USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
+14002865 ytw_tangzq RUN   62v100ib   login1      5*n002      sz_pinn    Aug 25 14:13
+14005104 ytw_tangzq RUN   72rtxib    login1      4*g006      sz_d03_eval Aug 26 14:29
+--- pinn 训练进度 ---
+Epoch 238 / 300
+train error: avg loss = 0.11661891
+Epoch 239 / 300
+===== 完成 =====
