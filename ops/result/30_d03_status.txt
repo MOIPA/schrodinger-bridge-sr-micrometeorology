@@ -1,12 +1,12 @@
 ===== 1. d03 预处理进度 =====
-状态: 运行中 (PID 24026)
-已生成 npz: 1112 / 预期 1488
-输入目录: /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_ysu
-输出目录: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_wind_3d_sz_d03
-域平均经纬度: lon=114.402 lat=22.479
-构建 d04 时次索引...
-  d04 时次数: 4464, 参考网格: (99, 120)
-待处理 d03 文件数: 31
+状态: 已结束(看下面是否完成)
+已生成 npz: 1488 / 预期 1488
+    z: 85.115224
+
+  昼夜样本数: day=376 night=346 twilight/other=59
+  输出目录: ['/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_wind_3d_sz_d03']
+
+完成。
 
 ===== 2. 评估任务 sz_eval 进度 =====
 (不在队列,可能已结束)
@@ -23,4 +23,66 @@ Successfully completed.
 已产出评估 JSON: 12 个
 
 ===== 3. 完成判断 =====
+>>> d03 预处理完成!统计量在 logs/prep_d03_full.log 尾部
+--- 统计结果 ---
+    psfc: 100126.921061
+    swdown: 314.611477
+    t2: 302.267801
+    tsk: 303.704415
+    z: 46.942367
+  scales:
+    hfx: 104.141770
+    hr_u_ml0: 3.483173
+    hr_u_ml1: 3.952093
+    hr_u_ml10: 5.219984
+    hr_u_ml2: 4.194042
+    hr_u_ml3: 4.362816
+    hr_u_ml5: 4.627381
+    hr_v_ml0: 3.072187
+    hr_v_ml1: 3.301375
+    hr_v_ml10: 3.647086
+    hr_v_ml2: 3.425293
+    hr_v_ml3: 3.497798
+    hr_v_ml5: 3.576039
+    hr_w_ml0: 0.168776
+    hr_w_ml1: 0.214389
+    hr_w_ml10: 0.258564
+    hr_w_ml2: 0.232390
+    hr_w_ml3: 0.241674
+    hr_w_ml5: 0.252696
+    lh: 112.363745
+    lr_hfx: 94.839171
+    lr_lh: 101.957143
+    lr_lu: 4.827075
+    lr_pblh: 275.341601
+    lr_psfc: 833.756900
+    lr_t2: 1.774863
+    lr_tsk: 4.441396
+    lr_u_ml0: 3.416934
+    lr_u_ml1: 3.897974
+    lr_u_ml10: 5.202763
+    lr_u_ml2: 4.150093
+    lr_u_ml3: 4.326918
+    lr_u_ml5: 4.602261
+    lr_v_ml0: 2.953108
+    lr_v_ml1: 3.198453
+    lr_v_ml10: 3.610740
+    lr_v_ml2: 3.336132
+    lr_v_ml3: 3.421058
+    lr_v_ml5: 3.519653
+    lr_w_ml0: 0.064682
+    lr_w_ml1: 0.081299
+    lr_w_ml10: 0.109154
+    lr_w_ml2: 0.090171
+    lr_w_ml3: 0.094928
+    lr_w_ml5: 0.101178
+    lr_z: 66.733784
+    lu: 4.821964
+    pblh: 295.141667
+    psfc: 969.381509
+    swdown: 367.761262
+    t2: 1.862363
+    tsk: 4.676467
+    z: 85.115224
+  昼夜样本数: day=376 night=346 twilight/other=59
 ===== 完成 =====
