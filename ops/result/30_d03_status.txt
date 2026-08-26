@@ -1,6 +1,6 @@
 ===== 1. d03 预处理进度 =====
 状态: 运行中 (PID 14311)
-已生成 npz: 382 / 预期 1488
+已生成 npz: 412 / 预期 1488
 输入目录: /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_myj
 输出目录: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_wind_3d_sz_d03
 域平均经纬度: lon=114.402 lat=22.479
