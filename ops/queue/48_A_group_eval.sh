@@ -10,7 +10,7 @@ OUT=ops/result/48_A_group_eval.txt
 : > "$OUT"
 echo "===== A 组评估提交 $(date) =====" >> "$OUT"
 
-bsub -q 72rtxib -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" \
+bsub -q 7552v100 -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" \
   -J sz_A_group -o logs/sz_A_group_%J.out \
   "cd ~/schrodinger-bridge-sr-micrometeorology && module load anaconda/3 && module load cuda/11.8.0 && source activate wind3d && \
    python scripts/evaluate_sz_A_group.py --mode diag --model baseline && \
