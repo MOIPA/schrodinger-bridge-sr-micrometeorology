@@ -50,10 +50,8 @@ def load_model_and_loader(cfg_path, eval_filter="all"):
     return config, loader
 
 
-def build_model(config, device, checkpoint_dir=None):
-    """加载模型。checkpoint_dir 缺省 = 配置文件名(如 config_wind_3d_sz_baseline)。"""
-    if checkpoint_dir is None:
-        checkpoint_dir = os.path.splitext(os.path.basename(config._path))[0]
+def build_model(config, device, checkpoint_dir):
+    """加载模型。checkpoint_dir 如 config_wind_3d_sz_baseline(注意:config 无 _path 属性)。"""
     model = make_model(config.model)
     ckpt = torch.load(os.path.join(
         ROOT_DIR, "data", "DL_result", "ExperimentSchrodingerBridge3dWind",
@@ -298,8 +296,12 @@ def main():
 
     cfg_name = "config_wind_3d_sz_{}.yml".format(args.model)
     cfg_path = os.path.join(ROOT_DIR, "configs", CONFIG_SUBDIR, cfg_name)
+    print("[step1] loading dataset/loader")
     config, loader = load_model_and_loader(cfg_path)
-    si = build_model(config, args.device)
+    print("[step2] loader ready, n={}; building model".format(len(loader.dataset)))
+    si = build_model(config, args.device,
+                     checkpoint_dir="config_wind_3d_sz_{}".format(args.model))
+    print("[step3] model ready")
     tag = args.model
     if args.mode == "diag":
         run_diag(config, loader, si, args.device, args.results_dir, tag)
