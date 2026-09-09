@@ -124,3 +124,6 @@ logs/
 *.tar.gz
 # Shenzhen npz output
 prepare_npz_wind_3d_sz
+
+# PDFs (not uploaded)
+*.pdf
