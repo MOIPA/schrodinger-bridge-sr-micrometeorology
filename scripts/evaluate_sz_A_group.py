@@ -251,6 +251,48 @@ def run_shuffle(config, loader, si_follmer, device, results_dir, tag):
     print("saved {}".format(path))
 
 
+def run_scheme(config, device, results_dir, tag):
+    """A5: 每个 PBL 方案(myj/ysu)各自按比例切分,模型评估各方案 test 切片。
+
+    官方 test 切分(shuffle=False 取排序尾部)恰好全为 ysu(排序 myj 在前),
+    故 myj 从未出现在测试集——这里按方案独立切分,得到两方案的留出评估。
+    """
+    from sklearn.model_selection import train_test_split
+    import glob as _glob
+    from src.dl_data.dataset_3d_wind import Dataset3dWind
+    import torch.utils.data
+
+    data_dir = os.path.join(ROOT_DIR, "data", "DL_data",
+                            config.loader.dl_data_ver)
+    paths = sorted(_glob.glob(os.path.join(data_dir, "*.npz")))
+    test_size = config.loader.train_valid_test_ratios[2]
+
+    si = build_model(config, device, checkpoint_dir="config_wind_3d_sz_baseline")
+    out = {"tag": tag, "schemes": {}}
+    for scheme in ["myj", "ysu"]:
+        spaths = [p for p in paths if os.path.basename(p).startswith(scheme + "_")]
+        _, test_paths = train_test_split(spaths, test_size=test_size, shuffle=False)
+        print("[scheme] {} total={} test={}".format(scheme, len(spaths), len(test_paths)))
+        ds = Dataset3dWind(file_paths=test_paths, config=config.data)
+        loader = torch.utils.data.DataLoader(
+            ds, batch_size=config.loader.batch_size, shuffle=False,
+            num_workers=config.loader.num_workers)
+        y0, y, pred, _ = predict_all(loader, si, device)
+        names = config.data.target_variable_names
+        rmse, mae, ssim, corr, bias = compute_metrics(pred, y)
+        r = summarize_by_component(
+            {"rmse": rmse, "mae": mae, "ssim": ssim, "corr": corr, "bias": bias}, names)
+        r["n"] = len(y)
+        out["schemes"][scheme] = r
+        print("[scheme] {} Overall RMSE {:.4f} (n={})".format(
+            scheme, r["Overall"]["rmse"], len(y)))
+
+    path = os.path.join(results_dir, "A_group_{}_scheme.json".format(tag))
+    with open(path, "w") as f:
+        json.dump(out, f, indent=1)
+    print("saved {}".format(path))
+
+
 def run_moments(device, results_dir, tag="baseline"):
     """A6: d04 训练的 baseline 在 d03 上评估,LR 输入统计量用 d04 侧(d03 侧为官方口径)。"""
     d03_cfg_path = os.path.join(ROOT_DIR, "configs", CONFIG_SUBDIR,
@@ -291,7 +333,7 @@ def run_moments(device, results_dir, tag="baseline"):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", choices=["diag", "shuffle", "moments"], required=True)
+    parser.add_argument("--mode", choices=["diag", "shuffle", "moments", "scheme"], required=True)
     parser.add_argument("--model", default="baseline",
                         help="模型名 baseline/lrcond/phys (d04 侧)")
     parser.add_argument("--device", default="cuda:0")
@@ -315,8 +357,10 @@ def main():
     tag = args.model
     if args.mode == "diag":
         run_diag(config, loader, si, args.device, args.results_dir, tag)
-    else:
+    elif args.mode == "shuffle":
         run_shuffle(config, loader, si, args.device, args.results_dir, tag)
+    elif args.mode == "scheme":
+        run_scheme(config, args.device, args.results_dir, tag)
 
 
 if __name__ == "__main__":
