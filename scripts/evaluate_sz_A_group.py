@@ -37,6 +37,8 @@ LEVELS = ["ml0", "ml1", "ml2", "ml3", "ml5", "ml10"]
 COMPONENTS = ["U", "V", "W"]
 COND_NAMES = ["t2", "z", "lu", "tsk", "hfx", "lh", "psfc", "pblh"]
 WIND_BINS = [(0, 5), (5, 10), (10, 1e9)]
+# 显示名(报告/结果 json) -> 技术名(配置/checkpoint 文件名)
+MODEL_NAME_MAP = {"baseline": "baseline", "allLR": "lrcond", "phys": "pinn"}
 
 
 def load_model_and_loader(cfg_path, eval_filter="all"):
@@ -207,30 +209,37 @@ def run_shuffle(config, loader, si_follmer, device, results_dir, tag):
 
     rng = np.random.RandomState(0)
     all_delta = {}
-    base_rmse = None
 
-    # 为每个条件单独跑一遍: 逐批打乱后推理
-    for ci, slot in enumerate(cond_slots):
-        cond = COND_NAMES[ci]
+    def run_pass(shuffle_slot=None):
+        """一次全量推理;shuffle_slot 不为 None 时打乱该条件通道。返回 (pred, y)。"""
         preds, ys = [], []
         for batch in loader:
             x = batch["x"].clone()
-            # 该样本的该通道: 空间打乱(固定种子每样本同一种子不同排列)
-            b, c, h, w = x.shape
-            perm = rng.permutation(h * w)
-            x[:, slot] = x[:, slot].reshape(b, h * w)[:, perm].reshape(b, h, w)
+            if shuffle_slot is not None:
+                b, c, h, w = x.shape
+                perm = rng.permutation(h * w)
+                x[:, shuffle_slot] = x[:, shuffle_slot].reshape(b, h * w)[
+                    :, perm].reshape(b, h, w)
             y0 = batch["y0"].to(device)
             with torch.no_grad():
                 y_est, _ = si_follmer.sample_y1_bare_diffusion(
                     y0=y0, y_cond=x.to(device))
             preds.append(y_est.cpu().numpy())
             ys.append(batch["y"].numpy())
-        pred = np.concatenate(preds, 0)
-        y = np.concatenate(ys, 0)
+        return np.concatenate(preds, 0), np.concatenate(ys, 0)
+
+    # 干净基准(不打乱)
+    pred, y = run_pass()
+    rmse, *_ = compute_metrics(pred, y)
+    base_rmse = float(rmse.mean())
+    print("[shuffle] clean RMSE {:.4f} (基准)".format(base_rmse))
+
+    # 逐个条件打乱
+    for ci, slot in enumerate(cond_slots):
+        cond = COND_NAMES[ci]
+        pred, y = run_pass(shuffle_slot=slot)
         rmse, *_ = compute_metrics(pred, y)
         ov_rmse = float(rmse.mean())
-        if base_rmse is None:
-            base_rmse = ov_rmse
         all_delta[cond] = {"rmse": ov_rmse, "delta": ov_rmse - base_rmse}
         print("[shuffle] {:>5s} RMSE {:.4f}  delta {:+.4f}".format(
             cond, ov_rmse, ov_rmse - base_rmse))
@@ -294,13 +303,14 @@ def main():
         run_moments(args.device, args.results_dir, tag=args.model)
         return
 
-    cfg_name = "config_wind_3d_sz_{}.yml".format(args.model)
+    tech = MODEL_NAME_MAP[args.model]
+    cfg_name = "config_wind_3d_sz_{}.yml".format(tech)
     cfg_path = os.path.join(ROOT_DIR, "configs", CONFIG_SUBDIR, cfg_name)
     print("[step1] loading dataset/loader")
     config, loader = load_model_and_loader(cfg_path)
     print("[step2] loader ready, n={}; building model".format(len(loader.dataset)))
     si = build_model(config, args.device,
-                     checkpoint_dir="config_wind_3d_sz_{}".format(args.model))
+                     checkpoint_dir="config_wind_3d_sz_{}".format(tech))
     print("[step3] model ready")
     tag = args.model
     if args.mode == "diag":
