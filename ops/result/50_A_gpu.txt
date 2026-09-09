@@ -1,0 +1,2 @@
+Job <14130121> is submitted to queue <6148v100ib>.
+=== 已提交 Wed Sep  9 23:18:54 CST 2026 ===
