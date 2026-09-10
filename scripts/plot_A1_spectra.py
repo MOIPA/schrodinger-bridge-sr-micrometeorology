@@ -38,7 +38,7 @@ def main():
     tag = data.get("tag", "model")
 
     fig, axes = plt.subplots(1, 3, figsize=(14, 4.2), sharey=True)
-    for ax, comp in enumerate(["U", "V", "W"]):
+    for ax, comp in zip(axes, ["U", "V", "W"]):
         s = spec[comp]
         k = np.array(s["k"])
         k = k[k > 0]
