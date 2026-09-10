@@ -127,3 +127,4 @@ prepare_npz_wind_3d_sz
 
 # PDFs (not uploaded)
 *.pdf
+.claude/scheduled_tasks.lock
