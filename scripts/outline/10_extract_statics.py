@@ -22,6 +22,7 @@ from datetime import datetime
 
 import numpy as np
 from netCDF4 import Dataset
+from scipy.spatial import cKDTree
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from outline_common import (GEOG_BASE, N_IFACE, N_MASS, OUT_STATIC,
@@ -29,7 +30,6 @@ from outline_common import (GEOG_BASE, N_IFACE, N_MASS, OUT_STATIC,
 from wps_geog import read_geog_region
 
 G = 9.81
-R_EARTH = 6370000.0
 TARGET_AGL = [10, 30, 50, 70, 100, 150, 200, 300, 500, 700, 1000]
 
 LANDUSE_DIR = "modis_landuse_20class_15s_with_lakes"
@@ -70,61 +70,93 @@ def jsonable(o):
     return o
 
 
-# ---------------------------------------------------------------- 投影与映射
-def lcc_xy(lat, lon, truelat1=30.0, truelat2=30.0, stand_lon=113.0, r=R_EARTH):
-    """WRF Lambert 共形圆锥投影(球体,半径 6370 km),返回投影平面坐标(米)。"""
-    phi1, phi2 = np.radians(truelat1), np.radians(truelat2)
-    lam0 = np.radians(stand_lon)
-    if abs(truelat1 - truelat2) < 1e-10:
-        n = np.sin(phi1)
-    else:
-        n = (np.log(np.cos(phi1) / np.cos(phi2)) /
-             np.log(np.tan(np.pi / 4 + phi2 / 2) / np.tan(np.pi / 4 + phi1 / 2)))
-    f = np.cos(phi1) * np.tan(np.pi / 4 + phi1 / 2) ** n / n
-    rho = r * f / np.tan(np.pi / 4 + np.radians(lat) / 2) ** n
-    theta = n * (np.radians(lon) - lam0)
-    return rho * np.sin(theta), -rho * np.cos(theta)
+# ---------------------------------------------------------------- 网格映射(投影无关)
+def _kdtree(lat2d, lon2d):
+    """经纬度 KD 树(经度按 cos(lat) 缩放,域内尺度足够小)。"""
+    slat = np.asarray(lat2d, dtype=np.float64).reshape(-1)
+    slon = np.asarray(lon2d, dtype=np.float64).reshape(-1)
+    scale = float(np.cos(np.radians(np.mean(slat))))
+    return cKDTree(np.stack([slon * scale, slat], axis=-1)), scale
 
 
-def grid_lattice(lat2d, lon2d):
-    """网格在投影平面应为规则格点;返回原点/间距与残差(自检)。"""
-    x, y = lcc_xy(lat2d, lon2d)
-    dx = float(np.median(np.diff(x[0, :])))
-    dy = float(np.median(np.diff(y[:, 0])))
-    x00, y00 = float(x[0, 0]), float(y[0, 0])
-    ii = np.arange(x.shape[1])[None, :].astype(np.float64)
-    jj = np.arange(y.shape[0])[:, None].astype(np.float64)
-    resx = float(np.abs(x - (x00 + ii * dx)).max())
-    resy = float(np.abs(y - (y00 + jj * dy)).max())
-    return {"x00": x00, "y00": y00, "dx": dx, "dy": dy, "resx": resx, "resy": resy}
+def _invert_bilinear(p00, p10, p01, p11, p, n_iter=6):
+    """逆双线性:p = (1-s)(1-t)p00 + s(1-t)p10 + (1-s)t p01 + s t p11。"""
+    s = np.full(p.shape[:-1], 0.5)
+    t = np.full(p.shape[:-1], 0.5)
+    for _ in range(n_iter):
+        a = (1.0 - s)[..., None]
+        b = s[..., None]
+        c = (1.0 - t)[..., None]
+        d = t[..., None]
+        f = a * c * p00 + b * c * p10 + a * d * p01 + b * d * p11 - p
+        dfs = c * (p10 - p00) + d * (p11 - p01)
+        dft = a * (p01 - p00) + b * (p11 - p10)
+        det = dfs[..., 0] * dft[..., 1] - dfs[..., 1] * dft[..., 0]
+        det = np.where(np.abs(det) < 1e-12, 1e-12, det)
+        ds = (-f[..., 0] * dft[..., 1] + f[..., 1] * dft[..., 0]) / det
+        dt = (-dfs[..., 0] * f[..., 1] + dfs[..., 1] * f[..., 0]) / det
+        s = s + ds
+        t = t + dt
+    return s, t
 
 
 def regrid_weights(src_lat, src_lon, dst_lat, dst_lon):
-    """d02 -> d04 双线性重网格权重(按交错类别各自调用)。
+    """dst 点在 src 网格(原生交错位置)中的双线性权重表。
 
+    投影无关:最近节点起手 + 逆双线性(在经纬度平面上,域内畸变可忽略)。
     返回 idx (n_dst,4) int32、w (n_dst,4) float32、valid (n_dst,) bool。
     """
-    sl = grid_lattice(src_lat, src_lon)
-    xd, yd = lcc_xy(dst_lat, dst_lon)
-    fx = (xd - sl["x00"]) / sl["dx"]
-    fy = (yd - sl["y00"]) / sl["dy"]
-    i0 = np.floor(fx).astype(np.int64)
-    j0 = np.floor(fy).astype(np.int64)
-    tx = fx - i0
-    ty = fy - j0
     nys, nxs = src_lat.shape
-    valid = (i0 >= 0) & (i0 <= nxs - 2) & (j0 >= 0) & (j0 <= nys - 2)
-    i0c = np.clip(i0, 0, nxs - 2)
-    j0c = np.clip(j0, 0, nys - 2)
-    base = (j0c * nxs + i0c).reshape(-1)
-    idx = np.stack([base, base + 1, base + nxs, base + nxs + 1], axis=-1).astype(np.int32)
-    w = np.stack([(1 - tx) * (1 - ty), tx * (1 - ty), (1 - tx) * ty, tx * ty],
-                 axis=-1).reshape(-1, 4).astype(np.float32)
-    return idx, w, valid.reshape(-1), sl
+    tree, scale = _kdtree(src_lat, src_lon)
+    slat = src_lat.reshape(-1).astype(np.float64)
+    slon = src_lon.reshape(-1).astype(np.float64)
+    dlat = np.asarray(dst_lat, dtype=np.float64).reshape(-1)
+    dlon = np.asarray(dst_lon, dtype=np.float64).reshape(-1)
+    _, near = tree.query(np.stack([dlon * scale, dlat], axis=-1))
+    n_i = (near % nxs).astype(np.int64)
+    n_j = (near // nxs).astype(np.int64)
+    n_dst = dlat.size
+    idx = np.zeros((n_dst, 4), dtype=np.int32)
+    w = np.zeros((n_dst, 4), dtype=np.float32)
+    valid = np.zeros(n_dst, dtype=bool)
+    for dj, di in ((0, 0), (0, -1), (-1, 0), (-1, -1)):
+        j0 = n_j + dj
+        i0 = n_i + di
+        can = (j0 >= 0) & (j0 <= nys - 2) & (i0 >= 0) & (i0 <= nxs - 2) & (~valid)
+        if not can.any():
+            continue
+        base = j0[can] * nxs + i0[can]
+        p00 = np.stack([slon[base], slat[base]], axis=-1)
+        p10 = np.stack([slon[base + 1], slat[base + 1]], axis=-1)
+        p01 = np.stack([slon[base + nxs], slat[base + nxs]], axis=-1)
+        p11 = np.stack([slon[base + nxs + 1], slat[base + nxs + 1]], axis=-1)
+        p = np.stack([dlon[can], dlat[can]], axis=-1)
+        s, t = _invert_bilinear(p00, p10, p01, p11, p)
+        ok = (s >= -1e-4) & (s <= 1 + 1e-4) & (t >= -1e-4) & (t <= 1 + 1e-4)
+        if not ok.any():
+            continue
+        sel = np.where(can)[0][ok]
+        b = base[ok]
+        idx[sel, 0] = b
+        idx[sel, 1] = b + 1
+        idx[sel, 2] = b + nxs
+        idx[sel, 3] = b + nxs + 1
+        ss = np.clip(s[ok], 0.0, 1.0)
+        tt = np.clip(t[ok], 0.0, 1.0)
+        w[sel, 0] = ((1 - ss) * (1 - tt)).astype(np.float32)
+        w[sel, 1] = (ss * (1 - tt)).astype(np.float32)
+        w[sel, 2] = ((1 - ss) * tt).astype(np.float32)
+        w[sel, 3] = (ss * tt).astype(np.float32)
+        valid[sel] = True
+    if (~valid).any():  # 回退最近节点
+        fb = np.where(~valid)[0]
+        idx[fb, 0] = n_j[fb] * nxs + n_i[fb]
+        w[fb, 0] = 1.0
+    return idx, w, valid
 
 
 def apply_regrid(field, idx, w):
-    """field (..., n_src_flat) -> (..., n_dst):重量表应用(供 Dataset 复用)。"""
+    """field (..., n_src_flat) -> (..., n_dst):权重表应用(供 Dataset 复用)。"""
     flat = field.reshape(-1, field.shape[-1])
     return np.einsum('ln,nd->ld', flat[:, idx], w).reshape(field.shape[:-1] + (idx.shape[0],))
 
@@ -169,18 +201,48 @@ def agl_table(z_agl, targets, use_10m_anchor):
 
 
 # ---------------------------------------------------------------- 地理数据聚合
-def pixel_cell_index(lats, lons, tl, ny, nx, chunk=400):
-    """geog 像素 -> 目标网格单元(C 序展平索引,-1 表示域外)。分块计算。"""
-    out = np.full((len(lats), len(lons)), -1, dtype=np.int64)
-    for j0 in range(0, len(lats), chunk):
-        j1 = min(j0 + chunk, len(lats))
-        lon2d, lat2d = np.meshgrid(lons, lats[j0:j1])
-        x, y = lcc_xy(lat2d, lon2d)
-        ii = np.floor((x - tl["x00"]) / tl["dx"]).astype(np.int64)
-        jj = np.floor((y - tl["y00"]) / tl["dy"]).astype(np.int64)
-        ok = (ii >= 0) & (ii < nx) & (jj >= 0) & (jj < ny)
-        out[j0:j1] = np.where(ok, jj * nx + ii, -1)
-    return out.reshape(-1)
+def fit_index_map(lat2d, lon2d, deg=3):
+    """最小二乘拟合 (lon,lat) -> (i,j) 多项式映射,返回 (func, 最大残差[格])。
+
+    用于海量 geog 像素的分箱(误差 << 1 格即可);风场重网格另有精确权重表。
+    """
+    x = lon2d.reshape(-1).astype(np.float64)
+    y = lat2d.reshape(-1).astype(np.float64)
+    ii, jj = np.meshgrid(np.arange(lon2d.shape[1]), np.arange(lat2d.shape[0]))
+    ii = ii.reshape(-1).astype(np.float64)
+    jj = jj.reshape(-1).astype(np.float64)
+    xm, xs = x.mean(), x.std() + 1e-12
+    ym, ys = y.mean(), y.std() + 1e-12
+    xn, yn = (x - xm) / xs, (y - ym) / ys
+
+    def terms(a, b):
+        t = [np.ones_like(a), a, b, a * a, a * b, b * b]
+        if deg >= 3:
+            t += [a ** 3, a * a * b, a * b * b, b ** 3]
+        return np.stack(t, axis=-1)
+
+    A = terms(xn, yn)
+    ci = np.linalg.lstsq(A, ii, rcond=None)[0]
+    cj = np.linalg.lstsq(A, jj, rcond=None)[0]
+    res = max(float(np.abs(A @ ci - ii).max()), float(np.abs(A @ cj - jj).max()))
+
+    def func(glon, glat):
+        gx = (np.asarray(glon, dtype=np.float64).reshape(-1) - xm) / xs
+        gy = (np.asarray(glat, dtype=np.float64).reshape(-1) - ym) / ys
+        B = terms(gx, gy)
+        return B @ ci, B @ cj
+
+    return func, res
+
+
+def pixel_cell_index(lats, lons, imap, ny, nx):
+    """geog 像素(lats x lons 规则网) -> 目标单元(C 序展平索引,-1 域外)。"""
+    lon2d, lat2d = np.meshgrid(lons, lats)
+    fi, fj = imap(lon2d, lat2d)
+    ii = np.floor(fi).astype(np.int64)
+    jj = np.floor(fj).astype(np.int64)
+    ok = (ii >= 0) & (ii < nx) & (jj >= 0) & (jj < ny)
+    return np.where(ok, jj * nx + ii, -1)
 
 
 def agg_class(cell, vals, ncat, ny, nx):
@@ -286,17 +348,16 @@ def main():
             'stand_lon': fine['attrs']['STAND_LON']}
 
     # ------------------------------------------------------------ 重网格权重
-    tl_fine = grid_lattice(fine['xlat'], fine['xlong'])
-    tl_c = grid_lattice(coarse['xlat'], coarse['xlong'])
-    rep['lattice_fine_mass'] = {k: tl_fine[k] for k in ('resx', 'resy', 'dx', 'dy')}
-    rep['lattice_coarse_mass'] = {k: tl_c[k] for k in ('resx', 'resy', 'dx', 'dy')}
+    imap_f, imap_res_f = fit_index_map(fine['xlat'], fine['xlong'])
+    imap_c, imap_res_c = fit_index_map(coarse['xlat'], coarse['xlong'])
+    rep['index_map_res_cell'] = {'fine': imap_res_f, 'coarse': imap_res_c}
     classes = {
         'mass': (fine['xlat'], fine['xlong'], coarse['xlat'], coarse['xlong']),
         'u': (fine['xlat_u'], fine['xlong_u'], coarse['xlat_u'], coarse['xlong_u']),
         'v': (fine['xlat_v'], fine['xlong_v'], coarse['xlat_v'], coarse['xlong_v']),
     }
     for cls, (flat, flon, clat, clon) in classes.items():
-        idx, w, valid, sl = regrid_weights(clat, clon, flat, flon)
+        idx, w, valid = regrid_weights(clat, clon, flat, flon)
         out['regrid_idx_' + cls] = idx
         out['regrid_w_' + cls] = w
         out['regrid_valid_' + cls] = valid
@@ -308,7 +369,6 @@ def main():
             'lat_err_max_m': float(np.abs(lat_r - flat).max() * 111320.0),
             'lon_err_max_m': float(np.abs(lon_r - flon).max() * 111320.0
                                    * np.cos(np.radians(float(np.nanmean(flat))))),
-            'src_lattice_res_m': max(sl['resx'], sl['resy']),
         }
     print("重网格校验(mass): " + json.dumps(jsonable(rep['regrid_mass'])))
 
@@ -352,8 +412,8 @@ def main():
     lu = lu[0]
     ncat = int(lu_idx.get('category_max', 21))
     print("landuse 区域 {} 类别 1..{}".format(lu.shape, ncat))
-    cell_f = pixel_cell_index(lats, lons, tl_fine, ny_f, nx_f)
-    cell_c = pixel_cell_index(lats, lons, tl_c, ny_c, nx_c)
+    cell_f = pixel_cell_index(lats, lons, imap_f, ny_f, nx_f)
+    cell_c = pixel_cell_index(lats, lons, imap_c, ny_c, nx_c)
     frac_f = agg_class(cell_f, lu.reshape(-1), ncat, ny_f, nx_f)
     frac_c = agg_class(cell_c, lu.reshape(-1), ncat, ny_c, nx_c)
     rep['landuse'] = {
@@ -367,8 +427,8 @@ def main():
     green, glats, glons, gr_idx = read_geog_region(
         os.path.join(args.geog_dir, GREENFRAC_DIR), lat_min, lat_max, lon_min, lon_max)
     print("greenfrac 区域 {} (12 月)".format(green.shape))
-    cell_fg = pixel_cell_index(glats, glons, tl_fine, ny_f, nx_f)
-    cell_cg = pixel_cell_index(glats, glons, tl_c, ny_c, nx_c)
+    cell_fg = pixel_cell_index(glats, glons, imap_f, ny_f, nx_f)
+    cell_cg = pixel_cell_index(glats, glons, imap_c, ny_c, nx_c)
     veg_month_f = [agg_cont(cell_fg, green[m].reshape(-1), ny_f, nx_f) for m in range(12)]
     veg_month_c = [agg_cont(cell_cg, green[m].reshape(-1), ny_c, nx_c) for m in range(12)]
     rep['greenfrac_month_mean_region'] = [round(float(np.nanmean(green[m])), 4)
@@ -424,9 +484,12 @@ def main():
             "source": "namelist.input_SZ.6d(eta_levels/p_top/base_temp 显式;"
                       "base_pres/base_lapse 为 WRF 默认值,namelist 未显式给出,待导师确认)",
         },
-        "projection": {"map_proj": 3, "truelat1": proj['truelat1'],
-                       "truelat2": proj['truelat2'], "stand_lon": proj['stand_lon'],
-                       "dx_fine": 1000.0, "dy_fine": 1000.0, "dx_coarse": 9000.0},
+        "projection": {"map_proj": 3, "map_proj_char": "Mercator",
+                       "truelat1": proj['truelat1'], "truelat2": proj['truelat2'],
+                       "stand_lon": proj['stand_lon'],
+                       "dx_fine": 1000.0, "dy_fine": 1000.0, "dx_coarse": 9000.0,
+                       "note": "wrfout MAP_PROJ=3 即 Mercator;重网格不依赖投影公式,"
+                               "用最近节点 + 经纬度平面逆双线性(域内畸变可忽略)"},
         "landuse": {"dataset": LANDUSE_DIR, "mminlu": "MODIFIED_IGBP_MODIS_NOAH",
                     "num_land_cat": 21, "iswater": 17, "isurban": 13, "isice": 15,
                     "islake": 21, "z0_table_source": "WRF v4.2.1 VEGPARM.TBL"},

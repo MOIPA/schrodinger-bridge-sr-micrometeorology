@@ -84,8 +84,8 @@ def read_geog_region(geog_dir, lat_min, lat_max, lon_min, lon_max, z_slice=None)
             gj = np.arange(max(j_min, j0), min(j_max, j0 + ty - 1) + 1)
             if gi.size == 0 or gj.size == 0:
                 continue
-            block = arr[zs][:, gj - j0, gi - i0]
-            data[:, gj - j_min, gi - i_min] = block
+            block = arr[np.ix_(zs, gj - j0, gi - i0)]
+            data[np.ix_(np.arange(len(zs)), gj - j_min, gi - i_min)] = block
     if missing is not None:
         data[data == missing * scale] = np.nan
     lons = lon0 + (np.arange(i_min, i_max + 1) - kx) * dx
