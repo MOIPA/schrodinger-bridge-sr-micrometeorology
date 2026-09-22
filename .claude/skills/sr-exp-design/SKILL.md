@@ -72,6 +72,8 @@ description: 深圳 WRF 3km→1km 风场超分项目(Schrodinger Bridge/SI 扩�
 
 ## 5. 关联文件
 
+- 数据资产与跨度扩展(9km→1km、27km→1km、1km→111m 的可行性与实施):见 sz-data-inventory skill
+
 - 评估主脚本:`scripts/evaluate_sz_experiments.py`、`scripts/evaluate_wind_3d.py`(后者含 bicubic baseline 支持)
 - 零模型基线脚本:`ops/queue/47_zero_model_baseline.sh`,结果 `results/zero_model_baselines.json`
 - 训练/评估配置:`configs/深圳/config_wind_3d_sz_*.yml`
