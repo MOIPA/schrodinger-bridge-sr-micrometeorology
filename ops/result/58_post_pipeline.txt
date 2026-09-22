@@ -16,51 +16,79 @@
 
 分配: valid=块0 test=块5,9
 天数: train=22 (71.0%) valid=3 (9.7%) test=6 (19.4%)
-Traceback (most recent call last):
-  File "scripts/outline/30_blocks_and_split.py", line 197, in <module>
-    main()
-  File "scripts/outline/30_blocks_and_split.py", line 191, in main
-    json.dump(split, f, indent=2, ensure_ascii=False)
-  File "/fs00/software/anaconda/3/envs/pytorch-gpu/lib/python3.7/json/__init__.py", line 179, in dump
-    for chunk in iterable:
-  File "/fs00/software/anaconda/3/envs/pytorch-gpu/lib/python3.7/json/encoder.py", line 431, in _iterencode
-    yield from _iterencode_dict(o, _current_indent_level)
-  File "/fs00/software/anaconda/3/envs/pytorch-gpu/lib/python3.7/json/encoder.py", line 405, in _iterencode_dict
-    yield from chunks
-  File "/fs00/software/anaconda/3/envs/pytorch-gpu/lib/python3.7/json/encoder.py", line 325, in _iterencode_list
-    yield from chunks
-  File "/fs00/software/anaconda/3/envs/pytorch-gpu/lib/python3.7/json/encoder.py", line 405, in _iterencode_dict
-    yield from chunks
-  File "/fs00/software/anaconda/3/envs/pytorch-gpu/lib/python3.7/json/encoder.py", line 438, in _iterencode
-    o = _default(o)
-  File "/fs00/software/anaconda/3/envs/pytorch-gpu/lib/python3.7/json/encoder.py", line 179, in default
-    raise TypeError(f'Object of type {o.__class__.__name__} '
-TypeError: Object of type int64 is not JSON serializable
+
+写出: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static/split.json
+
+小时数: {"train": 528, "valid": 72, "test": 144}
 === 40 标准化统计 ===
-Traceback (most recent call last):
-  File "scripts/outline/40_stats.py", line 292, in <module>
-    main()
-  File "scripts/outline/40_stats.py", line 83, in main
-    split = json.load(open(split_path))
-  File "/fs00/software/anaconda/3/envs/pytorch-gpu/lib/python3.7/json/__init__.py", line 296, in load
-    parse_constant=parse_constant, object_pairs_hook=object_pairs_hook, **kw)
-  File "/fs00/software/anaconda/3/envs/pytorch-gpu/lib/python3.7/json/__init__.py", line 348, in loads
-    return _default_decoder.decode(s)
-  File "/fs00/software/anaconda/3/envs/pytorch-gpu/lib/python3.7/json/decoder.py", line 337, in decode
-    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
-  File "/fs00/software/anaconda/3/envs/pytorch-gpu/lib/python3.7/json/decoder.py", line 355, in raw_decode
-    raise JSONDecodeError("Expecting value", s, err.value) from None
-json.decoder.JSONDecodeError: Expecting value: line 20 column 17 (char 409)
+训练块小时数: 528
+静态场统计完成
+
+=== scheme myj ===
+  读取 fine 0 帧, coarse 0 小时
+scripts/outline/40_stats.py:178: RuntimeWarning: invalid value encountered in true_divide
+  s_uv2 = (fine_acc['u'].q / fine_acc['u'].n + fine_acc['v'].q / fine_acc['v'].n) / 2.0
+scripts/outline/40_stats.py:183: RuntimeWarning: invalid value encountered in true_divide
+  sig_uv10 = np.sqrt((fine10['u10'].q / fine10['u10'].n
+scripts/outline/40_stats.py:184: RuntimeWarning: invalid value encountered in true_divide
+  + fine10['v10'].q / fine10['v10'].n) / 2.0)
+scripts/outline/40_stats.py:188: RuntimeWarning: invalid value encountered in true_divide
+  sig_uv_c = np.sqrt((cu_sig.q / cu_sig.n + cv_sig.q / cv_sig.n) / 2.0)
+  fine σ_uv 前5层: nan, nan, nan, nan, nan
+  fine σ_w  前5层: 0.000, 0.000, 0.000, 0.000, 0.000
+  coarse σ_uv 前5层: nan, nan, nan, nan, nan
+  coarse UST/PBLH/HFX 均值: 1.0000 / 1.0 / 0.0
+
+=== scheme ysu ===
+  读取 fine 0 帧, coarse 0 小时
+  fine σ_uv 前5层: nan, nan, nan, nan, nan
+  fine σ_w  前5层: 0.000, 0.000, 0.000, 0.000, 0.000
+  coarse σ_uv 前5层: nan, nan, nan, nan, nan
+  coarse UST/PBLH/HFX 均值: 1.0000 / 1.0 / 0.0
+
+写出: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static/normalize_config.json
+绘图跳过: x and y must have same first dimension, but have shapes (41,) and (40,)
 === 60 AGL 往返(T0.4)===
 往返试验帧数: 24 (f_myj_20200701T000000.npz .. f_myj_20200701T035000.npz)
-Traceback (most recent call last):
-  File "scripts/outline/60_agl_operator.py", line 180, in <module>
-    main()
-  File "scripts/outline/60_agl_operator.py", line 133, in main
-    back_u = back_to_model_levels(agl_u, TARGET_AGL, zagl_mass)
-  File "scripts/outline/60_agl_operator.py", line 90, in back_to_model_levels
-    out[k] = np.where(m, wt * agl_vals[t] + (1.0 - wt) * agl_vals[t + 1], out[k])
-ValueError: could not broadcast input array from shape (40,100,121) into shape (100,121)
+{
+ "generated": "2026-09-22T23:26:18",
+ "scheme": "myj",
+ "n_frames": 24,
+ "u_roundtrip": {
+  "n": 5702688,
+  "mean_abs": 0.08714015781879425,
+  "rmse": 0.14624068140983582,
+  "p95": 0.3002184599637984,
+  "max": 5.645267486572266
+ },
+ "v_roundtrip": {
+  "n": 5702688,
+  "mean_abs": 0.09293229132890701,
+  "rmse": 0.15493151545524597,
+  "p95": 0.3193400621414182,
+  "max": 6.509444236755371
+ },
+ "w_roundtrip": {
+  "n": 5445648,
+  "mean_abs": 0.009197701700031757,
+  "rmse": 0.01934676803648472,
+  "p95": 0.039861737191677044,
+  "max": 0.533562421798706
+ },
+ "uv_agl_residual": {
+  "n": 3136320,
+  "mean_abs": 0.030469950288534164,
+  "rmse": 0.04684983193874359,
+  "p95": 0.09900094866752618,
+  "max": 1.4159350395202637
+ },
+ "note": "回插仅对 z_agl ∈ [10, 1000] m 的模式层有定义(上界为目标层范围)",
+ "reference": {
+  "u_rms_single_frame": 1.3060075044631958,
+  "ratio_rmse_over_signal": 0.11197537602966888,
+  "model_rmse_note": "现有 3km->1km 模型标准化空间 RMSE ≈ 0.31(≈31% 信号尺度),往返误差应远小于该量级"
+ }
+}
 === 50 校验 ===
 {
  "counts_myj": {
@@ -158,23 +186,21 @@ ValueError: could not broadcast input array from shape (40,100,121) into shape (
 写出: results/outline/verify_report.json
 === canvas 冒烟 ===
 Traceback (most recent call last):
-  File "scripts/smoke_wind_canvas.py", line 18, in <module>
-    from src.dl_config.config_loader import load_config  # noqa: E402
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_config/config_loader.py", line 3, in <module>
-    from src.dl_config.diffusion_model_config import ExperimentDiffusionModelConfig
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_config/diffusion_model_config.py", line 3, in <module>
-    from src.dl_config.base_config import BaseDataloaderConfig, YamlConfig
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_config/base_config.py", line 7, in <module>
-    import yaml
-ModuleNotFoundError: No module named 'yaml'
+  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/smoke_wind_canvas.py", line 80, in <module>
+    main()
+  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/smoke_wind_canvas.py", line 36, in main
+    config = load_config(EXPERIMENT, args.config_path)
+  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_config/config_loader.py", line 25, in load_config
+    return ExperimentSchrodingerBridgeWindCanvasConfig.load(config_path)
+  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_config/base_config.py", line 39, in load
+    config_data = convert_from_dict(cls, config_data)
+  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_config/base_config.py", line 33, in convert_from_dict
+    data[key] = child_class(**convert_from_dict(child_class, val))
+TypeError: DatasetWindCanvasConfig.__init__() got an unexpected keyword argument 'dataset_name'
 smoke exit=1
 === 70 真值诊断(T0.5)===
-① 能谱: d01 7dx=189km k_pk=0, d02 7dx=63km k_pk=0, d03 7dx=21km k_pk=0, d04 7dx=7km k_pk=0
-Traceback (most recent call last):
-  File "scripts/outline/70_truth_diagnostics.py", line 225, in <module>
-    main()
-  File "scripts/outline/70_truth_diagnostics.py", line 166, in main
-    div[s] = divergence_residual(args.scheme, s)
-  File "scripts/outline/70_truth_diagnostics.py", line 113, in divergence_residual
-    du = (rho_u[k, :, 1:] * u[k, :, 1:] - rho_u[k, :, :-1] * u[k, :, :-1]) / 1000.0
-ValueError: operands could not be broadcast together with shapes (99,118) (99,120) 
+① 能谱: d01 7dx=189km k_pk=1 lam_pk=4860km, d02 7dx=63km k_pk=1 lam_pk=1350km, d03 7dx=21km k_pk=1 lam_pk=450km, d04 7dx=7km k_pk=1 lam_pk=120km
+② d04 ∇·(ρu) 残差(kg m^-2 s^-1 量级,P95): {"20200715T120000": 0.000811, "20200710T000000": 0.00107, "20200720T060000": 0.000429}
+③ 强风时刻 d02 相对 d04 偏移: {"20200702T170000": [27.0, -18.0], "20200702T180000": [-27.0, 9.0], "20200702T160000": [27.0, -27.0]}
+④ myj vs ysu: {"n_hours": 72, "wind_speed_rmse_mean": 1.3934457898139954, "wind_speed_rmse_p95": 2.0305968523025513, "pblh_mean_abs_diff": 90.68485980563693, "ust_rmse_mean": 0.11523296275279588}
+写出: results/outline/truth_diagnostics.json
