@@ -156,7 +156,7 @@ class DatasetWindCanvas(Dataset):
         if self.c.include_w:
             sig_w = np.asarray(self.fn['w']['sigma'], dtype=np.float32)[self.WL]
             w = np.asarray(co['c_w'], dtype=np.float32)[self.WL] / sig_w[:, None, None]
-            chans.append(CanvasStatics.place(self.stat.regrid_field(w, 'w')))
+            chans.append(CanvasStatics.place(self.stat.regrid_field(w, 'mass')))
         # 10 m 通道代理:粗端最低层风(粗端未输出 U10/V10;去交错到质量点后重网格)
         u10 = 0.5 * (u[0, :, :-1] + u[0, :, 1:])
         v10 = 0.5 * (v[0, :-1, :] + v[0, 1:, :])
@@ -177,7 +177,7 @@ class DatasetWindCanvas(Dataset):
         if 'coarse_w' in g:
             sig = np.asarray(self.cn['w']['sigma'], dtype=np.float32)[self.WL]
             w = np.asarray(co['c_w'], dtype=np.float32)[self.WL] / sig[:, None, None]
-            add('c_w', self.stat.regrid_field(w, 'w'))
+            add('c_w', self.stat.regrid_field(w, 'mass'))
         if 'coarse_zagl' in g:
             s = self.sn['zagl_mass_coarse_log']
             z = np.log(np.maximum(np.asarray(self.stat.d['zagl_mass_coarse'],
@@ -212,7 +212,7 @@ class DatasetWindCanvas(Dataset):
             sg = np.asarray(self.cn['ph']['sigma'], dtype=np.float32)[self.WL]
             add('c_ph', self.stat.regrid_field(
                 (np.asarray(co['c_ph'], dtype=np.float32)[self.WL] - mu[:, None, None])
-                / sg[:, None, None], 'w'))
+                / sg[:, None, None], 'mass'))
         if 'coszen' in g:
             r = self.stat.regrid(np.asarray(co['c_coszen'], dtype=np.float32)[None], 'mass')
             add('coszen', r[0].reshape(FINE_SHAPES['mass']))
