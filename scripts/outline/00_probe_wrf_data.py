@@ -123,12 +123,16 @@ def probe_domain(files, dom):
                      "first": os.path.basename(files[0]),
                      "last": os.path.basename(files[-1])}}
     with Dataset(files[0]) as nc:
-        # global attrs
+        # global attrs (whitelist + full dump)
         attrs = {}
+        attrs_all = {}
         for k in nc.ncattrs():
+            v = jsonable(nc.getncattr(k))
+            attrs_all[k] = str(v)[:200]
             if k in ATTR_WHITELIST:
-                attrs[k] = jsonable(nc.getncattr(k))
+                attrs[k] = v
         rep["attrs"] = attrs
+        rep["attrs_all"] = attrs_all
 
         # times in first file + step inference
         t0 = read_times(nc)
@@ -252,7 +256,12 @@ def main():
             return "shape mismatch: {} vs {}".format(a.shape, b.shape)
         return float(np.abs(a - b).max())
 
-    ref = znu_cache.get((sorted(report["schemes"].keys())[0], "d04")) if znu_cache else None
+    ref_key = None
+    for s in sorted(report["schemes"].keys()):
+        if (s, "d04") in znu_cache:
+            ref_key = (s, "d04")
+            break
+    ref = znu_cache.get(ref_key) if ref_key is not None else None
     for key, arr in znu_cache.items():
         report["eta_check"]["|".join(key)] = {
             "maxdiff_vs_first_scheme_d04": _diff(arr, ref),
