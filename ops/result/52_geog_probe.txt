@@ -1,0 +1,179 @@
+=== share root ===
+total 518
+drwxrwxr-- 11 yutingwang  yutingwang  4096 Sep 11 12:32 .
+drwxr-x--- 11 yutingwang  yutingwang  4096 Sep  3 11:30 ..
+drwxr-x---  3 yutingwang  yutingwang  4096 Jun  2 11:14 China_Boundaries
+drwxr-x---  5 yutingwang  yutingwang  4096 Jul 17 15:12 Data_Emission
+-rwxrw----  1 yutingwang  yutingwang  9178 Aug 28 11:08 data.list
+-rwxr-----  1 yutingwang  yutingwang  9178 Aug 28 11:08 data.list_backup
+-rw-r-----  1 yutingwang  yutingwang 16384 Jun  5 17:09 .data.list.swp.backup
+drwxrwxr--  8 yutingwang  yutingwang  4096 Jul 17 11:24 Data_Observations
+drwxrwx---  4 yutingwang  yutingwang  4096 Jul 10 23:05 Data_WRFout
+-rwxr-----  1 yutingwang  yutingwang  9184 May 25 20:20 module.list
+drwxr-xr-x 15 yutingwang  yutingwang  4096 Sep 21 11:32 MyLibs
+drwxr-xr-x 11 yutingwang  yutingwang  4096 Sep 21 11:02 MyModules
+drwxr-xr-x  4 ytw_jiangxy yutingwang  4096 Jan 14  2026 results4ai
+drwxr-xr-x 10 ytw_jiangxy yutingwang  4096 Sep 21 23:05 software
+drwxr-x--- 59 yutingwang  yutingwang  4096 Jun 17 17:33 WPS_GeoStatic
+
+=== WPS_GeoStatic root ===
+albedo_modis
+bnu_soiltype_bot
+bnu_soiltype_top
+CGLC_MODIS_LCZ_global
+clayfrac_5m
+crop
+erod
+greenfrac_fpar_modis
+greenfrac_fpar_modis_5m
+groundwater
+irrigation
+lai_modis_10m
+lai_modis_30s
+lake_depth
+landuse_30s
+landuse_30s_with_lakes
+maxsnowalb_modis
+modis_landuse_20class_15s
+modis_landuse_20class_15s_with_lakes
+modis_landuse_20class_30s_with_lakes
+modis_landuse_20class_5m_with_lakes
+nlcd2006_ll_9s
+nlcd2011_can_ll_9s
+nlcd2011_imp_ll_9s
+nlcd2011_ll_9s
+NUDAPT44_1km
+OLD_geog_Before2000
+orogwd_10m
+orogwd_1deg
+orogwd_20m
+orogwd_2deg
+orogwd_30m
+orogwd3_10m
+orogwd3_1deg
+orogwd3_20m
+orogwd3_2.5m
+orogwd3_2deg
+orogwd3_30m
+sandfrac_5m
+slucm
+soilgrids
+soiltemp_1deg
+soiltype_bot_30s
+soiltype_bot_5m
+soiltype_top_30s
+soiltype_top_5m
+ssib_landuse_10m
+ssib_landuse_5m
+tile_drainage_map
+topobath_30s
+topo_gmted2010_30s
+topo_gmted2010_5m
+urbfrac_nlcd2011
+varsso
+varsso_10m
+varsso_2m
+varsso_5m
+
+=== modis_landuse_20class_15s ===
+total 3649601
+drwxr-x---  2 yutingwang yutingwang   65536 Jun 17 17:32 .
+drwxr-x--- 59 yutingwang yutingwang    4096 Jun 17 17:33 ..
+-rwxr-x---  1 yutingwang yutingwang 5760000 Feb 11  2014 00001-02400.00001-02400
+-rwxr-x---  1 yutingwang yutingwang 5760000 Apr 15  2014 00001-02400.02401-04800
+-rwxr-x---  1 yutingwang yutingwang 5760000 Feb 11  2014 00001-02400.04801-07200
+-rwxr-x---  1 yutingwang yutingwang 5760000 Feb 11  2014 00001-02400.07201-09600
+-rwxr-x---  1 yutingwang yutingwang 5760000 Feb 11  2014 00001-02400.09601-12000
+-rwxr-x---  1 yutingwang yutingwang 5760000 Feb 11  2014 00001-02400.12001-14400
+-rwxr-x---  1 yutingwang yutingwang 5760000 Feb 11  2014 00001-02400.14401-16800
+-rwxr-x---  1 yutingwang yutingwang 5760000 Apr 15  2014 00001-02400.16801-19200
+-rwxr-x---  1 yutingwang yutingwang 5760000 Feb 11  2014 00001-02400.19201-21600
+-rwxr-x---  1 yutingwang yutingwang 5760000 Feb 11  2014 00001-02400.21601-24000
+-rwxr-x---  1 yutingwang yutingwang 5760000 Feb 11  2014 00001-02400.24001-26400
+-rwxr-x---  1 yutingwang yutingwang 5760000 Feb 11  2014 00001-02400.26401-28800
+-rwxr-x---  1 yutingwang yutingwang 5760000 Feb 11  2014 00001-02400.28801-31200
+-rwxr-x---  1 yutingwang yutingwang 5760000 Feb 11  2014 00001-02400.31201-33600
+-rwxr-x---  1 yutingwang yutingwang 5760000 Feb 11  2014 00001-02400.33601-36000
+-rwxr-x---  1 yutingwang yutingwang 5760000 Apr 15  2014 00001-02400.36001-38400
+-rwxr-x---  1 yutingwang yutingwang 5760000 Apr 15  2014 00001-02400.38401-40800
+-rwxr-x---  1 yutingwang yutingwang 5760000 Feb 11  2014 00001-02400.40801-43200
+-rwxr-x---  1 yutingwang yutingwang 5760000 Feb 11  2014 02401-04800.00001-02400
+-rwxr-x---  1 yutingwang yutingwang 5760000 Feb 11  2014 02401-04800.02401-04800
+-rwxr-x---  1 yutingwang yutingwang 5760000 Feb 11  2014 02401-04800.04801-07200
+-rwxr-x---  1 yutingwang yutingwang 5760000 Feb 11  2014 02401-04800.07201-09600
+
+=== index (first 300 bytes, od -c) ===
+0000000   t   y   p   e   =   c   a   t   e   g   o   r   i   c   a   l
+0000020  \n   c   a   t   e   g   o   r   y   _   m   i   n   =   1  \n
+0000040   c   a   t   e   g   o   r   y   _   m   a   x   =   2   0  \n
+0000060   p   r   o   j   e   c   t   i   o   n   =   r   e   g   u   l
+0000100   a   r   _   l   l  \n   d   x   =   0   .   0   0   4   1   6
+0000120   6   6   7  \n   d   y   =   0   .   0   0   4   1   6   6   6
+0000140   7  \n   k   n   o   w   n   _   x   =   1   .   0  \n   k   n
+0000160   o   w   n   _   y   =   1   .   0  \n   k   n   o   w   n   _
+0000200   l   a   t   =   -   8   9   .   9   9   7   9   1   6   7  \n
+0000220   k   n   o   w   n   _   l   o   n   =   -   1   7   9   .   9
+0000240   9   7   9   1   6   7  \n   w   o   r   d   s   i   z   e   =
+0000260   1  \n   t   i   l   e   _   x   =   2   4   0   0  \n   t   i
+0000300   l   e   _   y   =   2   4   0   0  \n   t   i   l   e   _   z
+0000320   =   1  \n   u   n   i   t   s   =   "   c   a   t   e   g   o
+0000340   r   y   "  \n   d   e   s   c   r   i   p   t   i   o   n   =
+0000360   "   M   O   D   I   S       m   o   d   i   f   i   e   d   -
+0000400   I   G   B   P       l   a   n   d   u   s   e       -       5
+0000420   0   0       m   e   t   e   r   "  \n   m   m   i   n   l   u
+0000440   =   "   M   O   D   I   F   I   E   D   _   I
+0000454
+
+=== greenfrac_fpar_modis ===
+total 10949062
+drwxr-x---  2 yutingwang yutingwang   131072 Jun 17 17:31 .
+drwxr-x--- 59 yutingwang yutingwang     4096 Jun 17 17:33 ..
+-rwxr-x---  1 yutingwang yutingwang      212 Apr  2  2013 ._00001-01200.00001-01200
+-rwxr-x---  1 yutingwang yutingwang 17280000 Apr  2  2013 00001-01200.00001-01200
+-rwxr-x---  1 yutingwang yutingwang      212 Apr  2  2013 ._00001-01200.01201-02400
+-rwxr-x---  1 yutingwang yutingwang 17280000 Apr  2  2013 00001-01200.01201-02400
+-rwxr-x---  1 yutingwang yutingwang      212 Apr  2  2013 ._00001-01200.02401-03600
+-rwxr-x---  1 yutingwang yutingwang 17280000 Apr  2  2013 00001-01200.02401-03600
+-rwxr-x---  1 yutingwang yutingwang      212 Apr  2  2013 ._00001-01200.03601-04800
+-rwxr-x---  1 yutingwang yutingwang 17280000 Apr  2  2013 00001-01200.03601-04800
+-rwxr-x---  1 yutingwang yutingwang      212 Apr  2  2013 ._00001-01200.04801-06000
+-rwxr-x---  1 yutingwang yutingwang 17280000 Apr  2  2013 00001-01200.04801-06000
+-rwxr-x---  1 yutingwang yutingwang      212 Apr  2  2013 ._00001-01200.06001-07200
+-rwxr-x---  1 yutingwang yutingwang 17280000 Apr  2  2013 00001-01200.06001-07200
+-rwxr-x---  1 yutingwang yutingwang      212 Apr  2  2013 ._00001-01200.07201-08400
+-rwxr-x---  1 yutingwang yutingwang 17280000 Apr  2  2013 00001-01200.07201-08400
+-rwxr-x---  1 yutingwang yutingwang      212 Apr  2  2013 ._00001-01200.08401-09600
+-rwxr-x---  1 yutingwang yutingwang 17280000 Apr  2  2013 00001-01200.08401-09600
+-rwxr-x---  1 yutingwang yutingwang      212 Apr  2  2013 ._00001-01200.09601-10800
+
+=== index of greenfrac (first 300 bytes) ===
+0000000   t   y   p   e   =   c   o   n   t   i   n   u   o   u   s  \n
+0000020   p   r   o   j   e   c   t   i   o   n   =   r   e   g   u   l
+0000040   a   r   _   l   l  \n   d   x   =   0   .   0   0   8   3   3
+0000060   3   3   3  \n   d   y   =   0   .   0   0   8   3   3   3   3
+0000100   3  \n   k   n   o   w   n   _   x   =   1   .   0  \n   k   n
+0000120   o   w   n   _   y   =   1   .   0  \n   k   n   o   w   n   _
+0000140   l   a   t   =   -   8   9   .   9   9   5   8   3   3  \n   k
+0000160   n   o   w   n   _   l   o   n   =   -   1   7   9   .   9   9
+0000200   5   8   3   3  \n   w   o   r   d   s   i   z   e   =   1  \n
+0000220   m   i   s   s   i   n   g   _   v   a   l   u   e   =   2   0
+0000240   0   .  \n   t   i   l   e   _   x   =   1   2   0   0  \n   t
+0000260   i   l   e   _   y   =   1   2   0   0  \n   t   i   l   e   _
+0000300   z   =   1   2  \n   s   c   a   l   e   _   f   a   c   t   o
+0000320   r   =   0   .   0   1  \n   u   n   i   t   s   =   "   f   r
+0000340   a   c   t   i   o   n   "  \n   d   e   s   c   r   i   p   t
+0000360   i   o   n   =   "   M   O   D   I   S       F   P   A   R   "
+0000400  \n
+0000401
+
+=== topo dirs ===
+/fsb/home/yutingwang/share/WPS_GeoStatic/topobath_30s
+/fsb/home/yutingwang/share/WPS_GeoStatic/topo_gmted2010_30s
+/fsb/home/yutingwang/share/WPS_GeoStatic/topo_gmted2010_5m
+
+=== VEGPARM / GEOGRID.TBL / namelist search under share (maxdepth 5) ===
+/fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/les_20200730/namelist.input_SZ.6d
+/fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/les_20200730/namelist.input_les.1d
+
+=== repo copies ===
+exit=0
