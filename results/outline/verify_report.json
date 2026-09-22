@@ -31,8 +31,8 @@
     "max_abs_diff": 0.0
   },
   "coszen_check": {
-    "max_abs_diff_vs_wrf": 0.7391000390052795,
-    "mean_lag1_autocorr_of_diff": 219.0205753174717,
+    "max_abs_diff_vs_wrf": 0.007113903760910034,
+    "mean_lag1_autocorr_of_diff": 0.9959522453192128,
     "note": "差值若为空间平滑场(lag1 自相关接近 1),说明 WRF COSZEN 是纯天文量;我们两个方案统一采用自算天文值"
   },
   "counts_ysu": {
