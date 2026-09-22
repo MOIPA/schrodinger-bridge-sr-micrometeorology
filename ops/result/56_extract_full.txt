@@ -1,0 +1,50 @@
+scheme myj: 744 files -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_fine
+  50/744
+  100/744
+  150/744
+  200/744
+  250/744
+  300/744
+  350/744
+  400/744
+  450/744
+  500/744
+  550/744
+  600/744
+  650/744
+  700/744
+scheme myj: created 4452 skipped 12
+scheme ysu: 744 files -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_fine
+  50/744
+  100/744
+  150/744
+  200/744
+  250/744
+  300/744
+  350/744
+  400/744
+  450/744
+  500/744
+  550/744
+  600/744
+  650/744
+  700/744
+scheme ysu: created 4452 skipped 12
+done
+fine exit=0
+scheme myj: 31 files -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_coarse
+  10/31
+  20/31
+  30/31
+scheme myj: created 696 skipped 48
+scheme ysu: 31 files -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_coarse
+  10/31
+  20/31
+  30/31
+scheme ysu: created 696 skipped 48
+done
+coarse exit=0
+44G	/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_fine
+18G	/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_coarse
+8928
+1488
