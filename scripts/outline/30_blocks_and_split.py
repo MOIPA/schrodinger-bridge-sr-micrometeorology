@@ -44,7 +44,9 @@ def daily_indicators(coarse_dir, scheme, limit=None):
     for f in files:
         dt = parse_stamp(os.path.basename(f))
         with np.load(f) as d:
-            spd = np.sqrt(d['c_u'][0] ** 2 + d['c_v'][0] ** 2)
+            u0 = 0.5 * (d['c_u'][0][:, :-1] + d['c_u'][0][:, 1:])   # -> 质量点
+            v0 = 0.5 * (d['c_v'][0][:-1, :] + d['c_v'][0][1:, :])
+            spd = np.sqrt(u0 ** 2 + v0 ** 2)
             row = [float(np.mean(spd)), float(np.mean(d['c_ust'])),
                    float(np.mean(d['c_pblh'])), float(np.mean(d['c_hfx'])),
                    float(np.mean(d['c_rmol'] < 0))]

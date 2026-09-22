@@ -25,7 +25,9 @@ from datetime import datetime
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from outline_common import OUT_FINE, OUT_STATIC
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from outline_common import OUT_FINE, OUT_STATIC  # noqa: E402
+from src.dl_data.wind_canvas_statics import CanvasStatics, build_agl_table  # noqa: E402
 
 TARGET_AGL = np.array([10, 30, 50, 70, 100, 150, 200, 300, 500, 700, 1000], dtype=np.float64)
 
@@ -99,12 +101,13 @@ def main():
     args = parser.parse_args()
 
     statics = np.load(os.path.join(args.static_dir, "statics.npz"))
-    idx_m = statics['agl_idx_mass']
-    w_m = statics['agl_w_mass']
-    idx_i = statics['agl_idx_iface']
-    w_i = statics['agl_w_iface']
-    zagl_mass = np.asarray(statics['zagl_mass_fine'], dtype=np.float64)   # (40, 99, 120)
-    zagl_iface = np.asarray(statics['zagl_iface_fine'], dtype=np.float64)  # (41, 99, 120)
+    # 画布上的 AGL 表:质量层/界面层 z_agl 边缘复制到 canvas(100,121) 后逐像素构建
+    zagl_mass = CanvasStatics.place(
+        np.asarray(statics['zagl_mass_fine'], dtype=np.float32)).astype(np.float64)
+    zagl_iface = CanvasStatics.place(
+        np.asarray(statics['zagl_iface_fine'], dtype=np.float32)).astype(np.float64)
+    idx_m, w_m = build_agl_table(zagl_mass, TARGET_AGL, True)
+    idx_i, w_i = build_agl_table(zagl_iface, TARGET_AGL, False)
 
     files = sorted(glob.glob(os.path.join(args.fine_dir, "f_{}_*.npz".format(args.scheme))))
     files = [f for f in files if re.search(r'_(\d{8}T\d{4})00\.npz$', f)][:args.n_frames]
@@ -115,9 +118,15 @@ def main():
 
     err_u, err_v, err_w = [], [], []
     err_uv_at_agl = []
+    valid = np.zeros((1, zagl_mass.shape[1], zagl_mass.shape[2]), dtype=bool)
+    valid[:, :99, :120] = True   # 画布有效区(排除边缘复制行/列)
     for f in files:
         with np.load(f) as d:
-            u, v, w, u10, v10 = d['f_u'], d['f_v'], d['f_w'], d['f_u10'], d['f_v10']
+            u = CanvasStatics.place(d['f_u'])
+            v = CanvasStatics.place(d['f_v'])
+            w = CanvasStatics.place(d['f_w'])
+            u10 = CanvasStatics.place(d['f_u10'])[0]
+            v10 = CanvasStatics.place(d['f_v10'])[0]
         # --- 质量层:U/V 往返 ---
         agl_u = agl_interp(u, idx_m, w_m, field10=u10)
         agl_v = agl_interp(v, idx_m, w_m, field10=v10)
@@ -127,14 +136,15 @@ def main():
         # 这里报告模式层往返误差(核心证据),AGL 层残差另算:
         agl_u2 = agl_interp(np.where(np.isnan(back_u), u, back_u), idx_m, w_m, field10=u10)
         agl_v2 = agl_interp(np.where(np.isnan(back_v), v, back_v), idx_m, w_m, field10=v10)
-        m = ~np.isnan(back_u)
+        m = valid[0][None] & ~np.isnan(back_u)
         err_u.append(np.abs(back_u - u)[m])
         err_v.append(np.abs(back_v - v)[m])
-        err_uv_at_agl.append(np.abs(agl_u2 - agl_u)[np.isfinite(agl_u2) & np.isfinite(agl_u)])
+        unit = valid[0][None] & np.isfinite(agl_u2)
+        err_uv_at_agl.append(np.abs(agl_u2 - agl_u)[unit])
         # --- 界面层:W 往返(用界面表) ---
         agl_w = agl_interp(w, idx_i, w_i)
         back_w = back_to_model_levels(agl_w, TARGET_AGL, zagl_iface)
-        mw = ~np.isnan(back_w)
+        mw = valid[0][None] & ~np.isnan(back_w)
         err_w.append(np.abs(back_w - w)[mw])
 
     def stats(chunks):

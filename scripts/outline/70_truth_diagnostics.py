@@ -123,6 +123,13 @@ def divergence_residual(scheme, stamp, levels=(0, 5, 10, 20)):
     return out
 
 
+def mass_speed(cu, cv):
+    """U/V 原生交错 -> 质量点风速(水平平均去交错)。"""
+    u = 0.5 * (cu[:, :-1] + cu[:, 1:])
+    v = 0.5 * (cv[:-1, :] + cv[1:, :])
+    return np.sqrt(u ** 2 + v ** 2)
+
+
 def shift_search(a, b, max_shift=8):
     """b 相对 a 的整数偏移(最大相关)。"""
     best, arg = -1e18, (0, 0)
@@ -166,17 +173,15 @@ def main():
     speeds = {}
     for p in c_files[:72]:
         with np.load(p) as d:
-            speeds[parse_stamp(os.path.basename(p))] = np.sqrt(d['c_u'][0] ** 2
-                                                               + d['c_v'][0] ** 2)
+            speeds[parse_stamp(os.path.basename(p))] = mass_speed(d['c_u'][0], d['c_v'][0])
     top = sorted(speeds, key=lambda k: -speeds[k].mean())[:3]
     rep['shifts'] = {}
     for s in top:
         with np.load(os.path.join(OUT_FINE, "f_{}_{}.npz".format(args.scheme, s))) as d:
-            fspd = np.sqrt(d['f_u'][0] ** 2 + d['f_v'][0] ** 2)
-        fspd_m = 0.25 * (fspd[:-1, :-1] + fspd[1:, :-1] + fspd[:-1, 1:] + fspd[1:, 1:])
+            fspd_m = mass_speed(d['f_u'][0], d['f_v'][0])
         cs = speeds[s]
-        cs_m = 0.25 * (cs[:-1, :-1] + cs[1:, :-1] + cs[:-1, 1:] + cs[1:, 1:])
-        # 粗端 9km 场在细端网格上按 3x3 邻域均值代表(近似抽样),直接比形态用降采样:
+        cs_m = cs
+        # 粗端 9km 场在细端网格上按 9x9 抽样代表,直接比形态:
         fine_ds = fspd_m[::9, ::9]
         n = min(fine_ds.shape[0], cs_m.shape[0]), min(fine_ds.shape[1], cs_m.shape[1])
         (dj, di), c = shift_search(cs_m[:n[0], :n[1]], fine_ds[:n[0], :n[1]], 3)
@@ -194,8 +199,8 @@ def main():
         if not os.path.isfile(q):
             continue
         with np.load(p) as a, np.load(q) as b:
-            spd_m = np.sqrt(a['c_u'][0] ** 2 + a['c_v'][0] ** 2)
-            spd_y = np.sqrt(b['c_u'][0] ** 2 + b['c_v'][0] ** 2)
+            spd_m = mass_speed(a['c_u'][0], a['c_v'][0])
+            spd_y = mass_speed(b['c_u'][0], b['c_v'][0])
             diffs.append([float(np.sqrt(((spd_m - spd_y) ** 2).mean())),
                           float(abs(a['c_pblh'].mean() - b['c_pblh'].mean())),
                           float(np.sqrt(((a['c_ust'] - b['c_ust']) ** 2).mean()))])

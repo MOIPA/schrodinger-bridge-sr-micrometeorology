@@ -125,12 +125,12 @@ def main():
                     if 'c_coszen_wrf' not in d:
                         continue
                     a = d['c_coszen']
-                    b = d['c_coszen_wrf']
+                    b = np.maximum(d['c_coszen_wrf'], 0.0)  # WRF COSZEN 夜间为负,按 0 截断
                     dif = a - b
                     diffs.append(float(np.abs(dif).max()))
-                    dg = dif[1:, :] - dif[:-1, :]
-                    if float(dif.std()) > 1e-6:
-                        autocorr.append(float(np.mean(dif[1:, :] * dif[:-1, :])
+                    if float(dif.std()) > 1e-4:
+                        dc = dif - dif.mean()
+                        autocorr.append(float(np.mean(dc[1:, :] * dc[:-1, :])
                                               / (dif.var() + 1e-12)))
             rep['coszen_check'] = {
                 'max_abs_diff_vs_wrf': max(diffs) if diffs else None,
