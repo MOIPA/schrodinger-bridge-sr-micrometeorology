@@ -141,7 +141,7 @@ class DatasetWindCanvas(Dataset):
         if self.c.include_w:
             sig_w = np.asarray(self.fn['w']['sigma'], dtype=np.float32)[self.WL]
             chans.append(CanvasStatics.place(
-                np.asarray(fine['f_w'], dtype=np.float32)[self.WL] / sig[:, None, None]))
+                np.asarray(fine['f_w'], dtype=np.float32)[self.WL] / sig_w[:, None, None]))
         chans.append(CanvasStatics.place(np.asarray(fine['f_u10'], dtype=np.float32) / sig_uv10))
         chans.append(CanvasStatics.place(np.asarray(fine['f_v10'], dtype=np.float32) / sig_uv10))
         return torch.from_numpy(np.concatenate(chans, axis=0)).to(self.dtype)
