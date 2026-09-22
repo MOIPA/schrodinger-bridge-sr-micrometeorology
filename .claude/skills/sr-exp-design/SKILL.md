@@ -7,9 +7,13 @@ description: 深圳 WRF 3km→1km 风场超分项目(Schrodinger Bridge/SI 扩�
 
 > **路线图权威性说明(2026-09-22)**:导师大纲(`docs/导师大纲_任务计划与论文大纲.md`,全文转写)是当前研究主线——
 > 模式层监督/双空间联合监督、9 km 开发档、AGL 11 层评估、全模式层 1 km 以下三维目标、时间降尺度、观测锚定。
-> **用户已决定全面转向大纲(2026-09-22)**;阶段 0(数据工程/协议冻结)已开工:
+> **用户已决定全面转向大纲(2026-09-22)**;阶段 0(数据工程/协议冻结)**已全部跑通**:
 > 新数据在服务器 `prepare_npz_outline_{fine,coarse,static}/`,训练侧 `DatasetWindCanvas` +
-> `configs/深圳/config_wind_canvas_smoke.yml`,协议见 `docs/大纲阶段0_协议冻结.md`。
+> `configs/深圳/config_wind_canvas_smoke.yml`,协议见 `docs/大纲阶段0_协议冻结.md`(含实测数字)。
+> **两条硬约定**:①SI 框架 `model.in_channel = out_channel + 条件通道数`(canvas 72+74=146);
+> ②数据集必须按 `scheme` 过滤(myj/ysu 共享时间戳,混用会让两套参数化进同一归一化空间)。
+> **流程规则**:新脚本/新数据路径先用合成小数据跑 `scripts/outline/80_fixture_check.py` 式的秒级自检,
+> 再上全量数据(阶段 0 有 10+ 个缺陷都是"没执行过的代码第一次真跑"才暴露的)。
 > 本 skill 的 A/B/C 清单是大纲的补充与并行探索线。与现状的逐项对照及差距见 `docs/大纲对照与差距分析.md`。
 > **涉及"下一步实验怎么设计"时,先读上述文档再回答。**
 
