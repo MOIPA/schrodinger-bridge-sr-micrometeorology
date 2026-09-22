@@ -291,7 +291,7 @@ def main():
         ax.grid(alpha=0.3)
         ax.legend(fontsize=8)
         ax.set_title('sigma_w profile')
-        png = os.path.join(os.path.dirname(args.static_dir), "..", "results", "outline",
+        png = os.path.join(os.path.dirname(args.static_dir), "results", "outline",
                            "sigma_profiles.png")
         png = os.path.abspath(png)
         ensure_dir(os.path.dirname(png))

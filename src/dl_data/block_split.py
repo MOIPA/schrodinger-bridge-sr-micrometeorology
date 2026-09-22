@@ -4,10 +4,15 @@ import json
 import os
 import re
 
-_STAMP = re.compile(r'_(\d{8}T\d{2})(\d{2})(\d{2})\.npz$')
+_STAMP = re.compile(r'_(\d{8})T(\d{2})(\d{2})(\d{2})\.npz$')
 
 
 def _hour_key(basename):
+    """'f_<scheme>_YYYYMMDDTHHMMSS.npz' -> 'YYYY-MM-DDTHH'(与 split.json hours 同口径)。
+
+    注意 group(2) 是小时、group(3) 是分钟:曾误把分钟当小时,导致 :10/:20 帧被
+    划进第 10/20 小时、:30/:40/:50 帧全部落空。
+    """
     m = _STAMP.search(os.path.basename(basename))
     if not m:
         return None
