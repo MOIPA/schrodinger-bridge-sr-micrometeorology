@@ -24,10 +24,17 @@ class CanvasStatics(object):
             self.d = {k: s[k] for k in s.files}
 
     def regrid(self, arr, cls):
-        """(..., n_src_flat) -> (..., n_dst):粗端 -> 细端原生交错位置(4 节点加权)。"""
+        """(..., n_src_flat) 或 (..., ny_s, nx_s) -> (..., n_dst):粗端 -> 细端原生交错位置。
+
+        权重表里的源索引是**扁平**索引,若传入 (..., ny_s, nx_s) 必须先摊平,
+        否则会拿扁平索引去索引最后一维(越界或静默取错位置)。
+        """
         idx = self.d['regrid_idx_' + cls]        # (n_dst, 4) 源节点扁平索引
         w = self.d['regrid_w_' + cls]            # (n_dst, 4)
         a = np.asarray(arr, dtype=np.float32)
+        n_src = int(np.prod(self.d['regrid_shape_' + cls]))
+        if a.shape[-1] != n_src:
+            a = a.reshape(a.shape[:-2] + (n_src,))
         return (a[..., idx] * w).sum(axis=-1)    # 前置维任意(层/批次)均可
 
     def regrid_field(self, arr, cls):

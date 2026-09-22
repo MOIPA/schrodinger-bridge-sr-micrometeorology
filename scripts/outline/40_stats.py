@@ -31,6 +31,17 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from outline_common import OUT_COARSE, OUT_FINE, OUT_STATIC, ensure_dir
 
 L2 = lambda x: np.sign(x) * np.log1p(np.abs(x))  # noqa: E731
+SIG_FLOOR = 1e-6
+
+
+def guard_zero_sigma(mu, sig):
+    """零方差的通道(如 WRF PH 最低界面恒为 0)按"不平移不缩放"处理,避免除 0 出 NaN。"""
+    mu = np.asarray(mu, dtype=np.float64).copy()
+    sig = np.asarray(sig, dtype=np.float64).copy()
+    zero = sig < SIG_FLOOR
+    mu[zero] = 0.0
+    sig[zero] = 1.0
+    return mu, sig, np.flatnonzero(zero).tolist()
 
 
 class Acc(object):
@@ -200,7 +211,23 @@ def main():
         _, sig_w_c = co_acc['w'].result()
         th_mu, th_sig = co_theta.result()
         ph_mu, ph_sig = co_ph.result()
-        two_d = {k: acc.result() for k, acc in co_2d.items()}
+        # 零方差层(WRF PH 最低界面恒为 0)-> 不平移不缩放
+        zv = {}
+        _, sig_uv_f, zv['uv_fine'] = guard_zero_sigma(np.zeros_like(sig_uv_f), sig_uv_f)
+        _, sig_w_f, zv['w_fine'] = guard_zero_sigma(np.zeros_like(sig_w_f), sig_w_f)
+        _, sig_uv_c, zv['uv_coarse'] = guard_zero_sigma(np.zeros_like(sig_uv_c), sig_uv_c)
+        _, sig_w_c, zv['w_coarse'] = guard_zero_sigma(np.zeros_like(sig_w_c), sig_w_c)
+        th_mu, th_sig, zv['theta'] = guard_zero_sigma(th_mu, th_sig)
+        ph_mu, ph_sig, zv['ph'] = guard_zero_sigma(ph_mu, ph_sig)
+        two_d = {}
+        for k, acc in co_2d.items():
+            mu_k, sg_k, zv_k = guard_zero_sigma(*acc.result())
+            two_d[k] = (mu_k, sg_k)
+            if zv_k:
+                zv[k] = zv_k
+        print("  零方差通道(按不平移不缩放处理): " + json.dumps(
+            {k: v for k, v in zv.items() if v}))
+        zv_hit = {k: v for k, v in zv.items() if v}
 
         out['fine'][scheme] = {
             'u': {'mode': 'zero_mean_rms_shared_with_v', 'mu': 0.0,
@@ -215,6 +242,7 @@ def main():
             'n_samples': n_fine,
             'sigma_uv_profile': sig_uv_f.tolist(),
             'sigma_w_profile': sig_w_f.tolist(),
+            'zero_variance_channels': zv_hit,
         }
         out['coarse'][scheme] = {
             'u': {'mode': 'zero_mean_rms_shared_with_v', 'mu': 0.0,
@@ -245,7 +273,11 @@ def main():
             'n_samples': n_coarse,
             'sigma_uv_profile': sig_uv_c.tolist(),
             'sigma_w_profile': sig_w_c.tolist(),
+            'zero_variance_channels': zv_hit,
         }
+        for nm, arr in (('sig_uv_f', sig_uv_f), ('sig_w_f', sig_w_f), ('sig_uv_c', sig_uv_c),
+                        ('sig_w_c', sig_w_c), ('th_sig', th_sig), ('ph_sig', ph_sig)):
+            assert np.isfinite(arr).all() and (np.asarray(arr) > 0).all(), nm + ' 含非有限/非正值'
         print("  fine σ_uv 前5层: " + ", ".join("{:.3f}".format(x) for x in sig_uv_f[:5]))
         print("  fine σ_w  前5层: " + ", ".join("{:.3f}".format(x) for x in sig_w_f[:5]))
         print("  coarse σ_uv 前5层: " + ", ".join("{:.3f}".format(x) for x in sig_uv_c[:5]))
