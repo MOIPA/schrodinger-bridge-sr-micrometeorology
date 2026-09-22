@@ -1,15 +1,197 @@
+scripts/outline/10_extract_statics.py:438: RuntimeWarning: All-NaN slice encountered
+  shdmin_f = np.nanmin(np.stack(veg_month_f), axis=0)
+scripts/outline/10_extract_statics.py:439: RuntimeWarning: All-NaN slice encountered
+  shdmax_f = np.nanmax(np.stack(veg_month_f), axis=0)
+scripts/outline/10_extract_statics.py:440: RuntimeWarning: All-NaN slice encountered
+  shdmin_c = np.nanmin(np.stack(veg_month_c), axis=0)
+scripts/outline/10_extract_statics.py:441: RuntimeWarning: All-NaN slice encountered
+  shdmax_c = np.nanmax(np.stack(veg_month_c), axis=0)
+scripts/outline/10_extract_statics.py:277: RuntimeWarning: invalid value encountered in greater_equal
+  z0 = np.where(vegfra >= shdmax, z0max,
+scripts/outline/10_extract_statics.py:278: RuntimeWarning: invalid value encountered in less_equal
+  np.where(vegfra <= shdmin, z0min,
+scripts/outline/10_extract_statics.py:279: RuntimeWarning: invalid value encountered in greater
+  np.where(shdmax > shdmin, z0min + interp * (z0max - z0min),
 fine   : /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_myj/wrfout_d04_2020-07-01_00:00:00
 coarse : /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_myj/wrfout_d02_2020-07-01_00:00:00
-重网格校验(mass): {"invalid": 0, "lat_err_max_m": 6049.867371055948, "lon_err_max_m": 9679.680465222777, "src_lattice_res_m": 73262.76981875056}
-Traceback (most recent call last):
-  File "scripts/outline/10_extract_statics.py", line 457, in <module>
-    main()
-  File "scripts/outline/10_extract_statics.py", line 351, in main
-    os.path.join(args.geog_dir, LANDUSE_DIR), lat_min, lat_max, lon_min, lon_max)
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/wps_geog.py", line 87, in read_geog_region
-    block = arr[zs][:, gj - j0, gi - i0]
-IndexError: shape mismatch: indexing arrays could not be broadcast together with shapes (724,) (885,) 
-exit=1
+重网格校验(mass): {"invalid": 0, "lat_err_max_m": 0.13286119804206464, "lon_err_max_m": 1.1326076120365154}
+landuse 区域 (2470, 3345) 类别 1..21
+greenfrac 区域 (12, 1237, 1673) (12 月)
+
+写出: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static/statics.npz (5.4 MB), /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static/meta.json
+
+=== 校验汇总 ===
+{
+ "hgt_scheme_maxdiff_fine_m": 0.0,
+ "eta_znw_maxdiff_vs_namelist": 2.9449462868313958e-08,
+ "z_iface0_abs_max_m": 5.0520435138423636e-05,
+ "attrs_fine": {
+  "MAP_PROJ": 3.0,
+  "TRUELAT1": 30.0,
+  "TRUELAT2": 30.0,
+  "STAND_LON": 113.0,
+  "DX": 1000.0,
+  "DY": 1000.0,
+  "CEN_LAT": 22.497154235839844,
+  "CEN_LON": 114.12169647216797,
+  "MMINLU": "MODIFIED_IGBP_MODIS_NOAH"
+ },
+ "index_map_res_cell": {
+  "fine": 0.0007919480631528586,
+  "coarse": 0.0010659898049709682
+ },
+ "regrid_mass": {
+  "invalid": 0,
+  "lat_err_max_m": 0.13286119804206464,
+  "lon_err_max_m": 1.1326076120365154
+ },
+ "regrid_u": {
+  "invalid": 0,
+  "lat_err_max_m": 0.13286119804206464,
+  "lon_err_max_m": 0.9316879977591381
+ },
+ "regrid_v": {
+  "invalid": 0,
+  "lat_err_max_m": 0.13211092866640683,
+  "lon_err_max_m": 1.1326076577398148
+ },
+ "agl_mass": {
+  "10": {
+   "below_first": 0,
+   "above_top": 0,
+   "use_10m_channel": 11880
+  },
+  "30": {
+   "below_first": 0,
+   "above_top": 0
+  },
+  "50": {
+   "below_first": 0,
+   "above_top": 0
+  },
+  "70": {
+   "below_first": 0,
+   "above_top": 0
+  },
+  "100": {
+   "below_first": 0,
+   "above_top": 0
+  },
+  "150": {
+   "below_first": 0,
+   "above_top": 0
+  },
+  "200": {
+   "below_first": 0,
+   "above_top": 0
+  },
+  "300": {
+   "below_first": 0,
+   "above_top": 0
+  },
+  "500": {
+   "below_first": 0,
+   "above_top": 0
+  },
+  "700": {
+   "below_first": 0,
+   "above_top": 0
+  },
+  "1000": {
+   "below_first": 0,
+   "above_top": 0
+  }
+ },
+ "agl_iface": {
+  "10": {
+   "below_first": 0,
+   "above_top": 0
+  },
+  "30": {
+   "below_first": 0,
+   "above_top": 0
+  },
+  "50": {
+   "below_first": 0,
+   "above_top": 0
+  },
+  "70": {
+   "below_first": 0,
+   "above_top": 0
+  },
+  "100": {
+   "below_first": 0,
+   "above_top": 0
+  },
+  "150": {
+   "below_first": 0,
+   "above_top": 0
+  },
+  "200": {
+   "below_first": 0,
+   "above_top": 0
+  },
+  "300": {
+   "below_first": 0,
+   "above_top": 0
+  },
+  "500": {
+   "below_first": 0,
+   "above_top": 0
+  },
+  "700": {
+   "below_first": 0,
+   "above_top": 0
+  },
+  "1000": {
+   "below_first": 0,
+   "above_top": 0
+  }
+ },
+ "landuse": {
+  "dataset": "modis_landuse_20class_15s_with_lakes",
+  "ncat": 21,
+  "frac_sum_min": 4.0,
+  "frac_sum_max": 9.0,
+  "empty_cells_fine": 0,
+  "empty_cells_coarse": 0
+ },
+ "greenfrac_month_mean_region": [
+  0.2575,
+  0.2469,
+  0.242,
+  0.2674,
+  0.3008,
+  0.3233,
+  0.3414,
+  0.3498,
+  0.3496,
+  0.3311,
+  0.2979,
+  0.274
+ ],
+ "z0_fine": {
+  "min": 9.999999747378752e-05,
+  "mean": 0.14585664868354797,
+  "max": 0.5,
+  "urban_cells": 1389,
+  "water_cells": 5928
+ },
+ "z0_coarse": {
+  "min": 9.999999747378752e-05,
+  "mean": 0.13131843507289886,
+  "max": 0.5,
+  "urban_cells": 132,
+  "water_cells": 9213
+ },
+ "vegfra_july": {
+  "fine_mean": 0.25815066794689645,
+  "coarse_mean": 0.349706959095236
+ }
+}
+exit=0
 total 1
-drwxr-xr-x  2 ytw_tangzq yutingwang 4096 Sep 22 22:26 .
-drwxr-xr-x 24 ytw_tangzq yutingwang 4096 Sep 22 22:26 ..
+drwxr-xr-x  2 ytw_tangzq yutingwang    4096 Sep 22 22:29 .
+drwxr-xr-x 24 ytw_tangzq yutingwang    4096 Sep 22 22:26 ..
+-rw-r--r--  1 ytw_tangzq yutingwang    6380 Sep 22 22:29 meta.json
+-rw-r--r--  1 ytw_tangzq yutingwang 5354508 Sep 22 22:29 statics.npz

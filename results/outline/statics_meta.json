@@ -1,0 +1,281 @@
+{
+  "generated": "2026-09-22T22:29:52",
+  "fine_file": "/fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_myj/wrfout_d04_2020-07-01_00:00:00",
+  "coarse_file": "/fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_myj/wrfout_d02_2020-07-01_00:00:00",
+  "eta": {
+    "e_vert": 62,
+    "p_top_requested": 5000.0,
+    "eta_levels": [
+      1.0,
+      0.99377,
+      0.98758,
+      0.98141,
+      0.97528,
+      0.96917,
+      0.96309,
+      0.95705,
+      0.95103,
+      0.94504,
+      0.93908,
+      0.93315,
+      0.92724,
+      0.92137,
+      0.91552,
+      0.90971,
+      0.90392,
+      0.89816,
+      0.89243,
+      0.88672,
+      0.88105,
+      0.8754,
+      0.86978,
+      0.86418,
+      0.85862,
+      0.85308,
+      0.84757,
+      0.84209,
+      0.83663,
+      0.8312,
+      0.8258,
+      0.82042,
+      0.81507,
+      0.80975,
+      0.80445,
+      0.79918,
+      0.79394,
+      0.78872,
+      0.78353,
+      0.77837,
+      0.77323,
+      0.76811,
+      0.7623,
+      0.75451,
+      0.74355,
+      0.72829,
+      0.70778,
+      0.68126,
+      0.64827,
+      0.60864,
+      0.56262,
+      0.51355,
+      0.46245,
+      0.41149,
+      0.36046,
+      0.30938,
+      0.25827,
+      0.2071,
+      0.15595,
+      0.10471,
+      0.05342,
+      0.0
+    ],
+    "base_temp": 290.0,
+    "base_pres": 100000.0,
+    "base_lapse": 50.0,
+    "source": "namelist.input_SZ.6d(eta_levels/p_top/base_temp 显式;base_pres/base_lapse 为 WRF 默认值,namelist 未显式给出,待导师确认)"
+  },
+  "projection": {
+    "map_proj": 3,
+    "map_proj_char": "Mercator",
+    "truelat1": 30.0,
+    "truelat2": 30.0,
+    "stand_lon": 113.0,
+    "dx_fine": 1000.0,
+    "dy_fine": 1000.0,
+    "dx_coarse": 9000.0,
+    "note": "wrfout MAP_PROJ=3 即 Mercator;重网格不依赖投影公式,用最近节点 + 经纬度平面逆双线性(域内畸变可忽略)"
+  },
+  "landuse": {
+    "dataset": "modis_landuse_20class_15s_with_lakes",
+    "mminlu": "MODIFIED_IGBP_MODIS_NOAH",
+    "num_land_cat": 21,
+    "iswater": 17,
+    "isurban": 13,
+    "isice": 15,
+    "islake": 21,
+    "z0_table_source": "WRF v4.2.1 VEGPARM.TBL"
+  },
+  "greenfrac": {
+    "dataset": "greenfrac_fpar_modis",
+    "month": 7,
+    "scale_factor": 0.01
+  },
+  "z0_formula": "Noah Z0BRD (module_sf_noahlsm.F): SHDFAC>=SHDMAX -> Z0MAX; SHDFAC<=SHDMIN -> Z0MIN; 否则线性插值。SHDFAC = 7 月 VEGFRA, SHDMIN/SHDMAX = 12 月最小/最大值。水面为表值(真实 ZNT 走 Charnock,大纲规定只取月均)。",
+  "y0_design": {
+    "regrid": "d02 -> d04 原生交错位置的双线性权重(regrid_idx_*/regrid_w_*);U/V/质量点各自独立",
+    "agl_tables": "idx>=0: w*f[idx]+(1-w)*f[idx+1]; idx=-1: 低于首层,与 10 m 通道按对数律插值; idx=-2: 目标 10 m 直接取 10 m 通道"
+  },
+  "n_levels": {
+    "mass_stored": 40,
+    "iface_stored": 41,
+    "n_levels_total": 61
+  },
+  "validations": {
+    "hgt_scheme_maxdiff_fine_m": 0.0,
+    "eta_znw_maxdiff_vs_namelist": 2.9449462868313958e-08,
+    "z_iface0_abs_max_m": 5.0520435138423636e-05,
+    "attrs_fine": {
+      "MAP_PROJ": 3.0,
+      "TRUELAT1": 30.0,
+      "TRUELAT2": 30.0,
+      "STAND_LON": 113.0,
+      "DX": 1000.0,
+      "DY": 1000.0,
+      "CEN_LAT": 22.497154235839844,
+      "CEN_LON": 114.12169647216797,
+      "MMINLU": "MODIFIED_IGBP_MODIS_NOAH"
+    },
+    "index_map_res_cell": {
+      "fine": 0.0007919480631528586,
+      "coarse": 0.0010659898049709682
+    },
+    "regrid_mass": {
+      "invalid": 0,
+      "lat_err_max_m": 0.13286119804206464,
+      "lon_err_max_m": 1.1326076120365154
+    },
+    "regrid_u": {
+      "invalid": 0,
+      "lat_err_max_m": 0.13286119804206464,
+      "lon_err_max_m": 0.9316879977591381
+    },
+    "regrid_v": {
+      "invalid": 0,
+      "lat_err_max_m": 0.13211092866640683,
+      "lon_err_max_m": 1.1326076577398148
+    },
+    "agl_mass": {
+      "10": {
+        "below_first": 0,
+        "above_top": 0,
+        "use_10m_channel": 11880
+      },
+      "30": {
+        "below_first": 0,
+        "above_top": 0
+      },
+      "50": {
+        "below_first": 0,
+        "above_top": 0
+      },
+      "70": {
+        "below_first": 0,
+        "above_top": 0
+      },
+      "100": {
+        "below_first": 0,
+        "above_top": 0
+      },
+      "150": {
+        "below_first": 0,
+        "above_top": 0
+      },
+      "200": {
+        "below_first": 0,
+        "above_top": 0
+      },
+      "300": {
+        "below_first": 0,
+        "above_top": 0
+      },
+      "500": {
+        "below_first": 0,
+        "above_top": 0
+      },
+      "700": {
+        "below_first": 0,
+        "above_top": 0
+      },
+      "1000": {
+        "below_first": 0,
+        "above_top": 0
+      }
+    },
+    "agl_iface": {
+      "10": {
+        "below_first": 0,
+        "above_top": 0
+      },
+      "30": {
+        "below_first": 0,
+        "above_top": 0
+      },
+      "50": {
+        "below_first": 0,
+        "above_top": 0
+      },
+      "70": {
+        "below_first": 0,
+        "above_top": 0
+      },
+      "100": {
+        "below_first": 0,
+        "above_top": 0
+      },
+      "150": {
+        "below_first": 0,
+        "above_top": 0
+      },
+      "200": {
+        "below_first": 0,
+        "above_top": 0
+      },
+      "300": {
+        "below_first": 0,
+        "above_top": 0
+      },
+      "500": {
+        "below_first": 0,
+        "above_top": 0
+      },
+      "700": {
+        "below_first": 0,
+        "above_top": 0
+      },
+      "1000": {
+        "below_first": 0,
+        "above_top": 0
+      }
+    },
+    "landuse": {
+      "dataset": "modis_landuse_20class_15s_with_lakes",
+      "ncat": 21,
+      "frac_sum_min": 4.0,
+      "frac_sum_max": 9.0,
+      "empty_cells_fine": 0,
+      "empty_cells_coarse": 0
+    },
+    "greenfrac_month_mean_region": [
+      0.2575,
+      0.2469,
+      0.242,
+      0.2674,
+      0.3008,
+      0.3233,
+      0.3414,
+      0.3498,
+      0.3496,
+      0.3311,
+      0.2979,
+      0.274
+    ],
+    "z0_fine": {
+      "min": 9.999999747378752e-05,
+      "mean": 0.14585664868354797,
+      "max": 0.5,
+      "urban_cells": 1389,
+      "water_cells": 5928
+    },
+    "z0_coarse": {
+      "min": 9.999999747378752e-05,
+      "mean": 0.13131843507289886,
+      "max": 0.5,
+      "urban_cells": 132,
+      "water_cells": 9213
+    },
+    "vegfra_july": {
+      "fine_mean": 0.25815066794689645,
+      "coarse_mean": 0.349706959095236
+    }
+  }
+}
