@@ -1,0 +1,15 @@
+fine   : /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_myj/wrfout_d04_2020-07-01_00:00:00
+coarse : /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_myj/wrfout_d02_2020-07-01_00:00:00
+重网格校验(mass): {"invalid": 0, "lat_err_max_m": 6049.867371055948, "lon_err_max_m": 9679.680465222777, "src_lattice_res_m": 73262.76981875056}
+Traceback (most recent call last):
+  File "scripts/outline/10_extract_statics.py", line 457, in <module>
+    main()
+  File "scripts/outline/10_extract_statics.py", line 351, in main
+    os.path.join(args.geog_dir, LANDUSE_DIR), lat_min, lat_max, lon_min, lon_max)
+  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/wps_geog.py", line 87, in read_geog_region
+    block = arr[zs][:, gj - j0, gi - i0]
+IndexError: shape mismatch: indexing arrays could not be broadcast together with shapes (724,) (885,) 
+exit=1
+total 1
+drwxr-xr-x  2 ytw_tangzq yutingwang 4096 Sep 22 22:26 .
+drwxr-xr-x 24 ytw_tangzq yutingwang 4096 Sep 22 22:26 ..
