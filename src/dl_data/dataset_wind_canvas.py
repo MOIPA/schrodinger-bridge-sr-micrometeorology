@@ -67,8 +67,10 @@ class DatasetWindCanvasConfig(BaseDatasetConfig):
 class DatasetWindCanvas(Dataset):
     def __init__(self, file_paths, config, **kwargs):
         self.c = copy.deepcopy(config)
-        # 只用整点帧:stamp='YYYYMMDDTHHMMSS',[9:11]=小时、[11:13]=分钟
-        self.ps = [p for p in file_paths if p.endswith(".npz")
+        # 只用本方案(归一化统计与目标必须来自同一套参数化)的整点帧:
+        # stamp='YYYYMMDDTHHMMSS',[9:11]=小时、[11:13]=分钟
+        tag = "_" + self.c.scheme + "_"
+        self.ps = [p for p in file_paths if p.endswith(".npz") and tag in os.path.basename(p)
                    and _parse_stamp(p) is not None and _parse_stamp(p)[11:13] == "00"]
         self.stat = CanvasStatics(self.c.statics_dir)
         norm_path = self.c.normalize_json or os.path.join(self.c.statics_dir,
