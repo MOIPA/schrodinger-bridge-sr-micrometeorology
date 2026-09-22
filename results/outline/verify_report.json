@@ -1,0 +1,93 @@
+{
+  "counts_myj": {
+    "fine_files": 4464,
+    "coarse_files": 744,
+    "fine_hours": 744,
+    "coarse_hours": 744,
+    "hour_sets_equal": true,
+    "fine_first_last": [
+      "20200701T000000",
+      "20200731T235000"
+    ],
+    "coarse_first_last": [
+      "20200701T000000",
+      "20200731T230000"
+    ],
+    "fine_minutes": [
+      "00",
+      "10",
+      "20",
+      "30",
+      "40",
+      "50"
+    ]
+  },
+  "shapes_myj": {
+    "{'f_u': (40, 99, 121), 'f_v': (40, 100, 120), 'f_w': (41, 99, 120)}": 20
+  },
+  "nonfinite_files_myj": 0,
+  "wrfout_spot_myj": {
+    "n": 6,
+    "max_abs_diff": 0.0
+  },
+  "coszen_check": {
+    "max_abs_diff_vs_wrf": 0.7391000390052795,
+    "mean_lag1_autocorr_of_diff": 219.0205753174717,
+    "note": "差值若为空间平滑场(lag1 自相关接近 1),说明 WRF COSZEN 是纯天文量;我们两个方案统一采用自算天文值"
+  },
+  "counts_ysu": {
+    "fine_files": 4464,
+    "coarse_files": 744,
+    "fine_hours": 744,
+    "coarse_hours": 744,
+    "hour_sets_equal": true,
+    "fine_first_last": [
+      "20200701T000000",
+      "20200731T235000"
+    ],
+    "coarse_first_last": [
+      "20200701T000000",
+      "20200731T230000"
+    ],
+    "fine_minutes": [
+      "00",
+      "10",
+      "20",
+      "30",
+      "40",
+      "50"
+    ]
+  },
+  "shapes_ysu": {
+    "{'f_u': (40, 99, 121), 'f_v': (40, 100, 120), 'f_w': (41, 99, 120)}": 20
+  },
+  "nonfinite_files_ysu": 0,
+  "wrfout_spot_ysu": {
+    "n": 6,
+    "max_abs_diff": 0.0
+  },
+  "leakage_assert": {
+    "fine_keys_only_targets": [
+      "f_u",
+      "f_u10",
+      "f_v",
+      "f_v10",
+      "f_w"
+    ],
+    "coarse_keys": [
+      "c_coszen",
+      "c_hfx",
+      "c_pblh",
+      "c_ph",
+      "c_psfc",
+      "c_rmol",
+      "c_t2",
+      "c_theta",
+      "c_u",
+      "c_ust",
+      "c_v",
+      "c_w"
+    ],
+    "note": "细端 npz 仅含 U/V/W/U10/V10(监督目标);输入侧的 d04 静态场全部来自 statics.npz(PHB 导出几何 + 土地数据),不含 d04 逐时刻量"
+  }
+}

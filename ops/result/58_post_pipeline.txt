@@ -1,0 +1,138 @@
+=== 30 块划分 ===
+Traceback (most recent call last):
+  File "scripts/outline/30_blocks_and_split.py", line 195, in <module>
+    main()
+  File "scripts/outline/30_blocks_and_split.py", line 128, in main
+    days, feats = daily_indicators(args.coarse_dir, args.scheme)
+  File "scripts/outline/30_blocks_and_split.py", line 47, in daily_indicators
+    spd = np.sqrt(d['c_u'][0] ** 2 + d['c_v'][0] ** 2)
+ValueError: operands could not be broadcast together with shapes (120,151) (121,150) 
+=== 40 标准化统计 ===
+先运行 30_blocks_and_split.py 生成 /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static/split.json
+=== 60 AGL 往返(T0.4)===
+往返试验帧数: 24 (f_myj_20200701T000000.npz .. f_myj_20200701T035000.npz)
+Traceback (most recent call last):
+  File "scripts/outline/60_agl_operator.py", line 170, in <module>
+    main()
+  File "scripts/outline/60_agl_operator.py", line 122, in main
+    agl_u = agl_interp(u, idx_m, w_m, field10=u10)
+  File "scripts/outline/60_agl_operator.py", line 42, in agl_interp
+    val = wt * field[k, jj, ii] + (1.0 - wt) * field[k + 1, jj, ii]
+IndexError: shape mismatch: indexing arrays could not be broadcast together with shapes (99,120) (99,121) (99,121) 
+=== 50 校验 ===
+{
+ "counts_myj": {
+  "fine_files": 4464,
+  "coarse_files": 744,
+  "fine_hours": 744,
+  "coarse_hours": 744,
+  "hour_sets_equal": true,
+  "fine_first_last": [
+   "20200701T000000",
+   "20200731T235000"
+  ],
+  "coarse_first_last": [
+   "20200701T000000",
+   "20200731T230000"
+  ],
+  "fine_minutes": [
+   "00",
+   "10",
+   "20",
+   "30",
+   "40",
+   "50"
+  ]
+ },
+ "shapes_myj": {
+  "{'f_u': (40, 99, 121), 'f_v': (40, 100, 120), 'f_w': (41, 99, 120)}": 20
+ },
+ "nonfinite_files_myj": 0,
+ "wrfout_spot_myj": {
+  "n": 6,
+  "max_abs_diff": 0.0
+ },
+ "coszen_check": {
+  "max_abs_diff_vs_wrf": 0.7391000390052795,
+  "mean_lag1_autocorr_of_diff": 219.0205753174717,
+  "note": "差值若为空间平滑场(lag1 自相关接近 1),说明 WRF COSZEN 是纯天文量;我们两个方案统一采用自算天文值"
+ },
+ "counts_ysu": {
+  "fine_files": 4464,
+  "coarse_files": 744,
+  "fine_hours": 744,
+  "coarse_hours": 744,
+  "hour_sets_equal": true,
+  "fine_first_last": [
+   "20200701T000000",
+   "20200731T235000"
+  ],
+  "coarse_first_last": [
+   "20200701T000000",
+   "20200731T230000"
+  ],
+  "fine_minutes": [
+   "00",
+   "10",
+   "20",
+   "30",
+   "40",
+   "50"
+  ]
+ },
+ "shapes_ysu": {
+  "{'f_u': (40, 99, 121), 'f_v': (40, 100, 120), 'f_w': (41, 99, 120)}": 20
+ },
+ "nonfinite_files_ysu": 0,
+ "wrfout_spot_ysu": {
+  "n": 6,
+  "max_abs_diff": 0.0
+ },
+ "leakage_assert": {
+  "fine_keys_only_targets": [
+   "f_u",
+   "f_u10",
+   "f_v",
+   "f_v10",
+   "f_w"
+  ],
+  "coarse_keys": [
+   "c_coszen",
+   "c_hfx",
+   "c_pblh",
+   "c_ph",
+   "c_psfc",
+   "c_rmol",
+   "c_t2",
+   "c_theta",
+   "c_u",
+   "c_ust",
+   "c_v",
+   "c_w"
+  ],
+  "note": "细端 npz 仅含 U/V/W/U10/V10(监督目标);输入侧的 d04 静态场全部来自 statics.npz(PHB 导出几何 + 土地数据),不含 d04 逐时刻量"
+ }
+}
+写出: results/outline/verify_report.json
+=== canvas 冒烟 ===
+Traceback (most recent call last):
+  File "scripts/smoke_wind_canvas.py", line 18, in <module>
+    from src.dl_config.config_loader import load_config  # noqa: E402
+  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_config/config_loader.py", line 3, in <module>
+    from src.dl_config.diffusion_model_config import ExperimentDiffusionModelConfig
+  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_config/diffusion_model_config.py", line 3, in <module>
+    from src.dl_config.base_config import BaseDataloaderConfig, YamlConfig
+  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_config/base_config.py", line 7, in <module>
+    import yaml
+ModuleNotFoundError: No module named 'yaml'
+smoke exit=1
+=== 70 真值诊断(T0.5)===
+① 能谱: d01 7dx=189km k_pk=0, d02 7dx=63km k_pk=0, d03 7dx=21km k_pk=0, d04 7dx=7km k_pk=0
+Traceback (most recent call last):
+  File "scripts/outline/70_truth_diagnostics.py", line 220, in <module>
+    main()
+  File "scripts/outline/70_truth_diagnostics.py", line 159, in main
+    div[s] = divergence_residual(args.scheme, s)
+  File "scripts/outline/70_truth_diagnostics.py", line 113, in divergence_residual
+    du = (rho_u[k, :, 1:] * u[k, :, 1:] - rho_u[k, :, :-1] * u[k, :, :-1]) / 1000.0
+ValueError: operands could not be broadcast together with shapes (99,118) (99,120) 
