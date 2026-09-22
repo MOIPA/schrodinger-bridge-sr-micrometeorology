@@ -20,7 +20,7 @@ import torch
 from torch.utils.data import Dataset
 
 from src.dl_config.base_config import BaseDatasetConfig
-from src.dl_data.wind_canvas_statics import CanvasStatics
+from src.dl_data.wind_canvas_statics import FINE_SHAPES, CanvasStatics
 from src.utils.random_crop import RandomCrop2D
 
 INPUT_GROUPS = [
@@ -156,9 +156,11 @@ class DatasetWindCanvas(Dataset):
             sig_w = np.asarray(self.fn['w']['sigma'], dtype=np.float32)[self.WL]
             w = np.asarray(co['c_w'], dtype=np.float32)[self.WL] / sig_w[:, None, None]
             chans.append(CanvasStatics.place(self.stat.regrid_field(w, 'w')))
-        # 10 m 通道代理:取粗端最低层风(文档化近似)
-        chans.append(CanvasStatics.place(u[0:1]))
-        chans.append(CanvasStatics.place(v[0:1]))
+        # 10 m 通道代理:粗端最低层风(粗端未输出 U10/V10;去交错到质量点后重网格)
+        u10 = 0.5 * (u[0, :, :-1] + u[0, :, 1:])
+        v10 = 0.5 * (v[0, :-1, :] + v[0, 1:, :])
+        chans.append(CanvasStatics.place(self.stat.regrid_field(u10[None], 'mass')))
+        chans.append(CanvasStatics.place(self.stat.regrid_field(v10[None], 'mass')))
         return torch.from_numpy(np.concatenate(chans, axis=0)).to(self.dtype)
 
     def _inputs(self, co, stamp):
@@ -211,8 +213,8 @@ class DatasetWindCanvas(Dataset):
                 (np.asarray(co['c_ph'], dtype=np.float32)[self.WL] - mu[:, None, None])
                 / sg[:, None, None], 'w'))
         if 'coszen' in g:
-            add('coszen', self.stat.regrid(np.asarray(co['c_coszen'], dtype=np.float32)[None],
-                                           'mass')[0].reshape(self.stat.d['hgt_coarse'].shape))
+            r = self.stat.regrid(np.asarray(co['c_coszen'], dtype=np.float32)[None], 'mass')
+            add('coszen', r[0].reshape(FINE_SHAPES['mass']))
         if 'fine_static' in g:
             s = self.sn['hgt_fine_raw']
             add('f_hgt', ((np.asarray(self.stat.d['hgt_fine'], dtype=np.float32)
