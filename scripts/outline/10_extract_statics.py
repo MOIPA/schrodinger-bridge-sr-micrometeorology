@@ -256,12 +256,12 @@ def agg_class(cell, vals, ncat, ny, nx):
 
 def fill_nearest(arr, lat2d, lon2d):
     """对 (...,ny,nx) 中整格缺失的单元按最近有效格点填充;返回 (filled, 填充数)。"""
-    a = np.array(arr, dtype=np.float64, copy=True)
+    orig_shape = np.shape(arr)
     ny, nx = lat2d.shape
-    a = a.reshape(-1, ny, nx)
-    bad = np.isnan(a).any(axis=0).reshape(-1)
+    flat = np.array(arr, dtype=np.float64, copy=True).reshape(-1, ny * nx)
+    bad = np.isnan(flat).any(axis=0)
     if not bad.any():
-        return a.reshape(np.shape(arr)).astype(np.float32), 0
+        return np.array(arr, dtype=np.float32).reshape(orig_shape), 0
     flat_lat = lat2d.reshape(-1)
     flat_lon = lon2d.reshape(-1)
     scale = float(np.cos(np.radians(np.mean(flat_lat))))
@@ -270,8 +270,8 @@ def fill_nearest(arr, lat2d, lon2d):
     want = np.where(bad)[0]
     _, near = tree.query(np.stack([flat_lon[want] * scale, flat_lat[want]], axis=-1))
     src = np.where(good)[0][near]
-    a[:, want] = a[:, src]
-    return a.reshape(np.shape(arr)).astype(np.float32), int(bad.sum())
+    flat[:, want] = flat[:, src]
+    return flat.reshape(orig_shape).astype(np.float32), int(bad.sum())
 
 
 def agg_cont(cell, vals, ny, nx):
