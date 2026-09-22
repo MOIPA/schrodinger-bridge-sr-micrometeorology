@@ -25,33 +25,33 @@
 静态场统计完成
 
 === scheme myj ===
-  读取 fine 0 帧, coarse 0 小时
-scripts/outline/40_stats.py:178: RuntimeWarning: invalid value encountered in true_divide
-  s_uv2 = (fine_acc['u'].q / fine_acc['u'].n + fine_acc['v'].q / fine_acc['v'].n) / 2.0
-scripts/outline/40_stats.py:183: RuntimeWarning: invalid value encountered in true_divide
-  sig_uv10 = np.sqrt((fine10['u10'].q / fine10['u10'].n
-scripts/outline/40_stats.py:184: RuntimeWarning: invalid value encountered in true_divide
-  + fine10['v10'].q / fine10['v10'].n) / 2.0)
-scripts/outline/40_stats.py:188: RuntimeWarning: invalid value encountered in true_divide
-  sig_uv_c = np.sqrt((cu_sig.q / cu_sig.n + cv_sig.q / cv_sig.n) / 2.0)
-  fine σ_uv 前5层: nan, nan, nan, nan, nan
-  fine σ_w  前5层: 0.000, 0.000, 0.000, 0.000, 0.000
-  coarse σ_uv 前5层: nan, nan, nan, nan, nan
-  coarse UST/PBLH/HFX 均值: 1.0000 / 1.0 / 0.0
+  fine 200/~
+  fine 400/~
+  coarse 200/~
+  coarse 400/~
+  读取 fine 528 帧, coarse 528 小时
+  fine σ_uv 前5层: 4.871, 5.614, 6.019, 6.282, 6.464
+  fine σ_w  前5层: 0.135, 0.204, 0.234, 0.251, 0.263
+  coarse σ_uv 前5层: 4.389, 5.121, 5.601, 5.974, 6.283
+  coarse UST/PBLH/HFX 均值: 0.2637 / 326.6 / 22.5
 
 === scheme ysu ===
-  读取 fine 0 帧, coarse 0 小时
-  fine σ_uv 前5层: nan, nan, nan, nan, nan
-  fine σ_w  前5层: 0.000, 0.000, 0.000, 0.000, 0.000
-  coarse σ_uv 前5层: nan, nan, nan, nan, nan
-  coarse UST/PBLH/HFX 均值: 1.0000 / 1.0 / 0.0
+  fine 200/~
+  fine 400/~
+  coarse 200/~
+  coarse 400/~
+  读取 fine 528 帧, coarse 528 小时
+  fine σ_uv 前5层: 4.665, 5.286, 5.585, 5.767, 5.892
+  fine σ_w  前5层: 0.130, 0.186, 0.208, 0.218, 0.225
+  coarse σ_uv 前5层: 4.340, 5.134, 5.652, 6.004, 6.253
+  coarse UST/PBLH/HFX 均值: 0.2287 / 478.1 / 21.5
 
 写出: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static/normalize_config.json
-绘图跳过: x and y must have same first dimension, but have shapes (41,) and (40,)
+σ 廓线图: /fsb/home/yutingwang/ytw_tangzq/results/outline/sigma_profiles.png
 === 60 AGL 往返(T0.4)===
 往返试验帧数: 24 (f_myj_20200701T000000.npz .. f_myj_20200701T035000.npz)
 {
- "generated": "2026-09-22T23:26:18",
+ "generated": "2026-09-22T23:41:18",
  "scheme": "myj",
  "n_frames": 24,
  "u_roundtrip": {
@@ -188,19 +188,15 @@ scripts/outline/40_stats.py:188: RuntimeWarning: invalid value encountered in tr
 Traceback (most recent call last):
   File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/smoke_wind_canvas.py", line 80, in <module>
     main()
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/smoke_wind_canvas.py", line 36, in main
-    config = load_config(EXPERIMENT, args.config_path)
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_config/config_loader.py", line 25, in load_config
-    return ExperimentSchrodingerBridgeWindCanvasConfig.load(config_path)
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_config/base_config.py", line 39, in load
-    config_data = convert_from_dict(cls, config_data)
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_config/base_config.py", line 33, in convert_from_dict
-    data[key] = child_class(**convert_from_dict(child_class, val))
-TypeError: DatasetWindCanvasConfig.__init__() got an unexpected keyword argument 'dataset_name'
+  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/smoke_wind_canvas.py", line 40, in main
+    dict_loaders, _ = make_dataloaders_and_samplers(
+  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_data/dataloader.py", line 75, in make_dataloaders_and_samplers
+    assert len(unmatched) == 0, "有文件不在 split.json 时间戳清单中"
+AssertionError: 有文件不在 split.json 时间戳清单中
 smoke exit=1
 === 70 真值诊断(T0.5)===
-① 能谱: d01 7dx=189km k_pk=1 lam_pk=4860km, d02 7dx=63km k_pk=1 lam_pk=1350km, d03 7dx=21km k_pk=1 lam_pk=450km, d04 7dx=7km k_pk=1 lam_pk=120km
-② d04 ∇·(ρu) 残差(kg m^-2 s^-1 量级,P95): {"20200715T120000": 0.000811, "20200710T000000": 0.00107, "20200720T060000": 0.000429}
-③ 强风时刻 d02 相对 d04 偏移: {"20200702T170000": [27.0, -18.0], "20200702T180000": [-27.0, 9.0], "20200702T160000": [27.0, -27.0]}
+① 能谱(k·E 峰值 / 谱斜率:7Δx 前 -> 后): d01 7dx=189km lam_pk=4860km slope -2.34->-3.72, d02 7dx=63km lam_pk=1350km slope -2.60->-3.91, d03 7dx=21km lam_pk=450km slope -2.05->-4.02, d04 7dx=7km lam_pk=120km slope -2.31->-4.09
+② d04 ∇·(ρu) 残差(层 10,P95;绝对 kg m^-3 s^-1 / 除以 ρ 的 s^-1): {"20200715T120000": [0.000811, 0.000747], "20200710T000000": [0.00107, 0.000985], "20200720T060000": [0.000429, 0.000394]}
+③ 强风时刻 d02 相对 d04 偏移(已网格对齐,9 km 块平均): {"20200702T170000": [0.0, 0.0], "20200702T180000": [0.0, 0.0], "20200702T160000": [0.0, 0.0]}
 ④ myj vs ysu: {"n_hours": 72, "wind_speed_rmse_mean": 1.3934457898139954, "wind_speed_rmse_p95": 2.0305968523025513, "pblh_mean_abs_diff": 90.68485980563693, "ust_rmse_mean": 0.11523296275279588}
 写出: results/outline/truth_diagnostics.json

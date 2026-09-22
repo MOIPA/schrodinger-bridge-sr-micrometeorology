@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-22T23:26:08",
+  "generated": "2026-09-22T23:37:01",
   "method": "逐日指标(粗端 myj 方案)最优分段 -> 块级 70/10/20,留出块不相邻",
   "indicator_scheme": "myj",
   "ratios_target": [
