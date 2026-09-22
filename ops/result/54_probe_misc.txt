@@ -1,0 +1,344 @@
+=== namelist.input_SZ.6d ===
+ &time_control
+ run_days                 = 0,
+ run_hours                = 0,
+ run_minutes              = 0,
+ run_seconds              = 0,
+ start_year               = 2020, 2020, 2020, 2020, 2020, 2020,
+ start_month              = 07,   07,   07,   07,   07,   07,
+ start_day                = 28,   28,   28,   28,   28,   28,
+ start_hour               = 00,   00,   00,   00,   00,   00,
+ end_year                 = 2020, 2020, 2020, 2020, 2020, 2020,
+ end_month                = 08,   08,   08,   08,   08,   08,
+ end_day                  = 01,   01,   01,   01,   01,   01,
+ end_hour                 = 00,   00,   00,   00,   00,   00,
+ interval_seconds         = 7200,    !21600
+ input_from_file          = .true.,.true.,.true.,.true.,.true.,.true.,
+ history_interval         = 60,   60,   60,   10,   10,   10,
+ frames_per_outfile       = 24,   24,   24,    6,    6,    6,
+ restart                  = .false.,
+ restart_interval         = 60,
+ io_form_history          = 2,
+ io_form_restart          = 2,
+ io_form_input            = 2,
+ io_form_boundary         = 2,
+ io_form_auxinput2		  = 2,		!# for @AFWA [output in wrfout*]
+!#-------For SST Update--------------
+ io_form_auxinput4		  = 2,		!# for sst_update
+ auxinput4_inname		  = "wrflowinp_d<domain>",
+ auxinput4_interval		  = 120,  120,  120,  120,  120,  120,	!# [min]
+!#-----------------------------------
+ debug_level              = 100,
+ iofields_filename		  = "outFields_meso.txt", "outFields_meso.txt", "outFields_meso.txt", "outFields_meso.txt", "outFields_meso.txt", "outFields_meso.txt",
+ /
+
+!#Other output-options in "time_control"
+!>------------cliamte diagnostics-----------	 
+! output_diagnostics	   = 1,
+! auxhist3_outname		   = "wrfxtrm_d<domain>_<date>"
+! auxhist3_interval		   = 5,   5,  5,
+! frames_per_auxhist3	   = 24, 24, 24,
+! io_form_auxhist3		   = 2
+!>-------------------------------------
+! iofields_filename		   = "outFields_t01.txt", !"outfields_t01.txt", outfields_t01.txt",
+! auxhist23_interval       = 5,  5,  5,
+! frames_per_auxhist23	   = 24, 24, 24,
+! io_form_auxhist23	       = 2,
+! auxhist24_interval	   = 10, 10, 10,
+! frames_per_auxhist24	   = 12, 12, 12,
+! io_form_auxhist24		   = 2,
+!>--------afwa-------------------------
+! auxhist2_interval		   = 15, 15, 15,
+! frame_per_auxhist2	   = 100,100,100,
+! io_form_auxhist2		   = 2,
+
+ &diags	
+ solar_diagnostics         = 1,		!! Additional time series variables of cloud-/flux-properties
+ /
+
+ &afwa			!@ Output goes to auxiliary stream 2. !!* output in wrfout*
+ afwa_diag_opt			  = 0,  0,  0,  1,  1,  1,
+ afwa_ptype_opt			  = 0,  0,  0,  1,  1,  1,
+ afwa_severe_opt		  = 0,  0,  0,  1,  1,  1,
+ afwa_vil_opt			  = 0,  0,  0,  1,  1,  1,
+ afwa_radar_opt			  = 0,  0,  0,  1,  1,  1,
+ afwa_icing_opt			  = 0,  0,  0,  1,  1,  1,
+ afwa_vis_opt			  = 0,  0,  0,  1,  1,  1,
+ afwa_cloud_opt			  = 0,  0,  0,  1,  1,  1,
+ afwa_therm_opt			  = 0,  0,  0,  1,  1,  1,
+ afwa_turb_opt			  = 0,  0,  0,  1,  1,  1,
+ afwa_buoy_opt			  = 0,  0,  0,  1,  1,  1,
+ /
+
+ &domains
+ time_step                = 60,
+ time_step_fract_num      = 0,
+ time_step_fract_den      = 1,
+ max_dom                  = 4, !6,
+ e_we                     = 181,  151,  151,  121,  253,  271,
+ e_sn                     = 151,  121,  121,  100,  253,  271,
+ e_vert                   =  62,   62,   62,   62,   62,   62,  !!62 !64 !66
+ p_top_requested          = 5000,
+! eta_levels               = 1.00000, 0.99844, 0.99688, 0.99377, 0.99067, 0.98758, 0.98450, 0.98141, 0.97528, 0.96917,
+!                            0.96309, 0.95705, 0.95103, 0.94504, 0.93908, 0.93315, 0.92724, 0.92137, 0.91552, 0.90971,
+!                            0.90392, 0.89816, 0.89243, 0.88672, 0.88105, 0.87540, 0.86978, 0.86418, 0.85862, 0.85308,
+!                            0.84757, 0.84209, 0.83663, 0.83120, 0.82580, 0.82042, 0.81507, 0.80975, 0.80445, 0.79918,
+!                            0.79394, 0.78872, 0.78353, 0.77837, 0.77323, 0.76811, 0.76230, 0.75451, 0.74355, 0.72829,
+!                            0.70778, 0.68126, 0.64827, 0.60864, 0.56262, 0.51081, 0.45425, 0.39432, 0.33271, 0.27127,
+!                            0.21193, 0.15654, 0.10668, 0.06358, 0.02795, 0.00000, 
+!! eta_levels               = 1.00000, 0.99844, 0.99688, 0.99377, 0.99067, 0.98758, 0.98450, 0.98141, 0.97528, 0.96917,      !! dz=50 + z=12.5/25/75/125m
+!! eta_levels               = 1.00000, 0.99844, 0.99688, 0.99377, 0.98758, 0.98141, 0.97528, 0.96917,                        !! dz=50 + z=12.5/25m
+ eta_levels               = 1.00000, 0.99377, 0.98758, 0.98141, 0.97528, 0.96917,                                          !! dz=50
+                            0.96309, 0.95705, 0.95103, 0.94504, 0.93908, 0.93315, 0.92724, 0.92137, 0.91552, 0.90971,
+                            0.90392, 0.89816, 0.89243, 0.88672, 0.88105, 0.87540, 0.86978, 0.86418, 0.85862, 0.85308,
+                            0.84757, 0.84209, 0.83663, 0.83120, 0.82580, 0.82042, 0.81507, 0.80975, 0.80445, 0.79918,
+                            0.79394, 0.78872, 0.78353, 0.77837, 0.77323, 0.76811, 0.76230, 0.75451, 0.74355, 0.72829,
+                            0.70778, 0.68126, 0.64827, 0.60864, 0.56262, 0.51355, 0.46245, 0.41149, 0.36046, 0.30938,
+                            0.25827, 0.20710, 0.15595, 0.10471, 0.05342, 0.00000, 
+ num_metgrid_levels       = 38,
+ num_metgrid_soil_levels  = 4,
+ dx                       = 27000, 9000, 3000, 1000, 111.111, 37.037, 
+ dy                       = 27000, 9000, 3000, 1000, 111.111, 37.037,
+ grid_id                  = 1,      2,    3,    4,    5,        6,
+ parent_id                = 0,      1,    2,    3,    4,        5,
+ i_parent_start           = 1,     67    63,   47,   28,       55,
+ j_parent_start           = 1,     53,   44,   45,   50,      109,
+ parent_grid_ratio        = 1,      3,    3,    3,    9,        3,
+ parent_time_step_ratio   = 1,      3,    3,    3,    9,        3,
+ feedback                 = 1,   		!!1: feedback from nest to its parent domain [2-way]; 0: no feedback [1-way]
+ smooth_option            = 2,   		!!smoothing parent domain; 1: 1-2-1; 2: smoothong-desmoothing (default)
+ sfcp_to_sfcp             = .true., 	!!computes model's surface pressure when incoming data only has surface pressure & terrain, but not SLP (default is .false.)
+!#=============Adaptive Time=================
+ use_adaptive_time_step   = .true.,
+ step_to_output_time      = .true., 
+ target_cfl               = 1.2,  1.2,  1.2,  1.2,  1.2,  1.2,    !!if vertical CFL<=this value, dt is increased
+ target_hcfl              = 0.84, 0.84, 0.84, 0.84, 0.84, 0.84,   !!if horizontal CFL<=this value, dt is increased
+ max_step_increase_pct    = 80,   80,   80,   80,   80,   80,     !!percentage of previous dt to increase if max-CFL<=target_cfl
+ starting_time_step       = 30,   15,    5,    1,   -1,   -1,     !!-1: implies 4*dx to start [s]
+ starting_time_step_den   =  0,    0,    0,    0,    0,    0,
+ max_time_step            = 60,   20,   10,    3,   -1,   -1,     !!-1: implies 8*dx [s]
+ max_time_step_den        =  0,    0,    0,    0,    0,    0,
+ min_time_step            = 10,   10,    3,    1,   -1,   -1,     !!-1: implies 3*dx
+ min_time_step_den        =  0,    0,    0,    0,    0,    0,
+ adaptation_domain        =  1,  								  !!which domain is driving the adaptive time step
+!#============================================
+!>>>>>>>>>station-extract<<<<<<<<<<<<<<
+! max_ts_locs              = 4,
+! max_ts_level             = 61, 		!! maximum number is e_evert-1
+! ts_buf_size			   = 200,
+! tslist_unstagger_winds   = .true.
+!>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+ /
+
+ &physics
+ mp_physics               = 6,     6,     6,    6,    6,    6,  !@using "Tropical": 6: WSM6; "CONUS": 8: Thompson
+ cu_physics               = 16,    16,    16,   16,   0,	0,  ! 3: Grell,2014; 6: Tiedtke,2011; 16: New Tiedtke; 2015; 
+ ra_lw_physics            = 4,     4,     4,    4,    4,	4, 
+ ra_sw_physics            = 4,     4,     4,    4,    4,	4, 
+ bl_pbl_physics           = 1,     1,     1,    1,    0,    0,  !!pbl   =1/2/5       [1: YSU; 2: MYJ; 5:MYYN2.5]
+ sf_sfclay_physics        = 1,     1,     1,    1,    1,    1,  !!sfclay=1/2/[1,2,5] [1: Revised MM5 MO; 2: MO (Janjic Eta); 5: MYNN; 91: old MM5]
+ sf_surface_physics       = 2,     2,     2,    2,    2,    2,  !!2: unified  Noah land-surface model
+ radt                     = 20,    10,    3,    1,    0,    0,  !!1-min per km of dx
+ sf_urban_physics         = 0,     0,     0,    0,    0,    0,
+ bldt                     = 0,     0,     0,    0,    0,    0,
+ cudt                     = 0,     0,     0,    0,    0,    0,
+ num_land_cat             = 21,  !!24: USGS; 20: MODIS; 21: MODIS with lake; 28: USGS with lake
+ do_radar_ref             = 1,   !! compute radar reflectivity using mp-secheme (2,4,6,7,8,10,14,16)
+ isfflx                   = 1,   !!fluxes from surface 
+ ifsnow                   = 1,   !!snow-cover effects [only work for sf_surface_physics=1]
+ icloud                   = 1,   !!cloud effect in radiation [only work for ra_phyics=1/4]
+ surface_input_source     = 1,
+ num_soil_layers          = 4,
+ topo_wind				  = 1,      1,     1,    1,    1,    1,  !!topographic surface wind correction to represent extra drag from sub-grid topography & enhanced flow at hill tops [requires extra input from geogrid; YSU PBL only]. 0: off; 1: Jimenez; 2: UW (simple terrain variance-related correction)
+ ysu_topdown_pblmix		  = 1,	 !!top-down mixing driven by radiative cooling; 0: off; 1: on (default)
+ maxiens                  = 1,
+ maxens                   = 3,
+ maxens2                  = 3,
+ maxens3                  = 16,
+ ensdim                   = 144,
+ sst_update				  = 1,	 !! update sst
+ /
+
+!!//
+!@ &fdda
+ grid_fdda                =   1,     0,      0,      0, 
+ gfdda_inname             = "wrffdda_d<domain>",
+ gfdda_interval_m         = 360,   360,    360,    360,
+ gfdda_end_h              =  24,    24,     24,     24,
+ io_form_gfdda            =   2,
+ fgdt                     =   0,     0,      0,      0,
+ fgdtzero                 =   0,     0,      0,      0,
+ if_no_pbl_nudging_uv     =   1,     1,      1,      1,
+ if_no_pbl_nudging_t      =   1,     1,      1,      1,
+ if_no_pbl_nudging_q      =   1,     1,      1,      1,
+ if_no_pbl_nudging_ph     =   1,     1,      1,      1,
+ if_zfac_uv               =   1,     1,      1,      1,
+ k_zfac_uv                =  10,    10,     10,     10,
+ if_zfac_t                =   1,     1,      1,      1,
+ k_zfac_t                 =  10,    10,     10,     10,
+ if_zfac_q                =   1,     1,      1,      1,
+ k_zfac_q                 =  10,    10,     10,     10,
+ if_zfac_ph               =   1,     1,      1,      1,
+ k_zfac_ph                =  10,    10,     10,     10,
+ guv                      = 0.0003, 0.0003, 0.0003, 0.0003,
+ gt                       = 0.0003, 0.0003, 0.0003, 0.0003,
+ gq                       = 0.0003, 0.0003, 0.0003, 0.0003,
+ gph                      = 0.0003, 0.0003, 0.0003, 0.0003,
+ xwavenum                 =   3,
+ ywavenum                 =   3,
+ if_ramping               =   1,
+ dtramp_min               = 60.0,
+!/
+!!//
+
+ &dynamics
+ hybrid_opt               = 2, 
+ rk_ord                   = 3,
+ diff_opt                 = 1,     1,     1,     1,     1,    1,   !!*Turbulence & mixing [1: 2nd-order diffusion (recommended for real case); 2: evaluates mixing terms, turbulence parameterization is chosen by km_opt 
+ km_opt                   = 4,     4,     4,     4,     4,    4,   !!*Eddy coefficient [1: constat (use khdif & kvdif); 2: 1.5-order TKE closure (3D); 3: Smagorinsky 1st-order closure (3D); 4: horizontal Smagorinsky 1st-order (recommended for real case); 5: scale-aware 3D TKE LES/PBL]
+ diff_6th_opt             = 0,     0,     0,     0,     0,    0,   !!6th-order numerical diffusion
+ diff_6th_factor          = 0.12,  0.12,  0.12,  0.12,  0.12, 0.12,
+ base_temp                = 290.
+ w_damping                = 1,
+ damp_opt                 = 3,   !!upper-level damping [1: with diffusive damping (dampcoef: 0.01~0.1); 2: with Rayleigh damping (deamcoef inverse time scale [1/s], e.g., 0.003); 3: with Rayleigh damping (for real case; dampcoef, e.g., 0.2)
+ dampcoef                 = 0.21,   0.21,   0.21,   0.21,  0.21,  0.21, 
+ zdamp                    = 5000.,  5000.,  5000.,  5000., 5000., 5000.,
+ khdif                    = 0,      0,      0,      0,     0,     0,  !!horizontal diffusion constant (m^2/s); set constant-value when km_opt=1
+ kvdif                    = 0,      0,      0,      0,     0,     0,  !!vertical diffusion constant; ...
+ non_hydrostatic          = .true., .true., .true., .true., .true., .true.,
+ moist_adv_opt            = 1,      1,      1,      1,     1,     1,  !4 !!0: simple; 1: positive-definite (default); 2: monotonic; 3: 5th-order WENO; 4: 5th-order WENO with positive definite
+ scalar_adv_opt           = 1,      1,      1,      1,     1,     1,  !4	!!same as moist_adv_opt
+ tke_adv_opt              = 1,      1,      1,      1,     1,     1,  !4 !!same as moist_adv_opt 
+ momentum_adv_opt		  = 1,      1,      1,      1,     1,     1,  !3	!![default 1]: standard; 3: 5th-order WENO
+! h_mom_adv_order		   = 5,      5,      5,      5,     5,	 5,  !!horizontal momentrum advection (5th order is recommended for horizontal advection)
+! h_sca_adv_order		   = 5,      5,      5,      5,     5,     5,
+! v_mom_adv_order		   = 3,      3,      3,      5,     5,     5,  !!vertical momentum advection (3rd is recommended for vertical advection)
+! v_sca_adv_order		   = 3,      3,      3,      3,     3,     3,
+! gwd_opt                  = 1,      1,      0,      0,     0,     0,
+ smdiv					  = 0.1,   0.1,    0.1,    0.1,   0.1,	0.1,    !!divergence damping
+ emdiv					  = 0.01, 0.01,   0.01,   0.01,  0.01,  0.01,	!!external-mode filter coef for mass coordinate model
+ epssm                    = 0.1,    0.1,   0.1,    0.1,   0.1,	0.1,    !!time off-centering for vertical sound waves 
+ /
+
+ &bdy_control
+ spec_bdy_width           = 5,
+ relax_zone               = 4,
+ specified                = .true.,
+ /
+
+ &grib2
+ /
+
+ &namelist_quilt
+ nio_tasks_per_group      = 0,
+ nio_groups               = 1,
+ /
+
+
+=== namelist.input_les.1d (head 80) ===
+ &time_control
+ run_days                            = 0,
+ run_hours                           = 0,
+ run_minutes                         = 0,
+ run_seconds                         = 0,
+ start_year                          = 2020, 
+ start_month                         = 07,  
+ start_day                           = 30, 
+ start_hour                          = 23,
+ end_year                            = 2020,
+ end_month                           = 07, 
+ end_day                             = 31,
+ end_hour                            = 02,
+ interval_seconds                    = 600,    !1200
+ input_from_file                     = .true.,
+ history_interval                    = 1, 
+ frames_per_outfile                  = 60,
+ restart                             = .true., !.false.,
+ restart_interval                    = 20,
+ io_form_history                     = 2,
+ io_form_restart                     = 2,
+ io_form_input                       = 2,
+ io_form_boundary                    = 2,
+ debug_level                         = 100,
+ iofields_filename                   = "outFields_LES.tx",
+ ignore_iofields_warning             = .true.,
+ adjust_output_times                 = .true.,   !!adjust output times to the nearest hour
+ write_hist_at_0h_rst                = .true.    !!gives history file at the initial time of restart
+ /
+
+ &afwa          !@ Output goes to auxiliary stream 2. !!* output in wrfout*
+ afwa_diag_opt                      = 1,
+! afwa_ptype_opt                     = 1,
+! afwa_severe_opt                    = 1,
+ afwa_vil_opt                       = 1,
+ afwa_radar_opt                     = 1,
+! afwa_icing_opt                     = 1,
+ afwa_vis_opt                       = 1,
+ afwa_cloud_opt                     = 1,
+ afwa_therm_opt                     = 1,
+ afwa_turb_opt                      = 1,
+ afwa_buoy_opt                      = 1
+ /
+
+ &domains
+ time_step                           = 0,
+ time_step_fract_num                 = 1,
+ time_step_fract_den                 = 10, !5,
+ max_dom                             = 1,
+ e_we                                = 253,
+ e_sn                                = 253,
+ e_vert                              =  62,   
+ p_top_requested                     = 5000,
+! eta_levels                          = 1.00000, 0.99844, 0.99688, 0.99377, 0.99067, 0.98758, 0.98450, 0.98141, 0.97528, 0.96917,
+!                                       0.96309, 0.95705, 0.95103, 0.94504, 0.93908, 0.93315, 0.92724, 0.92137, 0.91552, 0.90971,
+!                                       0.90392, 0.89816, 0.89243, 0.88672, 0.88105, 0.87540, 0.86978, 0.86418, 0.85862, 0.85308,
+!                                       0.84757, 0.84209, 0.83663, 0.83120, 0.82580, 0.82042, 0.81507, 0.80975, 0.80445, 0.79918,
+!                                       0.79394, 0.78872, 0.78353, 0.77837, 0.77323, 0.76811, 0.76230, 0.75451, 0.74355, 0.72829,
+!                                       0.70778, 0.68126, 0.64827, 0.60864, 0.56262, 0.51081, 0.45425, 0.39432, 0.33271, 0.27127,
+!                                       0.21193, 0.15654, 0.10668, 0.06358, 0.02795, 0.00000, 
+!! eta_levels                          = 1.00000, 0.99844, 0.99688, 0.99377, 0.99067, 0.98758, 0.98450, 0.98141, 0.97528, 0.96917,      !! L66: dz=50 + z=12.5/25/75/125m
+!! eta_levels                          = 1.00000, 0.99844, 0.99688, 0.99377, 0.98758, 0.98141, 0.97528, 0.96917,                        !! L64: dz=50 + z=12.5/25m
+ eta_levels                          = 1.00000, 0.99377, 0.98758, 0.98141, 0.97528, 0.96917,                                          !! L62: dz=50
+ 									   0.96309, 0.95705, 0.95103, 0.94504, 0.93908, 0.93315, 0.92724, 0.92137, 0.91552, 0.90971,
+                                       0.90392, 0.89816, 0.89243, 0.88672, 0.88105, 0.87540, 0.86978, 0.86418, 0.85862, 0.85308,
+                                       0.84757, 0.84209, 0.83663, 0.83120, 0.82580, 0.82042, 0.81507, 0.80975, 0.80445, 0.79918,
+                                       0.79394, 0.78872, 0.78353, 0.77837, 0.77323, 0.76811, 0.76230, 0.75451, 0.74355, 0.72829,
+                                       0.70778, 0.68126, 0.64827, 0.60864, 0.56262, 0.51355, 0.46245, 0.41149, 0.36046, 0.30938,
+                                       0.25827, 0.20710, 0.15595, 0.10471, 0.05342, 0.00000, 
+ num_metgrid_levels                  = 38,
+ num_metgrid_soil_levels             = 4,
+ dx                                  = 111.111, 
+ dy                                  = 111.111,
+ grid_id                             = 1,
+ parent_id                           = 0,
+ i_parent_start                      = 1,
+ j_parent_start                      = 1,
+ parent_grid_ratio                   = 1,
+ parent_time_step_ratio              = 1,
+ feedback                            = 0,   !!1: feedback from nest to its parent domain [2-way]; 0: no feedback [1-way]
+
+=== VEGPARM search (deeper) ===
+
+=== any *.TBL in share (depth<=6, first 30) ===
+
+=== meso myj dir listing (first 15) ===
+wrfout_d01_2020-07-01_00:00:00
+wrfout_d01_2020-07-02_00:00:00
+wrfout_d01_2020-07-03_00:00:00
+wrfout_d01_2020-07-04_00:00:00
+wrfout_d01_2020-07-05_00:00:00
+wrfout_d01_2020-07-06_00:00:00
+wrfout_d01_2020-07-07_00:00:00
+wrfout_d01_2020-07-08_00:00:00
+wrfout_d01_2020-07-09_00:00:00
+wrfout_d01_2020-07-10_00:00:00
+wrfout_d01_2020-07-11_00:00:00
+wrfout_d01_2020-07-12_00:00:00
+wrfout_d01_2020-07-13_00:00:00
+wrfout_d01_2020-07-14_00:00:00
+wrfout_d01_2020-07-15_00:00:00
+
+=== Data_WRFout root ===
+case01_Shenzhen
+case02_Typhoon_WindFarm
+exit=0
