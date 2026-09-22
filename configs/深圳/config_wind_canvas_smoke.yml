@@ -2,7 +2,6 @@
 # 目标:d04 原生交错 U/V/W(层 0..22, W 界面 0..23)+ U10/V10 -> out_channel=72
 # 输入:粗端 U/V 逐层 + 粗端逐层 z_agl + 粗端 log(z0) + 时间编码 -> in_channel=74
 data:
-  dataset_name: DatasetWindCanvas
   scheme: myj
   coarse_dir: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_coarse
   statics_dir: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static

@@ -24,11 +24,11 @@ class CanvasStatics(object):
             self.d = {k: s[k] for k in s.files}
 
     def regrid(self, arr, cls):
-        """(..., n_src_flat) -> (..., n_dst):粗端 -> 细端原生交错位置。"""
-        idx = self.d['regrid_idx_' + cls]
-        w = self.d['regrid_w_' + cls]
-        a = np.asarray(arr, dtype=np.float32).reshape(-1, arr.shape[-1])
-        return np.einsum('ln,nd->ld', a[:, idx], w)
+        """(..., n_src_flat) -> (..., n_dst):粗端 -> 细端原生交错位置(4 节点加权)。"""
+        idx = self.d['regrid_idx_' + cls]        # (n_dst, 4) 源节点扁平索引
+        w = self.d['regrid_w_' + cls]            # (n_dst, 4)
+        a = np.asarray(arr, dtype=np.float32)
+        return (a[..., idx] * w).sum(axis=-1)    # 前置维任意(层/批次)均可
 
     def regrid_field(self, arr, cls):
         """(nlev, ny_s, nx_s) -> (nlev, ny_d, nx_d)。"""

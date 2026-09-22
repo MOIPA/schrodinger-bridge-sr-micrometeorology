@@ -21,7 +21,11 @@ import numpy as np
 from netCDF4 import Dataset
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from outline_common import OUT_COARSE, OUT_FINE, SCHEME_DIRS, WRF_BASE, domain_files
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(
+    os.path.abspath(__file__)))))
+from outline_common import (OUT_COARSE, OUT_FINE, OUT_STATIC, SCHEME_DIRS, WRF_BASE,
+                            domain_files)
+from src.dl_data.wind_canvas_statics import FINE_SHAPES, CanvasStatics
 
 DX = {'d01': 27000.0, 'd02': 9000.0, 'd03': 3000.0, 'd04': 1000.0}
 RD, RV, CP, P0, G = 287.0, 461.6, 1004.5, 100000.0, 9.81
@@ -51,6 +55,14 @@ def radial_spectrum(field):
         return k[1:], (out / np.maximum(cnt, 1))[1:]
 
 
+def band_slope(k, P, k1, k2):
+    """log-log 谱斜率(k∈[k1,k2] 最小二乘);用于看 7Δx 前后是否变平(噪声/不解析)。"""
+    m = (k >= k1) & (k <= k2)
+    if int(m.sum()) < 3:
+        return None
+    return float(np.polyfit(np.log(k[m]), np.log(P[m]), 1)[0])
+
+
 def tier_spectra(scheme, stamp, level=0):
     rep = {}
     day = '{}-{}-{}'.format(stamp[0:4], stamp[4:6], stamp[6:8])
@@ -78,6 +90,8 @@ def tier_spectra(scheme, stamp, level=0):
                     'k_7dx': k7, 'P_at_7dx': float(pk[min(k7, len(pk)) - 1]),
                     'k_peak_energy': k_peak,
                     'wavelength_peak_km': e.shape[1] * DX[dom] / 1000.0 / k_peak,
+                    'slope_meso_2_to_7dx': band_slope(k, pk, 2, k7),
+                    'slope_beyond_7dx': band_slope(k, pk, k7 + 1, int(k[-1])),
                     'n_cells': list(e.shape)}
     return rep
 
@@ -149,6 +163,20 @@ def mass_speed(cu, cv):
     return np.sqrt(u ** 2 + v ** 2)
 
 
+def block_mean_9(field, block=9):
+    """1 km 场按 block×block 块平均到 ~9 km(与粗端同尺度比形态)。"""
+    ny, nx = field.shape
+    ny_b, nx_b = ny // block, nx // block
+    return field[:ny_b * block, :nx_b * block].reshape(ny_b, block, nx_b, block).mean((1, 3))
+
+
+def coarse_speed_aligned(stat, cu, cv):
+    """粗端交错风速 -> 用重网格权重对齐到细端 99x120 质量网格。"""
+    spd = mass_speed(cu, cv)                      # (ny_s, nx_s) 粗端质量点
+    al = stat.regrid(spd.reshape(1, -1), 'mass')  # (1, 99*120) -> 细端质量网格
+    return al.reshape(FINE_SHAPES['mass'])
+
+
 def shift_search(a, b, max_shift=8):
     """b 相对 a 的整数偏移(最大相关)。"""
     best, arg = -1e18, (0, 0)
@@ -167,6 +195,7 @@ def shift_search(a, b, max_shift=8):
 def main():
     parser = argparse.ArgumentParser(description="阶段0 T0.5 真值诊断")
     parser.add_argument("--scheme", default="myj")
+    parser.add_argument("--static_dir", default=OUT_STATIC)
     parser.add_argument("--json_out", default=None)
     args = parser.parse_args()
     rep = {}
@@ -174,9 +203,11 @@ def main():
     # ① 各档位动能谱(取月中一个整点)
     stamp = '20200715T120000'
     rep['spectra'] = tier_spectra(args.scheme, stamp, level=0)
-    print("① 能谱: " + ", ".join(
-        "{} 7dx={:.0f}km k_pk={} lam_pk={:.0f}km".format(
-            d, v['wavelength_7dx_km'], v['k_peak_energy'], v['wavelength_peak_km'])
+    print("① 能谱(k·E 峰值 / 谱斜率:7Δx 前 -> 后): " + ", ".join(
+        "{} 7dx={:.0f}km lam_pk={:.0f}km slope {:.2f}->{:.2f}".format(
+            d, v['wavelength_7dx_km'], v['wavelength_peak_km'],
+            v['slope_meso_2_to_7dx'] or float('nan'),
+            v['slope_beyond_7dx'] or float('nan'))
         for d, v in rep['spectra'].items()))
 
     # ② 散度残差统计(三个时刻)
@@ -184,30 +215,33 @@ def main():
     for s in ('20200715T120000', '20200710T000000', '20200720T060000'):
         div[s] = divergence_residual(args.scheme, s)
     rep['divergence_residual'] = div
-    print("② d04 ∇·(ρu) 残差(kg m^-2 s^-1 量级,P95): " + json.dumps(
-        {k: round(v['10']['p95_abs'], 6) for k, v in div.items()}))
+    print("② d04 ∇·(ρu) 残差(层 10,P95;绝对 kg m^-3 s^-1 / 除以 ρ 的 s^-1): " + json.dumps(
+        {k: [round(v['10']['p95_abs'], 6), round(v['10']['p95_abs_over_rho'], 6)]
+         for k, v in div.items()}))
 
-    # ③ 位置偏移:细端 laplacian 平滑后的风速与粗端重网格场互相关
+    # ③ 位置偏移:粗端场先用重网格权重对齐到 d04 网格(消除网格错位),
+    #    再各自块平均到 9 km 比形态;互相关峰偏离 (0,0) 才是真实的特征位移
+    stat = CanvasStatics(args.static_dir)
     c_files = sorted(glob.glob(os.path.join(OUT_COARSE, "c_{}_*.npz".format(args.scheme))))
     speeds = {}
     for p in c_files[:72]:
+        s = parse_stamp(os.path.basename(p))
         with np.load(p) as d:
-            speeds[parse_stamp(os.path.basename(p))] = mass_speed(d['c_u'][0], d['c_v'][0])
-    top = sorted(speeds, key=lambda k: -speeds[k].mean())[:3]
+            speeds[s] = (d['c_u'][0].copy(), d['c_v'][0].copy())
+    top = sorted(speeds, key=lambda k: -mass_speed(*speeds[k]).mean())[:3]
     rep['shifts'] = {}
     for s in top:
+        cu, cv = speeds[s]
+        ca = coarse_speed_aligned(stat, cu, cv)          # (99,120) 9 km -> 1 km 网格
         with np.load(os.path.join(OUT_FINE, "f_{}_{}.npz".format(args.scheme, s))) as d:
             fspd_m = mass_speed(d['f_u'][0], d['f_v'][0])
-        cs = speeds[s]
-        cs_m = cs
-        # 粗端 9km 场在细端网格上按 9x9 抽样代表,直接比形态:
-        fine_ds = fspd_m[::9, ::9]
-        n = min(fine_ds.shape[0], cs_m.shape[0]), min(fine_ds.shape[1], cs_m.shape[1])
-        (dj, di), c = shift_search(cs_m[:n[0], :n[1]], fine_ds[:n[0], :n[1]], 3)
-        rep['shifts'][s] = {'coarse_mean_speed': float(cs.mean()),
-                            'shift_coarse_cells': [dj, di],
+        ca_b = block_mean_9(ca)
+        fi_b = block_mean_9(fspd_m)
+        (dj, di), c = shift_search(ca_b, fi_b, 3)
+        rep['shifts'][s] = {'coarse_mean_speed': float(mass_speed(cu, cv).mean()),
+                            'shift_9km_cells': [dj, di],
                             'shift_km': [dj * 9.0, di * 9.0], 'corr': c}
-    print("③ 强风时刻 d02 相对 d04 偏移: " + json.dumps(
+    print("③ 强风时刻 d02 相对 d04 偏移(已网格对齐,9 km 块平均): " + json.dumps(
         {k: v['shift_km'] for k, v in rep['shifts'].items()}))
 
     # ④ myj vs ysu 差异

@@ -66,7 +66,13 @@ def parse_stamp(name):
 
 
 def hour_key(stamp):
-    return stamp[:11] + '00' + '00'
+    """'YYYYMMDDTHHMMSS' -> 'YYYYMMDDTHH'(npz 文件名的口径)。"""
+    return stamp[:11]
+
+
+def iso_to_hour_key(iso):
+    """split.json 里的 'YYYY-MM-DDTHH:MM:SS' -> 'YYYYMMDDTHH'(与 hour_key 同口径)。"""
+    return iso[:4] + iso[5:7] + iso[8:10] + 'T' + iso[11:13]
 
 
 def main():
@@ -81,7 +87,7 @@ def main():
     if not os.path.isfile(split_path):
         raise SystemExit("先运行 30_blocks_and_split.py 生成 " + split_path)
     split = json.load(open(split_path))
-    train_hours = set(h[:13] for h in split['hours']['train'])  # 'YYYY-MM-DDTHH'
+    train_hours = set(iso_to_hour_key(h) for h in split['hours']['train'])
     print("训练块小时数: {}".format(len(train_hours)))
 
     statics = np.load(os.path.join(args.static_dir, "statics.npz"))
@@ -137,7 +143,7 @@ def main():
             stamp = parse_stamp(os.path.basename(f))
             if stamp is None or stamp[9:11] != '00':  # 只用整点帧(与空间降尺度训练一致)
                 continue
-            if stamp[:13] not in train_hours:
+            if hour_key(stamp) not in train_hours:
                 continue
             with np.load(f) as d:
                 fine_acc['u'].add(d['f_u'])
@@ -152,7 +158,7 @@ def main():
         cfiles = sorted(glob.glob(os.path.join(args.coarse_dir, "c_{}_*.npz".format(scheme))))
         for f in cfiles:
             stamp = parse_stamp(os.path.basename(f))
-            if stamp is None or stamp[:13] not in train_hours:
+            if stamp is None or hour_key(stamp) not in train_hours:
                 continue
             with np.load(f) as d:
                 co_acc['u'].add(d['c_u'])
@@ -254,6 +260,9 @@ def main():
         fig, axes = plt.subplots(1, 2, figsize=(10, 6))
         zf = np.asarray(statics['zagl_mass_fine']).mean(axis=(1, 2))
         zc = np.asarray(statics['zagl_mass_coarse']).mean(axis=(1, 2))
+        # W 在界面层(41 层),与质量层(40 层)不同高度 -> 单独取界面平均高度
+        zwf = np.asarray(statics['zagl_iface_fine']).mean(axis=(1, 2))
+        zwc = np.asarray(statics['zagl_iface_coarse']).mean(axis=(1, 2))
         ax = axes[0]
         for scheme in schemes:
             ax.plot(out['fine'][scheme]['sigma_uv_profile'], zf, marker='o', ms=3,
@@ -268,9 +277,9 @@ def main():
         ax.set_title('sigma_uv profile')
         ax = axes[1]
         for scheme in schemes:
-            ax.plot(out['fine'][scheme]['sigma_w_profile'], zf, marker='o', ms=3,
+            ax.plot(out['fine'][scheme]['sigma_w_profile'], zwf, marker='o', ms=3,
                     label='fine {}'.format(scheme))
-            ax.plot(out['coarse'][scheme]['sigma_w_profile'], zc, marker='s', ms=3,
+            ax.plot(out['coarse'][scheme]['sigma_w_profile'], zwc, marker='s', ms=3,
                     label='coarse {}'.format(scheme))
         ax.set_xlabel('sigma_w (m/s)')
         ax.set_ylim(0, 2000)
