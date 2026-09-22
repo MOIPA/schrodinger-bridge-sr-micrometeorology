@@ -51,10 +51,13 @@ def main():
     print("数据集大小: train={} valid={} test={}".format(
         len(dict_loaders["train"].dataset), len(dict_loaders["valid"].dataset),
         len(dict_loaders["test"].dataset)))
-    print("输入通道 {} (config {}) / 输出通道 {} (config {})".format(
-        len(in_names), config.model.in_channel, len(out_names), config.model.out_channel))
-    assert len(in_names) == config.model.in_channel, "输入通道数与 config.model.in_channel 不一致"
+    # SI 约定:喂给 UNet 的是「状态 y 与条件 x」的拼接,故 in_channel = 输出通道数 + 条件通道数
+    print("条件通道 {} / 状态(输出)通道 {} -> config in_channel {} / out_channel {}".format(
+        len(in_names), len(out_names), config.model.in_channel, config.model.out_channel))
     assert len(out_names) == config.model.out_channel, "输出通道数与 config.model.out_channel 不一致"
+    assert len(in_names) + len(out_names) == config.model.in_channel, \
+        "config.model.in_channel 应等于 状态通道 + 条件通道(当前 {}+{})".format(
+            len(out_names), len(in_names))
 
     batch = next(iter(dict_loaders["train"]))
     x, y, y0 = batch["x"].to(device), batch["y"].to(device), batch["y0"].to(device)

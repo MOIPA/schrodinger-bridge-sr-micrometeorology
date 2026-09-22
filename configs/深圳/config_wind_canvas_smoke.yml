@@ -1,6 +1,7 @@
 # 阶段0(导师大纲)canvas 管线冒烟配置
 # 目标:d04 原生交错 U/V/W(层 0..22, W 界面 0..23)+ U10/V10 -> out_channel=72
-# 输入:粗端 U/V 逐层 + 粗端逐层 z_agl + 粗端 log(z0) + 时间编码 -> in_channel=74
+# 输入(条件):粗端 U/V 逐层 + 粗端逐层 z_agl + 粗端 log(z0) + 时间编码 = 74
+# SI 约定:in_channel = 状态(out_channel=72) + 条件(74) = 146
 data:
   scheme: myj
   coarse_dir: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_coarse
@@ -29,7 +30,7 @@ model:
   channel_mults: [1, 2, 4, 8, 8]
   channels_each_head: 16
   dropout: 0.2
-  in_channel: 74
+  in_channel: 146
   inner_channel: 64
   max_period: 10.0
   out_channel: 72
