@@ -1,0 +1,57 @@
+# 阶段0(导师大纲)canvas 管线冒烟配置
+# 目标:d04 原生交错 U/V/W(层 0..22, W 界面 0..23)+ U10/V10 -> out_channel=72
+# 输入:粗端 U/V 逐层 + 粗端逐层 z_agl + 粗端 log(z0) + 时间编码 -> in_channel=74
+data:
+  dataset_name: DatasetWindCanvas
+  scheme: myj
+  coarse_dir: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_coarse
+  statics_dir: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static
+  normalize_json: null
+  split_manifest: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static/split.json
+  target_levels: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
+  input_groups: [coarse_wind_uv, coarse_zagl, coarse_logz0, time_enc]
+  include_w: true
+  hr_data_shape: [99, 120]
+  hr_cropped_shape: [96, 112]
+  is_clipped: false
+  min_clipped_value: null
+  max_clipped_value: null
+  missing_value: 0.0
+  dtype: float32
+  day_night_filter: all
+loader:
+  batch_size: 2
+  dl_data_ver: wrf_3d_v2_canvas
+  num_workers: 2
+  seed: 42
+  train_valid_test_ratios: [0.7, 0.1, 0.2]
+model:
+  attn_res: [16]
+  channel_mults: [1, 2, 4, 8, 8]
+  channels_each_head: 16
+  dropout: 0.2
+  in_channel: 74
+  inner_channel: 64
+  max_period: 10.0
+  out_channel: 72
+  res_blocks: 1
+  resblock_updown: true
+si:
+  eps: 0.2
+  formula: quadratic
+  loss_type: L2
+  n_timestep: 10
+  channel_weights: null
+  divergence_weight: 0.0
+  vorticity_weight: 0.0
+train:
+  early_stopping_patience: 50
+  ema_decay: null
+  epochs: 1
+  learning_rate: 0.0005
+  loss:
+    loss_name: L2
+  optim_name: AdamW
+  save_interval: 100
+  seed: 78268
+  use_amp: false

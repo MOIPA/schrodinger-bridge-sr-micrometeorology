@@ -8,6 +8,7 @@ from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
 
 from src.dl_config.base_config import BaseDataloaderConfig, BaseDatasetConfig
+from src.dl_data.block_split import split_paths_by_manifest
 from src.dl_data.dataset_2d_residual_tm2m import (
     Dataset2dResidualTemperature2m,
     Dataset2dResidualTemperature2mConfig,
@@ -17,6 +18,7 @@ from src.dl_data.dataset_2d_tm2m import (
     Dataset2dTemperature2mConfig,
 )
 from src.dl_data.dataset_3d_wind import Dataset3dWind
+from src.dl_data.dataset_wind_canvas import DatasetWindCanvas, DatasetWindCanvasConfig
 from src.utils.random_seed_helper import get_torch_generator, seed_worker
 
 logger = getLogger()
@@ -47,6 +49,11 @@ def make_dataloaders_and_samplers(
         logger.info(f"{dataset_config.dataset_name=}")
         dataset_initializer = Dataset3dWind
         extension = "npz"
+    elif dataset_config.dataset_name == "DatasetWindCanvas":
+        logger.info(f"{dataset_config.dataset_name=}")
+        dataset_initializer = DatasetWindCanvas
+        extension = "npz"
+        assert isinstance(dataset_config, DatasetWindCanvasConfig)
     else:
         raise NotImplementedError(
             f"Dataset {dataset_config.dataset_name} is not supported."
@@ -58,9 +65,18 @@ def make_dataloaders_and_samplers(
         f"The total files = {len(all_file_paths)}. A part of them is used for training."
     )
 
-    dict_file_paths = _split_paths_into_train_valid_test(
-        all_file_paths, loader_config.train_valid_test_ratios
-    )
+    split_manifest = getattr(dataset_config, "split_manifest", None)
+    if split_manifest:
+        dict_file_paths, unmatched = split_paths_by_manifest(all_file_paths, split_manifest)
+        logger.info(
+            f"split by manifest {split_manifest}: "
+            f"{ {k: len(v) for k, v in dict_file_paths.items()} }, unmatched={len(unmatched)}"
+        )
+        assert len(unmatched) == 0, "有文件不在 split.json 时间戳清单中"
+    else:
+        dict_file_paths = _split_paths_into_train_valid_test(
+            all_file_paths, loader_config.train_valid_test_ratios
+        )
 
     day_night_filter = getattr(dataset_config, "day_night_filter", "all")
     dict_file_paths = _filter_paths_by_day_night(

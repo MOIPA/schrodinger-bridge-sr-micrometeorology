@@ -54,6 +54,23 @@ lsf/               # 最终模型/ 昼夜消融/ ; ops/queue/ 任务脚本
 5. numpy 数组与 tensor 转换注意 device;评估函数 `compute_metrics(pred, target)` 接受 numpy [N,C,H,W]
 6. 服务器脚本 Py2/3 兼容(见 server-ops skill)
 
+## 3.5 阶段0(导师大纲)新管线(2026-09-22 起)
+
+旧的 6 eta 层/质量点/3 km 管线**冻结保留**(上述 §1–§3 仍适用);新工作走大纲管线:
+
+- **数据**:`scripts/outline/`(00 探查 / 10 静态场 / 20 细端 / 21 粗端 / 30 划分 / 40 标准化统计 /
+  50 校验 / 60 AGL 算子 / 70 真值诊断);输出在服务器 `prepare_npz_outline_{fine,coarse,static}/`;
+  纯 Py3(netCDF4+scipy,`pytorch-gpu` env)。
+- **训练侧**:`src/dl_data/dataset_wind_canvas.py`(`DatasetWindCanvas`,原生 C 网格画布 (100,121)、
+  分组输入 `input_groups`、split.json 块级划分)、`wind_canvas_statics.py`(重网格/画布工具)、
+  `block_split.py`;配置类 `ExperimentSchrodingerBridgeWindCanvas`,
+  模板 `configs/深圳/config_wind_canvas_smoke.yml`;冒烟 `scripts/smoke_wind_canvas.py`。
+- **通道数不是 44**:out = 2L+(L+1)+2(含 W)、in = 2L+L+1+4(基线组,L=层数);配置里数字须与
+  `dataset.input_channel_names()` 一致。
+- **dataloader 分流**:`dataset_config.split_manifest` 非空时用块级划分,否则旧的 shuffle=False 尾切。
+- 关键事实:COSZEN 只有 myj 有(辐射只有 ysu 有);ZNT 两者都没有(log(z0) 离线按 Noah 公式重建);
+  投影是 Mercator;物理约束代码(§2)按 3 元组通道假设,**不适用于 canvas 通道**,阶段 2 重写。
+
 ## 4. 脚本族速查
 
 | 脚本 | 用途 |
