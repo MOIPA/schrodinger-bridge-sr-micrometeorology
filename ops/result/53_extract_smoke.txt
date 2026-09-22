@@ -1,0 +1,98 @@
+scheme myj: 2 files -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_fine
+scheme myj: created 12 skipped 0
+scheme ysu: 2 files -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_fine
+scheme ysu: created 12 skipped 0
+done
+----
+scheme myj: 2 files -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_coarse
+scheme myj: created 48 skipped 0
+scheme ysu: 2 files -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_coarse
+scheme ysu: created 48 skipped 0
+done
+
+=== inspect npz ===
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_fine/*.npz
+  count 24
+   f_myj_20200701T000000.npz
+      f_u shape=(40, 99, 121) dtype=float32 min=-3.662 max=3.382
+      f_u10 shape=(99, 120) dtype=float32 min=-3.422 max=2.998
+      f_v shape=(40, 100, 120) dtype=float32 min=-4.635 max=4.895
+      f_v10 shape=(99, 120) dtype=float32 min=-4.064 max=1.827
+      f_w shape=(41, 99, 120) dtype=float32 min=-0.6879 max=1.819
+   f_myj_20200701T001000.npz
+      f_u shape=(40, 99, 121) dtype=float32 min=-3.967 max=3.811
+      f_u10 shape=(99, 120) dtype=float32 min=-3.529 max=3.474
+      f_v shape=(40, 100, 120) dtype=float32 min=-4.412 max=4.737
+      f_v10 shape=(99, 120) dtype=float32 min=-3.99 max=2.586
+      f_w shape=(41, 99, 120) dtype=float32 min=-0.918 max=1.745
+   f_myj_20200701T002000.npz
+      f_u shape=(40, 99, 121) dtype=float32 min=-4.173 max=3.55
+      f_u10 shape=(99, 120) dtype=float32 min=-3.728 max=3.369
+      f_v shape=(40, 100, 120) dtype=float32 min=-4.45 max=4.862
+      f_v10 shape=(99, 120) dtype=float32 min=-4.074 max=3.021
+      f_w shape=(41, 99, 120) dtype=float32 min=-0.8743 max=2.663
+   f_myj_20200701T003000.npz
+      f_u shape=(40, 99, 121) dtype=float32 min=-4.987 max=3.472
+      f_u10 shape=(99, 120) dtype=float32 min=-3.971 max=3.296
+      f_v shape=(40, 100, 120) dtype=float32 min=-3.795 max=5.466
+      f_v10 shape=(99, 120) dtype=float32 min=-3.551 max=2.894
+      f_w shape=(41, 99, 120) dtype=float32 min=-1.074 max=4.454
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_coarse/*.npz
+  count 96
+   c_myj_20200701T000000.npz
+      c_coszen shape=(120, 150) dtype=float32 min=0.3481 max=0.58
+      c_coszen_wrf shape=(120, 150) dtype=float32 min=0.341 max=0.5741
+      c_hfx shape=(120, 150) dtype=float32 min=-26.43 max=253.9
+      c_pblh shape=(120, 150) dtype=float32 min=51.62 max=2179
+      c_ph shape=(41, 120, 150) dtype=float32 min=0 max=1337
+      c_psfc shape=(120, 150) dtype=float32 min=8.51e+04 max=1.009e+05
+      c_rmol shape=(120, 150) dtype=float32 min=-1.473 max=0.6116
+      c_t2 shape=(120, 150) dtype=float32 min=293.1 max=304.4
+      c_theta shape=(40, 120, 150) dtype=float32 min=299.1 max=319.6
+      c_u shape=(40, 120, 151) dtype=float32 min=-4.859 max=23.48
+      c_ust shape=(120, 150) dtype=float32 min=0.01598 max=1.188
+      c_v shape=(40, 121, 150) dtype=float32 min=-7.625 max=13.32
+      c_w shape=(41, 120, 150) dtype=float32 min=-0.4597 max=1.902
+   c_myj_20200701T010000.npz
+      c_coszen shape=(120, 150) dtype=float32 min=0.5597 max=0.7509
+      c_coszen_wrf shape=(120, 150) dtype=float32 min=0.5579 max=0.7495
+      c_hfx shape=(120, 150) dtype=float32 min=-24.02 max=367.4
+      c_pblh shape=(120, 150) dtype=float32 min=51.78 max=2258
+      c_ph shape=(41, 120, 150) dtype=float32 min=0 max=1341
+      c_psfc shape=(120, 150) dtype=float32 min=8.512e+04 max=1.009e+05
+      c_rmol shape=(120, 150) dtype=float32 min=-1.516 max=11.74
+      c_t2 shape=(120, 150) dtype=float32 min=293.7 max=305.9
+      c_theta shape=(40, 120, 150) dtype=float32 min=298.7 max=319.7
+      c_u shape=(40, 120, 151) dtype=float32 min=-5.532 max=22.15
+      c_ust shape=(120, 150) dtype=float32 min=0.002498 max=1.248
+      c_v shape=(40, 121, 150) dtype=float32 min=-8.356 max=13.5
+      c_w shape=(41, 120, 150) dtype=float32 min=-0.3867 max=1.267
+   c_myj_20200701T020000.npz
+      c_coszen shape=(120, 150) dtype=float32 min=0.741 max=0.883
+      c_coszen_wrf shape=(120, 150) dtype=float32 min=0.7427 max=0.8842
+      c_hfx shape=(120, 150) dtype=float32 min=-33.92 max=478.2
+      c_pblh shape=(120, 150) dtype=float32 min=51.93 max=2137
+      c_ph shape=(41, 120, 150) dtype=float32 min=0 max=1357
+      c_psfc shape=(120, 150) dtype=float32 min=8.513e+04 max=1.009e+05
+      c_rmol shape=(120, 150) dtype=float32 min=-1.564 max=8.901
+      c_t2 shape=(120, 150) dtype=float32 min=294.4 max=307.9
+      c_theta shape=(40, 120, 150) dtype=float32 min=298.3 max=319.2
+      c_u shape=(40, 120, 151) dtype=float32 min=-5.31 max=21.17
+      c_ust shape=(120, 150) dtype=float32 min=0.008224 max=1.291
+      c_v shape=(40, 121, 150) dtype=float32 min=-8.882 max=13.89
+      c_w shape=(41, 120, 150) dtype=float32 min=-0.4408 max=1.632
+   c_myj_20200701T030000.npz
+      c_coszen shape=(120, 150) dtype=float32 min=0.8796 max=0.9686
+      c_coszen_wrf shape=(120, 150) dtype=float32 min=0.8836 max=0.9707
+      c_hfx shape=(120, 150) dtype=float32 min=-32.28 max=568.6
+      c_pblh shape=(120, 150) dtype=float32 min=51.99 max=2033
+      c_ph shape=(41, 120, 150) dtype=float32 min=0 max=1392
+      c_psfc shape=(120, 150) dtype=float32 min=8.511e+04 max=1.009e+05
+      c_rmol shape=(120, 150) dtype=float32 min=-1.549 max=11.83
+      c_t2 shape=(120, 150) dtype=float32 min=295.1 max=309.9
+      c_theta shape=(40, 120, 150) dtype=float32 min=298.4 max=319.4
+      c_u shape=(40, 120, 151) dtype=float32 min=-5.588 max=19.22
+      c_ust shape=(120, 150) dtype=float32 min=0.01006 max=1.262
+      c_v shape=(40, 121, 150) dtype=float32 min=-8.622 max=13.87
+      c_w shape=(41, 120, 150) dtype=float32 min=-0.3303 max=1.739
+exit=0
