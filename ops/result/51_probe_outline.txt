@@ -1,0 +1,61 @@
+base: /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen
+subdirs: les_20200713, les_20200730, meso_202007_myj, meso_202007_ysu
+  probing meso_202007_myj / d01 (31 files)
+  probing meso_202007_myj / d02 (31 files)
+  probing meso_202007_myj / d03 (31 files)
+  probing meso_202007_myj / d04 (744 files)
+  probing meso_202007_ysu / d01 (31 files)
+  probing meso_202007_ysu / d02 (31 files)
+  probing meso_202007_ysu / d03 (31 files)
+  probing meso_202007_ysu / d04 (744 files)
+
+JSON report written: results/outline/00_probe_wrf_data.json
+
+[meso_202007_myj/d01] files=31 times/file=24 step=3600s  2020-07-01T00:00:00 -> 2020-07-31T23:00:00
+   mass grid=[150, 180] nz=61 nz_stag=62  below 1km=21 below 2km=42
+   mass z_agl (first 25 levels, domain mean): 24.68, 73.93, 123.06, 172.06, 220.95, 269.76, 318.41, 366.94, 415.4, 463.75, 511.98, 560.15, 608.21, 656.16, 704.02, 751.76, 799.45, 847.04, 894.57, 942.0, 989.34, 1036.62, 1083.86, 1131.0, 1178.06
+   MISSING vars: ZNT, LANDUSEF, VEGFRA, SWDOWN, SWNORM, GLW, RAINC, RAINNC
+
+[meso_202007_myj/d02] files=31 times/file=24 step=3600s  2020-07-01T00:00:00 -> 2020-07-31T23:00:00
+   mass grid=[120, 150] nz=61 nz_stag=62  below 1km=20 below 2km=40
+   mass z_agl (first 25 levels, domain mean): 25.03, 75.04, 125.02, 174.97, 224.89, 274.82, 324.68, 374.51, 424.35, 474.16, 523.93, 573.72, 623.47, 673.19, 722.87, 772.52, 822.18, 871.81, 921.44, 971.04, 1020.6, 1070.16, 1119.73, 1169.27, 1218.77
+   MISSING vars: ZNT, LANDUSEF, VEGFRA, SWDOWN, SWNORM, GLW, RAINC, RAINNC
+
+[meso_202007_myj/d03] files=31 times/file=24 step=3600s  2020-07-01T00:00:00 -> 2020-07-31T23:00:00
+   mass grid=[120, 150] nz=61 nz_stag=62  below 1km=20 below 2km=40
+   mass z_agl (first 25 levels, domain mean): 25.11, 75.28, 125.44, 175.58, 225.72, 275.88, 325.99, 376.08, 426.2, 476.31, 526.4, 576.51, 626.6, 676.68, 726.74, 776.77, 826.83, 876.87, 926.92, 976.96, 1026.97, 1077.0, 1127.04, 1177.06, 1227.06
+   MISSING vars: ZNT, LANDUSEF, VEGFRA, SWDOWN, SWNORM, GLW, RAINC, RAINNC
+
+[meso_202007_myj/d04] files=744 times/file=6 step=600s  2020-07-01T00:00:00 -> 2020-07-31T23:50:00
+   mass grid=[99, 120] nz=61 nz_stag=62  below 1km=20 below 2km=40
+   mass z_agl (first 25 levels, domain mean): 25.14, 75.38, 125.61, 175.85, 226.07, 276.33, 326.55, 376.76, 427.0, 477.23, 527.45, 577.7, 627.94, 678.17, 728.39, 778.59, 828.82, 879.03, 929.27, 979.49, 1029.69, 1079.91, 1130.16, 1180.39, 1230.59
+   MISSING vars: ZNT, LANDUSEF, VEGFRA, SWDOWN, SWNORM, GLW, RAINC, RAINNC
+
+[meso_202007_ysu/d01] files=31 times/file=24 step=3600s  2020-07-01T00:00:00 -> 2020-07-31T23:00:00
+   mass grid=[150, 180] nz=61 nz_stag=62  below 1km=21 below 2km=42
+   mass z_agl (first 25 levels, domain mean): 24.68, 73.93, 123.06, 172.06, 220.95, 269.76, 318.41, 366.94, 415.4, 463.75, 511.98, 560.15, 608.21, 656.16, 704.02, 751.76, 799.45, 847.04, 894.57, 942.0, 989.34, 1036.62, 1083.86, 1131.0, 1178.06
+   MISSING vars: ZNT, LANDUSEF, VEGFRA, COSZEN
+
+[meso_202007_ysu/d02] files=31 times/file=24 step=3600s  2020-07-01T00:00:00 -> 2020-07-31T23:00:00
+   mass grid=[120, 150] nz=61 nz_stag=62  below 1km=20 below 2km=40
+   mass z_agl (first 25 levels, domain mean): 25.03, 75.04, 125.02, 174.97, 224.89, 274.82, 324.68, 374.51, 424.35, 474.16, 523.93, 573.72, 623.47, 673.19, 722.87, 772.52, 822.18, 871.81, 921.44, 971.04, 1020.6, 1070.16, 1119.73, 1169.27, 1218.77
+   MISSING vars: ZNT, LANDUSEF, VEGFRA, COSZEN
+
+[meso_202007_ysu/d03] files=31 times/file=24 step=3600s  2020-07-01T00:00:00 -> 2020-07-31T23:00:00
+   mass grid=[120, 150] nz=61 nz_stag=62  below 1km=20 below 2km=40
+   mass z_agl (first 25 levels, domain mean): 25.11, 75.28, 125.44, 175.58, 225.72, 275.88, 325.99, 376.08, 426.2, 476.31, 526.4, 576.51, 626.6, 676.68, 726.74, 776.77, 826.83, 876.87, 926.92, 976.96, 1026.97, 1077.0, 1127.04, 1177.06, 1227.06
+   MISSING vars: ZNT, LANDUSEF, VEGFRA, COSZEN
+
+[meso_202007_ysu/d04] files=744 times/file=6 step=600s  2020-07-01T00:00:00 -> 2020-07-31T23:50:00
+   mass grid=[99, 120] nz=61 nz_stag=62  below 1km=20 below 2km=40
+   mass z_agl (first 25 levels, domain mean): 25.14, 75.38, 125.61, 175.85, 226.07, 276.33, 326.55, 376.76, 427.0, 477.23, 527.45, 577.7, 627.94, 678.17, 728.39, 778.59, 828.82, 879.03, 929.27, 979.49, 1029.69, 1079.91, 1130.16, 1180.39, 1230.59
+   MISSING vars: ZNT, LANDUSEF, VEGFRA, COSZEN
+
+attrs (first scheme): {}
+
+wrfinput: {"les_20200713": {"d01": {"count": 0}, "d02": {"count": 0}, "d03": {"count": 0}, "d04": {"count": 0}}, "les_20200730": {"d01": {"count": 0}, "d02": {"count": 0}, "d03": {"count": 0}, "d04": {"count": 0}}, "meso_202007_myj": {"d01": {"count": 0}, "d02": {"count": 0}, "d03": {"count": 0}, "d04": {"count": 0}}, "meso_202007_ysu": {"d01": {"count": 0}, "d02": {"count": 0}, "d03": {"count": 0}, "d04": {"count": 0}}}
+
+wps_geog: {"candidates": ["/fsb/home/yutingwang/share/WPS_GeoStatic", "/fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/WPS_GeoStatic", "/fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/../WPS_GeoStatic", "/fsb/home/yutingwang/share/Data_WRFout/WPS_GeoStatic"], "found": "/fsb/home/yutingwang/share/WPS_GeoStatic", "entries": ["CGLC_MODIS_LCZ_global", "NUDAPT44_1km", "OLD_geog_Before2000", "albedo_modis", "bnu_soiltype_bot", "bnu_soiltype_top", "clayfrac_5m", "crop", "erod", "greenfrac_fpar_modis", "greenfrac_fpar_modis_5m", "groundwater", "irrigation", "lai_modis_10m", "lai_modis_30s", "lake_depth", "landuse_30s", "landuse_30s_with_lakes", "maxsnowalb_modis", "modis_landuse_20class_15s", "modis_landuse_20class_15s_with_lakes", "modis_landuse_20class_30s_with_lakes", "modis_landuse_20class
+
+eta_check: {"meso_202007_myj|d01": {"maxdiff_vs_first_scheme_d04": null, "n_levels": 61, "first_values": [0.996885, 0.990675, 0.984495, 0.978345, 0.972225]}, "meso_202007_myj|d02": {"maxdiff_vs_first_scheme_d04": null, "n_levels": 61, "first_values": [0.996885, 0.990675, 0.984495, 0.978345, 0.972225]}, "meso_202007_myj|d03": {"maxdiff_vs_first_scheme_d04": null, "n_levels": 61, "first_values": [0.996885, 0.990675, 0.984495, 0.978345, 0.972225]}, "meso_202007_myj|d04": {"maxdiff_vs_first_scheme_d04": null, "n_levels": 61, "first_values": [0.996885, 0.990675, 0.984495, 0.978345, 0.972225]}, "meso_202007_ysu|d01": {"maxdiff_vs_first_scheme_d04": null, "n_levels": 61, "first_values": [0.996885, 0.990675, 0.984495, 0.978345, 0.972225]}, "meso_202007_ysu|d02": {"maxdiff_vs_first_scheme_d04": null, "n_level
+exit=0
