@@ -128,11 +128,11 @@ class DatasetWindCanvas(Dataset):
     # ------------------------------------------------------------ 组装
     def _std_fine_wind(self, arr, comp):
         sig = np.asarray(self.fn[comp]['sigma'], dtype=np.float32)[self.L]
-        return np.asarray(arr, dtype=np.float32) / sig[:, None, None]
+        return np.asarray(arr, dtype=np.float32)[self.L] / sig[:, None, None]
 
     def _std_coarse_wind(self, arr, comp):
         sig = np.asarray(self.cn[comp]['sigma'], dtype=np.float32)[self.L]
-        return np.asarray(arr, dtype=np.float32) / sig[:, None, None]
+        return np.asarray(arr, dtype=np.float32)[self.L] / sig[:, None, None]
 
     def _targets(self, fine):
         sig_uv10 = float(self.fn['u10']['sigma'])
