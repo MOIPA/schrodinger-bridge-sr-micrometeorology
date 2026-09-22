@@ -141,7 +141,7 @@ def main():
         ffiles = sorted(glob.glob(os.path.join(args.fine_dir, "f_{}_*.npz".format(scheme))))
         for f in ffiles:
             stamp = parse_stamp(os.path.basename(f))
-            if stamp is None or stamp[9:11] != '00':  # 只用整点帧(与空间降尺度训练一致)
+            if stamp is None or stamp[11:13] != '00':  # 只用整点帧(分钟==00,与空间降尺度训练一致)
                 continue
             if hour_key(stamp) not in train_hours:
                 continue
@@ -177,6 +177,11 @@ def main():
             if n_coarse % 200 == 0:
                 print("  coarse {}/~".format(n_coarse))
         print("  读取 fine {} 帧, coarse {} 小时".format(n_fine, n_coarse))
+        # 静默漏读会让统计量跑偏且看不出来,这里硬比对训练块小时数
+        assert n_fine == len(train_hours), \
+            "fine 帧数 {} != 训练小时数 {}".format(n_fine, len(train_hours))
+        assert n_coarse == len(train_hours), \
+            "coarse 小时数 {} != 训练小时数 {}".format(n_coarse, len(train_hours))
 
         # U/V 合并 σ(风矢量尺度): sqrt(mean(U²+V²)/2)
         u_mean, u_sig = fine_acc['u'].result()
