@@ -254,6 +254,26 @@ def agg_class(cell, vals, ncat, ny, nx):
     return np.bincount(comb, minlength=ncat * ncell).reshape(ncat, ny, nx)
 
 
+def fill_nearest(arr, lat2d, lon2d):
+    """对 (...,ny,nx) 中整格缺失的单元按最近有效格点填充;返回 (filled, 填充数)。"""
+    a = np.array(arr, dtype=np.float64, copy=True)
+    ny, nx = lat2d.shape
+    a = a.reshape(-1, ny, nx)
+    bad = np.isnan(a).any(axis=0).reshape(-1)
+    if not bad.any():
+        return a.reshape(np.shape(arr)).astype(np.float32), 0
+    flat_lat = lat2d.reshape(-1)
+    flat_lon = lon2d.reshape(-1)
+    scale = float(np.cos(np.radians(np.mean(flat_lat))))
+    good = ~bad
+    tree = cKDTree(np.stack([flat_lon[good] * scale, flat_lat[good]], axis=-1))
+    want = np.where(bad)[0]
+    _, near = tree.query(np.stack([flat_lon[want] * scale, flat_lat[want]], axis=-1))
+    src = np.where(good)[0][near]
+    a[:, want] = a[:, src]
+    return a.reshape(np.shape(arr)).astype(np.float32), int(bad.sum())
+
+
 def agg_cont(cell, vals, ny, nx):
     """连续数据分箱 -> (ny, nx) 均值。"""
     ncell = ny * nx
@@ -414,14 +434,21 @@ def main():
     print("landuse 区域 {} 类别 1..{}".format(lu.shape, ncat))
     cell_f = pixel_cell_index(lats, lons, imap_f, ny_f, nx_f)
     cell_c = pixel_cell_index(lats, lons, imap_c, ny_c, nx_c)
-    frac_f = agg_class(cell_f, lu.reshape(-1), ncat, ny_f, nx_f)
-    frac_c = agg_class(cell_c, lu.reshape(-1), ncat, ny_c, nx_c)
+    cnt_f = agg_class(cell_f, lu.reshape(-1), ncat, ny_f, nx_f)
+    cnt_c = agg_class(cell_c, lu.reshape(-1), ncat, ny_c, nx_c)
+    tot_f = cnt_f.sum(axis=0)
+    tot_c = cnt_c.sum(axis=0)
+    frac_f, n_fill_f = fill_nearest(np.where(tot_f > 0, cnt_f / np.maximum(tot_f, 1), np.nan),
+                                    fine['xlat'], fine['xlong'])
+    frac_c, n_fill_c = fill_nearest(np.where(tot_c > 0, cnt_c / np.maximum(tot_c, 1), np.nan),
+                                    coarse['xlat'], coarse['xlong'])
     rep['landuse'] = {
         'dataset': LANDUSE_DIR, 'ncat': ncat,
+        'pixels_per_cell_fine': [int(tot_f.min()), float(np.median(tot_f)), int(tot_f.max())],
+        'pixels_per_cell_coarse': [int(tot_c.min()), float(np.median(tot_c)), int(tot_c.max())],
         'frac_sum_min': float(frac_f.sum(axis=0).min()),
         'frac_sum_max': float(frac_f.sum(axis=0).max()),
-        'empty_cells_fine': int((frac_f.sum(axis=0) == 0).sum()),
-        'empty_cells_coarse': int((frac_c.sum(axis=0) == 0).sum()),
+        'filled_nearest_fine': n_fill_f, 'filled_nearest_coarse': n_fill_c,
     }
 
     green, glats, glons, gr_idx = read_geog_region(
@@ -429,33 +456,67 @@ def main():
     print("greenfrac 区域 {} (12 月)".format(green.shape))
     cell_fg = pixel_cell_index(glats, glons, imap_f, ny_f, nx_f)
     cell_cg = pixel_cell_index(glats, glons, imap_c, ny_c, nx_c)
-    veg_month_f = [agg_cont(cell_fg, green[m].reshape(-1), ny_f, nx_f) for m in range(12)]
-    veg_month_c = [agg_cont(cell_cg, green[m].reshape(-1), ny_c, nx_c) for m in range(12)]
-    rep['greenfrac_month_mean_region'] = [round(float(np.nanmean(green[m])), 4)
-                                          for m in range(12)]
+    veg_month_f, veg_month_c = [], []
+    fill_gf, fill_gc = 0, 0
+    for m in range(12):
+        vf, nf_ = fill_nearest(agg_cont(cell_fg, green[m].reshape(-1), ny_f, nx_f),
+                               fine['xlat'], fine['xlong'])
+        vc, nc_ = fill_nearest(agg_cont(cell_cg, green[m].reshape(-1), ny_c, nx_c),
+                               coarse['xlat'], coarse['xlong'])
+        veg_month_f.append(vf)
+        veg_month_c.append(vc)
+        fill_gf += nf_
+        fill_gc += nc_
+    rep['greenfrac'] = {'filled_nearest_fine_monthly': fill_gf,
+                        'filled_nearest_coarse_monthly': fill_gc,
+                        'month_mean_region': [round(float(np.nanmean(green[m])), 4)
+                                              for m in range(12)]}
     veg_f = veg_month_f[JULY]
     veg_c = veg_month_c[JULY]
-    shdmin_f = np.nanmin(np.stack(veg_month_f), axis=0)
-    shdmax_f = np.nanmax(np.stack(veg_month_f), axis=0)
-    shdmin_c = np.nanmin(np.stack(veg_month_c), axis=0)
-    shdmax_c = np.nanmax(np.stack(veg_month_c), axis=0)
+    shdmin_f = np.min(np.stack(veg_month_f), axis=0)
+    shdmax_f = np.max(np.stack(veg_month_f), axis=0)
+    shdmin_c = np.min(np.stack(veg_month_c), axis=0)
+    shdmax_c = np.max(np.stack(veg_month_c), axis=0)
 
-    dom_f = np.where(frac_f.sum(axis=0) > 0, np.argmax(frac_f, axis=0) + 1, 0)
-    dom_c = np.where(frac_c.sum(axis=0) > 0, np.argmax(frac_c, axis=0) + 1, 0)
+    dom_f = np.argmax(frac_f, axis=0) + 1
+    dom_c = np.argmax(frac_c, axis=0) + 1
     z0_f = noah_z0(dom_f, veg_f, shdmin_f, shdmax_f)
     z0_c = noah_z0(dom_c, veg_c, shdmin_c, shdmax_c)
+    water_f = frac_f[16] + (frac_f[20] if ncat >= 21 else 0.0)
+    water_c = frac_c[16] + (frac_c[20] if ncat >= 21 else 0.0)
+    land_f = water_f < 0.2
+    land_c = water_c < 0.2
     for tag, z0, dom in (('fine', z0_f, dom_f), ('coarse', z0_c, dom_c)):
         rep['z0_' + tag] = {
-            'min': float(np.nanmin(z0)), 'mean': float(np.nanmean(z0)),
-            'max': float(np.nanmax(z0)),
+            'min': float(np.min(z0)), 'mean': float(np.mean(z0)),
+            'max': float(np.max(z0)),
             'urban_cells': int((dom == 13).sum()),
             'water_cells': int(((dom == 17) | (dom == 21)).sum()),
         }
-    rep['vegfra_july'] = {'fine_mean': float(np.nanmean(veg_f)),
-                          'coarse_mean': float(np.nanmean(veg_c))}
+    rep['vegfra_july'] = {
+        'fine_mean': float(np.mean(veg_f)), 'fine_mean_land': float(np.mean(veg_f[land_f])),
+        'fine_water_frac': float(np.mean(water_f)),
+        'coarse_mean': float(np.mean(veg_c)),
+        'coarse_mean_land': float(np.mean(veg_c[land_c])),
+        'coarse_water_frac': float(np.mean(water_c)),
+    }
 
-    water_f = frac_f[16] + (frac_f[20] if ncat >= 21 else 0.0)
-    water_c = frac_c[16] + (frac_c[20] if ncat >= 21 else 0.0)
+    spots = {'shenzhen': (22.55, 114.06), 'hongkong': (22.32, 114.17),
+             'daya_bay_sea': (22.60, 114.55), 'zhuhai': (22.27, 113.58)}
+    rep['spot_checks'] = {}
+    for name, (la, lo) in spots.items():
+        entry = {}
+        for tag, imap, ny, nx, dom, z0, vg, wf in (
+                ('fine', imap_f, ny_f, nx_f, dom_f, z0_f, veg_f, water_f),
+                ('coarse', imap_c, ny_c, nx_c, dom_c, z0_c, veg_c, water_c)):
+            fi, fj = imap(np.array([lo]), np.array([la]))
+            jj, ii = int(np.floor(fj[0])), int(np.floor(fi[0]))
+            if 0 <= jj < ny and 0 <= ii < nx:
+                entry[tag] = {'cell': [jj, ii], 'dom_class': int(dom[jj, ii]),
+                              'logz0': round(float(np.log(max(z0[jj, ii], 1e-9))), 4),
+                              'vegfra': round(float(vg[jj, ii]), 4),
+                              'water': round(float(wf[jj, ii]), 4)}
+        rep['spot_checks'][name] = entry
     out['frac_fine'] = frac_f.astype(np.float32)
     out['frac_coarse'] = frac_c.astype(np.float32)
     out['urban_fine'] = frac_f[12].astype(np.float32)
