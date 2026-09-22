@@ -69,8 +69,15 @@ def tier_spectra(scheme, stamp, level=0):
             vm = 0.5 * (v[:-1, :] + v[1:, :])
             e = um ** 2 + vm ** 2
         k, pk = radial_spectrum(e)
-        rep[dom] = {'k': k.tolist(), 'P': pk.tolist(),
+        # 原始 E(k) 是"红谱",峰值恒在最大尺度(k=1)无信息;能量含尺度看 k·E(k) 峰值
+        kp = k * pk
+        k_peak = int(k[np.argmax(kp)])
+        k7 = max(1, int(round(e.shape[1] / 7.0)))
+        rep[dom] = {'k': k.tolist(), 'P': pk.tolist(), 'kP': kp.tolist(),
                     'wavelength_7dx_km': 7.0 * DX[dom] / 1000.0,
+                    'k_7dx': k7, 'P_at_7dx': float(pk[min(k7, len(pk)) - 1]),
+                    'k_peak_energy': k_peak,
+                    'wavelength_peak_km': e.shape[1] * DX[dom] / 1000.0 / k_peak,
                     'n_cells': list(e.shape)}
     return rep
 
@@ -80,8 +87,13 @@ def pd(name):
     return m.group(1) if m else None
 
 
-def divergence_residual(scheme, stamp, levels=(0, 5, 10, 20)):
-    """d04 原生 C 网格 ∇·(ρu) 残差统计(可压缩形式,物理单位)。"""
+def divergence_residual(scheme, stamp, levels=(1, 5, 10, 20)):
+    """d04 原生 C 网格 ∇·(ρu) 残差统计(可压缩形式,内部点,物理单位)。
+
+    ρ 由 P/PB/T/QVAPOR 诊断后按原生交错索引平均到 U/V/W 点,再中心差分;
+    水平用 d04 dx,垂直 dz 取界面高度差(PHB+PH)。只在质量点内部(去掉一层边界)统计;
+    除绝对量(kg m^-3 s^-1)外给出 p95/ρ 的归一值(s^-1),作阶段 2 约束权重定标基准。
+    """
     day = '{}-{}-{}'.format(stamp[0:4], stamp[4:6], stamp[6:8])
     hh = stamp[9:11]
     wpath = os.path.join(WRF_BASE, SCHEME_DIRS[scheme],
@@ -89,37 +101,44 @@ def divergence_residual(scheme, stamp, levels=(0, 5, 10, 20)):
     tidx = int(stamp[11:13]) // 10
     with Dataset(wpath) as nc:
         phb = np.array(nc.variables['PHB'][tidx], dtype=np.float64)
-        hgt = np.array(nc.variables['HGT'][tidx], dtype=np.float64)
         phi = np.array(nc.variables['PH'][tidx], dtype=np.float64)
-        z = (phb + phi) / G
-        u = np.array(nc.variables['U'][tidx], dtype=np.float64)
-        v = np.array(nc.variables['V'][tidx], dtype=np.float64)
-        w = np.array(nc.variables['W'][tidx], dtype=np.float64)
+        u = np.array(nc.variables['U'][tidx], dtype=np.float64)   # (nz, ny, nx+1)
+        v = np.array(nc.variables['V'][tidx], dtype=np.float64)   # (nz, ny+1, nx)
+        w = np.array(nc.variables['W'][tidx], dtype=np.float64)   # (nz+1, ny, nx)
         p = np.array(nc.variables['P'][tidx], dtype=np.float64) + \
             np.array(nc.variables['PB'][tidx], dtype=np.float64)
         theta = np.array(nc.variables['T'][tidx], dtype=np.float64) + 300.0
         qv = np.maximum(np.array(nc.variables['QVAPOR'][tidx], dtype=np.float64), 0.0)
+    z = (phb + phi) / G                                    # (nz+1, ny, nx) 界面高度
     t_full = theta * np.power(p / P0, RD / CP)
-    tv = t_full * (1.0 + 0.61 * qv)
-    rho = p / (RD * tv)                     # 质量点干空气密度近似(含虚温修正)
-    rho_u = 0.5 * (rho[:, :, :-1] + rho[:, :, 1:])   # -> U 点
-    rho_v = 0.5 * (rho[:, :-1, :] + rho[:, 1:, :])   # -> V 点
-    rho_w = 0.5 * (rho[:-1, :, :] + rho[1:, :, :])   # -> W 点(界面)
-    dz = z[1:] - z[:-1]
-    out = {}
+    rho = p / (RD * t_full * (1.0 + 0.61 * qv))            # (nz, ny, nx) 质量点密度
+    nz = rho.shape[0]
+    dx = DX['d04']
+    # 水平:ρ 平均到 U/V 点(内部点 a <-> U 点 a+1),通量差 -> 质量点 i/j = 1..n-2
+    rho_u = 0.5 * (rho[:, :, :-1] + rho[:, :, 1:])         # (nz, ny, nx-1) <-> U 点 1..nx-1
+    du = (rho_u[:, :, 1:] * u[:, :, 2:-1] - rho_u[:, :, :-1] * u[:, :, 1:-2]) / dx
+    rho_v = 0.5 * (rho[:, :-1, :] + rho[:, 1:, :])         # (nz, ny-1, nx) <-> V 点 1..ny-1
+    dv = (rho_v[:, 1:, :] * v[:, 2:-1, :] - rho_v[:, :-1, :] * v[:, 1:-2, :]) / dx
+    # 垂直:ρ 平均到界面 k=1..nz-1,通量差 / dz -> 质量层 k = 1..nz-2
+    rho_w = 0.5 * (rho[:-1] + rho[1:])                     # (nz-1, ny, nx) <-> 界面 1..nz-1
+    dz = z[1:nz + 1] - z[0:nz]                             # (nz, ny, nx) 质量层厚度
+    dw = (rho_w[1:] * w[2:nz] - rho_w[:-1] * w[1:nz - 1]) / np.maximum(dz[1:-1], 1e-3)
+    # 汇总到同一内部体元(质量层 1..nz-2、j=1..ny-2、i=1..nx-2)
+    div = du[1:-1, 1:-1, :] + dv[1:-1, :, 1:-1] + dw[:, 1:-1, 1:-1]
+    rho_in = rho[1:-1, 1:-1, 1:-1]
+    out = {'shape': list(div.shape), 'dx_m': dx}
     for k in levels:
-        if k + 1 >= u.shape[0]:
+        if not 1 <= k <= nz - 2:
             continue
-        du = (rho_u[k, :, 1:] * u[k, :, 1:] - rho_u[k, :, :-1] * u[k, :, :-1]) / 1000.0
-        dv = (rho_v[k, 1:, :] * v[k, 1:, :] - rho_v[k, :-1, :] * v[k, :-1, :]) / 1000.0
-        dw = (rho_w[k + 1, :, :] * w[k + 1, :, :] - rho_w[k, :, :] * w[k, :, :]) \
-            / np.maximum(dz[k, :, :], 1e-3)
-        div = du[:, :] + dv[:, :] + dw[1:, 1:]
-        a = np.abs(div).ravel()
-        out[str(k)] = {'mean': float(div.mean()), 'std': float(div.std()),
+        d = div[k - 1]
+        a = np.abs(d).ravel()
+        rm = float(rho_in[k - 1].mean())
+        out[str(k)] = {'mean': float(d.mean()), 'std': float(d.std()),
                        'p50_abs': float(np.percentile(a, 50)),
                        'p95_abs': float(np.percentile(a, 95)),
-                       'p99_abs': float(np.percentile(a, 99))}
+                       'p99_abs': float(np.percentile(a, 99)),
+                       'rho_mean': rm,
+                       'p95_abs_over_rho': float(np.percentile(a, 95) / max(rm, 1e-9))}
     return out
 
 
@@ -156,8 +175,8 @@ def main():
     stamp = '20200715T120000'
     rep['spectra'] = tier_spectra(args.scheme, stamp, level=0)
     print("① 能谱: " + ", ".join(
-        "{} 7dx={:.0f}km k_pk={}".format(d, v['wavelength_7dx_km'],
-                                         int(np.argmax(v['P'])))
+        "{} 7dx={:.0f}km k_pk={} lam_pk={:.0f}km".format(
+            d, v['wavelength_7dx_km'], v['k_peak_energy'], v['wavelength_peak_km'])
         for d, v in rep['spectra'].items()))
 
     # ② 散度残差统计(三个时刻)

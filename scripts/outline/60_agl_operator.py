@@ -83,7 +83,7 @@ def back_to_model_levels(agl_vals, z_targets, z_agl_levels, max_h=1000.0):
         # 找到夹住该层高度的两个目标层
         idxs = np.searchsorted(z_targets, z_agl_levels[k], side='right') - 1
         for t in range(agl_vals.shape[0] - 1):
-            m = inside & (idxs == t)
+            m = inside[k] & (idxs == t)
             if not m.any():
                 continue
             wt = (lnt[t + 1] - lnz[k]) / (lnt[t + 1] - lnt[t])

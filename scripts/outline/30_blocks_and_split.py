@@ -33,6 +33,13 @@ def parse_stamp(name):
     return datetime.strptime(m.group(1), '%Y%m%dT%H%M%S') if m else None
 
 
+def _json_default(o):
+    """numpy 标量 -> Python 标量(分段/统计里普遍是 np.int64/np.float64)。"""
+    if hasattr(o, 'item'):
+        return o.item()
+    raise TypeError('not JSON serializable: {}'.format(type(o)))
+
+
 def daily_indicators(coarse_dir, scheme, limit=None):
     """逐日指标(粗端,域平均)。"""
     files = sorted(glob.glob(os.path.join(coarse_dir, "c_{}_*.npz".format(scheme))))
@@ -154,8 +161,8 @@ def main():
     blocks = []
     for bi, (i, j) in enumerate(segs):
         blocks.append({
-            'idx': bi, 'start': str(days[i]), 'end': str(days[j - 1]),
-            'n_days': j - i, 'split': labels[bi],
+            'idx': int(bi), 'start': str(days[i]), 'end': str(days[j - 1]),
+            'n_days': int(j - i), 'split': labels[bi],
             'indicators': {n: round(float(x), 4)
                            for n, x in zip(IND_NAMES, feats[i:j].mean(axis=0))},
         })
@@ -187,8 +194,10 @@ def main():
     }
     if not args.no_freeze:
         ensure_dir(os.path.dirname(out_json))
-        with open(out_json, 'w') as f:
-            json.dump(split, f, indent=2, ensure_ascii=False)
+        tmp = out_json + '.tmp'
+        with open(tmp, 'w') as f:
+            json.dump(split, f, indent=2, ensure_ascii=False, default=_json_default)
+        os.rename(tmp, out_json)   # 原子落盘:中途失败不留半个 split.json
         print("\n写出: " + out_json)
     print("\n小时数: " + json.dumps(split['counts']['coarse_hours']))
 
