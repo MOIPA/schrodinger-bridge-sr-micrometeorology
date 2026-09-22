@@ -237,6 +237,8 @@
       "P_at_7dx": 473.76023143320214,
       "k_peak_energy": 1,
       "wavelength_peak_km": 4860.0,
+      "slope_meso_2_to_7dx": -2.3403968526855716,
+      "slope_beyond_7dx": -3.724859314349214,
       "n_cells": [
         150,
         180
@@ -434,6 +436,8 @@
       "P_at_7dx": 381.7974674374253,
       "k_peak_energy": 1,
       "wavelength_peak_km": 1350.0,
+      "slope_meso_2_to_7dx": -2.5966963609085685,
+      "slope_beyond_7dx": -3.9053147808900426,
       "n_cells": [
         120,
         150
@@ -631,6 +635,8 @@
       "P_at_7dx": 348.55736708755285,
       "k_peak_energy": 1,
       "wavelength_peak_km": 450.0,
+      "slope_meso_2_to_7dx": -2.0541488154888876,
+      "slope_beyond_7dx": -4.017884311417175,
       "n_cells": [
         120,
         150
@@ -795,6 +801,8 @@
       "P_at_7dx": 74.58995225209343,
       "k_peak_energy": 1,
       "wavelength_peak_km": 120.0,
+      "slope_meso_2_to_7dx": -2.305962112655165,
+      "slope_beyond_7dx": -4.093607532599594,
       "n_cells": [
         99,
         120
@@ -938,39 +946,39 @@
   "shifts": {
     "20200702T170000": {
       "coarse_mean_speed": 6.721625804901123,
-      "shift_coarse_cells": [
-        3,
-        -2
+      "shift_9km_cells": [
+        0,
+        0
       ],
       "shift_km": [
-        27.0,
-        -18.0
+        0.0,
+        0.0
       ],
-      "corr": 0.10785060177135405
+      "corr": 0.9664745614040894
     },
     "20200702T180000": {
       "coarse_mean_speed": 6.679172992706299,
-      "shift_coarse_cells": [
-        -3,
-        1
+      "shift_9km_cells": [
+        0,
+        0
       ],
       "shift_km": [
-        -27.0,
-        9.0
+        0.0,
+        0.0
       ],
-      "corr": 0.0889906563256627
+      "corr": 0.9670285157360046
     },
     "20200702T160000": {
       "coarse_mean_speed": 6.672245025634766,
-      "shift_coarse_cells": [
-        3,
-        -3
+      "shift_9km_cells": [
+        0,
+        0
       ],
       "shift_km": [
-        27.0,
-        -27.0
+        0.0,
+        0.0
       ],
-      "corr": 0.19194746149243036
+      "corr": 0.9623240126617727
     }
   },
   "scheme_diff": {
