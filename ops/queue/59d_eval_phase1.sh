@@ -5,7 +5,7 @@ cd ~/schrodinger-bridge-sr-micrometeorology || exit 1
 ROOT=/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology
 PY3D=/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/bin/python
 EXP=ExperimentSchrodingerBridgeWindCanvas
-QUEUES="72rtxib e5v4p100ib 9654p6000ib 6148v100ib 7552v100 7k83 83a100ib"
+QUEUES="e5v4p100ib 6148v100ib 7552v100 62v100ib 83a100ib"  # 9654p6000ib 为 Blackwell,与 wind3d torch 不兼容
 ALL="base t13_most t13_mostflux t13_w t13_theta t13_ph t12_zagldiff t12_hgtdiff t15_z0 t15_z0_urban t15_z0_urban_wv t14_cos t14_noenc_cos t16_residual t17_coords"
 
 if [ "$1" != "--inner" ]; then

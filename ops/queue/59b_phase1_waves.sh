@@ -11,7 +11,10 @@ mkdir -p ops/result logs
 
 EXP=ExperimentSchrodingerBridgeWindCanvas
 RESULT_BASE=data/DL_result/$EXP
-QUEUES="72rtxib e5v4p100ib 9654p6000ib 6148v100ib 7552v100 7k83 83a100ib"
+# 队列白名单(59x_gpu_probe 实测):9654p6000ib = RTX PRO 6000 Blackwell(sm_120),
+# wind3d 的 torch 2.6+cu118 只支持到 sm_90 -> "no kernel image" 直接崩,禁用;
+# 72rtxib / 7k83 未验证(可能同为 Ada/Blackwell),暂不列入。
+QUEUES="e5v4p100ib 6148v100ib 7552v100 62v100ib 83a100ib"
 
 WAVE1="base t13_most t13_mostflux t13_w"
 WAVE2="t13_theta t13_ph t12_zagldiff t12_hgtdiff"
