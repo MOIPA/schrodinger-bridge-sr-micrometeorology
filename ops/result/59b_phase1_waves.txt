@@ -1,0 +1,33 @@
+===== 0. 队列里的 p1_ 作业 =====
+(无)
+
+===== 1. 找一个未完成的波次 =====
+波次 1: 缺 checkpoint 的配置: base t13_most t13_mostflux t13_w
+波次 2: 缺 checkpoint 的配置: t13_theta t13_ph t12_zagldiff t12_hgtdiff
+波次 3: 缺 checkpoint 的配置: t15_z0 t15_z0_urban t15_z0_urban_wv t14_cos
+波次 4: 缺 checkpoint 的配置: t14_noenc_cos t16_residual t17_coords
+
+===== 2. 提交波次 1:  base t13_most t13_mostflux t13_w =====
+>>> base -> 队列 e5v4p100ib
+Job <14207872> is submitted to queue <e5v4p100ib>.
+>>> t13_most -> 队列 e5v4p100ib
+Job <14207873> is submitted to queue <e5v4p100ib>.
+>>> t13_mostflux -> 队列 e5v4p100ib
+Job <14207874> is submitted to queue <e5v4p100ib>.
+>>> t13_w -> 队列 e5v4p100ib
+Job <14207875> is submitted to queue <e5v4p100ib>.
+
+===== 3. 90 秒后检查是否 PEND(PEND 立即换队列重投) =====
+14207872 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p1_base    Sep 27 22:09
+14207873 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p1_t13_most Sep 27 22:09
+14207874 ytw_tangzq PEND  e5v4p100ib login1         -        p1_t13_mostflux Sep 27 22:09
+14207875 ytw_tangzq PEND  e5v4p100ib login1         -        p1_t13_w   Sep 27 22:09
+>>> t13_mostflux(14207874) PEND,换队列重投
+Job <14207874> is being terminated
+>>> t13_mostflux -> 新队列 9654p6000ib
+Job <14207878> is submitted to queue <9654p6000ib>.
+>>> t13_w(14207875) PEND,换队列重投
+Job <14207875> is being terminated
+>>> t13_w -> 新队列 9654p6000ib
+Job <14207879> is submitted to queue <9654p6000ib>.
+===== 完成(每波结束后重跑本脚本提交下一波) =====
