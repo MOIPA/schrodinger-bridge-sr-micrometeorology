@@ -81,7 +81,7 @@ def main():
         assert not unmatched and len(dict_paths['train']) == 1, \
             '时间戳 {} ({}) 未被 split.json 正确归类'.format(stamp, iso)
 
-        # 2) Dataset 全输入组(比真冒烟多覆盖 w/most/flux/theta/ph/coszen/fine_static)
+        # 2) Dataset 全输入组(比真冒烟多覆盖 w/most/flux/theta/ph/coszen/细端几何与几何差/坐标)
         cfg = DatasetWindCanvasConfig(
             scheme='myj', coarse_dir=cdir, statics_dir=static_dir,
             target_levels=L, input_groups=list(INPUT_GROUPS), include_w=True,

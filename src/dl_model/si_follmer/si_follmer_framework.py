@@ -89,10 +89,12 @@ class SIFollmerConfig(YamlConfig):
     n_timestep: int
     eps: float
     formula: Literal["linear", "quadratic"]
-    loss_type: Literal["L2"] = "L2"
+    loss_type: Literal["L2", "L1"] = "L2"
     channel_weights: typing.Optional[list] = None  # 通道加权，如 [1,1,10, 1,1,10, ...]
     divergence_weight: float = 0.0  # 三维散度约束权重（∂U/∂x+∂V/∂y+∂W/∂z=0），0 表示不启用
     vorticity_weight: float = 0.0  # 涡度约束权重（大尺度涡度守恒），0 表示不启用
+    residual_output: bool = False  # True: 桥接对象为残差 y−y0(从 0 出发),采样时再加回 y0
+    state_layout: Literal["interleaved_uvw", "canvas"] = "interleaved_uvw"  # 物理约束项仅支持前者
 
 
 class StochasticInterpolantFollmer(nn.Module):
@@ -122,6 +124,15 @@ class StochasticInterpolantFollmer(nn.Module):
             logger.info(f"Channel weights enabled: {self.c.channel_weights}")
         else:
             self.channel_weights = None
+
+        # 物理约束项按通道三元组 [U,V,W]×层 组织,只适用于旧交错布局
+        if self.c.state_layout != "interleaved_uvw" and (
+            self.c.divergence_weight > 0 or self.c.vorticity_weight > 0
+        ):
+            raise ValueError(
+                "散度/涡度约束仅支持 state_layout=interleaved_uvw;"
+                "canvas 布局请保持权重为 0(阶段 2 重写约束口径)"
+            )
 
         # 三维散度物理约束 (∂U/∂x + ∂V/∂y + ∂W/∂z = 0)
         if self.c.divergence_weight > 0:
@@ -325,6 +336,11 @@ class StochasticInterpolantFollmer(nn.Module):
         # y0 and y1 have the same shape.
         # y_cond: condition for y0 and y1, such as building data, dim = batch, channel, y, and x
 
+        if self.c.residual_output:
+            # 残差参数化:桥接 0 -> (y1 − y0);采样端从 0 出发、末尾再加回 y0
+            y1 = y1 - y0
+            y0 = torch.zeros_like(y0)
+
         timestep, t = self._sample_timestep(batch_size=y0.shape[0])
         noise = torch.randn_like(y0)
 
@@ -334,27 +350,28 @@ class StochasticInterpolantFollmer(nn.Module):
         b_est = self.net(yt=yt, y_cond=y_cond, gamma=t)
 
         if self.c.loss_type == "L2":
-            diff_sq = (b_true - b_est) ** 2
-            if self.channel_weights is not None:
-                diff_sq = diff_sq * self.channel_weights
-            data_loss = torch.mean(diff_sq)
-
-            # NS 运动学约束
-            total_loss = data_loss
-
-            if self.c.divergence_weight > 0:
-                div_loss = self._calc_3d_divergence_loss(b_est)
-                total_loss = total_loss + self.c.divergence_weight * div_loss
-
-            if self.c.vorticity_weight > 0:
-                vort_loss = self._calc_vorticity_loss(b_est)
-                total_loss = total_loss + self.c.vorticity_weight * vort_loss
-
-            return total_loss
+            diff = (b_true - b_est) ** 2
+        elif self.c.loss_type == "L1":
+            diff = (b_true - b_est).abs()  # channel_weights 在 L1 下为线性加权
         else:
             raise NotImplementedError(
                 f"{self.c.loss_type} loss type is not implemented."
             )
+
+        if self.channel_weights is not None:
+            diff = diff * self.channel_weights
+        total_loss = torch.mean(diff)
+
+        # NS 运动学约束
+        if self.c.divergence_weight > 0:
+            div_loss = self._calc_3d_divergence_loss(b_est)
+            total_loss = total_loss + self.c.divergence_weight * div_loss
+
+        if self.c.vorticity_weight > 0:
+            vort_loss = self._calc_vorticity_loss(b_est)
+            total_loss = total_loss + self.c.vorticity_weight * vort_loss
+
+        return total_loss
 
     @torch.no_grad()
     def sample_y1_bare_diffusion(
@@ -363,6 +380,7 @@ class StochasticInterpolantFollmer(nn.Module):
         y_cond: torch.Tensor,
         n_return_step: Optional[int] = None,
         hide_progress_bar: bool = True,
+        add_noise: bool = True,
         **kwargs,
     ):
         #
@@ -376,7 +394,7 @@ class StochasticInterpolantFollmer(nn.Module):
             intermidiates = None
 
         b = y0.shape[0]  # batch size
-        yt = y0.detach().clone()
+        yt = (torch.zeros_like(y0) if self.c.residual_output else y0).detach().clone()
 
         # Time index here is from 0 to T
         for step in tqdm(range(0, self.c.n_timestep + 1), disable=hide_progress_bar):
@@ -388,12 +406,14 @@ class StochasticInterpolantFollmer(nn.Module):
             b_est = self.net(yt=yt, y_cond=y_cond, gamma=t)
             yt = yt + self.dt * b_est
 
-            if step < self.c.n_timestep:
+            if add_noise and step < self.c.n_timestep:
                 s = self.sigma[step]
                 yt = yt + s * torch.sqrt(self.dt) * torch.randn_like(yt)
             # Theoretically, noise is zero when step == N (i.e., self.sigma[N] == 0).
             # But, just in case, we skip adding noise when step == N.
 
+        if self.c.residual_output:
+            yt = yt + y0
         return yt, intermidiates
 
     @torch.no_grad()
@@ -403,6 +423,7 @@ class StochasticInterpolantFollmer(nn.Module):
         y_cond: torch.Tensor,
         n_return_step: Optional[int] = None,
         hide_progress_bar: bool = True,
+        add_noise: bool = True,
         **kwargs,
     ):
         #
@@ -416,7 +437,8 @@ class StochasticInterpolantFollmer(nn.Module):
             intermidiates = None
 
         b = y0.shape[0]  # batch size
-        yt = y0.detach().clone()
+        y0_eff = torch.zeros_like(y0) if self.c.residual_output else y0
+        yt = y0_eff.detach().clone()
 
         # Time index here is from 0 to T
         for step in tqdm(range(0, self.c.n_timestep + 1), disable=hide_progress_bar):
@@ -429,18 +451,21 @@ class StochasticInterpolantFollmer(nn.Module):
 
             if step == 0:
                 yt = yt + self.dt * b_est
-                s = self.sigma[step]
-                yt = yt + s * torch.sqrt(self.dt) * torch.randn_like(yt)
+                if add_noise:
+                    s = self.sigma[step]
+                    yt = yt + s * torch.sqrt(self.dt) * torch.randn_like(yt)
             else:
                 _step = torch.broadcast_to(torch.tensor(step), size=(b,))
                 _step = _step.to(self.device)
-                bF_est = self._calc_bF(b=b_est, y0=y0, yt=yt, timestep=_step)
+                bF_est = self._calc_bF(b=b_est, y0=y0_eff, yt=yt, timestep=_step)
                 yt = yt + self.dt * bF_est
 
-                if step < self.c.n_timestep:
+                if add_noise and step < self.c.n_timestep:
                     s = self.gF[step]
                     yt = yt + s * torch.sqrt(self.dt) * torch.randn_like(yt)
                 # Theoretically, noise is zero when step == N (i.e., self.gF[N] == 0).
                 # But, just in case, we skip adding noise when step == N.
 
+        if self.c.residual_output:
+            yt = yt + y0
         return yt, intermidiates

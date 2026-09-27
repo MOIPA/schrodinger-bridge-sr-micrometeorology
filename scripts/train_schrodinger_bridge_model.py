@@ -153,6 +153,17 @@ if __name__ == "__main__":
         )
         logger.info(f"DEBUG-DICT_LOADERS:{dict_loaders['train'].__len__()}")
 
+        # canvas 数据集:通道数由输入组/layer 集合决定,配置里的 in/out_channel 必须一致
+        ds_train = dict_loaders["train"].dataset
+        if hasattr(ds_train, "input_channel_names"):
+            n_in = len(ds_train.input_channel_names())
+            n_out = len(ds_train.target_channel_names())
+            assert n_out == config.model.out_channel, (
+                f"target 通道 {n_out} != model.out_channel {config.model.out_channel}")
+            assert n_in + n_out == config.model.in_channel, (
+                f"状态 {n_out} + 条件 {n_in} != model.in_channel {config.model.in_channel}")
+            logger.info(f"channel check: {n_out} (state) + {n_in} (cond) = {n_in + n_out}")
+
         set_seeds(config.train.seed)
         net = make_model(config.model).to(device)
         ema_net = copy.deepcopy(net).to(device)
@@ -216,7 +227,7 @@ if __name__ == "__main__":
             logger.info(f"Epoch {epoch+1} / {config.train.epochs}")
 
             losses = {}
-            for mode in ["train"]:
+            for mode in (["train", "valid"] if "valid" in dict_loaders else ["train"]):
                 loss = optimize_si(
                     dataloader=dict_loaders[mode],
                     si=si,
@@ -231,11 +242,16 @@ if __name__ == "__main__":
                 losses[mode] = loss
             all_scores.append(losses)
 
-            if losses["train"] < best_loss:
+            # 模型选择优先用验证损失;无 valid 加载器时回退训练损失
+            select_loss = losses.get("valid", losses["train"])
+            if select_loss < best_loss:
                 es_cnt = 0
                 best_epoch = epoch + 1
-                best_loss = losses["train"]
-                logger.info("Best loss is updated and ES count is reset.")
+                best_loss = select_loss
+                logger.info(
+                    f"Best loss is updated and ES count is reset "
+                    f"(train={losses['train']:.8f}, valid={losses.get('valid', float('nan')):.8f})"
+                )
                 
                 # --- Save comprehensive checkpoint ---
                 checkpoint = {
@@ -298,47 +314,53 @@ if __name__ == "__main__":
         logger.info("Make inference")
         logger.info("*" * 50 + "\n")
 
-        for epoch in range(0, config.train.epochs + 1, config.train.save_interval):
-            p = f"{result_dir_path}/model_weight_{epoch:04}.pth"
-            if not os.path.exists(p):
-                continue
-            pickle_file_path = f"{result_dir_path}/inference_{epoch:04}.pickle"
-            logger.info(f"\nInference at epoch {epoch}.")
-            start_time = time.time()
-
-            model, si, loader = get_model_si_loader(
-                org_config=config, model_weight_path=p, data_kind="valid", device=device
+        if not hasattr(config.data, "target_variable_names"):
+            logger.info(
+                "Skip post-train inference: canvas 数据集无 target_variable_names/"
+                "_scale_inversely,评估由 scripts/outline/90_agl_eval_phase1.py 统一做"
             )
-            y0, y1, y_cond = make_data_for_inference(n_data=60, dataset=loader.dataset)
+        else:
+            for epoch in range(0, config.train.epochs + 1, config.train.save_interval):
+                p = f"{result_dir_path}/model_weight_{epoch:04}.pth"
+                if not os.path.exists(p):
+                    continue
+                pickle_file_path = f"{result_dir_path}/inference_{epoch:04}.pickle"
+                logger.info(f"\nInference at epoch {epoch}.")
+                start_time = time.time()
 
-            set_seeds(config.train.seed)
-            pred, _ = si.sample_y1_bare_diffusion(
-                y0=y0.to(device), y_cond=y_cond.to(device), n_return_step=None
-            )
-
-            pred = pred.detach().cpu().to(torch.float32)
-            y1 = y1.detach().cpu().to(torch.float32)
-
-            # 对每个目标通道分别反标准化
-            target_names = config.data.target_variable_names
-            for ch_idx, var_name in enumerate(target_names):
-                pred[:, ch_idx] = loader.dataset._scale_inversely(
-                    pred[:, ch_idx], var_name
+                model, si, loader = get_model_si_loader(
+                    org_config=config, model_weight_path=p, data_kind="valid", device=device
                 )
-                y1[:, ch_idx] = loader.dataset._scale_inversely(
-                    y1[:, ch_idx], var_name
+                y0, y1, y_cond = make_data_for_inference(n_data=60, dataset=loader.dataset)
+
+                set_seeds(config.train.seed)
+                pred, _ = si.sample_y1_bare_diffusion(
+                    y0=y0.to(device), y_cond=y_cond.to(device), n_return_step=None
                 )
-            write_pickle({"y1": y1, "pred": pred}, pickle_file_path)
-            end_time = time.time()
 
-            logger.info(f"Inference out = {pickle_file_path}")
-            logger.info(f"Total elapsed time = {(end_time - start_time) / 60.} min\n")
+                pred = pred.detach().cpu().to(torch.float32)
+                y1 = y1.detach().cpu().to(torch.float32)
 
-            del model, si, loader, y0, y1, y_cond, pred
-            gc.collect()
-            torch.cuda.empty_cache()
+                # 对每个目标通道分别反标准化
+                target_names = config.data.target_variable_names
+                for ch_idx, var_name in enumerate(target_names):
+                    pred[:, ch_idx] = loader.dataset._scale_inversely(
+                        pred[:, ch_idx], var_name
+                    )
+                    y1[:, ch_idx] = loader.dataset._scale_inversely(
+                        y1[:, ch_idx], var_name
+                    )
+                write_pickle({"y1": y1, "pred": pred}, pickle_file_path)
+                end_time = time.time()
 
-        logger.info("End all inference processes.")
+                logger.info(f"Inference out = {pickle_file_path}")
+                logger.info(f"Total elapsed time = {(end_time - start_time) / 60.} min\n")
+
+                del model, si, loader, y0, y1, y_cond, pred
+                gc.collect()
+                torch.cuda.empty_cache()
+
+            logger.info("End all inference processes.")
 
     except Exception as e:
         logger.info("\n" + "*" * 50)

@@ -17,6 +17,7 @@ from datetime import datetime, timedelta
 
 import numpy as np
 import torch
+import warnings
 from torch.utils.data import Dataset
 
 from src.dl_config.base_config import BaseDatasetConfig
@@ -26,8 +27,60 @@ from src.utils.random_crop import RandomCrop2D
 INPUT_GROUPS = [
     'coarse_wind_uv', 'coarse_w', 'coarse_zagl', 'coarse_logz0',
     'coarse_most', 'coarse_flux', 'coarse_theta', 'coarse_ph',
-    'time_enc', 'coszen', 'fine_static',
+    'time_enc', 'coszen',
+    'fine_geom', 'fine_logz0', 'fine_urban', 'fine_waterveg',
+    'geom_diff_zagl', 'geom_diff_hgt', 'coords',
 ]
+
+
+def build_target_channel_names(L, include_w):
+    names = ['y_u_{:02d}'.format(k) for k in L] + ['y_v_{:02d}'.format(k) for k in L]
+    if include_w:
+        names += ['y_w_{:02d}'.format(k) for k in range(L[0], L[-1] + 2)]
+    names += ['y_u10', 'y_v10']
+    return names
+
+
+def build_input_channel_names(groups, L, include_w):
+    """与 `_inputs` 的通道拼接顺序严格一致(顺序即索引,两处必须共用本函数)。"""
+    WL = list(range(L[0], L[-1] + 2))
+    names = []
+    if 'coarse_wind_uv' in groups:
+        names += ['c_u_{:02d}'.format(k) for k in L] + ['c_v_{:02d}'.format(k) for k in L]
+    if 'coarse_w' in groups:
+        names += ['c_w_{:02d}'.format(k) for k in WL]
+    if 'coarse_zagl' in groups:
+        names += ['c_zagl_{:02d}'.format(k) for k in L]
+    if 'coarse_logz0' in groups:
+        names += ['c_logz0']
+    if 'coarse_most' in groups:
+        names += ['c_rmol', 'c_ust', 'c_pblh']
+    if 'coarse_flux' in groups:
+        names += ['c_hfx', 'c_t2', 'c_psfc']
+    if 'coarse_theta' in groups:
+        names += ['c_theta_{:02d}'.format(k) for k in L]
+    if 'coarse_ph' in groups:
+        names += ['c_ph_{:02d}'.format(k) for k in WL]
+    if 'time_enc' in groups:
+        names += ['hour_sin', 'hour_cos', 'doy_sin', 'doy_cos']
+    if 'coszen' in groups:
+        names += ['coszen']
+    if 'fine_geom' in groups:
+        names += ['f_hgt'] + ['f_zagl_{:02d}'.format(k) for k in L]
+    if 'fine_logz0' in groups:
+        names += ['f_logz0']
+    if 'fine_urban' in groups:
+        names += ['f_urban']
+    if 'fine_waterveg' in groups:
+        names += ['f_water', 'f_vegfra']
+    if 'geom_diff_zagl' in groups:
+        names += ['d_zagl_{:02d}'.format(k) for k in L]
+    if 'geom_diff_hgt' in groups:
+        names += ['d_hgt']
+    if 'coords' in groups:
+        names += ['xlat', 'xlong']
+    return names
+
 
 _STAMP = re.compile(r'_(\d{8}T\d{6})\.npz$')
 
@@ -62,6 +115,11 @@ class DatasetWindCanvasConfig(BaseDatasetConfig):
         assert self.dtype in ("float16", "float32")
         for g in self.input_groups:
             assert g in INPUT_GROUPS, "unknown input group " + g
+        if self.day_night_filter != "all":
+            # 细端 npz 不含 swdown,day/night 过滤无法在 canvas 上工作(评估侧按 cos SZA 分层)
+            warnings.warn("canvas 数据集不支持 day_night_filter={},已降级为 all".format(
+                self.day_night_filter))
+            self.day_night_filter = "all"
 
 
 class DatasetWindCanvas(Dataset):
@@ -87,42 +145,10 @@ class DatasetWindCanvas(Dataset):
 
     # ------------------------------------------------------------ 通道清单
     def target_channel_names(self):
-        names = ['y_u_{:02d}'.format(k) for k in self.L] + \
-                ['y_v_{:02d}'.format(k) for k in self.L]
-        if self.c.include_w:
-            names += ['y_w_{:02d}'.format(k) for k in self.WL]
-        names += ['y_u10', 'y_v10']
-        return names
+        return build_target_channel_names(self.L, self.c.include_w)
 
     def input_channel_names(self):
-        g = self.c.input_groups
-        names = []
-        if 'coarse_wind_uv' in g:
-            names += ['c_u_{:02d}'.format(k) for k in self.L]
-            names += ['c_v_{:02d}'.format(k) for k in self.L]
-        if 'coarse_w' in g:
-            names += ['c_w_{:02d}'.format(k) for k in self.WL]
-        if 'coarse_zagl' in g:
-            names += ['c_zagl_{:02d}'.format(k) for k in self.L]
-        if 'coarse_logz0' in g:
-            names += ['c_logz0']
-        if 'coarse_most' in g:
-            names += ['c_rmol', 'c_ust', 'c_pblh']
-        if 'coarse_flux' in g:
-            names += ['c_hfx', 'c_t2', 'c_psfc']
-        if 'coarse_theta' in g:
-            names += ['c_theta_{:02d}'.format(k) for k in self.L]
-        if 'coarse_ph' in g:
-            names += ['c_ph_{:02d}'.format(k) for k in self.WL]
-        if 'time_enc' in g:
-            names += ['hour_sin', 'hour_cos', 'doy_sin', 'doy_cos']
-        if 'coszen' in g:
-            names += ['coszen']
-        if 'fine_static' in g:
-            names += ['f_hgt']
-            names += ['f_zagl_{:02d}'.format(k) for k in self.L]
-            names += ['f_logz0', 'f_urban', 'f_water', 'f_vegfra']
-        return names
+        return build_input_channel_names(self.c.input_groups, self.L, self.c.include_w)
 
     def __len__(self):
         return len(self.ps)
@@ -215,22 +241,6 @@ class DatasetWindCanvas(Dataset):
             add('c_ph', self.stat.regrid_field(
                 (np.asarray(co['c_ph'], dtype=np.float32)[self.WL] - mu[:, None, None])
                 / sg[:, None, None], 'mass'))
-        if 'coszen' in g:
-            r = self.stat.regrid(np.asarray(co['c_coszen'], dtype=np.float32)[None], 'mass')
-            add('coszen', r[0].reshape(FINE_SHAPES['mass']))
-        if 'fine_static' in g:
-            s = self.sn['hgt_fine_raw']
-            add('f_hgt', ((np.asarray(self.stat.d['hgt_fine'], dtype=np.float32)
-                           - s['mu']) / s['sigma'])[None])
-            s = self.sn['zagl_mass_fine_log']
-            z = np.log(np.maximum(np.asarray(self.stat.d['zagl_mass_fine'],
-                                             dtype=np.float32)[self.L], 1e-3))
-            add('f_zagl', (z - s['mu']) / s['sigma'])
-            for key, name in (('logz0_fine', 'f_logz0'), ('urban_fine', 'f_urban'),
-                              ('water_fine', 'f_water'), ('vegfra_fine', 'f_vegfra')):
-                s = self.sn[key + '_raw']
-                add(name, (((np.asarray(self.stat.d[key], dtype=np.float32) - s['mu'])
-                            / s['sigma'])[None]))
         if 'time_enc' in g:
             dt = datetime.strptime(stamp, '%Y%m%dT%H%M%S') + timedelta(hours=8)  # 本地时
             hour = dt.hour + dt.minute / 60.0
@@ -239,6 +249,50 @@ class DatasetWindCanvas(Dataset):
                         np.sin(2 * np.pi * doy / 365.25), np.cos(2 * np.pi * doy / 365.25)):
                 add('time', np.full((1, self.c.hr_data_shape[0], self.c.hr_data_shape[1]),
                                     val, dtype=np.float32))
+        if 'coszen' in g:
+            r = self.stat.regrid(np.asarray(co['c_coszen'], dtype=np.float32)[None], 'mass')
+            add('coszen', r[0].reshape(FINE_SHAPES['mass']))
+        if 'fine_geom' in g:
+            s = self.sn['hgt_fine_raw']
+            add('f_hgt', ((np.asarray(self.stat.d['hgt_fine'], dtype=np.float32)
+                           - s['mu']) / s['sigma'])[None])
+            s = self.sn['zagl_mass_fine_log']
+            z = np.log(np.maximum(np.asarray(self.stat.d['zagl_mass_fine'],
+                                             dtype=np.float32)[self.L], 1e-3))
+            add('f_zagl', (z - s['mu']) / s['sigma'])
+        if 'fine_logz0' in g:
+            s = self.sn['logz0_fine_raw']
+            add('f_logz0', ((np.asarray(self.stat.d['logz0_fine'], dtype=np.float32)
+                             - s['mu']) / s['sigma'])[None])
+        if 'fine_urban' in g:
+            s = self.sn['urban_fine_raw']
+            add('f_urban', ((np.asarray(self.stat.d['urban_fine'], dtype=np.float32)
+                             - s['mu']) / s['sigma'])[None])
+        if 'fine_waterveg' in g:
+            for key, name in (('water_fine', 'f_water'), ('vegfra_fine', 'f_vegfra')):
+                s = self.sn[key + '_raw']
+                add(name, (((np.asarray(self.stat.d[key], dtype=np.float32) - s['mu'])
+                            / s['sigma'])[None]))
+        if 'geom_diff_zagl' in g:
+            # ln z_fine − 重网格后的 ln z_coarse;差值近零中心,只除以细端 σ(不减 μ)
+            s = self.sn['zagl_mass_fine_log']
+            zf = np.log(np.maximum(np.asarray(self.stat.d['zagl_mass_fine'],
+                                              dtype=np.float32)[self.L], 1e-3))
+            zc = np.log(np.maximum(np.asarray(self.stat.d['zagl_mass_coarse'],
+                                              dtype=np.float32)[self.L], 1e-3))
+            add('d_zagl', (zf - self.stat.regrid_field(zc, 'mass')) / s['sigma'])
+        if 'geom_diff_hgt' in g:
+            s = self.sn['hgt_fine_raw']
+            hf = np.asarray(self.stat.d['hgt_fine'], dtype=np.float32)
+            hc = self.stat.regrid_field(
+                np.asarray(self.stat.d['hgt_coarse'], dtype=np.float32)[None], 'mass')[0]
+            add('d_hgt', ((hf - hc) / s['sigma'])[None])
+        if 'coords' in g:
+            # T1.7 坐标泄漏对照:全域 min-max 归一到 [0,1]
+            for key, name in (('xlat_fine', 'xlat'), ('xlong_fine', 'xlong')):
+                v = np.asarray(self.stat.d[key], dtype=np.float32)
+                v = (v - float(v.min())) / max(float(v.max() - v.min()), 1e-6)
+                add(name, v[None])
         return torch.from_numpy(np.concatenate(chans, axis=0)).to(self.dtype)
 
     def __getitem__(self, idx):
