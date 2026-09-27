@@ -1,0 +1,82 @@
+===== 1. 生成 15 个阶段 1 配置(85) =====
+tag                  out  cond     in  groups
+base                  72    98    170  coarse_wind_uv,coarse_zagl,coarse_logz0,time_enc,fine_geom
+t12_zagldiff          72   121    193  coarse_wind_uv,coarse_zagl,coarse_logz0,time_enc,fine_geom,geom_diff_zagl
+t12_hgtdiff           72    99    171  coarse_wind_uv,coarse_zagl,coarse_logz0,time_enc,fine_geom,geom_diff_hgt
+t13_w                 72   122    194  coarse_wind_uv,coarse_zagl,coarse_logz0,time_enc,fine_geom,coarse_w
+t13_most              72   101    173  coarse_wind_uv,coarse_zagl,coarse_logz0,time_enc,fine_geom,coarse_most
+t13_mostflux          72   104    176  coarse_wind_uv,coarse_zagl,coarse_logz0,time_enc,fine_geom,coarse_most,coarse_flux
+t13_theta             72   121    193  coarse_wind_uv,coarse_zagl,coarse_logz0,time_enc,fine_geom,coarse_theta
+t13_ph                72   122    194  coarse_wind_uv,coarse_zagl,coarse_logz0,time_enc,fine_geom,coarse_ph
+t14_cos               72    99    171  coarse_wind_uv,coarse_zagl,coarse_logz0,time_enc,fine_geom,coszen
+t14_noenc_cos         72    95    167  coarse_wind_uv,coarse_zagl,coarse_logz0,fine_geom,coszen
+t15_z0                72    99    171  coarse_wind_uv,coarse_zagl,coarse_logz0,time_enc,fine_geom,fine_logz0
+t15_z0_urban          72   100    172  coarse_wind_uv,coarse_zagl,coarse_logz0,time_enc,fine_geom,fine_logz0,fine_urban
+t15_z0_urban_wv       72   102    174  coarse_wind_uv,coarse_zagl,coarse_logz0,time_enc,fine_geom,fine_logz0,fine_urban,fine_waterveg
+t16_residual          72    98    170  coarse_wind_uv,coarse_zagl,coarse_logz0,time_enc,fine_geom
+t17_coords            72   100    172  coarse_wind_uv,coarse_zagl,coarse_logz0,time_enc,fine_geom,coords
+生成 15 个配置 -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/phase1
+===== 2. 通道校验(81) =====
+config_wind_canvas_p1_base.yml             out= 72 cond= 98 in=170
+config_wind_canvas_p1_t12_hgtdiff.yml      out= 72 cond= 99 in=171
+config_wind_canvas_p1_t12_zagldiff.yml     out= 72 cond=121 in=193
+config_wind_canvas_p1_t13_most.yml         out= 72 cond=101 in=173
+config_wind_canvas_p1_t13_mostflux.yml     out= 72 cond=104 in=176
+config_wind_canvas_p1_t13_ph.yml           out= 72 cond=122 in=194
+config_wind_canvas_p1_t13_theta.yml        out= 72 cond=121 in=193
+config_wind_canvas_p1_t13_w.yml            out= 72 cond=122 in=194
+config_wind_canvas_p1_t14_cos.yml          out= 72 cond= 99 in=171
+config_wind_canvas_p1_t14_noenc_cos.yml    out= 72 cond= 95 in=167
+config_wind_canvas_p1_t15_z0.yml           out= 72 cond= 99 in=171
+config_wind_canvas_p1_t15_z0_urban.yml     out= 72 cond=100 in=172
+config_wind_canvas_p1_t15_z0_urban_wv.yml  out= 72 cond=102 in=174
+config_wind_canvas_p1_t16_residual.yml     out= 72 cond= 98 in=170
+config_wind_canvas_p1_t17_coords.yml       out= 72 cond=100 in=172
+CHANNEL CHECK OK (15 个配置)
+===== 3. canvas 数据集合成自检(80,含全部新输入组) =====
+manifest 划分: train=1 valid=0 test=0 unmatched=0
+通道: 输入 206 / 输出 72
+张量: x=(206, 96, 112) y=(72, 96, 112) y0=(72, 96, 112)
+  coarse_wind_uv   -> 46 通道
+  coarse_w         -> 24 通道
+  coarse_zagl      -> 23 通道
+  coarse_logz0     -> 1 通道
+  coarse_most      -> 3 通道
+  coarse_flux      -> 3 通道
+  coarse_theta     -> 23 通道
+  coarse_ph        -> 24 通道
+  time_enc         -> 4 通道
+  coszen           -> 1 通道
+  fine_geom        -> 24 通道
+  fine_logz0       -> 1 通道
+  fine_urban       -> 1 通道
+  fine_waterveg    -> 2 通道
+  geom_diff_zagl   -> 23 通道
+  geom_diff_hgt    -> 1 通道
+  coords           -> 2 通道
+y-y0 平均绝对差 1.3991(随机合成数据,仅验证非退化)
+FIXTURE OK
+===== 4. AGL 评估链路合成自检(89) =====
+1) AGL 算子解析自检:最大偏差 2.669e-06
+2) 累加器自检:pooled 3.999831 vs 暴力 3.999831(n=534600)
+3a) bootstrap 同分布:Δ=+0.00000 CI=[+0.00000,+0.00000]
+3b) bootstrap 已知偏差:Δ=+0.04401 CI=[+0.02020,+0.07283]
+AGL EVAL FIXTURE OK
+===== 5. 冒烟 base(L1,无物理约束) =====
+数据集大小: train=528 valid=72 test=144
+条件通道 98 / 状态(输出)通道 72 -> config in_channel 170 / out_channel 72
+batch: x=(2, 98, 96, 112) y=(2, 72, 96, 112) y0=(2, 72, 96, 112)
+统计: y 均值 0.5609 标准差 0.8953;y-y0 RMSE 0.6625
+SI 损失(L2, 无物理约束): 0.577721
+反向传播完成,梯度范数和 0.5904
+SMOKE OK
+smoke base exit=0
+===== 6. 冒烟 t16_residual(L1 + 残差输出) =====
+数据集大小: train=528 valid=72 test=144
+条件通道 98 / 状态(输出)通道 72 -> config in_channel 170 / out_channel 72
+batch: x=(2, 98, 96, 112) y=(2, 72, 96, 112) y0=(2, 72, 96, 112)
+统计: y 均值 0.5609 标准差 0.8953;y-y0 RMSE 0.6625
+SI 损失(L2, 无物理约束): 0.149975
+反向传播完成,梯度范数和 0.0534
+SMOKE OK
+smoke t16 exit=0

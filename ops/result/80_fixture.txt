@@ -1,0 +1,52 @@
+manifest 划分: train=1 valid=0 test=0 unmatched=0
+通道: 输入 180 / 输出 72
+张量: x=(180, 96, 112) y=(72, 96, 112) y0=(72, 96, 112)
+  coarse_wind_uv   -> 46 通道
+  coarse_w         -> 24 通道
+  coarse_zagl      -> 23 通道
+  coarse_logz0     -> 1 通道
+  coarse_most      -> 3 通道
+  coarse_flux      -> 3 通道
+  coarse_theta     -> 23 通道
+  coarse_ph        -> 24 通道
+  time_enc         -> 4 通道
+  coszen           -> 1 通道
+  fine_static      -> 28 通道
+y-y0 平均绝对差 1.4027(随机合成数据,仅验证非退化)
+FIXTURE OK
+数据集大小: train=1056 valid=144 test=288
+输入通道 74 (config 74) / 输出通道 72 (config 72)
+batch: x=(2, 74, 96, 112) y=(2, 72, 96, 112) y0=(2, 72, 96, 112)
+统计: y 均值 0.3660 标准差 0.7374;y-y0 RMSE 0.5523
+Traceback (most recent call last):
+  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/smoke_wind_canvas.py", line 80, in <module>
+    main()
+  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/smoke_wind_canvas.py", line 69, in main
+    loss = si(y0, y, x)
+  File "/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_model/si_follmer/si_follmer_framework.py", line 334, in forward
+    b_est = self.net(yt=yt, y_cond=y_cond, gamma=t)
+  File "/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_model/ddpm/unet_ddpm_v01.py", line 233, in forward
+    h = module(h, emb)
+  File "/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_model/ddpm/blocks.py", line 29, in forward
+    x = layer(x)
+  File "/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/nn/modules/conv.py", line 554, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+  File "/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/nn/modules/conv.py", line 549, in _conv_forward
+    return F.conv2d(
+RuntimeError: Given groups=1, weight of size [64, 74, 3, 3], expected input[2, 146, 96, 112] to have 74 channels, but got 146 channels instead
