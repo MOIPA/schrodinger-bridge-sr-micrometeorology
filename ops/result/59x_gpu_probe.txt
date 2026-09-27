@@ -1,0 +1,10 @@
+已提交 e5v4p100ib
+已提交 6148v100ib
+已提交 7552v100
+已提交 62v100ib
+已提交 72rtxib
+已提交 9654p6000ib
+已提交 7k83
+已提交 83a100ib
+探测作业已提交,约 1-2 分钟后用下面命令看结果:
+  cat ops/result/59x_gpu_probe.txt ; tail -5 logs/gpuprobe_*_*.out
