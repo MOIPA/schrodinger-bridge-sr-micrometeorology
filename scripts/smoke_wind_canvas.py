@@ -70,7 +70,10 @@ def main():
     net = make_model(config.model).to(device)
     si = StochasticInterpolantFollmer(config=config.si, neural_net=net)
     loss = si(y0, y, x)
-    print("SI 损失(L2, 无物理约束): {:.6f}".format(float(loss)))
+    print("SI 损失({}{}, 无物理约束): {:.6f}".format(
+        config.si.loss_type,
+        ", 残差输出" if config.si.residual_output else "",
+        float(loss)))
     assert torch.isfinite(loss), "损失非有限值"
     if args.backward:
         loss.backward()
