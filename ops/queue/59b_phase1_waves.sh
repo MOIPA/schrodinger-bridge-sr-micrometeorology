@@ -46,36 +46,36 @@ python -u scripts/train_schrodinger_bridge_model.py \
 
 echo "===== 0. 队列里的 p1_ 作业 =====" >> "$OUT"
 bjobs -w 2>/dev/null | grep "p1_" >> "$OUT" || echo "(无)" >> "$OUT"
-RUNNING=$(bjobs -w 2>/dev/null | grep -c "p1_")
-if [ "$RUNNING" -gt 0 ]; then
-  echo "" >> "$OUT"
-  echo "已有 $RUNNING 个 p1_ 作业(队列/运行中),本次不提交。" >> "$OUT"
-  cat "$OUT"; exit 0
-fi
+RUNNING_TAGS=$(bjobs -o job_name -noheader 2>/dev/null | sed -n 's/^p1_//p')
+echo "正在队列/运行的配置: ${RUNNING_TAGS:- 无}" >> "$OUT"
 
 echo "" >> "$OUT"
-echo "===== 1. 找一个未完成的波次 =====" >> "$OUT"
+echo "===== 1. 找第一个有缺口且未在跑的波次 =====" >> "$OUT"
 TOSUBMIT=""
 WAVE_NO=0
 for w in 1 2 3 4; do
   MISS=""
+  CAND=""
   for tag in ${WAVES[$((w-1))]}; do
     ck=$(ck_path "$tag")
-    if [ ! -f "$ck" ]; then MISS="$MISS $tag"; fi
+    if [ ! -f "$ck" ]; then
+      MISS="$MISS $tag"
+      if ! echo "$RUNNING_TAGS" | grep -qx "$tag"; then CAND="$CAND $tag"; fi
+    fi
   done
-  echo "波次 $w: 缺 checkpoint 的配置:${MISS:- 无}" >> "$OUT"
-  if [ -n "$MISS" ] && [ -z "$TOSUBMIT" ]; then
-    TOSUBMIT="$MISS"; WAVE_NO=$w
+  echo "波次 $w: 缺 checkpoint:${MISS:- 无};可补投:${CAND:- 无}" >> "$OUT"
+  if [ -n "$CAND" ] && [ -z "$TOSUBMIT" ]; then
+    TOSUBMIT="$CAND"; WAVE_NO=$w
   fi
 done
 
 if [ -z "$TOSUBMIT" ]; then
   echo "" >> "$OUT"
-  echo "全部 15 个配置已有 checkpoint,可跑 59d 评估。" >> "$OUT"
+  echo "没有可补投的配置(要么在跑,要么已完成)。若 15 个 checkpoint 齐全,可跑 59d 评估。" >> "$OUT"
   cat "$OUT"; exit 0
 fi
 echo "" >> "$OUT"
-echo "===== 2. 提交波次 $WAVE_NO: $TOSUBMIT =====" >> "$OUT"
+echo "===== 2. 提交(波次 $WAVE_NO): $TOSUBMIT =====" >> "$OUT"
 for tag in $TOSUBMIT; do
   Q=$(pick_queue)
   echo ">>> $tag -> 队列 $Q" >> "$OUT"
