@@ -27,11 +27,15 @@ cfg_path() { echo "configs/深圳/phase1/config_wind_canvas_p1_$1.yml"; }
 ck_path()  { echo "$RESULT_BASE/config_wind_canvas_p1_$1/checkpoint.pth"; }
 
 pick_queue() {
+  # 只在"没有排队积压(PEND=0)"的队列里挑,并选 RUN 最少的(近似空闲 GPU 最多)
+  local BEST="" BESTRUN=1000000 P R
   for q in $QUEUES; do
-    PEND=$(bqueues -w "$q" 2>/dev/null | tail -1 | awk '{print $9}')
-    if [ "$PEND" = "0" ] 2>/dev/null; then echo "$q"; return; fi
+    read -r P R <<< "$(bqueues -w "$q" 2>/dev/null | tail -1 | awk '{print $9, $10}')"
+    [ "$P" = "0" ] || continue
+    [ -z "$R" ] && continue
+    if [ "$R" -lt "$BESTRUN" ] 2>/dev/null; then BEST="$q"; BESTRUN="$R"; fi
   done
-  echo "83a100ib"
+  echo "${BEST:-83a100ib}"
 }
 
 submit_one() {  # $1=tag $2=queue
