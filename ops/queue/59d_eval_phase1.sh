@@ -18,15 +18,24 @@ if [ "$1" != "--inner" ]; then
   done
   [ -z "$Q" ] && Q="83a100ib"
   if [ "$1" = "--after-training" ]; then
-    # 依赖 15 个训练作业全部 ended(含 DONE/EXIT):训练跑完自动评估,不依赖本地会话
+    # 依赖"当前仍在系统里的"训练作业全部 ended(已结束的作业名 LSF 解析不到,不能写进依赖)
     DEP=""
+    ACTIVE=$(bjobs -o "job_name" -noheader 2>/dev/null | sed -n 's/^p1_//p')
     for t in $ALL; do
+      echo "$ACTIVE" | grep -qx "$t" || continue
       if [ -z "$DEP" ]; then DEP="ended(p1_$t)"; else DEP="$DEP && ended(p1_$t)"; fi
     done
-    echo "提交阶段 1 评估作业(依赖 15 个训练作业结束)-> 队列 $Q"
-    bsub -q "$Q" -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" \
-      -w "$DEP" -J "p1eval" -o "logs/p1eval_%J.out" -e "logs/p1eval_%J.err" \
-      "cd $ROOT && bash ops/queue/59d_eval_phase1.sh --inner"
+    if [ -z "$DEP" ]; then
+      echo "没有在跑的训练作业,直接提交评估 -> 队列 $Q"
+      bsub -q "$Q" -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" \
+        -J "p1eval" -o "logs/p1eval_%J.out" -e "logs/p1eval_%J.err" \
+        "cd $ROOT && bash ops/queue/59d_eval_phase1.sh --inner"
+    else
+      echo "提交阶段 1 评估作业(依赖在跑的训练作业结束)-> 队列 $Q"
+      bsub -q "$Q" -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" \
+        -w "$DEP" -J "p1eval" -o "logs/p1eval_%J.out" -e "logs/p1eval_%J.err" \
+        "cd $ROOT && bash ops/queue/59d_eval_phase1.sh --inner"
+    fi
   else
     echo "提交阶段 1 评估作业 -> 队列 $Q"
     bsub -q "$Q" -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" \
