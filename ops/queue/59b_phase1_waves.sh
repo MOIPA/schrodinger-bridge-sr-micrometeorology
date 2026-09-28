@@ -46,6 +46,13 @@ python -u scripts/train_schrodinger_bridge_model.py \
 
 echo "===== 0. 队列里的 p1_ 作业 =====" >> "$OUT"
 bjobs -w 2>/dev/null | grep "p1_" >> "$OUT" || echo "(无)" >> "$OUT"
+
+# PEND 规则:凡仍处 PEND 的 p1_ 作业一律清掉,交给本轮换队列重投(避免长期占位)
+bjobs -w 2>/dev/null | grep " p1_" | awk '$3=="PEND"{print $1, $7}' | while read JID JNAME; do
+  echo ">>> 清理 PEND 作业 $JID ($JNAME),本轮重投" >> "$OUT"
+  bkill "$JID" >> "$OUT" 2>&1
+done
+sleep 3
 RUNNING_TAGS=$(bjobs -o job_name -noheader 2>/dev/null | sed -n 's/^p1_//p')
 echo "正在队列/运行的配置: ${RUNNING_TAGS:- 无}" >> "$OUT"
 
