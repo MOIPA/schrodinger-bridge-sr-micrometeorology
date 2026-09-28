@@ -1,0 +1,36 @@
+===== 1. 队列里的 p1_ 作业 =====
+14217191 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p1_t13_theta Sep 28 21:59
+14217192 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p1_t13_ph  Sep 28 21:59
+14217196 ytw_tangzq RUN   6148v100ib login1      40*x003     p1_t12_zagldiff Sep 28 22:00
+14217197 ytw_tangzq PEND  6148v100ib login1         -        p1_t12_hgtdiff Sep 28 22:00
+
+===== 2. 逐配置:checkpoint / 最新日志尾 =====
+[OK] base  ckpt=09-27 22:43  Epoch 48 / 150  valid error: avg loss = 0.34863763
+[OK] t13_most  ckpt=09-28 03:00  Epoch 135 / 150  valid error: avg loss = 0.32406231
+[OK] t13_mostflux  ckpt=09-27 23:28  Epoch 70 / 150  valid error: avg loss = 0.34158082
+[OK] t13_w  ckpt=09-28 02:11  Epoch 148 / 150  valid error: avg loss = 0.11967200
+[..] t13_theta  1 epoch 行;   return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[..] t13_ph  1 epoch 行;   return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[..] t12_zagldiff  0 epoch 行; 
+[--] t12_hgtdiff  无日志
+[--] t15_z0  无日志
+[--] t15_z0_urban  无日志
+[--] t15_z0_urban_wv  无日志
+[--] t14_cos  无日志
+[--] t14_noenc_cos  无日志
+[--] t16_residual  无日志
+[--] t17_coords  无日志
+
+checkpoint 完成: 4 / 15
+
+===== 3. 错误扫描 =====
+(无)
+
+===== 4. GPU 队列现状 =====
+  72rtxib: PEND RUN = 0 16
+  e5v4p100ib: PEND RUN = 0 28
+  9654p6000ib: PEND RUN = 0 96
+  6148v100ib: PEND RUN = 40 40
+  7552v100: PEND RUN = 0 0
+  7k83: PEND RUN = 2 0
+  83a100ib: PEND RUN = 0 56
