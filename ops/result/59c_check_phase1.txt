@@ -1,36 +1,43 @@
 ===== 1. 队列里的 p1_ 作业 =====
+14217204 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t15_z0_urban Sep 28 22:05
+14217205 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t15_z0_urban_wv Sep 28 22:05
+14217206 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t14_cos Sep 28 22:05
+14217208 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t12_hgtdiff Sep 28 22:08
+14217248 ytw_tangzq RUN   62v100ib   login1      5*n002      p1_t15_z0  Sep 28 22:30
+14217249 ytw_tangzq RUN   62v100ib   login1      5*n002      p1_t14_noenc_cos Sep 28 22:30
+14217250 ytw_tangzq RUN   62v100ib   login1      5*n002      p1_t16_residual Sep 28 22:30
+14217251 ytw_tangzq RUN   62v100ib   login1      5*n002      p1_t17_coords Sep 28 22:30
 14217191 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p1_t13_theta Sep 28 21:59
 14217192 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p1_t13_ph  Sep 28 21:59
 14217196 ytw_tangzq RUN   6148v100ib login1      40*x003     p1_t12_zagldiff Sep 28 22:00
-14217197 ytw_tangzq PEND  6148v100ib login1         -        p1_t12_hgtdiff Sep 28 22:00
 
 ===== 2. 逐配置:checkpoint / 最新日志尾 =====
 [OK] base  ckpt=09-27 22:43  Epoch 48 / 150  valid error: avg loss = 0.34863763
 [OK] t13_most  ckpt=09-28 03:00  Epoch 135 / 150  valid error: avg loss = 0.32406231
 [OK] t13_mostflux  ckpt=09-27 23:28  Epoch 70 / 150  valid error: avg loss = 0.34158082
 [OK] t13_w  ckpt=09-28 02:11  Epoch 148 / 150  valid error: avg loss = 0.11967200
-[..] t13_theta  1 epoch 行;   return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
-[..] t13_ph  1 epoch 行;   return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
-[..] t12_zagldiff  0 epoch 行; 
-[--] t12_hgtdiff  无日志
-[--] t15_z0  无日志
-[--] t15_z0_urban  无日志
-[--] t15_z0_urban_wv  无日志
-[--] t14_cos  无日志
-[--] t14_noenc_cos  无日志
-[--] t16_residual  无日志
-[--] t17_coords  无日志
+[OK] t13_theta  ckpt=09-28 22:34  Epoch 12 / 150  valid error: avg loss = 0.33397264
+[OK] t13_ph  ckpt=09-28 22:34  Epoch 12 / 150  valid error: avg loss = 0.33282091
+[OK] t12_zagldiff  ckpt=09-28 22:35  Epoch 22 / 150  valid error: avg loss = 0.31871269
+[OK] t12_hgtdiff  ckpt=09-28 22:22  Epoch 6 / 150  valid error: avg loss = 0.35650198
+[OK] t15_z0  ckpt=09-28 22:47  Epoch 3 / 150  valid error: avg loss = 0.22899307
+[OK] t15_z0_urban  ckpt=09-28 22:21  Epoch 7 / 150  valid error: avg loss = 0.40065281
+[OK] t15_z0_urban_wv  ckpt=09-28 22:21  Epoch 7 / 150  valid error: avg loss = 0.40089023
+[OK] t14_cos  ckpt=09-28 22:21  Epoch 7 / 150  valid error: avg loss = 0.39830928
+[OK] t14_noenc_cos  ckpt=09-28 22:47  Epoch 3 / 150  valid error: avg loss = 0.34847938
+[OK] t16_residual  ckpt=09-28 22:47  Epoch 3 / 150  valid error: avg loss = 0.13763275
+[OK] t17_coords  ckpt=09-28 22:47  Epoch 3 / 150  valid error: avg loss = 0.33513758
 
-checkpoint 完成: 4 / 15
+checkpoint 完成: 15 / 15
 
 ===== 3. 错误扫描 =====
 (无)
 
 ===== 4. GPU 队列现状 =====
   72rtxib: PEND RUN = 0 16
-  e5v4p100ib: PEND RUN = 0 28
+  e5v4p100ib: PEND RUN = 14 28
   9654p6000ib: PEND RUN = 0 96
-  6148v100ib: PEND RUN = 40 40
-  7552v100: PEND RUN = 0 0
+  6148v100ib: PEND RUN = 0 40
+  7552v100: PEND RUN = 0 48
   7k83: PEND RUN = 2 0
   83a100ib: PEND RUN = 0 56
