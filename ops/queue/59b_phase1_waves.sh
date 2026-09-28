@@ -21,6 +21,7 @@ WAVE2="t13_theta t13_ph t12_zagldiff t12_hgtdiff"
 WAVE3="t15_z0 t15_z0_urban t15_z0_urban_wv t14_cos"
 WAVE4="t14_noenc_cos t16_residual t17_coords"
 WAVES=("$WAVE1" "$WAVE2" "$WAVE3" "$WAVE4")
+MODE="${1:-wave}"   # wave=按波次推进;all=一次填满所有缺口(会话可能断时用)
 
 cfg_path() { echo "configs/深圳/phase1/config_wind_canvas_p1_$1.yml"; }
 ck_path()  { echo "$RESULT_BASE/config_wind_canvas_p1_$1/checkpoint.pth"; }
@@ -48,7 +49,8 @@ echo "===== 0. 队列里的 p1_ 作业 =====" >> "$OUT"
 bjobs -w 2>/dev/null | grep "p1_" >> "$OUT" || echo "(无)" >> "$OUT"
 
 echo "" >> "$OUT"
-echo "===== 1. 找第一个有缺口的波次(RUN 中算在跑;PEND 算缺口,先清再换队列) =====" >> "$OUT"
+echo "===== 1. 找缺口(RUN 中算在跑;PEND 算缺口,先清再换队列) =====" >> "$OUT"
+echo "    模式: $MODE (wave=只投第一个有缺口的波次; all=填满所有波次的缺口)" >> "$OUT"
 RUN_NAMES=$(bjobs -o "job_name stat" -noheader 2>/dev/null | awk '$2=="RUN"{print $1}')
 TOSUBMIT=""
 WAVE_NO=0
@@ -63,8 +65,10 @@ for w in 1 2 3 4; do
     fi
   done
   echo "波次 $w: 缺 checkpoint:${MISS:- 无};可补投:${CAND:- 无}" >> "$OUT"
-  if [ -n "$CAND" ] && [ -z "$TOSUBMIT" ]; then
-    TOSUBMIT="$CAND"; WAVE_NO=$w
+  if [ -n "$CAND" ]; then
+    TOSUBMIT="$TOSUBMIT $CAND"
+    [ -z "$WAVE_NO" ] && WAVE_NO=$w
+    if [ "$MODE" != "all" ]; then break; fi
   fi
 done
 
