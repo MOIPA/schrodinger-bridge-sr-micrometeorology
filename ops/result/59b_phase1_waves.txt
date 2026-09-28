@@ -6,7 +6,10 @@
 14217191 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p1_t13_theta Sep 28 21:59
 14217192 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p1_t13_ph  Sep 28 21:59
 14217196 ytw_tangzq RUN   6148v100ib login1      40*x003     p1_t12_zagldiff Sep 28 22:00
-14217234 ytw_tangzq PEND  6148v100ib login1         -        p1_t15_z0  Sep 28 22:23
+14217240 ytw_tangzq PEND  6148v100ib login1         -        p1_t15_z0  Sep 28 22:27
+14217241 ytw_tangzq PEND  6148v100ib login1         -        p1_t14_noenc_cos Sep 28 22:27
+14217242 ytw_tangzq PEND  6148v100ib login1         -        p1_t16_residual Sep 28 22:27
+14217243 ytw_tangzq PEND  6148v100ib login1         -        p1_t17_coords Sep 28 22:27
 
 ===== 1. 找缺口(RUN 中算在跑;PEND 算缺口,先清再换队列) =====
     模式: all (wave=只投第一个有缺口的波次; all=填满所有波次的缺口)
@@ -14,45 +17,35 @@
 波次 2: 缺 checkpoint: 无;可补投: 无
 波次 3: 缺 checkpoint: t15_z0;可补投: t15_z0
 波次 4: 缺 checkpoint: t14_noenc_cos t16_residual t17_coords;可补投: t14_noenc_cos t16_residual t17_coords
->>> 清理 PEND 作业 14217234 (p1_t15_z0),换队列重投
-Job <14217234> is being terminated
+>>> 清理 PEND 作业 14217240 (p1_t15_z0),换队列重投
+Job <14217240> is being terminated
+>>> 清理 PEND 作业 14217241 (p1_t14_noenc_cos),换队列重投
+Job <14217241> is being terminated
+>>> 清理 PEND 作业 14217242 (p1_t16_residual),换队列重投
+Job <14217242> is being terminated
+>>> 清理 PEND 作业 14217243 (p1_t17_coords),换队列重投
+Job <14217243> is being terminated
 
 ===== 2. 提交(波次 0):   t15_z0  t14_noenc_cos t16_residual t17_coords =====
->>> t15_z0 -> 队列 e5v4p100ib
-Job <14217236> is submitted to queue <e5v4p100ib>.
->>> t14_noenc_cos -> 队列 e5v4p100ib
-Job <14217237> is submitted to queue <e5v4p100ib>.
->>> t16_residual -> 队列 e5v4p100ib
-Job <14217238> is submitted to queue <e5v4p100ib>.
->>> t17_coords -> 队列 e5v4p100ib
-Job <14217239> is submitted to queue <e5v4p100ib>.
+>>> t15_z0 -> 队列 62v100ib
+Job <14217248> is submitted to queue <62v100ib>.
+>>> t14_noenc_cos -> 队列 62v100ib
+Job <14217249> is submitted to queue <62v100ib>.
+>>> t16_residual -> 队列 62v100ib
+Job <14217250> is submitted to queue <62v100ib>.
+>>> t17_coords -> 队列 62v100ib
+Job <14217251> is submitted to queue <62v100ib>.
 
 ===== 3. 90 秒后检查是否 PEND(PEND 立即换队列重投) =====
 14217204 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t15_z0_urban Sep 28 22:05
 14217205 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t15_z0_urban_wv Sep 28 22:05
 14217206 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t14_cos Sep 28 22:05
 14217208 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t12_hgtdiff Sep 28 22:08
+14217248 ytw_tangzq RUN   62v100ib   login1      5*n002      p1_t15_z0  Sep 28 22:30
+14217249 ytw_tangzq RUN   62v100ib   login1      5*n002      p1_t14_noenc_cos Sep 28 22:30
+14217250 ytw_tangzq RUN   62v100ib   login1      5*n002      p1_t16_residual Sep 28 22:30
+14217251 ytw_tangzq RUN   62v100ib   login1      5*n002      p1_t17_coords Sep 28 22:30
 14217191 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p1_t13_theta Sep 28 21:59
 14217192 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p1_t13_ph  Sep 28 21:59
 14217196 ytw_tangzq RUN   6148v100ib login1      40*x003     p1_t12_zagldiff Sep 28 22:00
-14217236 ytw_tangzq PEND  e5v4p100ib login1         -        p1_t15_z0  Sep 28 22:25
-14217237 ytw_tangzq PEND  e5v4p100ib login1         -        p1_t14_noenc_cos Sep 28 22:25
-14217238 ytw_tangzq PEND  e5v4p100ib login1         -        p1_t16_residual Sep 28 22:25
-14217239 ytw_tangzq PEND  e5v4p100ib login1         -        p1_t17_coords Sep 28 22:25
->>> t15_z0(14217236) PEND,换队列重投
-Job <14217236> is being terminated
->>> t15_z0 -> 新队列 6148v100ib
-Job <14217240> is submitted to queue <6148v100ib>.
->>> t14_noenc_cos(14217237) PEND,换队列重投
-Job <14217237> is being terminated
->>> t14_noenc_cos -> 新队列 6148v100ib
-Job <14217241> is submitted to queue <6148v100ib>.
->>> t16_residual(14217238) PEND,换队列重投
-Job <14217238> is being terminated
->>> t16_residual -> 新队列 6148v100ib
-Job <14217242> is submitted to queue <6148v100ib>.
->>> t17_coords(14217239) PEND,换队列重投
-Job <14217239> is being terminated
->>> t17_coords -> 新队列 6148v100ib
-Job <14217243> is submitted to queue <6148v100ib>.
 ===== 完成(每波结束后重跑本脚本提交下一波) =====
