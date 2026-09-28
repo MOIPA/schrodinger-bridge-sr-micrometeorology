@@ -2,32 +2,35 @@
 14217204 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t15_z0_urban Sep 28 22:05
 14217205 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t15_z0_urban_wv Sep 28 22:05
 14217206 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t14_cos Sep 28 22:05
+14217208 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t12_hgtdiff Sep 28 22:08
 14217191 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p1_t13_theta Sep 28 21:59
 14217192 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p1_t13_ph  Sep 28 21:59
 14217196 ytw_tangzq RUN   6148v100ib login1      40*x003     p1_t12_zagldiff Sep 28 22:00
-14217203 ytw_tangzq PEND  6148v100ib login1         -        p1_t15_z0  Sep 28 22:05
+14217231 ytw_tangzq PEND  6148v100ib login1         -        p1_t15_z0  Sep 28 22:22
 
 ===== 1. 找第一个有缺口的波次(RUN 中算在跑;PEND 算缺口,先清再换队列) =====
 波次 1: 缺 checkpoint: 无;可补投: 无
-波次 2: 缺 checkpoint: t12_hgtdiff;可补投: t12_hgtdiff
-波次 3: 缺 checkpoint: t15_z0 t15_z0_urban t15_z0_urban_wv t14_cos;可补投: t15_z0
+波次 2: 缺 checkpoint: 无;可补投: 无
+波次 3: 缺 checkpoint: t15_z0;可补投: t15_z0
 波次 4: 缺 checkpoint: t14_noenc_cos t16_residual t17_coords;可补投: t14_noenc_cos t16_residual t17_coords
+>>> 清理 PEND 作业 14217231 (p1_t15_z0),换队列重投
+Job <14217231> is being terminated
 
-===== 2. 提交(波次 2):  t12_hgtdiff =====
->>> t12_hgtdiff -> 队列 e5v4p100ib
-Job <14217207> is submitted to queue <e5v4p100ib>.
+===== 2. 提交(波次 3):  t15_z0 =====
+>>> t15_z0 -> 队列 e5v4p100ib
+Job <14217232> is submitted to queue <e5v4p100ib>.
 
 ===== 3. 90 秒后检查是否 PEND(PEND 立即换队列重投) =====
 14217204 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t15_z0_urban Sep 28 22:05
 14217205 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t15_z0_urban_wv Sep 28 22:05
 14217206 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t14_cos Sep 28 22:05
+14217208 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t12_hgtdiff Sep 28 22:08
 14217191 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p1_t13_theta Sep 28 21:59
 14217192 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p1_t13_ph  Sep 28 21:59
 14217196 ytw_tangzq RUN   6148v100ib login1      40*x003     p1_t12_zagldiff Sep 28 22:00
-14217203 ytw_tangzq PEND  6148v100ib login1         -        p1_t15_z0  Sep 28 22:05
-14217207 ytw_tangzq PEND  e5v4p100ib login1         -        p1_t12_hgtdiff Sep 28 22:06
->>> t12_hgtdiff(14217207) PEND,换队列重投
-Job <14217207> is being terminated
->>> t12_hgtdiff -> 新队列 7552v100
-Job <14217208> is submitted to queue <7552v100>.
+14217232 ytw_tangzq PEND  e5v4p100ib login1         -        p1_t15_z0  Sep 28 22:22
+>>> t15_z0(14217232) PEND,换队列重投
+Job <14217232> is being terminated
+>>> t15_z0 -> 新队列 6148v100ib
+Job <14217234> is submitted to queue <6148v100ib>.
 ===== 完成(每波结束后重跑本脚本提交下一波) =====
