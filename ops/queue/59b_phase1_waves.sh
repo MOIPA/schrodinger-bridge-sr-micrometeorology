@@ -47,17 +47,9 @@ python -u scripts/train_schrodinger_bridge_model.py \
 echo "===== 0. 队列里的 p1_ 作业 =====" >> "$OUT"
 bjobs -w 2>/dev/null | grep "p1_" >> "$OUT" || echo "(无)" >> "$OUT"
 
-# PEND 规则:凡仍处 PEND 的 p1_ 作业一律清掉,交给本轮换队列重投(避免长期占位)
-bjobs -w 2>/dev/null | grep " p1_" | awk '$3=="PEND"{print $1, $7}' | while read JID JNAME; do
-  echo ">>> 清理 PEND 作业 $JID ($JNAME),本轮重投" >> "$OUT"
-  bkill "$JID" >> "$OUT" 2>&1
-done
-sleep 3
-RUNNING_TAGS=$(bjobs -o job_name -noheader 2>/dev/null | sed -n 's/^p1_//p')
-echo "正在队列/运行的配置: ${RUNNING_TAGS:- 无}" >> "$OUT"
-
 echo "" >> "$OUT"
-echo "===== 1. 找第一个有缺口且未在跑的波次 =====" >> "$OUT"
+echo "===== 1. 找第一个有缺口的波次(RUN 中算在跑;PEND 算缺口,先清再换队列) =====" >> "$OUT"
+RUN_NAMES=$(bjobs -o "job_name stat" -noheader 2>/dev/null | awk '$2=="RUN"{print $1}')
 TOSUBMIT=""
 WAVE_NO=0
 for w in 1 2 3 4; do
@@ -67,7 +59,7 @@ for w in 1 2 3 4; do
     ck=$(ck_path "$tag")
     if [ ! -f "$ck" ]; then
       MISS="$MISS $tag"
-      if ! echo "$RUNNING_TAGS" | grep -qx "$tag"; then CAND="$CAND $tag"; fi
+      if ! echo "$RUN_NAMES" | grep -qx "p1_$tag"; then CAND="$CAND $tag"; fi
     fi
   done
   echo "波次 $w: 缺 checkpoint:${MISS:- 无};可补投:${CAND:- 无}" >> "$OUT"
@@ -75,6 +67,16 @@ for w in 1 2 3 4; do
     TOSUBMIT="$CAND"; WAVE_NO=$w
   fi
 done
+
+# 只清理"本轮要补投"配置中仍 PEND 的旧作业(不误伤其它波次)
+for tag in $TOSUBMIT; do
+  for JID in $(bjobs -o "jobid job_name stat" -noheader 2>/dev/null \
+      | awk -v n="p1_$tag" '$2==n && $3=="PEND"{print $1}'); do
+    echo ">>> 清理 PEND 作业 $JID (p1_$tag),换队列重投" >> "$OUT"
+    bkill "$JID" >> "$OUT" 2>&1
+  done
+done
+[ -n "$TOSUBMIT" ] && sleep 3
 
 if [ -z "$TOSUBMIT" ]; then
   echo "" >> "$OUT"
