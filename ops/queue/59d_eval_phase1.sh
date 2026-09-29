@@ -6,7 +6,16 @@ ROOT=/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology
 PY3D=/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/bin/python
 EXP=ExperimentSchrodingerBridgeWindCanvas
 QUEUES="e5v4p100ib 6148v100ib 7552v100 62v100ib 83a100ib"  # 9654p6000ib 为 Blackwell,与 wind3d torch 不兼容
-ALL="base t13_most t13_mostflux t13_w t13_theta t13_ph t12_zagldiff t12_hgtdiff t15_z0 t15_z0_urban t15_z0_urban_wv t14_cos t14_noenc_cos t16_residual t17_coords"
+# PHASE=phase1(直接输出) | phase1r(残差输出,基准 = 已训好的 t16_residual)
+if [ "${PHASE:-phase1}" = "phase1r" ]; then
+  CFG_DIR="configs/深圳/phase1r"; CFG_PREFIX="config_wind_canvas_p1r_"
+  TAG_PREFIX="r_"; BASE_TAG="t16_residual"
+  ALL="t13_most t13_mostflux t13_w t13_theta t13_ph t12_zagldiff t12_hgtdiff t14_cos t14_noenc_cos t15_z0 t15_z0_urban t15_z0_urban_wv t17_coords"
+else
+  CFG_DIR="configs/深圳/phase1";  CFG_PREFIX="config_wind_canvas_p1_"
+  TAG_PREFIX=""; BASE_TAG="base"
+  ALL="base t13_most t13_mostflux t13_w t13_theta t13_ph t12_zagldiff t12_hgtdiff t15_z0 t15_z0_urban t15_z0_urban_wv t14_cos t14_noenc_cos t16_residual t17_coords"
+fi
 
 if [ "$1" != "--inner" ]; then
   git pull --no-rebase
@@ -57,12 +66,12 @@ $PY3D -u scripts/outline/91_bicubic_baseline.py --split test --out_dir results/p
 echo "" >> "$OUT"
 echo "===== 2. 各 run 的 AGL 评估(90) =====" >> "$OUT"
 for tag in $ALL; do
-  CK="data/DL_result/$EXP/config_wind_canvas_p1_$tag/checkpoint.pth"
+  CK="data/DL_result/$EXP/$CFG_PREFIX$tag/checkpoint.pth"
   if [ -f "$CK" ]; then
     echo "--- $tag ---" >> "$OUT"
     $PY3D -u scripts/outline/90_agl_eval_phase1.py \
-      --config_path "configs/深圳/phase1/config_wind_canvas_p1_$tag.yml" \
-      --checkpoint "$CK" --split test --tag "$tag" --out_dir results/phase1 >> "$OUT" 2>&1 \
+      --config_path "$CFG_DIR/$CFG_PREFIX$tag.yml" \
+      --checkpoint "$CK" --split test --tag "$TAG_PREFIX$tag" --out_dir results/phase1 >> "$OUT" 2>&1 \
       || echo "FAIL $tag" >> "$OUT"
   else
     echo "跳过 $tag(无 checkpoint)" >> "$OUT"
@@ -71,7 +80,11 @@ done
 
 echo "" >> "$OUT"
 echo "===== 3. 排序(92) =====" >> "$OUT"
-$PY3D -u scripts/outline/92_rank_phase1.py --results_dir results/phase1 --base_tag base >> "$OUT" 2>&1 \
+TAGS=""
+for tag in $ALL; do TAGS="$TAGS,$TAG_PREFIX$tag"; done
+TAGS="${TAGS#,},$BASE_TAG,baseline_bicubic"
+$PY3D -u scripts/outline/92_rank_phase1.py --results_dir results/phase1 --base_tag "$BASE_TAG" \
+  --tags "$TAGS" --out_prefix "results/phase1/ranking_${PHASE:-phase1}" >> "$OUT" 2>&1 \
   || echo "FAIL rank" >> "$OUT"
 
 git add ops/result results/phase1

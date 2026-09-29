@@ -20,11 +20,22 @@ WAVE1="base t13_most t13_mostflux t13_w"
 WAVE2="t13_theta t13_ph t12_zagldiff t12_hgtdiff"
 WAVE3="t15_z0 t15_z0_urban t15_z0_urban_wv t14_cos"
 WAVE4="t14_noenc_cos t16_residual t17_coords"
-WAVES=("$WAVE1" "$WAVE2" "$WAVE3" "$WAVE4")
+# phase1r(残差输出,2026-09-29 决定):基准 = 已训好的 t16_residual,故不含 base/t16
+R1="t13_most t13_mostflux t13_w t13_theta"
+R2="t13_ph t12_zagldiff t12_hgtdiff t14_cos"
+R3="t14_noenc_cos t15_z0 t15_z0_urban t15_z0_urban_wv"
+R4="t17_coords"
+if [ "${PHASE:-phase1}" = "phase1r" ]; then
+  WAVES=("$R1" "$R2" "$R3" "$R4")
+  CFG_DIR="configs/深圳/phase1r"; CFG_PREFIX="config_wind_canvas_p1r_"
+else
+  WAVES=("$WAVE1" "$WAVE2" "$WAVE3" "$WAVE4")
+  CFG_DIR="configs/深圳/phase1";  CFG_PREFIX="config_wind_canvas_p1_"
+fi
 MODE="${1:-wave}"   # wave=按波次推进;all=一次填满所有缺口(会话可能断时用)
 
-cfg_path() { echo "configs/深圳/phase1/config_wind_canvas_p1_$1.yml"; }
-ck_path()  { echo "$RESULT_BASE/config_wind_canvas_p1_$1/checkpoint.pth"; }
+cfg_path() { echo "$CFG_DIR/$CFG_PREFIX$1.yml"; }
+ck_path()  { echo "$RESULT_BASE/$CFG_PREFIX$1/checkpoint.pth"; }
 
 pick_queue() {
   # 只在"没有排队积压(PEND=0)"的队列里挑,并选 RUN 最少的(近似空闲 GPU 最多)
@@ -44,7 +55,7 @@ submit_one() {  # $1=tag $2=queue
     -J "p1_$tag" -o "logs/p1_${tag}_%J.out" -e "logs/p1_${tag}_%J.err" \
     "cd $ROOT && module load anaconda/3 && module load cuda/11.8.0 && source activate wind3d && \
 python -u scripts/train_schrodinger_bridge_model.py \
---config_path configs/深圳/phase1/config_wind_canvas_p1_${tag}.yml \
+--config_path $CFG_DIR/$CFG_PREFIX${tag}.yml \
 --experiment_name $EXP --device cuda:0 > logs/p1_${tag}.log 2>&1" \
     2>&1 | head -1
 }

@@ -120,17 +120,31 @@ def make_config(groups, si_extra):
 
 
 def main():
-    if not os.path.isdir(OUT_DIR):
-        os.makedirs(OUT_DIR)
+    import argparse
+    ap = argparse.ArgumentParser(description="阶段 1 配置生成")
+    ap.add_argument("--residual", action="store_true",
+                    help="生成残差输出版(phase1r):13 个消融配置,基准 = 已训好的 t16_residual")
+    args = ap.parse_args()
+    if args.residual:
+        out_dir = os.path.join(ROOT, "configs", "深圳", "phase1r")
+        prefix = "config_wind_canvas_p1r_"
+        variants = [(t, g, dict(e, residual_output=True)) for (t, g, e) in VARIANTS
+                    if t not in ("base", "t16_residual")]
+    else:
+        out_dir = OUT_DIR
+        prefix = "config_wind_canvas_p1_"
+        variants = VARIANTS
+    if not os.path.isdir(out_dir):
+        os.makedirs(out_dir)
     print('{:<18} {:>5} {:>5} {:>6}  {}'.format('tag', 'out', 'cond', 'in', 'groups'))
-    for tag, groups, si_extra in VARIANTS:
+    for tag, groups, si_extra in variants:
         cfg, n_out, n_cond = make_config(groups, si_extra)
-        path = os.path.join(OUT_DIR, 'config_wind_canvas_p1_{}.yml'.format(tag))
+        path = os.path.join(out_dir, prefix + tag + '.yml')
         with open(path, 'w') as f:
             yaml.safe_dump(cfg, f, sort_keys=False, allow_unicode=True)
         print('{:<18} {:>5} {:>5} {:>6}  {}'.format(
             tag, n_out, n_cond, n_out + n_cond, ','.join(groups)))
-    print('生成 {} 个配置 -> {}'.format(len(VARIANTS), OUT_DIR))
+    print('生成 {} 个配置 -> {}'.format(len(variants), out_dir))
 
 
 if __name__ == '__main__':
