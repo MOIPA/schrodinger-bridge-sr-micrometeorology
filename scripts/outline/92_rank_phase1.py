@@ -131,17 +131,15 @@ def main():
     lines.append("| run | 主指标 10–500 m 矢量 RMSE (m/s) | Δ vs base | 95% CI | 显著 |")
     lines.append("|---|---|---|---|---|")
     for r in rows:
-        if r['tag'] == 'baseline_y0_regrid':
-            lines.append("| {} | {:.4f} | {:+.4f} | [{:+.4f}, {:+.4f}] | {} |".format(
-                r['tag'], r['main_rmse_vec'], r['delta'], r['ci_lo'], r['ci_hi'],
-                "是" if r['significant'] else "否"))
-        elif r['tag'] == args.base_tag:
+        if r['tag'] == args.base_tag:
             lines.append("| {} (基准) | {:.4f} | — | — | — |".format(
                 r['tag'], r['main_rmse_vec']))
-        else:
-            lines.append("| {} | {:.4f} | {:+.4f} | [{:+.4f}, {:+.4f}] | {} |".format(
-                r['tag'], r['main_rmse_vec'], r['delta'], r['ci_lo'], r['ci_hi'],
-                "是" if r['significant'] else "否"))
+            continue
+        ci = "—" if r['ci_lo'] != r['ci_lo'] else "[{:+.4f}, {:+.4f}]".format(  # nan!=nan
+            r['ci_lo'], r['ci_hi'])
+        sig = "—" if r['ci_lo'] != r['ci_lo'] else ("是" if r['significant'] else "否")
+        lines.append("| {} | {:.4f} | {:+.4f} | {} | {} |".format(
+            r['tag'], r['main_rmse_vec'], r['delta'], ci, sig))
     md = "\n".join(lines) + "\n"
     with open(prefix + ".md", 'w') as f:
         f.write(md)

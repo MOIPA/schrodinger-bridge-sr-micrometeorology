@@ -116,8 +116,7 @@ def main():
 
     n_lev_agl = len(TARGET_AGL)
     hours, acc_model, acc_model_w = [], [], []
-    acc = new_acc(n_lev_agl)
-    acc_y0 = new_acc(n_lev_agl)
+    accs, accs_y0 = [], []          # 逐小时累加量,供 92 号配对 bootstrap
 
     done, cursor = 0, 0
     for batch in loader:
@@ -149,12 +148,15 @@ def main():
                 fields[name] = (m, agl_fields(m[0], m[1], m[2], m[3], m[4], tables))
             masks = build_masks(fields['truth'][1][0], fields['truth'][1][1],
                                 coszen, pblh, urban)
-            accum_hour(acc, fields['pred'][1][0], fields['pred'][1][1], fields['pred'][1][2],
+            acc_h, acc_h_y0 = new_acc(n_lev_agl), new_acc(n_lev_agl)
+            accum_hour(acc_h, fields['pred'][1][0], fields['pred'][1][1], fields['pred'][1][2],
                        fields['truth'][1][0], fields['truth'][1][1], fields['truth'][1][2],
                        masks)
-            accum_hour(acc_y0, fields['y0'][1][0], fields['y0'][1][1], fields['y0'][1][2],
+            accum_hour(acc_h_y0, fields['y0'][1][0], fields['y0'][1][1], fields['y0'][1][2],
                        fields['truth'][1][0], fields['truth'][1][1], fields['truth'][1][2],
                        masks)
+            accs.append(acc_h)
+            accs_y0.append(acc_h_y0)
             # 模式层(原生质量点)逐层:U/V 在 23 个质量层、W 在 24 个界面层,分开累加
             tu, tv, tw = fields['truth'][0][0], fields['truth'][0][1], fields['truth'][0][2]
             pu, pv, pw = fields['pred'][0][0], fields['pred'][0][1], fields['pred'][0][2]
@@ -171,22 +173,25 @@ def main():
         if args.max_frames > 0 and done >= args.max_frames:
             break
 
-    metrics = acc_metrics(acc)
+    acc = np.stack(accs)            # (n_hours, 11, 11, 6)
+    acc_y0 = np.stack(accs_y0)
+    acc_tot = acc.sum(axis=0)
+    metrics = acc_metrics(acc_tot)
     out = {
         'tag': tag, 'split': args.split, 'n_hours': len(hours),
         'config_path': args.config_path, 'checkpoint': args.checkpoint,
         'weights': args.weights, 'scheme': config.data.scheme,
         'target_levels': levels, 'agl_targets': TARGET_AGL.tolist(),
         'strata': STRATA, 'speed_bins': [3.0, 7.0],
-        'main_rmse_vec': pooled_rmse(acc, 'all', mask_idx)[0],
+        'main_rmse_vec': pooled_rmse(acc_tot, 'all', mask_idx)[0],
         'rmse_vec_all_per_level': metrics['rmse_vec'][:, STRATA.index('all')].tolist(),
         'rmse_w_all_per_level': metrics['rmse_w'][:, STRATA.index('all')].tolist(),
         'mae_vec_all_per_level': metrics['mae_vec'][:, STRATA.index('all')].tolist(),
         'speed_bias_all_per_level': metrics['speed_bias'][:, STRATA.index('all')].tolist(),
         'dir_err_all_per_level': metrics['dir_err_deg'][:, STRATA.index('all')].tolist(),
-        'by_stratum_main': {s: pooled_rmse(acc, s, mask_idx)[0] for s in STRATA},
-        'n_cells_main': {s: pooled_rmse(acc, s, mask_idx)[1] for s in STRATA},
-        'acc_y0_note': 'y0(粗端重网格)的同类累加量存在 npz 里,由 92 号脚本聚合',
+        'by_stratum_main': {s: pooled_rmse(acc_tot, s, mask_idx)[0] for s in STRATA},
+        'n_cells_main': {s: pooled_rmse(acc_tot, s, mask_idx)[1] for s in STRATA},
+        'acc_y0_note': 'y0(粗端重网格)的逐小时累加量存在 npz 的 acc_y0,由 92 号脚本聚合',
     }
     if not os.path.isdir(args.out_dir):
         os.makedirs(args.out_dir)

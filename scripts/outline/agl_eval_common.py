@@ -177,6 +177,13 @@ def paired_delta_ci(acc_a, acc_b, stratum, levels_idx, block=24, n_boot=2000, se
     """
     col = 1 if comp == 'vec' else 5
     si = STRATA.index(stratum)
+    if acc_a.ndim == 3 or acc_b.ndim == 3:
+        # 只有汇总累加量(无逐小时轴):只能给点估计,CI 记 nan
+        def _pool(acc):
+            s2 = acc[levels_idx, si, col].sum()
+            n = acc[levels_idx, si, 0].sum()
+            return float(np.sqrt(s2 / max(n, 1.0)))
+        return _pool(acc_a) - _pool(acc_b), float('nan'), float('nan')
     s2a = acc_a[:, levels_idx, si, col].sum(axis=-1)
     n_a = acc_a[:, levels_idx, si, 0].sum(axis=-1)
     s2b = acc_b[:, levels_idx, si, col].sum(axis=-1)
