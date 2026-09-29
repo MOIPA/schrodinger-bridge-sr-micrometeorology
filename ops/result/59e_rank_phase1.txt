@@ -1,0 +1,62 @@
+===== 92 排序(块长 24 h) =====
+run 数 16 / 小时数 144
+| run | 主指标 10–500 m 矢量 RMSE (m/s) | Δ vs base | 95% CI | 显著 |
+|---|---|---|---|---|
+| t16_residual | 0.9634 | -0.3473 | — | — |
+| baseline_y0_regrid | 1.1161 | -0.1947 | — | — |
+| t13_theta | 1.1394 | -0.1714 | — | — |
+| baseline_bicubic | 1.1617 | -0.1490 | — | — |
+| t15_z0_urban | 1.2555 | -0.0553 | — | — |
+| t14_noenc_cos | 1.2918 | -0.0190 | — | — |
+| t17_coords | 1.3012 | -0.0096 | — | — |
+| base (基准) | 1.3108 | — | — | — |
+| t15_z0 | 1.3166 | +0.0058 | — | — |
+| t12_hgtdiff | 1.3530 | +0.0423 | — | — |
+| t13_ph | 1.3951 | +0.0843 | — | — |
+| t12_zagldiff | 1.4811 | +0.1704 | — | — |
+| t15_z0_urban_wv | 1.4827 | +0.1719 | — | — |
+| t14_cos | 1.5807 | +0.2700 | — | — |
+| t13_mostflux | 1.7608 | +0.4501 | — | — |
+| t13_w | 1.9463 | +0.6356 | — | — |
+| t13_most | 1.9466 | +0.6359 | — | — |
+
+写出 results/phase1/ranking.csv / _perlevel.csv / _strata.csv / .md
+
+===== 结果文件 =====
+total 2058
+-rw-r--r-- 1 ytw_tangzq yutingwang  5063 Sep 29 22:17 baseline_bicubic_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang  2370 Sep 29 22:17 baseline_bicubic_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 38204 Sep 29 22:19 base_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang  2852 Sep 29 22:19 base_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang  1042 Sep 29 22:53 ranking.csv
+-rw-r--r-- 1 ytw_tangzq yutingwang   895 Sep 29 22:53 ranking.md
+-rw-r--r-- 1 ytw_tangzq yutingwang  5834 Sep 29 22:53 ranking_perlevel.csv
+-rw-r--r-- 1 ytw_tangzq yutingwang  1829 Sep 29 22:53 ranking_strata.csv
+-rw-r--r-- 1 ytw_tangzq yutingwang 38351 Sep 29 22:27 t12_hgtdiff_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang  2883 Sep 29 22:27 t12_hgtdiff_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 38106 Sep 29 22:26 t12_zagldiff_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang  2879 Sep 29 22:26 t12_zagldiff_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 38289 Sep 29 22:21 t13_mostflux_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang  2873 Sep 29 22:21 t13_mostflux_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 38247 Sep 29 22:20 t13_most_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang  2852 Sep 29 22:20 t13_most_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 38334 Sep 29 22:25 t13_ph_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang  2858 Sep 29 22:25 t13_ph_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 38631 Sep 29 22:24 t13_theta_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang  2885 Sep 29 22:24 t13_theta_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 39131 Sep 29 22:23 t13_w_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang  2849 Sep 29 22:23 t13_w_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 38447 Sep 29 22:32 t14_cos_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang  2868 Sep 29 22:32 t14_cos_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 38219 Sep 29 22:34 t14_noenc_cos_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang  2886 Sep 29 22:34 t14_noenc_cos_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 38987 Sep 29 22:29 t15_z0_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang  2864 Sep 29 22:29 t15_z0_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 38447 Sep 29 22:30 t15_z0_urban_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang  2879 Sep 29 22:30 t15_z0_urban_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 38493 Sep 29 22:31 t15_z0_urban_wv_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang  2883 Sep 29 22:31 t15_z0_urban_wv_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 39104 Sep 29 22:35 t16_residual_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang  2887 Sep 29 22:35 t16_residual_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 38400 Sep 29 22:36 t17_coords_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang  2886 Sep 29 22:36 t17_coords_summary.json
