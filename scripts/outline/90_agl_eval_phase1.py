@@ -114,8 +114,8 @@ def main():
 
     si = build_si(config, args.checkpoint, device, args.weights == "ema")
 
-    n_lev_agl, n_lev_model = len(TARGET_AGL), len(levels)
-    hours, acc_model = [], []
+    n_lev_agl = len(TARGET_AGL)
+    hours, acc_model, acc_model_w = [], [], []
     acc = new_acc(n_lev_agl)
     acc_y0 = new_acc(n_lev_agl)
 
@@ -155,13 +155,14 @@ def main():
             accum_hour(acc_y0, fields['y0'][1][0], fields['y0'][1][1], fields['y0'][1][2],
                        fields['truth'][1][0], fields['truth'][1][1], fields['truth'][1][2],
                        masks)
-            # 模式层(原生质量点)逐层:矢量平方误差和 + W 平方误差和
+            # 模式层(原生质量点)逐层:U/V 在 23 个质量层、W 在 24 个界面层,分开累加
             tu, tv, tw = fields['truth'][0][0], fields['truth'][0][1], fields['truth'][0][2]
             pu, pv, pw = fields['pred'][0][0], fields['pred'][0][1], fields['pred'][0][2]
+            ncells = float(tu.shape[1] * tu.shape[2])
             e2 = ((pu - tu) ** 2 + (pv - tv) ** 2).sum(axis=(1, 2))
             we2 = ((pw - tw) ** 2).sum(axis=(1, 2))
-            acc_model.append(np.stack([np.full(n_lev_model, float(tu.shape[1] * tu.shape[2])),
-                                       e2, we2], axis=-1))
+            acc_model.append(np.stack([np.full(e2.shape[0], ncells), e2], axis=-1))
+            acc_model_w.append(np.stack([np.full(we2.shape[0], ncells), we2], axis=-1))
             hours.append(datetime.strptime(stamp, '%Y%m%dT%H%M%S').strftime('%Y-%m-%dT%H:%M:%S'))
         cursor += pred.shape[0]
         done += pred.shape[0]
@@ -195,6 +196,7 @@ def main():
         hours=np.array(hours),
         acc_agl=acc,
         acc_model=np.stack(acc_model),
+        acc_model_w=np.stack(acc_model_w),
         acc_y0=acc_y0,
     )
     json_path = os.path.join(args.out_dir, "{}_summary.json".format(tag))
