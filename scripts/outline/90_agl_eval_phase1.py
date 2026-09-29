@@ -79,7 +79,7 @@ def main():
     ap = argparse.ArgumentParser(description="阶段 1 AGL 评估")
     ap.add_argument("--config_path", required=True)
     ap.add_argument("--checkpoint", required=True)
-    ap.add_argument("--split", default="test", choices=["valid", "test"])
+    ap.add_argument("--split", default="test", choices=["train", "valid", "test"])
     ap.add_argument("--out_dir", default="results/phase1")
     ap.add_argument("--tag", default=None)
     ap.add_argument("--device", default="cuda:0")
