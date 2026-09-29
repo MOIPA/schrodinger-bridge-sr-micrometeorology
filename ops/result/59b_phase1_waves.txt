@@ -2,21 +2,30 @@
 14226615 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p1_t13_most Sep 29 23:15
 14226616 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p1_t13_mostflux Sep 29 23:15
 14226629 ytw_tangzq RUN   6148v100ib login1      40*x003     p1_t13_w   Sep 29 23:16
-14226696 ytw_tangzq PEND  6148v100ib login1         -        p1_t13_theta Sep 29 23:51
+14226858 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t13_theta Sep 30 00:50
 
 ===== 1. 找缺口(RUN 中算在跑;PEND 算缺口,先清再换队列) =====
     模式: wave (wave=只投第一个有缺口的波次; all=填满所有波次的缺口)
-波次 1: 缺 checkpoint: t13_theta;可补投: t13_theta
->>> 清理 PEND 作业 14226696 (p1_t13_theta),换队列重投
-Job <14226696> is being terminated
+波次 1: 缺 checkpoint: 无;可补投: 无
+波次 2: 缺 checkpoint: t13_ph t12_zagldiff t12_hgtdiff t14_cos;可补投: t13_ph t12_zagldiff t12_hgtdiff t14_cos
 
-===== 2. 提交(波次 0):   t13_theta =====
->>> t13_theta -> 队列 7552v100
-Job <14226858> is submitted to queue <7552v100>.
+===== 2. 提交(波次 0):   t13_ph t12_zagldiff t12_hgtdiff t14_cos =====
+>>> t13_ph -> 队列 7552v100
+Job <14226951> is submitted to queue <7552v100>.
+>>> t12_zagldiff -> 队列 7552v100
+Job <14226952> is submitted to queue <7552v100>.
+>>> t12_hgtdiff -> 队列 7552v100
+Job <14226953> is submitted to queue <7552v100>.
+>>> t14_cos -> 队列 7552v100
+Job <14226954> is submitted to queue <7552v100>.
 
 ===== 3. 90 秒后检查是否 PEND(PEND 立即换队列重投) =====
 14226615 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p1_t13_most Sep 29 23:15
 14226616 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p1_t13_mostflux Sep 29 23:15
 14226629 ytw_tangzq RUN   6148v100ib login1      40*x003     p1_t13_w   Sep 29 23:16
 14226858 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t13_theta Sep 30 00:50
+14226951 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t13_ph  Sep 30 01:50
+14226952 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t12_zagldiff Sep 30 01:50
+14226953 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t12_hgtdiff Sep 30 01:50
+14226954 ytw_tangzq RUN   7552v100   login1      12*o004     p1_t14_cos Sep 30 01:50
 ===== 完成(每波结束后重跑本脚本提交下一波) =====
