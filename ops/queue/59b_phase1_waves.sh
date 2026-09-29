@@ -99,7 +99,16 @@ done
 
 if [ -z "$TOSUBMIT" ]; then
   echo "" >> "$OUT"
-  echo "没有可补投的配置(要么在跑,要么已完成)。若 15 个 checkpoint 齐全,可跑 59d 评估。" >> "$OUT"
+  echo "没有可补投的配置(要么在跑,要么已完成)。" >> "$OUT"
+  cat "$OUT"; exit 0
+fi
+
+# phase1r 硬闸门:第 3 波及以后必须等第一波的评估结果出来才投
+# (教训:2026-09-29 铺开 15 个 run 前没做试点,结果全部不可用)
+if [ "${PHASE:-phase1}" = "phase1r" ] && [ "$WAVE_NO" -ge 3 ] \
+   && [ ! -f results/phase1/ranking_phase1r.md ]; then
+  echo "" >> "$OUT"
+  echo "闸门:第一波评估结果尚未产生(results/phase1/ranking_phase1r.md 缺失),暂不投第 ${WAVE_NO} 波。" >> "$OUT"
   cat "$OUT"; exit 0
 fi
 echo "" >> "$OUT"
