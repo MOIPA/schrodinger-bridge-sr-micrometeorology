@@ -18,7 +18,7 @@ if [ "$1" != "--inner" ]; then
   echo "提交第一波闸门评估 -> 队列 $Q"
   bsub -q "$Q" -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" \
     -J "p1gate" -o "logs/p1gate_%J.out" -e "logs/p1gate_%J.err" \
-    "cd $ROOT && bash ops/queue/59h_gate_wave1.sh --inner"
+    "cd $ROOT && PHASE=${PHASE:-phase1r} bash ops/queue/59h_gate_wave1.sh --inner"
   exit 0
 fi
 

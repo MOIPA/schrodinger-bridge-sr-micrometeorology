@@ -38,18 +38,19 @@ if [ "$1" != "--inner" ]; then
       echo "没有在跑的训练作业,直接提交评估 -> 队列 $Q"
       bsub -q "$Q" -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" \
         -J "p1eval" -o "logs/p1eval_%J.out" -e "logs/p1eval_%J.err" \
-        "cd $ROOT && bash ops/queue/59d_eval_phase1.sh --inner"
+        "cd $ROOT && PHASE=${PHASE:-phase1} bash ops/queue/59d_eval_phase1.sh --inner"
+      # 注意:bsub 不继承父 shell 的环境变量,PHASE 必须写进 payload
     else
       echo "提交阶段 1 评估作业(依赖在跑的训练作业结束)-> 队列 $Q"
       bsub -q "$Q" -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" \
         -w "$DEP" -J "p1eval" -o "logs/p1eval_%J.out" -e "logs/p1eval_%J.err" \
-        "cd $ROOT && bash ops/queue/59d_eval_phase1.sh --inner"
+        "cd $ROOT && PHASE=${PHASE:-phase1} bash ops/queue/59d_eval_phase1.sh --inner"
     fi
   else
     echo "提交阶段 1 评估作业 -> 队列 $Q"
     bsub -q "$Q" -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" \
       -J "p1eval" -o "logs/p1eval_%J.out" -e "logs/p1eval_%J.err" \
-      "cd $ROOT && bash ops/queue/59d_eval_phase1.sh --inner"
+      "cd $ROOT && PHASE=${PHASE:-phase1} bash ops/queue/59d_eval_phase1.sh --inner"
   fi
   exit 0
 fi
