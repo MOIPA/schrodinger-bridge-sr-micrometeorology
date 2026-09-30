@@ -78,6 +78,18 @@ for tag in $ALL; do
   fi
 done
 
+# phase1r:基准 t16_residual 的配置在 phase1/,单独补评一次(补上逐小时累加量,才能出置信区间)
+if [ "$BASE_TAG" != "base" ]; then
+  CK="data/DL_result/$EXP/config_wind_canvas_p1_${BASE_TAG}/checkpoint.pth"
+  if [ -f "$CK" ]; then
+    echo "--- 补评基准 $BASE_TAG ---" >> "$OUT"
+    $PY3D -u scripts/outline/90_agl_eval_phase1.py \
+      --config_path "configs/深圳/phase1/config_wind_canvas_p1_${BASE_TAG}.yml" \
+      --checkpoint "$CK" --split test --tag "$BASE_TAG" --out_dir results/phase1 >> "$OUT" 2>&1 \
+      || echo "FAIL $BASE_TAG" >> "$OUT"
+  fi
+fi
+
 echo "" >> "$OUT"
 echo "===== 3. 排序(92) =====" >> "$OUT"
 TAGS=""

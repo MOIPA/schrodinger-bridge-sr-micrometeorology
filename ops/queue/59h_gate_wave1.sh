@@ -27,6 +27,15 @@ OUT=ops/result/59h_gate_wave1.txt
 : > "$OUT"
 mkdir -p results/phase1
 echo "===== wave-1 残差 run 评估 =====" >> "$OUT"
+# 基准 t16_residual 的配置在 phase1/,一并补评(补上逐小时累加量才能出置信区间)
+CK16="data/DL_result/$EXP/config_wind_canvas_p1_t16_residual/checkpoint.pth"
+if [ -f "$CK16" ]; then
+  echo "--- t16_residual(基准,补评) ---" >> "$OUT"
+  $PY3D -u scripts/outline/90_agl_eval_phase1.py \
+    --config_path "configs/深圳/phase1/config_wind_canvas_p1_t16_residual.yml" \
+    --checkpoint "$CK16" --split test --tag t16_residual --out_dir results/phase1 >> "$OUT" 2>&1 \
+    || echo "FAIL t16_residual" >> "$OUT"
+fi
 for t in t13_most t13_mostflux t13_w t13_theta; do
   CK="data/DL_result/$EXP/config_wind_canvas_p1r_$t/checkpoint.pth"
   if [ -f "$CK" ]; then

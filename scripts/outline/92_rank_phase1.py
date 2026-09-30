@@ -67,6 +67,7 @@ def main():
     print("run 数 {} / 小时数 {}".format(len(runs), len(hours)))
 
     base = runs[args.base_tag]['acc_agl']
+    pool_base, _ = pooled_rmse(base, 'all', main_idx)
     rows = []
     for tag, r in sorted(runs.items()):
         acc = r['acc_agl']
@@ -79,6 +80,8 @@ def main():
                                     n_boot=args.n_boot, seed=0)
         d12, lo12, hi12 = paired_delta_ci(acc, base, 'all', main_idx, block=12,
                                           n_boot=args.n_boot, seed=0)
+        # 点估计的 Δ 直接用两个汇总 RMSE 之差(不受累加量维数差异影响)
+        d = m - pool_base
         rows.append({'tag': tag, 'main_rmse_vec': m, 'delta': d, 'ci_lo': lo, 'ci_hi': hi,
                      'significant': bool(lo > 0 or hi < 0),
                      'delta_block12': d12, 'ci_lo_block12': lo12, 'ci_hi_block12': hi12,

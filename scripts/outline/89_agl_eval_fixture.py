@@ -98,6 +98,30 @@ def check_bootstrap():
     assert d1 > 0 and lo1 > 0, '已知变差的 CI 应完全在 0 之上'
 
 
+def check_mixed_dims():
+    """4 维(逐小时)与 3 维(仅汇总)累加量混用时的 Δ 必须等于两个汇总 RMSE 之差。"""
+    rng = np.random.default_rng(2)
+    T, n_lev = 40, len(TARGET_AGL)
+    si = STRATA.index('all')
+    n_cell = NY * NX
+    rmse_h = 0.5 * (1.0 + 0.2 * rng.standard_normal(T))
+    acc4 = np.zeros((T, n_lev, len(STRATA), N_ACC))
+    acc4[:, :, si, 0] = n_cell
+    acc4[:, :, si, 1] = (rmse_h ** 2 * n_cell)[:, None]
+    acc3 = acc4.sum(axis=0)                    # 旧评估:只有汇总
+    d, lo, hi = paired_delta_ci(acc3, acc4, 'all', main_levels_idx(), n_boot=50, seed=0)
+    print('4) 3维/4维混用:Δ={:+.6f} CI=({:s},{:s})'.format(d, str(lo), str(hi)))
+    assert abs(d) < 1e-9, '同数据的 3 维/4 维累加量 Δ 应为 0'
+    scale = acc4.copy()
+    scale[:, :, si, 1] = (1.2 * rmse_h ** 2 * n_cell)[:, None]
+    d2, _, _ = paired_delta_ci(scale.sum(axis=0), acc4, 'all', main_levels_idx(),
+                              n_boot=50, seed=0)
+    m_scale = np.sqrt(scale[..., si, 1].sum() / scale[..., si, 0].sum())
+    m_base = np.sqrt(acc4[..., si, 1].sum() / acc4[..., si, 0].sum())
+    print('   3维 vs 4维 已知偏差:Δ={:+.6f}(期望 {:+.6f})'.format(d2, m_scale - m_base))
+    assert abs(d2 - (m_scale - m_base)) < 1e-9, '3 维/4 维混用的 Δ 计算有误'
+
+
 def main():
     ap = argparse.ArgumentParser(description="阶段 1 评估链路合成自检")
     ap.add_argument("--static_dir", default="results/outline")
@@ -108,6 +132,7 @@ def main():
     check_agl_operator(statics, tables_glob)
     check_accumulator()
     check_bootstrap()
+    check_mixed_dims()
     print("AGL EVAL FIXTURE OK")
 
 
