@@ -1,0 +1,114 @@
+===== wave-1 残差 run 评估 =====
+--- t16_residual(基准,补评) ---
+评估 test: 144 帧(共 144 帧)
+/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
+  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:70: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+  u = t[0:n] * sigma['u']
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:71: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+  v = t[n:2 * n] * sigma['v']
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:72: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+  w = t[2 * n:2 * n + sigma['w'].shape[0]] * sigma['w']
+  ... 24 帧
+  ... 48 帧
+  ... 72 帧
+  ... 96 帧
+  ... 120 帧
+  ... 144 帧
+{"tag": "t16_residual", "n_hours": 144, "main_rmse_vec": 0.9634276394559378}
+写出 results/phase1/t16_residual_perhour.npz / results/phase1/t16_residual_summary.json
+--- t13_most ---
+评估 test: 144 帧(共 144 帧)
+/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
+  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:70: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+  u = t[0:n] * sigma['u']
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:71: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+  v = t[n:2 * n] * sigma['v']
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:72: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+  w = t[2 * n:2 * n + sigma['w'].shape[0]] * sigma['w']
+  ... 24 帧
+  ... 48 帧
+  ... 72 帧
+  ... 96 帧
+  ... 120 帧
+  ... 144 帧
+{"tag": "r_t13_most", "n_hours": 144, "main_rmse_vec": 0.9730714333103868}
+写出 results/phase1/r_t13_most_perhour.npz / results/phase1/r_t13_most_summary.json
+--- t13_mostflux ---
+评估 test: 144 帧(共 144 帧)
+/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
+  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:70: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+  u = t[0:n] * sigma['u']
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:71: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+  v = t[n:2 * n] * sigma['v']
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:72: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+  w = t[2 * n:2 * n + sigma['w'].shape[0]] * sigma['w']
+  ... 24 帧
+  ... 48 帧
+  ... 72 帧
+  ... 96 帧
+  ... 120 帧
+  ... 144 帧
+{"tag": "r_t13_mostflux", "n_hours": 144, "main_rmse_vec": 1.2063748959521639}
+写出 results/phase1/r_t13_mostflux_perhour.npz / results/phase1/r_t13_mostflux_summary.json
+--- t13_w ---
+评估 test: 144 帧(共 144 帧)
+/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
+  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:70: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+  u = t[0:n] * sigma['u']
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:71: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+  v = t[n:2 * n] * sigma['v']
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:72: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+  w = t[2 * n:2 * n + sigma['w'].shape[0]] * sigma['w']
+  ... 24 帧
+  ... 48 帧
+  ... 72 帧
+  ... 96 帧
+  ... 120 帧
+  ... 144 帧
+{"tag": "r_t13_w", "n_hours": 144, "main_rmse_vec": 1.08433487124438}
+写出 results/phase1/r_t13_w_perhour.npz / results/phase1/r_t13_w_summary.json
+--- t13_theta ---
+评估 test: 144 帧(共 144 帧)
+/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
+  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:70: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+  u = t[0:n] * sigma['u']
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:71: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+  v = t[n:2 * n] * sigma['v']
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:72: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+  w = t[2 * n:2 * n + sigma['w'].shape[0]] * sigma['w']
+  ... 24 帧
+  ... 48 帧
+  ... 72 帧
+  ... 96 帧
+  ... 120 帧
+  ... 144 帧
+{"tag": "r_t13_theta", "n_hours": 144, "main_rmse_vec": 0.9721365148839656}
+写出 results/phase1/r_t13_theta_perhour.npz / results/phase1/r_t13_theta_summary.json
+
+===== 排序(与残差基准/基线)=====
+run 数 6 / 小时数 144
+| run | 主指标 10–500 m 矢量 RMSE (m/s) | Δ vs base | 95% CI | 显著 |
+|---|---|---|---|---|
+| t16_residual (基准) | 0.9634 | — | — | — |
+| r_t13_theta | 0.9721 | +0.0087 | [+0.0043, +0.0130] | 是 |
+| r_t13_most | 0.9731 | +0.0096 | [-0.0234, +0.0440] | 否 |
+| r_t13_w | 1.0843 | +0.1209 | [+0.1142, +0.1284] | 是 |
+| baseline_y0_regrid | 1.1161 | +0.1526 | [+0.0936, +0.2147] | 是 |
+| baseline_bicubic | 1.1617 | +0.1983 | — | — |
+| r_t13_mostflux | 1.2064 | +0.2429 | [+0.2128, +0.2754] | 是 |
+
+写出 results/phase1/ranking_phase1r_gate.csv / _perlevel.csv / _strata.csv / .md
+| run | 主指标 10–500 m 矢量 RMSE (m/s) | Δ vs base | 95% CI | 显著 |
+|---|---|---|---|---|
+| t16_residual (基准) | 0.9634 | — | — | — |
+| r_t13_theta | 0.9721 | +0.0087 | [+0.0043, +0.0130] | 是 |
+| r_t13_most | 0.9731 | +0.0096 | [-0.0234, +0.0440] | 否 |
+| r_t13_w | 1.0843 | +0.1209 | [+0.1142, +0.1284] | 是 |
+| baseline_y0_regrid | 1.1161 | +0.1526 | [+0.0936, +0.2147] | 是 |
+| baseline_bicubic | 1.1617 | +0.1983 | — | — |
+| r_t13_mostflux | 1.2064 | +0.2429 | [+0.2128, +0.2754] | 是 |
