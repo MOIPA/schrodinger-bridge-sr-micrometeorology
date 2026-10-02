@@ -157,9 +157,9 @@ def main():
         B = pred.shape[0]
 
         for s, t in (('pred', pred), ('truth', y), ('y0', y0u)):
-            u, v, w, u10, v10 = EVAL90.split_denorm(t, levels, sigma)
-            u, v, w = u.to(device), v.to(device), w.to(device)
-            u10, v10 = u10.to(device), v10.to(device)
+            # split_denorm 只接受单帧 (C,H,W);逐样本拆再叠回 batch 维
+            parts = [EVAL90.split_denorm(t[b], levels, sigma) for b in range(B)]
+            u, v, w, u10, v10 = [torch.stack(z).to(device) for z in zip(*parts)]
 
             # ① 散度残差 ∇·(ρu)(画布 C 网格,与训练损失同一算子)
             div = pc.divergence_rho_u(u, v, w, rho, dx, dz_t)          # (B,L,99,120)

@@ -107,7 +107,7 @@ cat results/phase2/ranking_phase2_gate.md
 echo ""
 echo "===== 4. 净效应表(97) ====="
 $PY3D -u scripts/outline/97_phase2_tables.py --results_dir results/phase2 --base_tag "$BASE_TAG" \
-  --diag_tags "$TAGS_CSV" || echo "FAIL tables"
+  --rank_csv results/phase2/ranking_phase2_gate.csv --diag_tags "$TAGS_CSV" || echo "FAIL tables"
 
 echo ""
 echo "===== 5. 人工判定 ====="
