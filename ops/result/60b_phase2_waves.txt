@@ -1,48 +1,31 @@
 ===== 0. 队列里的 p2_ 作业 =====
-14249121 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p2_l2      Oct  2 17:25
-
-===== 1. W2 提交清单: p2_spec p2_ext p2_vort p2_div_lo p2_div_hi p2_div_mid_warm =====
->>> p2_spec -> 队列 6148v100ib
-Job <14250623> is submitted to queue <6148v100ib>.
->>> p2_ext -> 队列 6148v100ib
-Job <14250624> is submitted to queue <6148v100ib>.
->>> p2_vort -> 队列 6148v100ib
-Job <14250625> is submitted to queue <6148v100ib>.
->>> p2_div_lo -> 队列 6148v100ib
-Job <14250626> is submitted to queue <6148v100ib>.
->>> p2_div_hi -> 队列 6148v100ib
-Job <14250627> is submitted to queue <6148v100ib>.
->>> p2_div_mid_warm -> 队列 6148v100ib
-Job <14250628> is submitted to queue <6148v100ib>.
-
-===== 2. 90 秒后 PEND 检查(PEND 立即换队列重投) =====
+14250629 ytw_tangzq RUN   7552v100   login1      12*o004     p2_ext     Oct  2 23:18
+14250630 ytw_tangzq RUN   7552v100   login1      12*o004     p2_vort    Oct  2 23:18
+14250631 ytw_tangzq RUN   7552v100   login1      12*o004     p2_div_lo  Oct  2 23:18
+14250632 ytw_tangzq RUN   7552v100   login1      12*o004     p2_div_hi  Oct  2 23:18
 14249121 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p2_l2      Oct  2 17:25
 14250623 ytw_tangzq RUN   6148v100ib login1      40*x003     p2_spec    Oct  2 23:17
-14250624 ytw_tangzq PEND  6148v100ib login1         -        p2_ext     Oct  2 23:17
-14250625 ytw_tangzq PEND  6148v100ib login1         -        p2_vort    Oct  2 23:17
-14250626 ytw_tangzq PEND  6148v100ib login1         -        p2_div_lo  Oct  2 23:17
-14250627 ytw_tangzq PEND  6148v100ib login1         -        p2_div_hi  Oct  2 23:17
-14250628 ytw_tangzq PEND  6148v100ib login1         -        p2_div_mid_warm Oct  2 23:17
->>> p2_ext(14250624) PEND,换队列重投
-Job <14250624> is being terminated
->>> p2_ext -> 新队列 7552v100
-Job <14250629> is submitted to queue <7552v100>.
->>> p2_vort(14250625) PEND,换队列重投
-Job <14250625> is being terminated
->>> p2_vort -> 新队列 7552v100
-Job <14250630> is submitted to queue <7552v100>.
->>> p2_div_lo(14250626) PEND,换队列重投
-Job <14250626> is being terminated
->>> p2_div_lo -> 新队列 7552v100
-Job <14250631> is submitted to queue <7552v100>.
->>> p2_div_hi(14250627) PEND,换队列重投
-Job <14250627> is being terminated
->>> p2_div_hi -> 新队列 7552v100
-Job <14250632> is submitted to queue <7552v100>.
->>> p2_div_mid_warm(14250628) PEND,换队列重投
-Job <14250628> is being terminated
->>> p2_div_mid_warm -> 新队列 7552v100
-Job <14250633> is submitted to queue <7552v100>.
+14250633 ytw_tangzq PEND  7552v100   login1         -        p2_div_mid_warm Oct  2 23:18
+
+===== 1. W2 提交清单: p2_spec p2_ext p2_vort p2_div_lo p2_div_hi p2_div_mid_warm =====
+[跳过] p2_spec 已有 checkpoint
+[跳过] p2_ext 正在 RUN
+[跳过] p2_vort 正在 RUN
+[跳过] p2_div_lo 正在 RUN
+[跳过] p2_div_hi 正在 RUN
+>>> 清理 PEND 作业 14250633 (p2_div_mid_warm),换队列重投
+Job <14250633> is being terminated
+>>> p2_div_mid_warm -> 队列 62v100ib
+Job <14250804> is submitted to queue <62v100ib>.
+
+===== 2. 90 秒后 PEND 检查(PEND 立即换队列重投) =====
+14250804 ytw_tangzq RUN   62v100ib   login1      5*n002      p2_div_mid_warm Oct  2 23:20
+14250629 ytw_tangzq RUN   7552v100   login1      12*o004     p2_ext     Oct  2 23:18
+14250630 ytw_tangzq RUN   7552v100   login1      12*o004     p2_vort    Oct  2 23:18
+14250631 ytw_tangzq RUN   7552v100   login1      12*o004     p2_div_lo  Oct  2 23:18
+14250632 ytw_tangzq RUN   7552v100   login1      12*o004     p2_div_hi  Oct  2 23:18
+14249121 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p2_l2      Oct  2 17:25
+14250623 ytw_tangzq RUN   6148v100ib login1      40*x003     p2_spec    Oct  2 23:17
 
 ===== 3. 后续 =====
 查状态: bash ops/queue/60c_check_phase2.sh
