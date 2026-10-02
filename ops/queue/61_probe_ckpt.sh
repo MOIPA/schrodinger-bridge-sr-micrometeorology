@@ -31,10 +31,12 @@ if [ "${GPU:-0}" = "1" ]; then
     if [ "$PEND" = "0" ] 2>/dev/null; then Q="$q"; break; fi
   done
   [ -z "$Q" ] && Q="83a100ib"
+  # GPU 计算节点 PATH 可能没有 git(实测报 git: command not found,结果回传会静默失败)
+  GITDIR=$(dirname "$(command -v git)")
   echo "提交 $TAG 探针 -> $Q"
   bsub -q "$Q" -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" \
     -J "probe_${TAG}" -o "logs/probe_${TAG}_%J.out" \
-    "cd $ROOT && bash ops/queue/61_probe_ckpt.sh $TAG $SPLIT $NB cuda:0 > logs/probe_${TAG}_job.log 2>&1"
+    "cd $ROOT && export PATH=$GITDIR:\$PATH && bash ops/queue/61_probe_ckpt.sh $TAG $SPLIT $NB cuda:0 > logs/probe_${TAG}_job.log 2>&1"
   exit 0
 fi
 

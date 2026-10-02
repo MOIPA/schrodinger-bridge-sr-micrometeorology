@@ -20,10 +20,12 @@ if [ "$1" != "--inner" ]; then
     if [ "$PEND" = "0" ] 2>/dev/null; then Q="$q"; break; fi
   done
   [ -z "$Q" ] && Q="83a100ib"
+  # GPU 计算节点 PATH 可能没有 git(实测报 git: command not found,结果回传会静默失败)
+  GITDIR=$(dirname "$(command -v git)")
   echo "提交阶段 2 权重探针(约 10 分钟)-> 队列 $Q"
   bsub -q "$Q" -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" \
     -J "p2probe" -o "logs/p2probe_%J.out" -e "logs/p2probe_%J.err" \
-    "cd $ROOT && bash ops/queue/60a_phase2_probe.sh --inner"
+    "cd $ROOT && export PATH=$GITDIR:\$PATH && bash ops/queue/60a_phase2_probe.sh --inner"
   exit 0
 fi
 

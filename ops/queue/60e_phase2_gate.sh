@@ -31,10 +31,13 @@ if [ "$1" != "--inner" ]; then
     if [ "$PEND" = "0" ] 2>/dev/null; then Q="$q"; break; fi
   done
   [ -z "$Q" ] && Q="83a100ib"
+  # GPU 计算节点 PATH 可能没有 git(实测报 git: command not found,结果回传会静默失败),
+  # 提交时取登录节点 git 目录注入作业 PATH
+  GITDIR=$(dirname "$(command -v git)")
   echo "W1 闸门评估($TAGS_CSV + 基线 r_t14_noenc_cos)-> 队列 $Q"
   SUB=$(bsub -q "$Q" -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" \
     -J "p2gate" -o "logs/p2gate_%J.out" -e "logs/p2gate_%J.err" \
-    "cd $ROOT && GATE_TAGS=$TAGS_CSV bash ops/queue/60e_phase2_gate.sh --inner" 2>&1)
+    "cd $ROOT && export PATH=$GITDIR:\$PATH && GATE_TAGS=$TAGS_CSV bash ops/queue/60e_phase2_gate.sh --inner" 2>&1)
   echo "$SUB"
   JID=$(echo "$SUB" | grep -oE '[0-9]+' | head -1)
   sleep 90

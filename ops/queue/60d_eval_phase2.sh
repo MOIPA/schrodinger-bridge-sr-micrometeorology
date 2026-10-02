@@ -55,6 +55,9 @@ if [ -z "$INNER" ]; then
     if [ "$PEND" = "0" ] 2>/dev/null; then Q="$q"; break; fi
   done
   [ -z "$Q" ] && Q="83a100ib"
+  # GPU 计算节点的 PATH 可能没有 git(2026-10-02 实测 6148v100ib 报 git: command not found,
+  # 导致作业末尾的结果回传静默失败);提交时取登录节点的 git 目录注入作业 PATH
+  GITDIR=$(dirname "$(command -v git)")
 
   DEP=""
   if [ -n "$AFTER" ]; then
@@ -72,11 +75,11 @@ if [ -z "$INNER" ]; then
   if [ -n "$DEP" ]; then
     bsub -q "$Q" -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" \
       -w "$DEP" -J "p2eval" -o "logs/p2eval_%J.out" -e "logs/p2eval_%J.err" \
-      "cd $ROOT && EVAL_TAGS=$TAGS_CSV bash ops/queue/60d_eval_phase2.sh --inner"
+      "cd $ROOT && export PATH=$GITDIR:\$PATH && EVAL_TAGS=$TAGS_CSV bash ops/queue/60d_eval_phase2.sh --inner"
   else
     bsub -q "$Q" -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" \
       -J "p2eval" -o "logs/p2eval_%J.out" -e "logs/p2eval_%J.err" \
-      "cd $ROOT && EVAL_TAGS=$TAGS_CSV bash ops/queue/60d_eval_phase2.sh --inner"
+      "cd $ROOT && export PATH=$GITDIR:\$PATH && EVAL_TAGS=$TAGS_CSV bash ops/queue/60d_eval_phase2.sh --inner"
   fi
   exit 0
 fi

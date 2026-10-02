@@ -80,6 +80,10 @@ bsub -q <队列> -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]"
   (2026-09-30 踩过:波次闸门因 pull 静默失败而没生效)。至少 `git --no-pager log --oneline -1` 复核
 - 回传结果文件后,本地用 `git ls-remote <url> main` 与 `git rev-parse HEAD` 对比确认真的推上去了
   (服务器的收尾 `git commit/push` 有失败过,需手动补一次)
+- **GPU 计算节点的 PATH 可能没有 git**(2026-10-02 实测:GPU 作业末尾 `git add/commit/push` 全报
+  `git: command not found`,结果回传静默失败;检查作业要顺手看 `logs/<job>_*.err`)。修法:提交时
+  `GITDIR=$(dirname "$(command -v git)")`,payload 里 `cd $ROOT && export PATH=$GITDIR:\$PATH && ...`
+  (60a/60d/60e/61 已带;登录节点跑的脚本不受影响)
 
 ## 6. ops/queue 任务脚本模式(项目惯例)
 
