@@ -1,28 +1,31 @@
 ===== 0. 队列里的 p2_ 作业 =====
+14250804 ytw_tangzq RUN   62v100ib   login1      5*n002      p2_div_mid_warm Oct  2 23:20
 14250629 ytw_tangzq RUN   7552v100   login1      12*o004     p2_ext     Oct  2 23:18
-14250630 ytw_tangzq RUN   7552v100   login1      12*o004     p2_vort    Oct  2 23:18
-14250631 ytw_tangzq RUN   7552v100   login1      12*o004     p2_div_lo  Oct  2 23:18
 14250632 ytw_tangzq RUN   7552v100   login1      12*o004     p2_div_hi  Oct  2 23:18
 14249121 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p2_l2      Oct  2 17:25
 14250623 ytw_tangzq RUN   6148v100ib login1      40*x003     p2_spec    Oct  2 23:17
-14250633 ytw_tangzq PEND  7552v100   login1         -        p2_div_mid_warm Oct  2 23:18
 
 ===== 1. W2 提交清单: p2_spec p2_ext p2_vort p2_div_lo p2_div_hi p2_div_mid_warm =====
-[跳过] p2_spec 已有 checkpoint
+[续训] p2_spec 有 checkpoint 但未见 Train end(疑似中断),重投续训
+[跳过] p2_spec 正在 RUN
+[续训] p2_ext 有 checkpoint 但未见 Train end(疑似中断),重投续训
 [跳过] p2_ext 正在 RUN
-[跳过] p2_vort 正在 RUN
-[跳过] p2_div_lo 正在 RUN
+[续训] p2_vort 有 checkpoint 但未见 Train end(疑似中断),重投续训
+>>> p2_vort -> 队列 83a100ib
+Job <14252712> is submitted to queue <83a100ib>.
+[续训] p2_div_lo 有 checkpoint 但未见 Train end(疑似中断),重投续训
+>>> p2_div_lo -> 队列 83a100ib
+Job <14252713> is submitted to queue <83a100ib>.
+[续训] p2_div_hi 有 checkpoint 但未见 Train end(疑似中断),重投续训
 [跳过] p2_div_hi 正在 RUN
->>> 清理 PEND 作业 14250633 (p2_div_mid_warm),换队列重投
-Job <14250633> is being terminated
->>> p2_div_mid_warm -> 队列 62v100ib
-Job <14250804> is submitted to queue <62v100ib>.
+[续训] p2_div_mid_warm 有 checkpoint 但未见 Train end(疑似中断),重投续训
+[跳过] p2_div_mid_warm 正在 RUN
 
 ===== 2. 90 秒后 PEND 检查(PEND 立即换队列重投) =====
 14250804 ytw_tangzq RUN   62v100ib   login1      5*n002      p2_div_mid_warm Oct  2 23:20
+14252712 ytw_tangzq RUN   83a100ib   login1      8*m001      p2_vort    Oct  2 23:49
+14252713 ytw_tangzq RUN   83a100ib   login1      8*m001      p2_div_lo  Oct  2 23:49
 14250629 ytw_tangzq RUN   7552v100   login1      12*o004     p2_ext     Oct  2 23:18
-14250630 ytw_tangzq RUN   7552v100   login1      12*o004     p2_vort    Oct  2 23:18
-14250631 ytw_tangzq RUN   7552v100   login1      12*o004     p2_div_lo  Oct  2 23:18
 14250632 ytw_tangzq RUN   7552v100   login1      12*o004     p2_div_hi  Oct  2 23:18
 14249121 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p2_l2      Oct  2 17:25
 14250623 ytw_tangzq RUN   6148v100ib login1      40*x003     p2_spec    Oct  2 23:17
