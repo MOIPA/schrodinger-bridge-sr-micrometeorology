@@ -5,18 +5,18 @@
 [OK] V* 基线 checkpoint(阶段 1 最优 run r_t14_noenc_cos)存在
 
 ===== 1. 生成阶段 2 配置(86;物理权重为占位值) =====
-权重: div_hi=0.1, div_lo=0.001, div_mid=0.01, extreme=1, spectral=0.1, vorticity=1
+权重: div_hi=0.0237247, div_lo=0.00263608, div_mid=0.00790824, extreme=0.0431783, spectral=0.0386746, vorticity=25.0074
 static 目录: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static
 phys_div_tau 观测层 z(m)=[75.4, 276.3, 527.4, 1029.7] tau(p95_abs)=[0.001794, 0.0007287, 0.0007699, 0.0004612] -> 层 0..22:
   tau = [1.7941e-03, 1.7941e-03, 1.3753e-03, 1.0994e-03, 8.9334e-04, 7.2869e-04, 7.3933e-04, 7.4844e-04, 7.5642e-04, 7.6351e-04, 7.6988e-04, 7.2789e-04, 6.8941e-04, 6.5390e-04, 6.2094e-04, 5.9019e-04, 5.6134e-04, 5.3420e-04, 5.0856e-04, 4.8427e-04, 4.6121e-04, 4.6121e-04, 4.6121e-04]
 tag          out  cond     in  si 覆盖
 l2            72    95    167  loss_type=L2
-div_lo        72    95    167  divergence_weight=0.001
-div_mid       72    95    167  divergence_weight=0.01
-div_hi        72    95    167  divergence_weight=0.1
-spec          72    95    167  spectral_weight=0.1
-ext           72    95    167  extreme_levels=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], extreme_weight=1.0
-vort          72    95    167  vorticity_weight=1.0
+div_lo        72    95    167  divergence_weight=0.00263608
+div_mid       72    95    167  divergence_weight=0.00790824
+div_hi        72    95    167  divergence_weight=0.0237247
+spec          72    95    167  spectral_weight=0.0386746
+ext           72    95    167  extreme_levels=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], extreme_weight=0.0431783
+vort          72    95    167  vorticity_weight=25.0074
 生成 7 个配置 -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/phase2
 86 exit=0
 config_wind_canvas_p2_div_hi.yml
@@ -28,13 +28,13 @@ config_wind_canvas_p2_spec.yml
 config_wind_canvas_p2_vort.yml
 
 ===== 2. 通道校验(81;阶段 2 目录,含 phys_* 静态校验) =====
-config_wind_canvas_p2_div_hi.yml             out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 div=0.1
-config_wind_canvas_p2_div_lo.yml             out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 div=0.001
-config_wind_canvas_p2_div_mid.yml            out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 div=0.01
-config_wind_canvas_p2_ext.yml                out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 ext_lv=10 ext=1
+config_wind_canvas_p2_div_hi.yml             out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 div=0.0237247
+config_wind_canvas_p2_div_lo.yml             out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 div=0.00263608
+config_wind_canvas_p2_div_mid.yml            out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 div=0.00790824
+config_wind_canvas_p2_ext.yml                out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 ext_lv=10 ext=0.0431783
 config_wind_canvas_p2_l2.yml                 out= 72 cond= 95 in=167  scale=72 dz=23 tau=23
-config_wind_canvas_p2_spec.yml               out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 spec=0.1
-config_wind_canvas_p2_vort.yml               out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 vort=1
+config_wind_canvas_p2_spec.yml               out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 spec=0.0386746
+config_wind_canvas_p2_vort.yml               out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 vort=25.0074
 CHANNEL CHECK OK (7 个配置, /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/phase2)
 81 exit=0
 
@@ -134,7 +134,7 @@ manifest 划分: train=1 valid=0 test=0 unmatched=0
   geom_diff_zagl   -> 23 通道
   geom_diff_hgt    -> 1 通道
   coords           -> 2 通道
-y-y0 平均绝对差 1.3986(随机合成数据,仅验证非退化)
+y-y0 平均绝对差 1.4010(随机合成数据,仅验证非退化)
 FIXTURE OK
 80 exit=0
 
