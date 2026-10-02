@@ -226,6 +226,20 @@ if __name__ == "__main__":
             _time = time.time()
             logger.info(f"Epoch {epoch+1} / {config.train.epochs}")
 
+            # 物理项权重 warmup:phys_warmup_epochs>0 时按 epoch 线性从 0 爬到 1
+            # (先纯数据训练、再逐步加约束,避免固定权重在训练中期引发阶跃失稳;
+            #  2026-10-02 p2_div_mid 实测中期跳变,故提供该稳定性选项)
+            _wp = getattr(config.si, "phys_warmup_epochs", 0) or 0
+            if _wp > 0:
+                _r = min(1.0, float(epoch + 1) / float(_wp))
+                for _k in ("divergence_weight", "vorticity_weight",
+                           "spectral_weight", "extreme_weight"):
+                    setattr(si.c, _k, getattr(config.si, _k) * _r)
+                logger.info(
+                    f"physics warmup: scale={_r:.3f} (div={si.c.divergence_weight:.4g}, "
+                    f"vort={si.c.vorticity_weight:.4g}, spec={si.c.spectral_weight:.4g}, "
+                    f"ext={si.c.extreme_weight:.4g})")
+
             losses = {}
             for mode in (["train", "valid"] if "valid" in dict_loaders else ["train"]):
                 loss = optimize_si(

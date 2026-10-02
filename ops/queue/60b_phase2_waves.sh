@@ -24,7 +24,7 @@ QUEUES="e5v4p100ib 6148v100ib 7552v100 62v100ib 83a100ib"  # 9654p6000ib 为 Bla
 QUEUES="${FORCE_Q:-$QUEUES}"  # 队列异常时覆盖:FORCE_Q=6148v100ib bash ops/queue/60b_phase2_waves.sh 2
 
 W1="p2_l2 p2_div_mid"
-W2="p2_spec p2_ext p2_vort p2_div_lo p2_div_hi"
+W2="p2_spec p2_ext p2_vort p2_div_lo p2_div_hi p2_div_mid_warm"
 W3="p2_combo"
 
 WAVE="${1:-}"

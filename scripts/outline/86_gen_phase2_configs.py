@@ -85,6 +85,10 @@ def variants(w):
         ('div_lo', {'divergence_weight': w['div_lo']}),
         ('div_mid', {'divergence_weight': w['div_mid']}),
         ('div_hi', {'divergence_weight': w['div_hi']}),
+        # 与 div_mid 同权重 + 物理项 warmup(25 轮线性爬升):
+        # p2_div_mid 实测固定权重在第 ~20 轮阶跃失稳(2026-10-02),此臂做稳定性对照
+        ('div_mid_warm', {'divergence_weight': w['div_mid'],
+                          'phys_warmup_epochs': 25}),
         ('spec', {'spectral_weight': w['spectral']}),
         ('ext', {'extreme_weight': w['extreme'], 'extreme_levels': list(range(10))}),
         ('vort', {'vorticity_weight': w['vorticity']}),

@@ -114,6 +114,7 @@ class SIFollmerConfig(YamlConfig):
     phys_dx: float = 1000.0  # 水平网格距 m（d04 1 km；真值侧 x/y 同用 dx）
     phys_min_t: float = 0.5  # 单步估计掩码阈值：仅用 dot_beta>=2*min_t（quadratic 下 t>=min_t）
     phys_div_tau: typing.Optional[list] = None  # 长度 n_levels 的散度 hinge 阈值 kg m^-3 s^-1（T0.5 定标）
+    phys_warmup_epochs: int = 0  # >0：四个物理项权重按 epoch 线性爬升(0→1)的轮数；0=固定权重
 
 
 class StochasticInterpolantFollmer(nn.Module):
