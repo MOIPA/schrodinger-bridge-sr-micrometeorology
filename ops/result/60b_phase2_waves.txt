@@ -1,0 +1,17 @@
+===== 0. 队列里的 p2_ 作业 =====
+(无)
+
+===== 1. W1 提交清单: p2_l2 p2_div_mid =====
+>>> p2_l2 -> 队列 e5v4p100ib
+Job <14249121> is submitted to queue <e5v4p100ib>.
+>>> p2_div_mid -> 队列 e5v4p100ib
+Job <14249122> is submitted to queue <e5v4p100ib>.
+
+===== 2. 90 秒后 PEND 检查(PEND 立即换队列重投) =====
+14249121 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p2_l2      Oct  2 17:25
+14249122 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p2_div_mid Oct  2 17:25
+
+===== 3. 后续 =====
+查状态: bash ops/queue/60c_check_phase2.sh
+闸门评估: bash ops/queue/60e_phase2_gate.sh(人工判定后创建 results/phase2/GATE_W1_PASS 并推送)
+下一波: bash ops/queue/60b_phase2_waves.sh 2
