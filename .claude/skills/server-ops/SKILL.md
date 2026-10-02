@@ -9,10 +9,15 @@ description: LSF 集群服务器操作手册——screen 共享会话工作流�
 
 - SSH 是**双层密码**(第一层固定、第二层动态 OTP),agent 无法自己 ssh;由用户输入
 - 工作流:用户在本地开 screen → 里面 ssh → `Ctrl-A D` 脱离;agent 用
-  - 发命令:`screen -S <会话名> -X stuff $'命令\n'`
+  - 发命令:`screen -S <会话名> -X stuff "命令"$'\r'` —— **换行必须用 `$'\r'`(CR)**,screen 不解释
+    `\n`(会把字面 `\n` 打进 shell,2026-09-30 实测);也不要在 stuff 里用反斜杠转义引号,会原样送进 shell
   - 读输出:`screen -S <会话名> -X hardcopy /tmp/x.txt; tail -20 /tmp/x.txt`
-- 会话名带 PID 前缀(如 `5893.srv`),用 `screen -ls` 查;SSH 常每 ~40 分钟断一次,断了让用户重连
-- 保活:周期性向会话发命令(如 5 分钟一次)可延长寿命,但**不保证不断**——重要任务不要依赖
+  - 命令**别太长**(带 `$(...)`/多层引号的长命令会被截断或错位)——复杂逻辑写进 `ops/queue/*.sh` 再调用
+- 会话名带 PID 前缀(如 `5893.srv`),用 `screen -ls` 查;SSH 会被网关按空闲掐断(表现为
+  `Connection reset by peer`),断了让用户重连(把 `ssh ytw_tangzq@entry.nju.edu.cn` 打进 screen,用户只输密码+OTP)
+- **保活(2026-09-30 起)**:① 本地 `~/.ssh/config` 加 `Host entry.nju.edu.cn` + `ServerAliveInterval 60`
+  + `ServerAliveCountMax 6`(客户端心跳,新建连接生效);② 当前连接可在服务器侧起
+  `(while true; do sleep 55; printf "\0"; done) & disown`(不可见 NUL 心跳)。仍不保证不断,重要任务别依赖
 - 安全层提示:自动模式可能拦截不常见或复合的 screen 命令;保持每条命令**单一目的、简单**容易通过
 
 ## 2. 环境
@@ -41,7 +46,21 @@ bsub -q <队列> -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]"
    (第 9、10 列 = PEND、RUN;PEND=0 RUN=0 最理想)
 3. **必须用内部日志重定向**(`python -u ... > logs/x.log 2>&1`)——LSF 的 -o 文件可能只保存 job summary,**python 的 stdout/stderr 会丢失**,排查失败时全靠内部日志
 
-队列经验(2026-09 实测):83a100ib 常年 PEND 100+;72rtxib 会从空闲突变为满;**7552v100 曾整体卡死(12 PEND 0 RUN 的主机不可用状态)**;6148v100ib、62v100ib 多次成功;9654p6000ib 的 P6000 卡不兼容,避开。
+**两个易踩的坑(2026-09-30)**:
+- **bsub 不继承父 shell 的环境变量**:`PHASE=x bash 脚本.sh` 提交后,内层 `bsub "... bash 脚本.sh --inner"`
+  拿到的是默认值 → 必须把变量写进 payload(`bsub ... "cd $ROOT && PHASE=${PHASE:-phase1} bash ... --inner"`)
+- **LSF 作业依赖只能用"仍在系统里"的作业名**:`bsub -w "ended(p1_xxx)"` 对已结束(记录已清)的作业会报
+  `No matching job found. Job not submitted` → 提交"训练完自动评估"这类链式作业时,只把当前 `bjobs`
+  里还存在的作业名写进依赖(见 `ops/queue/59d_eval_phase1.sh --after-training`)
+
+队列经验(2026-09 实测):83a100ib 常年 PEND 100+;72rtxib 会从空闲突变为满;**7552v100 曾整体卡死(12 PEND 0 RUN 的主机不可用状态)**;6148v100ib、62v100ib 多次成功。
+
+**GPU 队列白名单(2026-09-30 探测)**:`e5v4p100ib`(P100)、`6148v100ib`/`7552v100`/`62v100ib`(V100)、
+`83a100ib`(A100)可用;`9654p6000ib` 是 **RTX PRO 6000 Blackwell(sm_120)**,wind3d 的 torch 2.6+cu118
+只编到 sm_90 → 提交后秒崩 `CUDA error: no kernel image is available`;`72rtxib`/`7k83` 未验证。
+探测脚本:`ops/queue/59x_gpu_probe.sh` + `scripts/outline/93_gpu_probe.py`(逐队列跑一个 1 分钟 GPU 小作业)。
+**挑队列规则**:只在 `bqueues` 的 PEND=0 里选 **RUN 最少**的;`6148v100ib` 曾积压 160 个排队作业把我们的
+作业卡住——所以不能只看"PEND=0",还要看 RUN 数
 
 ## 4. 长任务与 CPU/GPU 分工
 
@@ -57,6 +76,10 @@ bsub -q <队列> -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]"
   (本地代理 `http://127.0.0.1:7892` 时有时无,SSH 通道通常可用)
 - 服务器端 pull 用 `git pull --no-rebase`(双方都有提交时);服务器推送走 SSH 正常
 - 服务器有未推送提交时,本地 pull 后再 push
+- **别把 pull 静默掉**:`git pull ... >/dev/null 2>&1` 失败时看不出来,会让后续步骤跑在旧代码上
+  (2026-09-30 踩过:波次闸门因 pull 静默失败而没生效)。至少 `git --no-pager log --oneline -1` 复核
+- 回传结果文件后,本地用 `git ls-remote <url> main` 与 `git rev-parse HEAD` 对比确认真的推上去了
+  (服务器的收尾 `git commit/push` 有失败过,需手动补一次)
 
 ## 6. ops/queue 任务脚本模式(项目惯例)
 
