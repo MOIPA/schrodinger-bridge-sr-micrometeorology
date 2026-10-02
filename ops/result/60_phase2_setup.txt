@@ -14,13 +14,15 @@ l2            72    95    167  loss_type=L2
 div_lo        72    95    167  divergence_weight=0.00263608
 div_mid       72    95    167  divergence_weight=0.00790824
 div_hi        72    95    167  divergence_weight=0.0237247
+div_mid_warm    72    95    167  divergence_weight=0.00790824, phys_warmup_epochs=25
 spec          72    95    167  spectral_weight=0.0386746
 ext           72    95    167  extreme_levels=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], extreme_weight=0.0431783
 vort          72    95    167  vorticity_weight=25.0074
-生成 7 个配置 -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/phase2
+生成 8 个配置 -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/phase2
 86 exit=0
 config_wind_canvas_p2_div_hi.yml
 config_wind_canvas_p2_div_lo.yml
+config_wind_canvas_p2_div_mid_warm.yml
 config_wind_canvas_p2_div_mid.yml
 config_wind_canvas_p2_ext.yml
 config_wind_canvas_p2_l2.yml
@@ -31,11 +33,12 @@ config_wind_canvas_p2_vort.yml
 config_wind_canvas_p2_div_hi.yml             out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 div=0.0237247
 config_wind_canvas_p2_div_lo.yml             out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 div=0.00263608
 config_wind_canvas_p2_div_mid.yml            out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 div=0.00790824
+config_wind_canvas_p2_div_mid_warm.yml       out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 div=0.00790824
 config_wind_canvas_p2_ext.yml                out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 ext_lv=10 ext=0.0431783
 config_wind_canvas_p2_l2.yml                 out= 72 cond= 95 in=167  scale=72 dz=23 tau=23
 config_wind_canvas_p2_spec.yml               out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 spec=0.0386746
 config_wind_canvas_p2_vort.yml               out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 vort=25.0074
-CHANNEL CHECK OK (7 个配置, /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/phase2)
+CHANNEL CHECK OK (8 个配置, /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/phase2)
 81 exit=0
 
 ===== 3. 物理损失项合成自检(95) =====
@@ -134,7 +137,7 @@ manifest 划分: train=1 valid=0 test=0 unmatched=0
   geom_diff_zagl   -> 23 通道
   geom_diff_hgt    -> 1 通道
   coords           -> 2 通道
-y-y0 平均绝对差 1.4010(随机合成数据,仅验证非退化)
+y-y0 平均绝对差 1.3980(随机合成数据,仅验证非退化)
 FIXTURE OK
 80 exit=0
 
