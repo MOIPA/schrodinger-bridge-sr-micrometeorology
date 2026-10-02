@@ -1,0 +1,168 @@
+===== 0. 数据与 V* 基线检查 =====
+[OK] prepare_npz_outline_fine (8928 个条目)
+[OK] prepare_npz_outline_coarse (1488 个条目)
+[OK] prepare_npz_outline_static (4 个条目)
+[OK] V* 基线 checkpoint(阶段 1 最优 run r_t14_noenc_cos)存在
+
+===== 1. 生成阶段 2 配置(86;物理权重为占位值) =====
+权重: div_hi=0.1, div_lo=0.001, div_mid=0.01, extreme=1, spectral=0.1, vorticity=1
+static 目录: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static
+phys_div_tau 观测层 z(m)=[75.4, 276.3, 527.4, 1029.7] tau(p95_abs)=[0.001794, 0.0007287, 0.0007699, 0.0004612] -> 层 0..22:
+  tau = [1.7941e-03, 1.7941e-03, 1.3753e-03, 1.0994e-03, 8.9334e-04, 7.2869e-04, 7.3933e-04, 7.4844e-04, 7.5642e-04, 7.6351e-04, 7.6988e-04, 7.2789e-04, 6.8941e-04, 6.5390e-04, 6.2094e-04, 5.9019e-04, 5.6134e-04, 5.3420e-04, 5.0856e-04, 4.8427e-04, 4.6121e-04, 4.6121e-04, 4.6121e-04]
+tag          out  cond     in  si 覆盖
+l2            72    95    167  loss_type=L2
+div_lo        72    95    167  divergence_weight=0.001
+div_mid       72    95    167  divergence_weight=0.01
+div_hi        72    95    167  divergence_weight=0.1
+spec          72    95    167  spectral_weight=0.1
+ext           72    95    167  extreme_levels=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], extreme_weight=1.0
+vort          72    95    167  vorticity_weight=1.0
+生成 7 个配置 -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/phase2
+86 exit=0
+config_wind_canvas_p2_div_hi.yml
+config_wind_canvas_p2_div_lo.yml
+config_wind_canvas_p2_div_mid.yml
+config_wind_canvas_p2_ext.yml
+config_wind_canvas_p2_l2.yml
+config_wind_canvas_p2_spec.yml
+config_wind_canvas_p2_vort.yml
+
+===== 2. 通道校验(81;阶段 2 目录,含 phys_* 静态校验) =====
+config_wind_canvas_p2_div_hi.yml             out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 div=0.1
+config_wind_canvas_p2_div_lo.yml             out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 div=0.001
+config_wind_canvas_p2_div_mid.yml            out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 div=0.01
+config_wind_canvas_p2_ext.yml                out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 ext_lv=10 ext=1
+config_wind_canvas_p2_l2.yml                 out= 72 cond= 95 in=167  scale=72 dz=23 tau=23
+config_wind_canvas_p2_spec.yml               out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 spec=0.1
+config_wind_canvas_p2_vort.yml               out= 72 cond= 95 in=167  scale=72 dz=23 tau=23 vort=1
+CHANNEL CHECK OK (7 个配置, /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/phase2)
+81 exit=0
+
+===== 3. 物理损失项合成自检(95) =====
+========================================================================
+① physics_canvas 纯函数自检(解析场/真值对拍/梯度)
+① 散度解析场
+  [OK] 常数场 div≈0: max|Δ|=0.000e+00(tol=1e-12)
+  [OK] 线性场 div=a+b: max|Δ|=6.159e-10(tol=1e-06)
+  [OK] 指数 ρ(z) div=ρ_k(a+b): max|Δ|=7.785e-10(tol=1e-06)
+② 与真值侧 70_truth_diagnostics 差分公式对拍(同一合成场)
+  [OK] torch vs 真值差分公式: max|Δ|=5.259e-10(tol=1e-05 rel)
+③ 涡度解析场
+  [OK] 刚体旋转 ζ=2Ω: max|Δ|=8.434e-10(tol=1e-09)
+  [OK] 常数涡度 ζ=ζ0: max|Δ|=9.551e-10(tol=1e-09)
+④ 径向 log 谱
+  [OK] 同一场谱差=0: max|Δ|=0.000e+00(tol=1e-12)
+  [OK] 加噪后谱差>0: mean(ΔlogP)²=1.5501
+  形状 (2, 4, 2, 32)(期望 (2,4,2,32)),log 谱范围 [-27.63,-2.19]
+⑤ 极值项(风速 max/min 结构差)
+  [OK] 同场极值=0: max|Δ|=0.000e+00(tol=1e-12)
+  [OK] 整体平移极值=|位移|: max|Δ|=0.000e+00(tol=1e-09)
+⑥ estimate_residual
+  [OK] r̂=r(精确系数,t>0): max|Δ|=2.384e-07(tol=1e-06 rel)
+  [OK] mask=[False, False, False, True, True, True](期望 [False, False, False, True, True, True])
+⑦ 差分/散度梯度非零
+  [OK] 散度对 u/v/w 梯度总量=12.874
+
+自检结果: 全部通过
+  [OK] physics_canvas._self_test() 全绿 
+② 旧行为逐位回归(权重全 0,tol=0)
+  [OK] canvas_resid_L2 逐位一致 2.9703762531280518 vs 2.9703762531280518
+  [OK] canvas_direct_L1_cw 逐位一致 5.213955879211426 vs 5.213955879211426
+  [FAIL] canvas_direct_L2_cw 逐位一致 14.205517768859863 vs 14.20551872253418
+  [OK] interleaved_olddiv 逐位一致 4.563587188720703 vs 4.563587188720703
+  [OK] interleaved_resid_olddiv 逐位一致 3.9180166721343994 vs 3.9180166721343994
+③ 新四项:有限性/加权一致性/退化情形
+   parts: {'data': 5.771242, 'div': 112.944107, 'vort': 0.004707, 'spectral': 0.611002, 'extreme': 0.309055, 'total': 84.986633}
+  [OK] 四项原始值有限 
+  [OK] 四项原始值>0 
+  [OK] total 有限 
+  [OK] total == data + Σ w_i·part_i 84.98663330078125 vs 84.98663449296727
+  [OK] 权重 0/非 0 分项一致 {'div': 0.0, 'vort': 0.0, 'spectral': 0.0, 'extreme': 0.0}
+  [OK] 权重 0 时 total==data 
+  [OK] rho=None+div 权重=0:div=None,其余正常 
+   perfect: {'div': 117.29194641, 'vort': 0.0, 'spectral': 0.0, 'extreme': 9e-08}
+  [OK] t=1 完美估计 vort=0 
+  [OK] t=1 完美估计 spectral=0 
+  [OK] t=1 完美估计 extreme=0 
+  [OK] t=1 完美估计 div≥0(hinge) 
+  [OK] mask 全 False 时四项=0 {'div': 0.0, 'vort': 0.0, 'spectral': 0.0, 'extreme': 0.0}
+  [OK] mask 全 False 时 total==data 
+  [OK] mask 全 False 时无 NaN 
+③b 报错路径
+  [OK] canvas+div 权重>0 缺 phys_scale -> canvas 物理损失需要 si.phys_scale(长度=out_channel 的每通道物理 σ)
+  [OK] canvas+div 权重>0 缺 phys_dz -> canvas 散度损失需要 si.phys_dz(长度=n_levels 的层厚 m)
+  [OK] canvas+div 权重>0 缺 phys_div_tau -> canvas 散度损失需要 si.phys_div_tau(长度=n_levels 的 hinge 阈值)
+  [OK] canvas+spectral>0 缺 phys_scale -> canvas 物理损失需要 si.phys_scale(长度=out_channel 的每通道物理 σ)
+  [OK] canvas 散度 rho=None -> canvas 散度损失需要在 forward(..., rho=...) 传入干空气密度 (B,L,H,W)
+  [OK] interleaved+spectral>0 -> 谱/极值损失仅支持 state_layout=canvas
+  [OK] phys_scale 长度不符 -> si.phys_scale 元素数 71 != out_channel 72
+  [OK] rho 形状不符 -> rho 形状 (2, 22, 96, 112) != 期望 (2, 23, 96, 112)
+④ 四项对 net 输出的梯度(有限非零)
+  [OK] div 梯度有限非零 |g|1=420
+  [OK] vort 梯度有限非零 |g|1=0.003899
+  [OK] spectral 梯度有限非零 |g|1=34.18
+  [OK] extreme 梯度有限非零 |g|1=57.52
+  [OK] total 梯度有限非零 |g|1=305.1
+⑤ 旧 yml 经 load_config 构造
+  [OK] config_wind_canvas_p1_t16_residual.yml 可构造且新字段为默认值 out=72 in=170
+  [OK] config_wind_canvas_p1_t16_residual.yml 可构造 SI 模块 
+  [OK] config_wind_canvas_p1r_t14_noenc_cos.yml 可构造且新字段为默认值 out=72 in=167
+  [OK] config_wind_canvas_p1r_t14_noenc_cos.yml 可构造 SI 模块 
+========================================================================
+检查项:通过 36 / 失败 1
+PHASE2 LOSS FIXTURE FAILED
+95 exit=1
+
+===== 4. canvas 数据集合成自检(80;含 rho 透传) =====
+manifest 划分: train=1 valid=0 test=0 unmatched=0
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_data/dataset_wind_canvas.py:132: RuntimeWarning: divide by zero encountered in divide
+  rho[k] = p_cur / (rd * t_cur)
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_data/dataset_wind_canvas.py:132: RuntimeWarning: invalid value encountered in divide
+  rho[k] = p_cur / (rd * t_cur)
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_data/dataset_wind_canvas.py:115: RuntimeWarning: divide by zero encountered in divide
+  return np.exp(np.clip(-g * dz / (rd * t), -50.0, 50.0))
+通道: 输入 206 / 输出 72
+张量: x=(206, 96, 112) y=(72, 96, 112) y0=(72, 96, 112)
+  coarse_wind_uv   -> 46 通道
+  coarse_w         -> 24 通道
+  coarse_zagl      -> 23 通道
+  coarse_logz0     -> 1 通道
+  coarse_most      -> 3 通道
+  coarse_flux      -> 3 通道
+  coarse_theta     -> 23 通道
+  coarse_ph        -> 24 通道
+  time_enc         -> 4 通道
+  coszen           -> 1 通道
+  fine_geom        -> 24 通道
+  fine_logz0       -> 1 通道
+  fine_urban       -> 1 通道
+  fine_waterveg    -> 2 通道
+  geom_diff_zagl   -> 23 通道
+  geom_diff_hgt    -> 1 通道
+  coords           -> 2 通道
+y-y0 平均绝对差 1.4002(随机合成数据,仅验证非退化)
+FIXTURE OK
+80 exit=0
+
+===== 5. 后续步骤 =====
+(1) 探针定权重(约 10 分钟 GPU):
+      bash ops/queue/60a_phase2_probe.sh
+      -> results/phase2/probe_weights.json(suggested_weights;60a 会打印可直接执行的 86 命令)
+(2) 用探针权重回填重生成配置(把 <v> 换成建议值):
+      python scripts/outline/86_gen_phase2_configs.py --div-lo <v> --div-mid <v> --div-hi <v> \
+        --spectral <v> --extreme <v> --vorticity <v>
+    再重跑第 2/3 步复核:
+      python scripts/outline/81_config_channel_check.py --config_dir "configs/深圳/phase2"
+      python scripts/outline/95_phase2_loss_fixture.py
+(3) W1 试点(2 个 run):
+      bash ops/queue/60b_phase2_waves.sh 1      # W1 = p2_l2 p2_div_mid
+(4) W1 训练完 -> 查状态 / 闸门评估 -> 人工判定:
+      bash ops/queue/60c_check_phase2.sh
+      bash ops/queue/60e_phase2_gate.sh         # -> results/phase2/ranking_phase2_gate.md
+    判定通过后创建闸门文件并推送(本链路硬闸门,不自动创建):
+      touch results/phase2/GATE_W1_PASS && git add results/phase2 && \
+        git commit -m "gate: W1 pass" && git push
+(5) W2(需 GATE_W1_PASS 已 pull 到服务器): bash ops/queue/60b_phase2_waves.sh 2
+    W2 判定 -> GATE_W2_PASS -> W3: bash ops/queue/60b_phase2_waves.sh 3
+(6) 全部训练完成后终评:
+      bash ops/queue/60d_eval_phase2.sh
