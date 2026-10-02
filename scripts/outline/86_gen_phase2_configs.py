@@ -53,15 +53,16 @@ N_LEVELS = 23
 # V* 输入组(phase1r t14_noenc_cos,不加不减)
 INPUT_GROUPS = ['coarse_wind_uv', 'coarse_zagl', 'coarse_logz0', 'fine_geom', 'coszen']
 
-# ---- 权重占位值(粗定标;96_weight_probe 出数后回填这里并重跑本脚本)---------
-# 目标:各物理项加权后的量级约为 data 项的 10%。
+# ---- 权重:96 探针(V* 基线, 2026-10-02)定标,目标 = 各物理项量级约为 data 项的 10% ----
+# 探针原始值(data=0.1063):div 1.3445, vort 4.25e-4, spectral 0.2749, extreme 0.2463;
+# hinge 激活率 fraction(|D|>tau)=0.427,P95(|D|/tau)=3.95(约束有实际压降空间)。
 WEIGHTS = {
-    'div_lo': 1e-3,      # 待探针后回填
-    'div_mid': 1e-2,     # 待探针后回填
-    'div_hi': 1e-1,      # 待探针后回填
-    'spectral': 0.1,     # 待探针后回填
-    'extreme': 1.0,      # 待探针后回填
-    'vorticity': 1.0,    # 待探针后回填
+    'div_lo': 0.00263608,   # = div_mid/3
+    'div_mid': 0.00790824,  # 探针建议(≈data 的 10%)
+    'div_hi': 0.0237247,    # = div_mid*3
+    'spectral': 0.0386746,  # 探针建议(≈data 的 10%)
+    'extreme': 0.0431783,   # 探针建议(≈data 的 10%)
+    'vorticity': 25.0074,   # 探针建议(≈data 的 10%)
 }
 
 SI_BASE = {
