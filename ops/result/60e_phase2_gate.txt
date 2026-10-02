@@ -59,41 +59,38 @@
 诊断 test: 144 帧(共 144 帧)
 /fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
   return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
-Traceback (most recent call last):
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/94_phase2_diagnostics.py", line 268, in <module>
-    main()
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/94_phase2_diagnostics.py", line 160, in main
-    u, v, w, u10, v10 = EVAL90.split_denorm(t, levels, sigma)
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py", line 70, in split_denorm
-    u = t[0:n] * sigma['u']
-ValueError: operands could not be broadcast together with shapes (2,72,100,121) (23,1,1) 
-FAIL 94 r_t14_noenc_cos
+  ... 24 帧
+  ... 48 帧
+  ... 72 帧
+  ... 96 帧
+  ... 120 帧
+  ... 144 帧
+{"tag": "r_t14_noenc_cos", "n_frames": 144, "div_p95_mean": {"pred": 0.00054975, "truth": 0.00076052, "y0": 0.00012413}, "frac_gt_tau_mean": {"pred": 0.01506, "truth": 0.03466, "y0": 0.0}, "global_max_all": {"pred": 19.703, "truth": 20.527, "y0": 17.331}, "global_min_all": {"pred": 0.011, "truth": 0.009, "y0": 0.021}}
+写出 results/phase2/r_t14_noenc_cos_diag.json / r_t14_noenc_cos_diag.npz
 --- p2_div_mid ---
 诊断 test: 144 帧(共 144 帧)
 /fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
   return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
-Traceback (most recent call last):
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/94_phase2_diagnostics.py", line 268, in <module>
-    main()
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/94_phase2_diagnostics.py", line 160, in main
-    u, v, w, u10, v10 = EVAL90.split_denorm(t, levels, sigma)
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py", line 70, in split_denorm
-    u = t[0:n] * sigma['u']
-ValueError: operands could not be broadcast together with shapes (2,72,100,121) (23,1,1) 
-FAIL 94 p2_div_mid
+  ... 24 帧
+  ... 48 帧
+  ... 72 帧
+  ... 96 帧
+  ... 120 帧
+  ... 144 帧
+{"tag": "p2_div_mid", "n_frames": 144, "div_p95_mean": {"pred": 0.00036195, "truth": 0.00076052, "y0": 0.00012413}, "frac_gt_tau_mean": {"pred": 0.00637, "truth": 0.03466, "y0": 0.0}, "global_max_all": {"pred": 18.205, "truth": 20.527, "y0": 17.331}, "global_min_all": {"pred": 0.011, "truth": 0.009, "y0": 0.021}}
+写出 results/phase2/p2_div_mid_diag.json / p2_div_mid_diag.npz
 --- p2_l2 ---
 诊断 test: 144 帧(共 144 帧)
 /fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
   return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
-Traceback (most recent call last):
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/94_phase2_diagnostics.py", line 268, in <module>
-    main()
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/94_phase2_diagnostics.py", line 160, in main
-    u, v, w, u10, v10 = EVAL90.split_denorm(t, levels, sigma)
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py", line 70, in split_denorm
-    u = t[0:n] * sigma['u']
-ValueError: operands could not be broadcast together with shapes (2,72,100,121) (23,1,1) 
-FAIL 94 p2_l2
+  ... 24 帧
+  ... 48 帧
+  ... 72 帧
+  ... 96 帧
+  ... 120 帧
+  ... 144 帧
+{"tag": "p2_l2", "n_frames": 144, "div_p95_mean": {"pred": 0.00041896, "truth": 0.00076052, "y0": 0.00012413}, "frac_gt_tau_mean": {"pred": 0.00845, "truth": 0.03466, "y0": 0.0}, "global_max_all": {"pred": 18.195, "truth": 20.527, "y0": 17.331}, "global_min_all": {"pred": 0.015, "truth": 0.009, "y0": 0.021}}
+写出 results/phase2/p2_l2_diag.json / p2_l2_diag.npz
 
 ===== 3. 闸门排序(92) =====
 run 数 3 / 小时数 144
@@ -113,17 +110,15 @@ run 数 3 / 小时数 144
 | baseline_y0_regrid | 1.1161 | +0.1560 | [+0.0977, +0.2149] | 是 |
 
 ===== 4. 净效应表(97) =====
-[警告] 没读到 92 排序 results/phase2/ranking_phase2.csv;主指标退回 summary.json,Δ 用点估计
-[警告] 缺基线诊断 r_t14_noenc_cos_diag.json;散度/谱/极值列会大量为空
 | run | 主指标 RMSE (m/s) | Δ RMSE [95% CI] | 显著 | 散度 P95 (kg m⁻³ s⁻¹) | Δ% | frac(\|D\|>τ) | Δ% | 高频 logP Δ% | 全局 max Δ (m/s) | 全局 min Δ (m/s) |
 |---|---|---|---|---|---|---|---|---|---|---|
-| r_t14_noenc_cos (基准) | 0.9601 | — | — | — | — | — | — | — | — | — |
-| p2_l2 | 1.0471 | — | — | — | — | — | — | — | — | — |
-| p2_div_mid | 1.1102 | — | — | — | — | — | — | — | — | — |
+| r_t14_noenc_cos (基准) | 0.9601 | — | — | 5.497e-04 | — | 0.0151 | — | — | — | — |
+| p2_l2 | 1.0471 | +0.0871 [+0.0750, +0.0992] | 否 | 4.190e-04 | -23.8% | 0.0084 | -43.9% | -3.7% (ΔlogP -0.04) | -1.508 | +0.003 |
+| p2_div_mid | 1.1102 | +0.1502 [+0.1136, +0.1881] | 否 | 3.620e-04 | -34.2% | 0.0064 | -57.7% | -5.7% (ΔlogP -0.06) | -1.498 | -0.000 |
 
 口径:主指标 = AGL 10–500 m 层平均风矢量 RMSE(92,配对移动块 bootstrap);散度 = 全 23 层 |∇·(ρu)| 的逐层统计对层取平均(P95 / frac 为超过 τ_k 的格点占比),Δ% = 相对基线;能谱 = 去交错质量点上逐层 u/v 径向 log 谱(帧平均),高频段 = 箱中心半径 > 0.25 cycles/pixel,Δ% 由平均 log 功率差换算等效功率比;
 极值 = 全 split 时间×空间全局 max/min 之差(在最低 10 层与 10 m 共 11 个风速场中取全局);y0(粗端重网格免费基线)与真值口径同 94 号,逐层表见各 {tag}_diag.json。
-诊断帧数: 
+诊断帧数: r_t14_noenc_cos=144, p2_l2=144, p2_div_mid=144
 
 写出 results/phase2/phase2_net_effects.md
 
