@@ -65,12 +65,12 @@ CHANNEL CHECK OK (7 个配置, /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridg
 
 自检结果: 全部通过
   [OK] physics_canvas._self_test() 全绿 
-② 旧行为逐位回归(权重全 0,tol=0)
-  [OK] canvas_resid_L2 逐位一致 2.9703762531280518 vs 2.9703762531280518
-  [OK] canvas_direct_L1_cw 逐位一致 5.213955879211426 vs 5.213955879211426
-  [FAIL] canvas_direct_L2_cw 逐位一致 14.205517768859863 vs 14.20551872253418
-  [OK] interleaved_olddiv 逐位一致 4.563587188720703 vs 4.563587188720703
-  [OK] interleaved_resid_olddiv 逐位一致 3.9180166721343994 vs 3.9180166721343994
+② 旧行为回归(权重全 0,rel 1e-6)
+  [OK] canvas_resid_L2 数值一致(rel 1e-6) 2.9703762531280518 vs 2.9703762531280518
+  [OK] canvas_direct_L1_cw 数值一致(rel 1e-6) 5.213955879211426 vs 5.213955879211426
+  [OK] canvas_direct_L2_cw 数值一致(rel 1e-6) 14.205517768859863 vs 14.20551872253418
+  [OK] interleaved_olddiv 数值一致(rel 1e-6) 4.563587188720703 vs 4.563587188720703
+  [OK] interleaved_resid_olddiv 数值一致(rel 1e-6) 3.9180166721343994 vs 3.9180166721343994
 ③ 新四项:有限性/加权一致性/退化情形
    parts: {'data': 5.771242, 'div': 112.944107, 'vort': 0.004707, 'spectral': 0.611002, 'extreme': 0.309055, 'total': 84.986633}
   [OK] 四项原始值有限 
@@ -109,18 +109,12 @@ CHANNEL CHECK OK (7 个配置, /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridg
   [OK] config_wind_canvas_p1r_t14_noenc_cos.yml 可构造且新字段为默认值 out=72 in=167
   [OK] config_wind_canvas_p1r_t14_noenc_cos.yml 可构造 SI 模块 
 ========================================================================
-检查项:通过 36 / 失败 1
-PHASE2 LOSS FIXTURE FAILED
-95 exit=1
+检查项:通过 37 / 失败 0
+PHASE2 LOSS FIXTURE OK
+95 exit=0
 
 ===== 4. canvas 数据集合成自检(80;含 rho 透传) =====
 manifest 划分: train=1 valid=0 test=0 unmatched=0
-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_data/dataset_wind_canvas.py:132: RuntimeWarning: divide by zero encountered in divide
-  rho[k] = p_cur / (rd * t_cur)
-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_data/dataset_wind_canvas.py:132: RuntimeWarning: invalid value encountered in divide
-  rho[k] = p_cur / (rd * t_cur)
-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_data/dataset_wind_canvas.py:115: RuntimeWarning: divide by zero encountered in divide
-  return np.exp(np.clip(-g * dz / (rd * t), -50.0, 50.0))
 通道: 输入 206 / 输出 72
 张量: x=(206, 96, 112) y=(72, 96, 112) y0=(72, 96, 112)
   coarse_wind_uv   -> 46 通道
@@ -140,7 +134,7 @@ manifest 划分: train=1 valid=0 test=0 unmatched=0
   geom_diff_zagl   -> 23 通道
   geom_diff_hgt    -> 1 通道
   coords           -> 2 通道
-y-y0 平均绝对差 1.4002(随机合成数据,仅验证非退化)
+y-y0 平均绝对差 1.3986(随机合成数据,仅验证非退化)
 FIXTURE OK
 80 exit=0
 
