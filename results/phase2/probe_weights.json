@@ -1,0 +1,29 @@
+{
+ "config_path": "configs/深圳/phase2/config_wind_canvas_p2_div_mid.yml",
+ "checkpoint": "data/DL_result/ExperimentSchrodingerBridgeWindCanvas/config_wind_canvas_p1r_t14_noenc_cos/checkpoint.pth",
+ "split": "valid",
+ "ckpt_weights": "model",
+ "n_batches": 20,
+ "n_frames": 40,
+ "target_ratio": 0.1,
+ "parts_raw_mean": {
+  "data": 0.10632976349443198,
+  "div": 1.3445445999503136,
+  "vort": 0.00042519342096056787,
+  "spectral": 0.27493467153981327,
+  "extreme": 0.24625740610063077
+ },
+ "hinge_frac": 0.42714962101689796,
+ "p95_ratio": 3.9501437028249105,
+ "hinge_frac_pooled": 0.4183977373908724,
+ "hinge_n_cell": 5093235,
+ "suggested_weights": {
+  "div_mid": 0.00790823625325343,
+  "div_lo": 0.0026360787510844763,
+  "div_hi": 0.023724708759760287,
+  "spectral": 0.03867455599503549,
+  "extreme": 0.043178300778081505,
+  "vorticity": 25.007386815680043
+ },
+ "out_json": "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/results/phase2/probe_weights.json"
+}
