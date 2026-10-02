@@ -24,6 +24,7 @@ if [ "$1" != "--inner" ]; then
   TAGS="${1:-}"
   [ -z "$TAGS" ] && TAGS="p2_div_mid"
   TAGS_CSV=$(echo "$TAGS" | tr ' ' ',')
+  QUEUES="${FORCE_Q:-$QUEUES}"   # 队列异常时覆盖:FORCE_Q=6148v100ib bash ops/queue/60e_phase2_gate.sh ...
   Q=""
   for q in $QUEUES; do
     PEND=$(bqueues -w "$q" 2>/dev/null | tail -1 | awk '{print $9}')
@@ -31,9 +32,19 @@ if [ "$1" != "--inner" ]; then
   done
   [ -z "$Q" ] && Q="83a100ib"
   echo "W1 闸门评估($TAGS_CSV + 基线 r_t14_noenc_cos)-> 队列 $Q"
-  bsub -q "$Q" -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" \
+  SUB=$(bsub -q "$Q" -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" \
     -J "p2gate" -o "logs/p2gate_%J.out" -e "logs/p2gate_%J.err" \
-    "cd $ROOT && GATE_TAGS=$TAGS_CSV bash ops/queue/60e_phase2_gate.sh --inner"
+    "cd $ROOT && GATE_TAGS=$TAGS_CSV bash ops/queue/60e_phase2_gate.sh --inner" 2>&1)
+  echo "$SUB"
+  JID=$(echo "$SUB" | grep -oE '[0-9]+' | head -1)
+  sleep 90
+  ST=$(bjobs -o "jobid stat" -noheader 2>/dev/null | awk -v j="$JID" '$1==j{print $2}')
+  if [ "$ST" = "PEND" ]; then
+    echo ">>> p2gate($JID) PEND: bkill;换队列重跑本脚本(必要时 FORCE_Q=<队列>)"
+    bkill "$JID"
+  else
+    echo ">>> p2gate($JID) 状态: ${ST:-已不在队列(可能已开始或极快失败,查 logs/)}"
+  fi
   exit 0
 fi
 

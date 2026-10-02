@@ -21,6 +21,7 @@ EXP=ExperimentSchrodingerBridgeWindCanvas
 RESULT_BASE=data/DL_result/$EXP
 CFG_DIR="configs/深圳/phase2"
 QUEUES="e5v4p100ib 6148v100ib 7552v100 62v100ib 83a100ib"  # 9654p6000ib 为 Blackwell,与 wind3d torch 不兼容
+QUEUES="${FORCE_Q:-$QUEUES}"  # 队列异常时覆盖:FORCE_Q=6148v100ib bash ops/queue/60b_phase2_waves.sh 2
 
 W1="p2_l2 p2_div_mid"
 W2="p2_spec p2_ext p2_vort p2_div_lo p2_div_hi"
