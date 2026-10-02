@@ -10,6 +10,16 @@ from typing import Literal, Optional, Union
 import numpy as np
 import torch
 from src.dl_config.base_config import YamlConfig
+from src.dl_model.si_follmer.physics_canvas import (
+    destagger_canvas,
+    divergence_rho_u,
+    estimate_residual,
+    infer_n_levels,
+    radial_log_spectra,
+    split_canvas_state,
+    vorticity,
+    windspeed_levels,
+)
 from torch import nn
 
 if "ipykernel" in sys.modules:
@@ -91,10 +101,19 @@ class SIFollmerConfig(YamlConfig):
     formula: Literal["linear", "quadratic"]
     loss_type: Literal["L2", "L1"] = "L2"
     channel_weights: typing.Optional[list] = None  # 通道加权，如 [1,1,10, 1,1,10, ...]
-    divergence_weight: float = 0.0  # 三维散度约束权重（∂U/∂x+∂V/∂y+∂W/∂z=0），0 表示不启用
-    vorticity_weight: float = 0.0  # 涡度约束权重（大尺度涡度守恒），0 表示不启用
+    divergence_weight: float = 0.0  # 散度约束权重（interleaved: ∂U/∂x+∂V/∂y+∂W/∂z=0；canvas: ∇·(ρu) hinge），0 表示不启用
+    vorticity_weight: float = 0.0  # 涡度约束权重（interleaved: 压向 0；canvas: 与真值 ζ 的 L1 结构差），0 表示不启用
     residual_output: bool = False  # True: 桥接对象为残差 y−y0(从 0 出发),采样时再加回 y0
-    state_layout: Literal["interleaved_uvw", "canvas"] = "interleaved_uvw"  # 物理约束项仅支持前者
+    state_layout: Literal["interleaved_uvw", "canvas"] = "interleaved_uvw"  # canvas 布局用阶段 2 原生 C 网格口径
+    # ---- 阶段 2:canvas 布局物理损失(权重全为 0 时完全不参与计算) ----
+    spectral_weight: float = 0.0  # 径向 log 谱 L2 差权重（仅 canvas）
+    extreme_weight: float = 0.0  # 风速 max/min 极值结构差权重（仅 canvas）
+    extreme_levels: typing.Optional[list] = None  # 极值层索引；None -> 最低 10 层 [0..9]
+    phys_scale: typing.Optional[list] = None  # 长度 out_channel 的每通道物理 σ（标准化场乘回物理单位）
+    phys_dz: typing.Optional[list] = None  # 长度 n_levels 的层厚 m（散度垂直差分）
+    phys_dx: float = 1000.0  # 水平网格距 m（d04 1 km；真值侧 x/y 同用 dx）
+    phys_min_t: float = 0.5  # 单步估计掩码阈值：仅用 dot_beta>=2*min_t（quadratic 下 t>=min_t）
+    phys_div_tau: typing.Optional[list] = None  # 长度 n_levels 的散度 hinge 阈值 kg m^-3 s^-1（T0.5 定标）
 
 
 class StochasticInterpolantFollmer(nn.Module):
@@ -125,22 +144,55 @@ class StochasticInterpolantFollmer(nn.Module):
         else:
             self.channel_weights = None
 
-        # 物理约束项按通道三元组 [U,V,W]×层 组织,只适用于旧交错布局
-        if self.c.state_layout != "interleaved_uvw" and (
-            self.c.divergence_weight > 0 or self.c.vorticity_weight > 0
-        ):
-            raise ValueError(
-                "散度/涡度约束仅支持 state_layout=interleaved_uvw;"
-                "canvas 布局请保持权重为 0(阶段 2 重写约束口径)"
+        # 物理约束项配置校验:
+        #   interleaved_uvw —— 旧三元组口径(压向 0),行为原样保留;
+        #   canvas          —— 阶段 2 原生 C 网格口径(散度 hinge / 涡度结构差 / 谱 / 极值)。
+        canvas_phys_weights = (
+            self.c.divergence_weight,
+            self.c.vorticity_weight,
+            self.c.spectral_weight,
+            self.c.extreme_weight,
+        )
+        if self.c.state_layout == "canvas":
+            if any(w > 0 for w in canvas_phys_weights):
+                # canvas 物理损失都在物理单位下定义,必须能反标准化
+                if self.c.phys_scale is None:
+                    raise ValueError(
+                        "canvas 物理损失需要 si.phys_scale(长度=out_channel 的每通道物理 σ)"
+                    )
+                if self.c.divergence_weight > 0:
+                    if self.c.phys_dz is None:
+                        raise ValueError(
+                            "canvas 散度损失需要 si.phys_dz(长度=n_levels 的层厚 m)")
+                    if self.c.phys_div_tau is None:
+                        raise ValueError(
+                            "canvas 散度损失需要 si.phys_div_tau(长度=n_levels 的 hinge 阈值)")
+                    if not self.c.phys_dx > 0:
+                        raise ValueError(
+                            f"canvas 散度损失需要 si.phys_dx>0,当前 {self.c.phys_dx}")
+        else:
+            # 旧交错布局没有谱/极值的定义,拒绝误用
+            if self.c.spectral_weight > 0 or self.c.extreme_weight > 0:
+                raise ValueError("谱/极值损失仅支持 state_layout=canvas")
+
+        if self.c.state_layout == "canvas" and any(w > 0 for w in canvas_phys_weights):
+            logger.info(
+                "Canvas physics losses enabled: div=%g, vort=%g, spectral=%g, extreme=%g, "
+                "dx=%g, min_t=%g, levels=%s",
+                self.c.divergence_weight, self.c.vorticity_weight,
+                self.c.spectral_weight, self.c.extreme_weight, self.c.phys_dx,
+                self.c.phys_min_t,
+                self.c.extreme_levels if self.c.extreme_levels is not None
+                else list(range(10)),
             )
+        elif self.c.state_layout != "canvas":
+            # 三维散度物理约束 (∂U/∂x + ∂V/∂y + ∂W/∂z = 0)
+            if self.c.divergence_weight > 0:
+                logger.info(f"3D Divergence constraint enabled: weight={self.c.divergence_weight}")
 
-        # 三维散度物理约束 (∂U/∂x + ∂V/∂y + ∂W/∂z = 0)
-        if self.c.divergence_weight > 0:
-            logger.info(f"3D Divergence constraint enabled: weight={self.c.divergence_weight}")
-
-        # 涡度约束 (大尺度涡度守恒)
-        if self.c.vorticity_weight > 0:
-            logger.info(f"Vorticity constraint enabled: weight={self.c.vorticity_weight}")
+            # 涡度约束 (大尺度涡度守恒)
+            if self.c.vorticity_weight > 0:
+                logger.info(f"Vorticity constraint enabled: weight={self.c.vorticity_weight}")
 
     def _set_alpha_beta_gamma(self):
         # Time index is from 0 to T (t is an N+1 size array)
@@ -328,13 +380,132 @@ class StochasticInterpolantFollmer(nn.Module):
 
         return vort_loss / n_levels
 
+    def _canvas_phys_active(self) -> bool:
+        """canvas 四个物理项是否有任一权重>0(全 0 时不做任何多余计算)。"""
+        return (self.c.divergence_weight > 0 or self.c.vorticity_weight > 0
+                or self.c.spectral_weight > 0 or self.c.extreme_weight > 0)
+
+    @staticmethod
+    def _masked_mean(values: torch.Tensor, mask: torch.Tensor) -> torch.Tensor:
+        """逐样本值 (B,) 按 mask (B,) bool 平均;mask 全 False 时返回 0 张量(无 NaN)。"""
+        mf = mask.to(dtype=values.dtype)
+        return (values * mf).sum() / mf.sum().clamp(min=1.0)
+
+    def _phys_vec(self, name: str, n_expected: int, device, dtype) -> torch.Tensor:
+        """把 si.<name> 的列表配置转成 (n_expected,) 张量;缺失/长度不符时报错。"""
+        seq = getattr(self.c, name)
+        if seq is None:
+            raise ValueError(f"canvas 物理损失需要 si.{name}")
+        t = torch.as_tensor(seq, dtype=dtype, device=device)
+        if t.numel() != n_expected:
+            raise ValueError(f"si.{name} 元素数 {t.numel()} != 期望 {n_expected}")
+        return t
+
+    def _extreme_levels(self, n_levels: int) -> list:
+        """极值项层索引;extreme_levels=None 时默认最低 10 层 [0..9](受层数截断)。"""
+        levels = self.c.extreme_levels
+        if levels is None:
+            levels = list(range(min(10, n_levels)))
+        levels = [int(l) for l in levels]
+        if len(levels) == 0 or min(levels) < 0 or max(levels) >= n_levels:
+            raise ValueError(
+                f"si.extreme_levels={levels} 非法(需非空且落在 [0,{n_levels}))")
+        return levels
+
+    def _canvas_physics_raw(
+        self,
+        y0_orig: torch.Tensor,
+        y1_orig: torch.Tensor,
+        b_est: torch.Tensor,
+        timestep: torch.Tensor,
+        rho: Optional[torch.Tensor],
+    ) -> dict:
+        """canvas 原生口径四个物理项的批次标量(未加权、已按 min_t 掩码平均)。
+
+        单步可微估计 ŷ1 = y0_orig + r̂(b̂/dot_beta),目标为 y1_orig;反标准化用
+        phys_scale 乘回物理单位后交给 physics_canvas 的算子。返回 dict:
+        {'div','vort','spectral','extreme'};div 需要 rho,rho=None 且散度权重为 0
+        的探针场景该项为 None,权重>0 时直接报错(不会静默丢项)。
+        """
+        d_b = torch.gather(self.dot_beta, dim=-1, index=timestep)[:, None, None, None]
+        r_hat, mask = estimate_residual(b_est, d_b, min_t=self.c.phys_min_t)
+        y_hat = y0_orig + r_hat
+
+        device, dtype = y_hat.device, y_hat.dtype
+        n_levels = infer_n_levels(y_hat.shape[1])
+        if self.c.phys_scale is None:
+            raise ValueError(
+                "canvas 物理损失需要 si.phys_scale(长度=out_channel 的每通道物理 σ)")
+        ps = torch.as_tensor(self.c.phys_scale, dtype=dtype, device=device)
+        if ps.numel() != y_hat.shape[1]:
+            raise ValueError(
+                f"si.phys_scale 元素数 {ps.numel()} != out_channel {y_hat.shape[1]}")
+        ps = ps.view(1, -1, 1, 1)
+        y_hat_phys = y_hat * ps
+        y1_phys = y1_orig * ps
+
+        u_p, v_p, w_p, u10_p, v10_p = split_canvas_state(y_hat_phys, n_levels)
+        u_t, v_t, w_t, u10_t, v10_t = split_canvas_state(y1_phys, n_levels)
+        out = {"div": None, "vort": None, "spectral": None, "extreme": None}
+
+        # ① 可压缩散度 ∇·(ρu) 的 hinge 约束:max(0, |D|/τ_k − 1)²
+        if rho is None:
+            if self.c.divergence_weight > 0:
+                raise ValueError(
+                    "canvas 散度损失需要在 forward(..., rho=...) 传入干空气密度 (B,L,H,W)")
+        else:
+            rho_t = rho.to(device=device, dtype=dtype)
+            exp_shape = (y_hat.shape[0], n_levels) + tuple(y_hat.shape[-2:])
+            if tuple(rho_t.shape) != exp_shape:
+                raise ValueError(f"rho 形状 {tuple(rho_t.shape)} != 期望 {exp_shape}")
+            dz = self._phys_vec("phys_dz", n_levels, device, dtype)
+            tau = self._phys_vec("phys_div_tau", n_levels, device, dtype)
+            tau = tau.view(1, n_levels, 1, 1)
+            div = divergence_rho_u(u_p, v_p, w_p, rho_t, self.c.phys_dx, dz)
+            hinge = torch.clamp(div.abs() / tau - 1.0, min=0.0) ** 2
+            out["div"] = self._masked_mean(hinge.mean(dim=(1, 2, 3)), mask)
+
+        # ② 涡度结构差:逐层 L1 差取均值
+        zeta_p = vorticity(u_p, v_p, self.c.phys_dx, self.c.phys_dx)
+        zeta_t = vorticity(u_t, v_t, self.c.phys_dx, self.c.phys_dx)
+        out["vort"] = self._masked_mean(
+            (zeta_p - zeta_t).abs().mean(dim=(1, 2, 3)), mask)
+
+        # ③ 径向 log 谱 L2 差(bins×层×u,v 取均值)
+        um_p, vm_p, _ = destagger_canvas(u_p, v_p, w_p)
+        um_t, vm_t, _ = destagger_canvas(u_t, v_t, w_t)
+        spec_p = radial_log_spectra(um_p, vm_p)
+        spec_t = radial_log_spectra(um_t, vm_t)
+        out["spectral"] = self._masked_mean(
+            ((spec_p - spec_t) ** 2).mean(dim=(1, 2, 3)), mask)
+
+        # ④ 极值结构差:每层 0.5(|Δmax_s|+|Δmin_s|),再对层取均值
+        levels = self._extreme_levels(n_levels)
+        spd_p = windspeed_levels(u_p, v_p, u10_p, v10_p, levels)
+        spd_t = windspeed_levels(u_t, v_t, u10_t, v10_t, levels)
+        ext = 0.5 * ((spd_p.amax(dim=(2, 3)) - spd_t.amax(dim=(2, 3))).abs()
+                     + (spd_p.amin(dim=(2, 3)) - spd_t.amin(dim=(2, 3))).abs())
+        out["extreme"] = self._masked_mean(ext.mean(dim=1), mask)
+        return out
+
     def forward(
-        self, y0: torch.Tensor, y1: torch.Tensor, y_cond: torch.Tensor, **kwargs
+        self,
+        y0: torch.Tensor,
+        y1: torch.Tensor,
+        y_cond: torch.Tensor,
+        rho: Optional[torch.Tensor] = None,
+        return_parts: bool = False,
+        **kwargs,
     ):
         # y0: LR data, dim = batch, channel, y, and x
         # y1: HR data, dim = batch, channel, y, and x
         # y0 and y1 have the same shape.
         # y_cond: condition for y0 and y1, such as building data, dim = batch, channel, y, and x
+        # rho: 可空,canvas 布局的干空气密度 (B,L,H,W) kg/m³(散度损失用)
+        # return_parts: True 返回各项损失 dict(canvas 探针定标用),默认返回标量 total
+
+        # 物理约束项的目标是原始 y0/y1,必须在残差变换前保存
+        y0_orig, y1_orig = y0, y1
 
         if self.c.residual_output:
             # 残差参数化:桥接 0 -> (y1 − y0);采样端从 0 出发、末尾再加回 y0
@@ -360,16 +531,53 @@ class StochasticInterpolantFollmer(nn.Module):
 
         if self.channel_weights is not None:
             diff = diff * self.channel_weights
-        total_loss = torch.mean(diff)
+        data_loss = torch.mean(diff)
+        total_loss = data_loss
 
-        # NS 运动学约束
-        if self.c.divergence_weight > 0:
-            div_loss = self._calc_3d_divergence_loss(b_est)
-            total_loss = total_loss + self.c.divergence_weight * div_loss
+        # ---- 物理约束项 ----
+        if self.c.state_layout == "canvas":
+            # 阶段 2:原生 C 网格口径(散度/涡度/谱/极值),逐样本掩码平均后再加权。
+            # 权重全为 0 且 return_parts=False 时整块跳过,与旧行为完全一致。
+            if return_parts or self._canvas_phys_active():
+                raw = self._canvas_physics_raw(
+                    y0_orig=y0_orig, y1_orig=y1_orig, b_est=b_est,
+                    timestep=timestep, rho=rho)
+                for key, weight in (("div", self.c.divergence_weight),
+                                    ("vort", self.c.vorticity_weight),
+                                    ("spectral", self.c.spectral_weight),
+                                    ("extreme", self.c.extreme_weight)):
+                    if weight > 0 and raw.get(key) is not None:
+                        total_loss = total_loss + weight * raw[key]
+                if return_parts:
+                    return {
+                        "data": data_loss,
+                        "div": raw.get("div"),
+                        "vort": raw.get("vort"),
+                        "spectral": raw.get("spectral"),
+                        "extreme": raw.get("extreme"),
+                        "total": total_loss,
+                    }
+        else:
+            # 旧交错布局(interleaved_uvw):旧三元组口径与行为原样保留
+            if self.c.divergence_weight > 0:
+                div_loss = self._calc_3d_divergence_loss(b_est)
+                total_loss = total_loss + self.c.divergence_weight * div_loss
 
-        if self.c.vorticity_weight > 0:
-            vort_loss = self._calc_vorticity_loss(b_est)
-            total_loss = total_loss + self.c.vorticity_weight * vort_loss
+            if self.c.vorticity_weight > 0:
+                vort_loss = self._calc_vorticity_loss(b_est)
+                total_loss = total_loss + self.c.vorticity_weight * vort_loss
+
+            if return_parts:
+                return {
+                    "data": data_loss,
+                    "div": (self._calc_3d_divergence_loss(b_est)
+                            if self.c.divergence_weight > 0 else None),
+                    "vort": (self._calc_vorticity_loss(b_est)
+                             if self.c.vorticity_weight > 0 else None),
+                    "spectral": None,
+                    "extreme": None,
+                    "total": total_loss,
+                }
 
         return total_loss
 

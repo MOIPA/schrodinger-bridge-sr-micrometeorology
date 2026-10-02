@@ -5,6 +5,8 @@
 - 目标(y):d04 原生交错 U/V(W 可选,界面层)+ U10/V10,标准化用细端 σ(μ=0)
 - y0:粗端(d02)风场重网格到细端原生位置,与 y 同一标准化空间(细端 σ)
 - 条件(x):按 input_groups 组装;粗端逐层量用粗端 σ、细端静态用全域统计
+- rho:干空气密度(粗端 psfc/θ 静力积分,重网格到细端),仅供阶段 2 损失项,
+  不进网络输入(in_channel 不变,V* 基线可比)
 - 时间编码/ cos(SZA) 不处理;所有粗端逐时量只来自粗端(规则二)
 """
 import copy
@@ -88,6 +90,48 @@ _STAMP = re.compile(r'_(\d{8}T\d{6})\.npz$')
 def _parse_stamp(path):
     m = _STAMP.search(os.path.basename(path))
     return m.group(1) if m else None
+
+
+def compute_rho_dry(psfc, theta, z_mass, g=9.81, rd=287.05, cp=1004.5, p00=1e5):
+    """干空气静力积分密度:psfc (120,150) Pa(地面气压),theta (K,120,150) 质量层,
+    z_mass (m,120,150) 质量层高度,须相对 psfc 所在面(即 AGL;层间只用差分,
+    与地形高度无关)。
+
+    从最低质量层向上:先 p0 = psfc·exp(−g·z0/(Rd·T0));再逐层
+    p_{k+1} = p_k·exp(−g·Δz/(Rd·T̄)),T = θ·(p/p00)^(Rd/cp),
+    T̄ 用相邻两层(对 p_{k+1} 迭代一次即可)。返回 ρ (K,120,150) kg/m³。
+
+    粗端 npz 无湿度,采用干空气近似(误差 ~1%);不做 netCDF4/QVAPOR 依赖。
+    """
+    psfc = np.maximum(np.asarray(psfc, dtype=np.float64), 1.0)      # Pa,防 0
+    theta = np.maximum(np.asarray(theta, dtype=np.float64), 1.0)    # K,防 0
+    z = np.asarray(z_mass, dtype=np.float64)
+    kappa = rd / cp
+    nlev = theta.shape[0]
+    rho = np.empty_like(theta)
+
+    def _exp_int(dz, t):
+        # exp(−g·Δz/(Rd·T̄));指数裁剪只防病态输入,真实 |Δz| ≲ 2 km 不触发
+        return np.exp(np.clip(-g * dz / (rd * t), -50.0, 50.0))
+
+    # 最低质量层:p0 对 T0 迭代一次(初猜 T0 用 psfc 近似 p0,即忽略 z0 处的气压亏损)
+    t_cur = theta[0] * (psfc / p00) ** kappa
+    p_cur = psfc * _exp_int(z[0], t_cur)
+    t_cur = theta[0] * (p_cur / p00) ** kappa
+    p_cur = psfc * _exp_int(z[0], t_cur)
+    t_cur = theta[0] * (p_cur / p00) ** kappa       # T 始终由当前 p 计算,保证 ρ=p/(Rd·T) 自洽
+    rho[0] = p_cur / (rd * t_cur)
+
+    # 逐层向上:p_{k+1} 用 T̄(相邻两层平均)迭代一次
+    for k in range(1, nlev):
+        dz = z[k] - z[k - 1]
+        p_hat = p_cur * _exp_int(dz, t_cur)
+        t_bar = 0.5 * (t_cur + theta[k] * (p_hat / p00) ** kappa)
+        p_cur = p_cur * _exp_int(dz, t_bar)
+        t_cur = theta[k] * (p_cur / p00) ** kappa
+        rho[k] = p_cur / (rd * t_cur)
+
+    return rho
 
 
 @dataclasses.dataclass()
@@ -191,6 +235,20 @@ class DatasetWindCanvas(Dataset):
         chans.append(CanvasStatics.place(self.stat.regrid_field(u10[None], 'mass')))
         chans.append(CanvasStatics.place(self.stat.regrid_field(v10[None], 'mass')))
         return torch.from_numpy(np.concatenate(chans, axis=0)).to(self.dtype)
+
+    def _rho(self, co):
+        """阶段 2:粗端干空气密度静力积分 -> 重网格 -> 画布 (L,100,121) kg/m³。
+
+        仅作散度损失 ∇·(ρu) 的逐样本权重,不进网络输入。
+        用 AGL 而非 AGL+地形:psfc 是地面气压(位于地形高度 hgt),从 psfc 到
+        最低质量层的积分距离是 AGL;误用 MSL 会多积一个地形高度,高地形列
+        ~10% 密度偏差(层间差分与地形无关,不受影响)。
+        """
+        z_agl = np.asarray(self.stat.d['zagl_mass_coarse'], dtype=np.float64)[self.L]
+        rho = compute_rho_dry(co['c_psfc'],
+                              np.asarray(co['c_theta'], dtype=np.float64)[self.L], z_agl)
+        return torch.from_numpy(CanvasStatics.place(
+            self.stat.regrid_field(rho, 'mass'))).to(self.dtype)
 
     def _inputs(self, co, stamp):
         g = self.c.input_groups
@@ -307,7 +365,11 @@ class DatasetWindCanvas(Dataset):
         y = self._targets(fine)
         y0 = self._y0(co)
         x = self._inputs(co, stamp)
-        n = y.shape[0]
-        cropped = self.crop(torch.cat([y, y0, x], dim=0))
-        out = {'x': cropped[2 * n:], 'y': cropped[:n], 'y0': cropped[n:2 * n]}
+        rho = self._rho(co)
+        n, nx = y.shape[0], x.shape[0]
+        # rho 与 y/y0/x 拼成同一张量后再切,保证四者共享同一次随机裁剪窗口
+        # (rho 通道数为 L,与 y 的通道数不同,切片按各自实际通道数)
+        cropped = self.crop(torch.cat([y, y0, x, rho], dim=0))
+        out = {'x': cropped[2 * n:2 * n + nx], 'y': cropped[:n], 'y0': cropped[n:2 * n],
+               'rho': cropped[2 * n + nx:]}
         return {k: torch.nan_to_num(v, self.c.missing_value) for k, v in out.items()}

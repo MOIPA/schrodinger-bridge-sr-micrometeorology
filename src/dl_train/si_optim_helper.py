@@ -49,13 +49,17 @@ def optimize_si(
         y0 = batch["y0"].to(device, non_blocking=True)
         y1 = batch["y"].to(device, non_blocking=True)
         y_cond = batch["x"].to(device, non_blocking=True)
+        # 阶段 2:逐样本干空气密度(散度损失用);旧数据集无此键 -> None
+        rho = batch.get("rho")
+        if rho is not None:
+            rho = rho.to(device, non_blocking=True)
 
         if mode == "train":
             optimizer.zero_grad()
 
             if use_amp:
                 with torch.cuda.amp.autocast(enabled=True):
-                    loss = si.forward(y0=y0, y1=y1, y_cond=y_cond)
+                    loss = si.forward(y0=y0, y1=y1, y_cond=y_cond, rho=rho)
 
                 # 检查 loss 是否 NaN/Inf，是则跳过这个 batch
                 if not torch.isfinite(loss):
@@ -70,7 +74,7 @@ def optimize_si(
                 scaler.update()
             else:
                 # Standard CPU training forward and backward pass
-                loss = si.forward(y0=y0, y1=y1, y_cond=y_cond)
+                loss = si.forward(y0=y0, y1=y1, y_cond=y_cond, rho=rho)
 
                 # 检查 loss 是否 NaN/Inf，是则跳过这个 batch
                 if not torch.isfinite(loss):
@@ -89,7 +93,7 @@ def optimize_si(
             with torch.no_grad(), torch.autocast(
                 device_type=device_type, dtype=torch.float16, enabled=use_amp
             ):
-                loss = si(y0=y0, y1=y1, y_cond=y_cond)
+                loss = si(y0=y0, y1=y1, y_cond=y_cond, rho=rho)
             
         loss_meter.update(loss.item(), n=batch["x"].shape[0])
     if nan_skipped > 0:
