@@ -34,8 +34,10 @@ B, C, L = 2, 72, 23
 H, W = 96, 112
 DX = 1000.0
 
-# 任务 A 改造前由 /tmp/si_baseline_capture.py 捕获的"权重全 0 旧行为"数值
-# (同一机器/同一 torch 上应逐位复现,tol=0;若不一致说明旧路径被改动了)
+# 任务 A 改造前由 /tmp/si_baseline_capture.py 捕获的"权重全 0 旧行为"数值。
+# 同一机器/同一 torch 上逐位复现;跨机器/跨版本因 float32 归约顺序不同会有
+# ~1e-7 相对偏差(2026-10-02 服务器 wind3d 实测 7e-8),故用 rel 1e-6 判定:
+# 若旧路径被改动,偏差会远大于此。
 BASELINE = {
     "canvas_resid_L2": 2.9703762531280518,
     "canvas_direct_L1_cw": 5.213955879211426,
@@ -158,7 +160,7 @@ def run_one(cfg, shape, seed, cw=None):
 
 
 def test_baseline_regression():
-    print("② 旧行为逐位回归(权重全 0,tol=0)")
+    print("② 旧行为回归(权重全 0,rel 1e-6)")
     s = (2, 72, 96, 112)   # canvas 窗口
     o = (2, 18, 64, 64)    # 旧 interleaved(Z=6 层)
     cw = [1.0] * 72
@@ -177,8 +179,10 @@ def test_baseline_regression():
                      divergence_weight=0.2, vorticity_weight=0.1), o, 11),
     }
     for k in BASELINE:
-        check("{} 逐位一致".format(k), got[k] == BASELINE[k],
-              "{} vs {}".format(repr(got[k]), repr(BASELINE[k])))
+        ref = BASELINE[k]
+        ok = abs(got[k] - ref) <= 1e-6 * max(abs(ref), 1.0)
+        check("{} 数值一致(rel 1e-6)".format(k), ok,
+              "{} vs {}".format(repr(got[k]), repr(ref)))
 
 
 # ---------------------------------------------------------------------------

@@ -110,25 +110,27 @@ def compute_rho_dry(psfc, theta, z_mass, g=9.81, rd=287.05, cp=1004.5, p00=1e5):
     nlev = theta.shape[0]
     rho = np.empty_like(theta)
 
+    # p/t 下限只为病态输入兜底(如 80 号合成自检的随机几何会让 p 逐层下溢到 0),
+    # 真实大气 p ~1e4–1e5 Pa、T ~250–320 K,离下限很远,不影响数值
     def _exp_int(dz, t):
         # exp(−g·Δz/(Rd·T̄));指数裁剪只防病态输入,真实 |Δz| ≲ 2 km 不触发
-        return np.exp(np.clip(-g * dz / (rd * t), -50.0, 50.0))
+        return np.exp(np.clip(-g * dz / (rd * np.maximum(t, 1e-3)), -50.0, 50.0))
 
     # 最低质量层:p0 对 T0 迭代一次(初猜 T0 用 psfc 近似 p0,即忽略 z0 处的气压亏损)
-    t_cur = theta[0] * (psfc / p00) ** kappa
-    p_cur = psfc * _exp_int(z[0], t_cur)
-    t_cur = theta[0] * (p_cur / p00) ** kappa
-    p_cur = psfc * _exp_int(z[0], t_cur)
-    t_cur = theta[0] * (p_cur / p00) ** kappa       # T 始终由当前 p 计算,保证 ρ=p/(Rd·T) 自洽
+    t_cur = np.maximum(theta[0] * (psfc / p00) ** kappa, 1e-3)
+    p_cur = np.maximum(psfc * _exp_int(z[0], t_cur), 1.0)
+    t_cur = np.maximum(theta[0] * (p_cur / p00) ** kappa, 1e-3)
+    p_cur = np.maximum(psfc * _exp_int(z[0], t_cur), 1.0)
+    t_cur = np.maximum(theta[0] * (p_cur / p00) ** kappa, 1e-3)  # T 由当前 p 计算,保证 ρ=p/(Rd·T) 自洽
     rho[0] = p_cur / (rd * t_cur)
 
     # 逐层向上:p_{k+1} 用 T̄(相邻两层平均)迭代一次
     for k in range(1, nlev):
         dz = z[k] - z[k - 1]
-        p_hat = p_cur * _exp_int(dz, t_cur)
-        t_bar = 0.5 * (t_cur + theta[k] * (p_hat / p00) ** kappa)
-        p_cur = p_cur * _exp_int(dz, t_bar)
-        t_cur = theta[k] * (p_cur / p00) ** kappa
+        p_hat = np.maximum(p_cur * _exp_int(dz, t_cur), 1.0)
+        t_bar = 0.5 * (t_cur + np.maximum(theta[k] * (p_hat / p00) ** kappa, 1e-3))
+        p_cur = np.maximum(p_cur * _exp_int(dz, t_bar), 1.0)
+        t_cur = np.maximum(theta[k] * (p_cur / p00) ** kappa, 1e-3)
         rho[k] = p_cur / (rd * t_cur)
 
     return rho
