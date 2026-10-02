@@ -91,8 +91,13 @@ for tag in $TAGS; do
   CK=$(ck_of "$tag")
   CFG=$(cfg_of "$tag")
   if [ -f "$CK" ]; then
-    echo "[跳过] $tag 已有 checkpoint" >> "$OUT"
-    continue
+    # checkpoint 存在 ≠ 已完成:训练中断(节点争抢 SIGINT 等)也会留下 best checkpoint,
+    # 以日志里的 "Train end:" 作为正常结束标记,否则重投续训(checkpoint 自动 resume)
+    if grep -q "Train end:" "logs/${tag}.log" 2>/dev/null; then
+      echo "[跳过] $tag 已完成(checkpoint + Train end 标记)" >> "$OUT"
+      continue
+    fi
+    echo "[续训] $tag 有 checkpoint 但未见 Train end(疑似中断),重投续训" >> "$OUT"
   fi
   if [ ! -f "$CFG" ]; then
     echo "[警告] 缺配置 $CFG(先跑 60_phase2_setup.sh 生成;W3 的 p2_combo 需 86 变体表含 combo),跳过 $tag" >> "$OUT"
