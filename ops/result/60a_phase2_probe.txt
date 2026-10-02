@@ -1,0 +1,25 @@
+===== 96 权重探针(V* 基线 r_t14_noenc_cos) =====
+[OK] configs/深圳/phase2/config_wind_canvas_p2_div_mid.yml
+[OK] data/DL_result/ExperimentSchrodingerBridgeWindCanvas/config_wind_canvas_p1r_t14_noenc_cos/checkpoint.pth
+探针 valid: 72 帧,每 batch 2 帧,最多 20 个 batch
+/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
+  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
+
+项                    原始均值   建议权重(data×10%)
+data         1.063298e-01                -
+div          1.344545e+00       7.9082e-03
+vort         4.251934e-04       2.5007e+01
+spectral     2.749347e-01       3.8675e-02
+extreme      2.462574e-01       4.3178e-02
+div 三档: lo=2.6361e-03  mid=7.9082e-03  hi=2.3725e-02
+散度 hinge: fraction(|D|>τ)=0.4271(pooled 0.4184), P95(|D|/τ)=3.950, 统计体元 5093235
+
+写出 /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/results/phase2/probe_weights.json
+PROBE OK
+96 exit=0
+
+===== 产出与 86 回填命令 =====
+-rw-r--r-- 1 ytw_tangzq yutingwang 983 Oct  2 17:19 results/phase2/probe_weights.json
+86 回填命令(服务器仓库根目录执行):
+  python scripts/outline/86_gen_phase2_configs.py --div-lo 0.00263608 --div-mid 0.00790824 --div-hi 0.0237247 --spectral 0.0386746 --extreme 0.0431783 --vorticity 25.0074
+然后重跑 81(--config_dir "configs/深圳/phase2")与 95 复核
