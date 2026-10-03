@@ -1,10 +1,10 @@
 ===== 0. 评估清单 =====
-p2 runs: p2_l2,p2_div_mid,p2_spec,p2_vort,p2_div_lo,p2_div_mid_warm
+p2 runs: p2_l1_r2
 baseline: r_t14_noenc_cos(阶段 1 主指标 0.9601,回归检查)
 94 的物理参数来源(基线配置没有 si.phys_*): configs/深圳/phase2/config_wind_canvas_p2_div_mid.yml
 
 ===== 1. 90 AGL 评估(全画布 test split) =====
---- p2_l2 ---
+--- p2_l1_r2 ---
 评估 test: 144 帧(共 144 帧)
 /fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
   return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
@@ -20,98 +20,8 @@ baseline: r_t14_noenc_cos(阶段 1 主指标 0.9601,回归检查)
   ... 96 帧
   ... 120 帧
   ... 144 帧
-{"tag": "p2_l2", "n_hours": 144, "main_rmse_vec": 1.021359877617566}
-写出 results/phase2/p2_l2_perhour.npz / results/phase2/p2_l2_summary.json
---- p2_div_mid ---
-评估 test: 144 帧(共 144 帧)
-/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
-  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:70: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
-  u = t[0:n] * sigma['u']
-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:71: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
-  v = t[n:2 * n] * sigma['v']
-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:72: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
-  w = t[2 * n:2 * n + sigma['w'].shape[0]] * sigma['w']
-  ... 24 帧
-  ... 48 帧
-  ... 72 帧
-  ... 96 帧
-  ... 120 帧
-  ... 144 帧
-{"tag": "p2_div_mid", "n_hours": 144, "main_rmse_vec": 1.1101478110488336}
-写出 results/phase2/p2_div_mid_perhour.npz / results/phase2/p2_div_mid_summary.json
---- p2_spec ---
-评估 test: 144 帧(共 144 帧)
-/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
-  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:70: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
-  u = t[0:n] * sigma['u']
-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:71: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
-  v = t[n:2 * n] * sigma['v']
-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:72: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
-  w = t[2 * n:2 * n + sigma['w'].shape[0]] * sigma['w']
-  ... 24 帧
-  ... 48 帧
-  ... 72 帧
-  ... 96 帧
-  ... 120 帧
-  ... 144 帧
-{"tag": "p2_spec", "n_hours": 144, "main_rmse_vec": 1.1747147147994004}
-写出 results/phase2/p2_spec_perhour.npz / results/phase2/p2_spec_summary.json
---- p2_vort ---
-评估 test: 144 帧(共 144 帧)
-/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
-  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:70: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
-  u = t[0:n] * sigma['u']
-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:71: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
-  v = t[n:2 * n] * sigma['v']
-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:72: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
-  w = t[2 * n:2 * n + sigma['w'].shape[0]] * sigma['w']
-  ... 24 帧
-  ... 48 帧
-  ... 72 帧
-  ... 96 帧
-  ... 120 帧
-  ... 144 帧
-{"tag": "p2_vort", "n_hours": 144, "main_rmse_vec": 1.0511875157591966}
-写出 results/phase2/p2_vort_perhour.npz / results/phase2/p2_vort_summary.json
---- p2_div_lo ---
-评估 test: 144 帧(共 144 帧)
-/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
-  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:70: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
-  u = t[0:n] * sigma['u']
-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:71: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
-  v = t[n:2 * n] * sigma['v']
-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:72: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
-  w = t[2 * n:2 * n + sigma['w'].shape[0]] * sigma['w']
-  ... 24 帧
-  ... 48 帧
-  ... 72 帧
-  ... 96 帧
-  ... 120 帧
-  ... 144 帧
-{"tag": "p2_div_lo", "n_hours": 144, "main_rmse_vec": 1.0618465703686348}
-写出 results/phase2/p2_div_lo_perhour.npz / results/phase2/p2_div_lo_summary.json
---- p2_div_mid_warm ---
-评估 test: 144 帧(共 144 帧)
-/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
-  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:70: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
-  u = t[0:n] * sigma['u']
-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:71: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
-  v = t[n:2 * n] * sigma['v']
-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:72: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
-  w = t[2 * n:2 * n + sigma['w'].shape[0]] * sigma['w']
-  ... 24 帧
-  ... 48 帧
-  ... 72 帧
-  ... 96 帧
-  ... 120 帧
-  ... 144 帧
-{"tag": "p2_div_mid_warm", "n_hours": 144, "main_rmse_vec": 1.0460745949730612}
-写出 results/phase2/p2_div_mid_warm_perhour.npz / results/phase2/p2_div_mid_warm_summary.json
+{"tag": "p2_l1_r2", "n_hours": 144, "main_rmse_vec": 1.0970125354682472}
+写出 results/phase2/p2_l1_r2_perhour.npz / results/phase2/p2_l1_r2_summary.json
 --- r_t14_noenc_cos(基线重评) ---
 评估 test: 144 帧(共 144 帧)
 /fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
@@ -128,83 +38,15 @@ baseline: r_t14_noenc_cos(阶段 1 主指标 0.9601,回归检查)
   ... 96 帧
   ... 120 帧
   ... 144 帧
-{"tag": "r_t14_noenc_cos", "n_hours": 144, "main_rmse_vec": 0.9599966415338413}
+{"tag": "r_t14_noenc_cos", "n_hours": 144, "main_rmse_vec": 0.9600595444956744}
 写出 results/phase2/r_t14_noenc_cos_perhour.npz / results/phase2/r_t14_noenc_cos_summary.json
-BASE REGRESSION: main_rmse_vec=0.9600 (phase1=0.9601, diff=-0.0001) -> PASS
+BASE REGRESSION: main_rmse_vec=0.9601 (phase1=0.9601, diff=-0.0000) -> PASS
 
 ===== 2. 94 三类诊断(散度/能谱/极值) =====
---- p2_l2 ---
+--- p2_l1_r2 ---
 诊断 test: 144 帧(共 144 帧)
-/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
-  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
-  ... 24 帧
-  ... 48 帧
-  ... 72 帧
-  ... 96 帧
-  ... 120 帧
-  ... 144 帧
-{"tag": "p2_l2", "n_frames": 144, "div_p95_mean": {"pred": 0.00045612, "truth": 0.00076052, "y0": 0.00012413}, "frac_gt_tau_mean": {"pred": 0.01019, "truth": 0.03466, "y0": 0.0}, "global_max_all": {"pred": 18.124, "truth": 20.527, "y0": 17.331}, "global_min_all": {"pred": 0.012, "truth": 0.009, "y0": 0.021}}
-写出 results/phase2/p2_l2_diag.json / p2_l2_diag.npz
---- p2_div_mid ---
-诊断 test: 144 帧(共 144 帧)
-/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
-  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
-  ... 24 帧
-  ... 48 帧
-  ... 72 帧
-  ... 96 帧
-  ... 120 帧
-  ... 144 帧
-{"tag": "p2_div_mid", "n_frames": 144, "div_p95_mean": {"pred": 0.00036194, "truth": 0.00076052, "y0": 0.00012413}, "frac_gt_tau_mean": {"pred": 0.00637, "truth": 0.03466, "y0": 0.0}, "global_max_all": {"pred": 18.207, "truth": 20.527, "y0": 17.331}, "global_min_all": {"pred": 0.012, "truth": 0.009, "y0": 0.021}}
-写出 results/phase2/p2_div_mid_diag.json / p2_div_mid_diag.npz
---- p2_spec ---
-诊断 test: 144 帧(共 144 帧)
-/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
-  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
-  ... 24 帧
-  ... 48 帧
-  ... 72 帧
-  ... 96 帧
-  ... 120 帧
-  ... 144 帧
-{"tag": "p2_spec", "n_frames": 144, "div_p95_mean": {"pred": 0.00040505, "truth": 0.00076052, "y0": 0.00012413}, "frac_gt_tau_mean": {"pred": 0.01303, "truth": 0.03466, "y0": 0.0}, "global_max_all": {"pred": 31.53, "truth": 20.527, "y0": 17.331}, "global_min_all": {"pred": 0.021, "truth": 0.009, "y0": 0.021}}
-写出 results/phase2/p2_spec_diag.json / p2_spec_diag.npz
---- p2_vort ---
-诊断 test: 144 帧(共 144 帧)
-/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
-  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
-  ... 24 帧
-  ... 48 帧
-  ... 72 帧
-  ... 96 帧
-  ... 120 帧
-  ... 144 帧
-{"tag": "p2_vort", "n_frames": 144, "div_p95_mean": {"pred": 0.0005249, "truth": 0.00076052, "y0": 0.00012413}, "frac_gt_tau_mean": {"pred": 0.01588, "truth": 0.03466, "y0": 0.0}, "global_max_all": {"pred": 18.345, "truth": 20.527, "y0": 17.331}, "global_min_all": {"pred": 0.015, "truth": 0.009, "y0": 0.021}}
-写出 results/phase2/p2_vort_diag.json / p2_vort_diag.npz
---- p2_div_lo ---
-诊断 test: 144 帧(共 144 帧)
-/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
-  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
-  ... 24 帧
-  ... 48 帧
-  ... 72 帧
-  ... 96 帧
-  ... 120 帧
-  ... 144 帧
-{"tag": "p2_div_lo", "n_frames": 144, "div_p95_mean": {"pred": 0.00060151, "truth": 0.00076052, "y0": 0.00012413}, "frac_gt_tau_mean": {"pred": 0.01913, "truth": 0.03466, "y0": 0.0}, "global_max_all": {"pred": 19.582, "truth": 20.527, "y0": 17.331}, "global_min_all": {"pred": 0.019, "truth": 0.009, "y0": 0.021}}
-写出 results/phase2/p2_div_lo_diag.json / p2_div_lo_diag.npz
---- p2_div_mid_warm ---
-诊断 test: 144 帧(共 144 帧)
-/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
-  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
-  ... 24 帧
-  ... 48 帧
-  ... 72 帧
-  ... 96 帧
-  ... 120 帧
-  ... 144 帧
-{"tag": "p2_div_mid_warm", "n_frames": 144, "div_p95_mean": {"pred": 0.00049657, "truth": 0.00076052, "y0": 0.00012413}, "frac_gt_tau_mean": {"pred": 0.01257, "truth": 0.03466, "y0": 0.0}, "global_max_all": {"pred": 19.488, "truth": 20.527, "y0": 17.331}, "global_min_all": {"pred": 0.014, "truth": 0.009, "y0": 0.021}}
-写出 results/phase2/p2_div_mid_warm_diag.json / p2_div_mid_warm_diag.npz
+配置缺 si.phys_dz / si.phys_div_tau(阶段 1 配置没有,属正常);用 --phys_from_config <阶段 2 配置> 读取,或先跑 86 生成阶段 2 配置
+FAIL 94 p2_l1_r2
 --- r_t14_noenc_cos(基线诊断) ---
 诊断 test: 144 帧(共 144 帧)
 /fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
@@ -215,7 +57,7 @@ BASE REGRESSION: main_rmse_vec=0.9600 (phase1=0.9601, diff=-0.0001) -> PASS
   ... 96 帧
   ... 120 帧
   ... 144 帧
-{"tag": "r_t14_noenc_cos", "n_frames": 144, "div_p95_mean": {"pred": 0.00054964, "truth": 0.00076052, "y0": 0.00012413}, "frac_gt_tau_mean": {"pred": 0.01505, "truth": 0.03466, "y0": 0.0}, "global_max_all": {"pred": 19.705, "truth": 20.527, "y0": 17.331}, "global_min_all": {"pred": 0.011, "truth": 0.009, "y0": 0.021}}
+{"tag": "r_t14_noenc_cos", "n_frames": 144, "div_p95_mean": {"pred": 0.00054975, "truth": 0.00076052, "y0": 0.00012413}, "frac_gt_tau_mean": {"pred": 0.01506, "truth": 0.03466, "y0": 0.0}, "global_max_all": {"pred": 19.703, "truth": 20.527, "y0": 17.331}, "global_min_all": {"pred": 0.011, "truth": 0.009, "y0": 0.021}}
 写出 results/phase2/r_t14_noenc_cos_diag.json / r_t14_noenc_cos_diag.npz
 
 ===== 3. 双三次基线(91) =====
@@ -228,52 +70,35 @@ BASE REGRESSION: main_rmse_vec=0.9600 (phase1=0.9601, diff=-0.0001) -> PASS
 写出 results/phase2/baseline_bicubic_perhour.npz / results/phase2/baseline_bicubic_summary.json
 
 ===== 4. 排序(92) =====
-run 数 8 / 小时数 144
+run 数 3 / 小时数 144
 | run | 主指标 10–500 m 矢量 RMSE (m/s) | Δ vs base | 95% CI | 显著 |
 |---|---|---|---|---|
-| r_t14_noenc_cos (基准) | 0.9600 | — | — | — |
-| p2_l2 | 1.0214 | +0.0614 | [+0.0534, +0.0687] | 是 |
-| p2_div_mid_warm | 1.0461 | +0.0861 | [+0.0666, +0.1047] | 是 |
-| p2_vort | 1.0512 | +0.0912 | [+0.0775, +0.1050] | 是 |
-| p2_div_lo | 1.0618 | +0.1018 | [+0.0653, +0.1381] | 是 |
-| p2_div_mid | 1.1101 | +0.1502 | [+0.1136, +0.1881] | 是 |
-| baseline_y0_regrid | 1.1161 | +0.1561 | [+0.0978, +0.2150] | 是 |
+| r_t14_noenc_cos (基准) | 0.9601 | — | — | — |
+| p2_l1_r2 | 1.0970 | +0.1370 | [+0.1258, +0.1477] | 是 |
+| baseline_y0_regrid | 1.1161 | +0.1560 | [+0.0977, +0.2149] | 是 |
 | baseline_bicubic | 1.1617 | +0.2017 | — | — |
-| p2_spec | 1.1747 | +0.2147 | [+0.1695, +0.2672] | 是 |
 
 写出 results/phase2/ranking_phase2.csv / _perlevel.csv / _strata.csv / .md
 | run | 主指标 10–500 m 矢量 RMSE (m/s) | Δ vs base | 95% CI | 显著 |
 |---|---|---|---|---|
-| r_t14_noenc_cos (基准) | 0.9600 | — | — | — |
-| p2_l2 | 1.0214 | +0.0614 | [+0.0534, +0.0687] | 是 |
-| p2_div_mid_warm | 1.0461 | +0.0861 | [+0.0666, +0.1047] | 是 |
-| p2_vort | 1.0512 | +0.0912 | [+0.0775, +0.1050] | 是 |
-| p2_div_lo | 1.0618 | +0.1018 | [+0.0653, +0.1381] | 是 |
-| p2_div_mid | 1.1101 | +0.1502 | [+0.1136, +0.1881] | 是 |
-| baseline_y0_regrid | 1.1161 | +0.1561 | [+0.0978, +0.2150] | 是 |
+| r_t14_noenc_cos (基准) | 0.9601 | — | — | — |
+| p2_l1_r2 | 1.0970 | +0.1370 | [+0.1258, +0.1477] | 是 |
+| baseline_y0_regrid | 1.1161 | +0.1560 | [+0.0977, +0.2149] | 是 |
 | baseline_bicubic | 1.1617 | +0.2017 | — | — |
-| p2_spec | 1.1747 | +0.2147 | [+0.1695, +0.2672] | 是 |
 
 ===== 5. 净效应表(97) =====
 | run | 主指标 RMSE (m/s) | Δ RMSE [95% CI] | 显著 | 散度 P95 (kg m⁻³ s⁻¹) | Δ% | frac(\|D\|>τ) | Δ% | 高频 logP Δ% | 全局 max Δ (m/s) | 全局 min Δ (m/s) |
 |---|---|---|---|---|---|---|---|---|---|---|
-| r_t14_noenc_cos (基准) | 0.9600 | — | — | 5.496e-04 | — | 0.0151 | — | — | — | — |
-| p2_l2 | 1.0214 | +0.0614 [+0.0534, +0.0687] | 否 | 4.561e-04 | -17.0% | 0.0102 | -32.3% | -6.0% (ΔlogP -0.06) | -1.581 | +0.001 |
-| p2_div_mid_warm | 1.0461 | +0.0861 [+0.0666, +0.1047] | 否 | 4.966e-04 | -9.7% | 0.0126 | -16.5% | +0.1% (ΔlogP +0.00) | -0.217 | +0.004 |
-| p2_vort | 1.0512 | +0.0912 [+0.0775, +0.1050] | 否 | 5.249e-04 | -4.5% | 0.0159 | +5.5% | +0.8% (ΔlogP +0.01) | -1.360 | +0.004 |
-| p2_div_lo | 1.0618 | +0.1018 [+0.0653, +0.1381] | 否 | 6.015e-04 | +9.4% | 0.0191 | +27.1% | +2.9% (ΔlogP +0.03) | -0.123 | +0.008 |
-| p2_div_mid | 1.1101 | +0.1502 [+0.1136, +0.1881] | 否 | 3.619e-04 | -34.2% | 0.0064 | -57.7% | -5.6% (ΔlogP -0.06) | -1.498 | +0.001 |
-| p2_spec | 1.1747 | +0.2147 [+0.1695, +0.2672] | 否 | 4.050e-04 | -26.3% | 0.0130 | -13.4% | +15.7% (ΔlogP +0.15) | +11.825 | +0.011 |
+| r_t14_noenc_cos (基准) | 0.9601 | — | — | 5.497e-04 | — | 0.0151 | — | — | — | — |
+| p2_l1_r2 | 1.0970 | +0.1370 [+0.1258, +0.1477] | 否 | — | — | — | — | — | — | — |
 
 口径:主指标 = AGL 10–500 m 层平均风矢量 RMSE(92,配对移动块 bootstrap);散度 = 全 23 层 |∇·(ρu)| 的逐层统计对层取平均(P95 / frac 为超过 τ_k 的格点占比),Δ% = 相对基线;能谱 = 去交错质量点上逐层 u/v 径向 log 谱(帧平均),高频段 = 箱中心半径 > 0.25 cycles/pixel,Δ% 由平均 log 功率差换算等效功率比;
 极值 = 全 split 时间×空间全局 max/min 之差(在最低 10 层与 10 m 共 11 个风速场中取全局);y0(粗端重网格免费基线)与真值口径同 94 号,逐层表见各 {tag}_diag.json。
-诊断帧数: r_t14_noenc_cos=144, p2_l2=144, p2_div_mid_warm=144, p2_vort=144, p2_div_lo=144, p2_div_mid=144, p2_spec=144
+诊断帧数: r_t14_noenc_cos=144
 
 写出 results/phase2/phase2_net_effects.md
 
 ===== 6. 产出 =====
--rw-r--r-- 1 ytw_tangzq yutingwang      0 Oct  2 23:17 GATE_W1_PASS
--rw-r--r-- 1 ytw_tangzq yutingwang  12485 Oct  3 10:12 p2_div_lo_diag.json
 -rw-r--r-- 1 ytw_tangzq yutingwang  23325 Oct  3 10:12 p2_div_lo_diag.npz
 -rw-r--r-- 1 ytw_tangzq yutingwang 627122 Oct  3 10:08 p2_div_lo_perhour.npz
 -rw-r--r-- 1 ytw_tangzq yutingwang   2885 Oct  3 10:08 p2_div_lo_summary.json
@@ -285,6 +110,8 @@ run 数 8 / 小时数 144
 -rw-r--r-- 1 ytw_tangzq yutingwang  23308 Oct  3 10:13 p2_div_mid_warm_diag.npz
 -rw-r--r-- 1 ytw_tangzq yutingwang 628390 Oct  3 10:08 p2_div_mid_warm_perhour.npz
 -rw-r--r-- 1 ytw_tangzq yutingwang   2918 Oct  3 10:08 p2_div_mid_warm_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 628330 Oct  3 16:52 p2_l1_r2_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang   2885 Oct  3 16:52 p2_l1_r2_summary.json
 -rw-r--r-- 1 ytw_tangzq yutingwang  12477 Oct  3 10:10 p2_l2_diag.json
 -rw-r--r-- 1 ytw_tangzq yutingwang  23285 Oct  3 10:10 p2_l2_diag.npz
 -rw-r--r-- 1 ytw_tangzq yutingwang 628169 Oct  3 10:05 p2_l2_perhour.npz
@@ -297,18 +124,18 @@ run 数 8 / 小时数 144
 -rw-r--r-- 1 ytw_tangzq yutingwang  23321 Oct  3 10:12 p2_vort_diag.npz
 -rw-r--r-- 1 ytw_tangzq yutingwang 627030 Oct  3 10:07 p2_vort_perhour.npz
 -rw-r--r-- 1 ytw_tangzq yutingwang   2877 Oct  3 10:07 p2_vort_summary.json
--rw-r--r-- 1 ytw_tangzq yutingwang   1862 Oct  3 10:14 phase2_net_effects.md
+-rw-r--r-- 1 ytw_tangzq yutingwang   1047 Oct  3 16:54 phase2_net_effects.md
 -rw-r--r-- 1 ytw_tangzq yutingwang    980 Oct  2 21:39 probe_p2_div_mid_ckpt.json
 -rw-r--r-- 1 ytw_tangzq yutingwang    983 Oct  2 17:19 probe_weights.json
--rw-r--r-- 1 ytw_tangzq yutingwang    655 Oct  3 10:14 ranking_phase2.csv
+-rw-r--r-- 1 ytw_tangzq yutingwang    325 Oct  3 16:54 ranking_phase2.csv
 -rw-r--r-- 1 ytw_tangzq yutingwang    326 Oct  2 23:01 ranking_phase2_gate.csv
 -rw-r--r-- 1 ytw_tangzq yutingwang    344 Oct  2 23:01 ranking_phase2_gate.md
 -rw-r--r-- 1 ytw_tangzq yutingwang   1109 Oct  2 23:01 ranking_phase2_gate_perlevel.csv
 -rw-r--r-- 1 ytw_tangzq yutingwang    401 Oct  2 23:01 ranking_phase2_gate_strata.csv
--rw-r--r-- 1 ytw_tangzq yutingwang    638 Oct  3 10:14 ranking_phase2.md
--rw-r--r-- 1 ytw_tangzq yutingwang   2953 Oct  3 10:14 ranking_phase2_perlevel.csv
--rw-r--r-- 1 ytw_tangzq yutingwang    955 Oct  3 10:14 ranking_phase2_strata.csv
--rw-r--r-- 1 ytw_tangzq yutingwang  12573 Oct  3 10:13 r_t14_noenc_cos_diag.json
--rw-r--r-- 1 ytw_tangzq yutingwang  23269 Oct  3 10:13 r_t14_noenc_cos_diag.npz
--rw-r--r-- 1 ytw_tangzq yutingwang 628621 Oct  3 10:09 r_t14_noenc_cos_perhour.npz
--rw-r--r-- 1 ytw_tangzq yutingwang   2925 Oct  3 10:09 r_t14_noenc_cos_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang    338 Oct  3 16:54 ranking_phase2.md
+-rw-r--r-- 1 ytw_tangzq yutingwang   1208 Oct  3 16:54 ranking_phase2_perlevel.csv
+-rw-r--r-- 1 ytw_tangzq yutingwang    410 Oct  3 16:54 ranking_phase2_strata.csv
+-rw-r--r-- 1 ytw_tangzq yutingwang  12575 Oct  3 16:54 r_t14_noenc_cos_diag.json
+-rw-r--r-- 1 ytw_tangzq yutingwang  23293 Oct  3 16:54 r_t14_noenc_cos_diag.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang 628683 Oct  3 16:53 r_t14_noenc_cos_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang   2926 Oct  3 16:53 r_t14_noenc_cos_summary.json

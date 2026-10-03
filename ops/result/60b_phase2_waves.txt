@@ -1,16 +1,24 @@
 ===== 0. 队列里的 p2_ 作业 =====
-14254723 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p2_ext     Oct  3 09:59
-14254724 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p2_div_hi  Oct  3 09:59
+(无)
 
-===== 1. W3 提交清单: p2_l1_r2 =====
->>> p2_l1_r2 -> 队列 6148v100ib
-Job <14254827> is submitted to queue <6148v100ib>.
+===== 1. W4 提交清单: p2_spec_warm p2_ext_warm p2_vort_warm =====
+>>> p2_spec_warm -> 队列 e5v4p100ib
+Job <14255069> is submitted to queue <e5v4p100ib>.
+>>> p2_ext_warm -> 队列 e5v4p100ib
+Job <14255070> is submitted to queue <e5v4p100ib>.
+>>> p2_vort_warm -> 队列 e5v4p100ib
+Job <14255071> is submitted to queue <e5v4p100ib>.
 
 ===== 2. 90 秒后 PEND 检查(PEND 立即换队列重投) =====
-14254723 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p2_ext     Oct  3 09:59
-14254724 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p2_div_hi  Oct  3 09:59
-14254827 ytw_tangzq RUN   6148v100ib login1      40*x003     p2_l1_r2   Oct  3 10:29
+14255069 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p2_spec_warm Oct  3 17:08
+14255070 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p2_ext_warm Oct  3 17:08
+14255071 ytw_tangzq PEND  e5v4p100ib login1         -        p2_vort_warm Oct  3 17:08
+>>> p2_vort_warm(14255071) PEND,换队列重投
+Job <14255071> is being terminated
+>>> p2_vort_warm -> 新队列 6148v100ib
+Job <14255073> is submitted to queue <6148v100ib>.
 
 ===== 3. 后续 =====
 查状态: bash ops/queue/60c_check_phase2.sh
-闸门评估: bash ops/queue/60e_phase2_gate.sh(人工判定后创建 results/phase2/GATE_W3_PASS 并推送)
+闸门评估: bash ops/queue/60e_phase2_gate.sh(人工判定后创建 results/phase2/GATE_W4_PASS 并推送)
+下一波: bash ops/queue/60b_phase2_waves.sh 5
