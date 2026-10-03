@@ -11,6 +11,7 @@ logger = getLogger()
 class TrainEMAConfig(BaseTrainConfig):
     ema_decay: float
     save_interval: int
+    lr_schedule: str = "none"  # "none"=恒定;"cosine"=按 epoch 余弦衰减到 0(稳定性诊断,2026-10-03)
 
 
 class EMA:
