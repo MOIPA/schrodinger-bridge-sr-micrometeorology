@@ -28,13 +28,16 @@ W2="p2_spec p2_ext p2_vort p2_div_lo p2_div_hi p2_div_mid_warm"
 # W3:原计划 p2_combo;W2 评估后(2026-10-03)所有单项均显著差于基线(+6%~+22%),
 # 组合预期叠加伤害、科学价值低 → 改为基线重复 run(p2_l1_r2,seed 78269)量化 run-to-run 方差
 W3="p2_l1_r2"
+# W4:冻结臂的 warmup 补跑(spec/ext/vort 原臂都冻在训练早期;2026-10-03 用户确认补跑)
+W4="p2_spec_warm p2_ext_warm p2_vort_warm"
 
 WAVE="${1:-}"
 case "$WAVE" in
   1) TAGS="$W1";;
   2) TAGS="$W2";;
   3) TAGS="$W3";;
-  *) echo "用法: bash ops/queue/60b_phase2_waves.sh 1|2|3"; exit 1;;
+  4) TAGS="$W4";;
+  *) echo "用法: bash ops/queue/60b_phase2_waves.sh 1|2|3|4"; exit 1;;
 esac
 
 # 配置/checkpoint 路径规则(与 86 生成器/训练脚本一致):config_wind_canvas_p2_<短名>.yml

@@ -1,5 +1,5 @@
-# 阶段 2 配置 l2:V* 输入组(coarse_wind_uv,coarse_zagl,coarse_logz0,fine_geom,coszen)
-# 只改 si 段: {'loss_type': 'L2'}
+# 阶段 2 配置 spec_warm:V* 输入组(coarse_wind_uv,coarse_zagl,coarse_logz0,fine_geom,coszen)
+# 只改 si 段: {'spectral_weight': 0.0386746, 'phys_warmup_epochs': 25}
 # 权重为占位值,96_weight_probe 探针后回填 86 的 WEIGHTS 并重跑生成。
 # phys_scale <- normalize_config.json fine['myj'] 各分量 σ(u/v/w/u10/v10);
 # phys_dz   <- statics.npz zagl_iface_fine 的水平平均界面高度差分
@@ -84,7 +84,7 @@ model:
 si:
   eps: 0.2
   formula: quadratic
-  loss_type: L2
+  loss_type: L1
   n_timestep: 10
   channel_weights: null
   divergence_weight: 0.0
@@ -214,6 +214,8 @@ si:
   - 0.0004612052787544778
   phys_dx: 1000.0
   phys_min_t: 0.5
+  spectral_weight: 0.0386746
+  phys_warmup_epochs: 25
 train:
   early_stopping_patience: 40
   ema_decay: null
