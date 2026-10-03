@@ -25,7 +25,9 @@ QUEUES="${FORCE_Q:-$QUEUES}"  # 队列异常时覆盖:FORCE_Q=6148v100ib bash op
 
 W1="p2_l2 p2_div_mid"
 W2="p2_spec p2_ext p2_vort p2_div_lo p2_div_hi p2_div_mid_warm"
-W3="p2_combo"
+# W3:原计划 p2_combo;W2 评估后(2026-10-03)所有单项均显著差于基线(+6%~+22%),
+# 组合预期叠加伤害、科学价值低 → 改为基线重复 run(p2_l1_r2,seed 78269)量化 run-to-run 方差
+W3="p2_l1_r2"
 
 WAVE="${1:-}"
 case "$WAVE" in
