@@ -89,6 +89,11 @@ def variants(w):
         # p2_div_mid 实测固定权重在第 ~20 轮阶跃失稳(2026-10-02),此臂做稳定性对照
         ('div_mid_warm', {'divergence_weight': w['div_mid'],
                           'phys_warmup_epochs': 25}),
+        # 冻结臂的 warmup 补跑(spec/vort/ext 原臂均在 2026-10-03 确认冻结在训练早期)
+        ('spec_warm', {'spectral_weight': w['spectral'], 'phys_warmup_epochs': 25}),
+        ('ext_warm', {'extreme_weight': w['extreme'], 'extreme_levels': list(range(10)),
+                      'phys_warmup_epochs': 25}),
+        ('vort_warm', {'vorticity_weight': w['vorticity'], 'phys_warmup_epochs': 25}),
         ('spec', {'spectral_weight': w['spectral']}),
         ('ext', {'extreme_weight': w['extreme'], 'extreme_levels': list(range(10))}),
         ('vort', {'vorticity_weight': w['vorticity']}),
