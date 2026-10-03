@@ -1,0 +1,22 @@
+===== 0. 诊断批提交: p2_l1_r3 p2_l2_r2 p2_l1r2_cos p2_l1r2_lr2e4 =====
+>>> p2_l1_r3 -> 队列 7552v100
+Job <14255342> is submitted to queue <7552v100>.
+>>> p2_l2_r2 -> 队列 7552v100
+Job <14255343> is submitted to queue <7552v100>.
+>>> p2_l1r2_cos -> 队列 7552v100
+Job <14255344> is submitted to queue <7552v100>.
+>>> p2_l1r2_lr2e4 -> 队列 7552v100
+Job <14255345> is submitted to queue <7552v100>.
+
+===== 90 秒后 PEND 检查 =====
+>>> p2_l1r2_lr2e4(14255345) PEND,换队列重投
+Job <14255345> is being terminated
+Job <14255347> is submitted to queue <62v100ib>.
+14255342 RUN 7552v100 p2_l1_r3
+14255343 RUN 7552v100 p2_l2_r2
+14255344 RUN 7552v100 p2_l1r2_cos
+14255069 RUN e5v4p100ib p2_spec_warm
+14255070 RUN e5v4p100ib p2_ext_warm
+14255073 RUN 6148v100ib p2_vort_warm
+14255345 PEND 7552v100 p2_l1r2_lr2e4
+14255347 PEND 62v100ib p2_l1r2_lr2e4
