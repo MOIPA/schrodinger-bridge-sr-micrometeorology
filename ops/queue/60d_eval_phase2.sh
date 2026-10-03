@@ -15,6 +15,7 @@ EXP=ExperimentSchrodingerBridgeWindCanvas
 RESULT_BASE=data/DL_result/$EXP
 CFG_DIR="configs/深圳/phase2"
 QUEUES="e5v4p100ib 6148v100ib 7552v100 62v100ib 83a100ib"
+QUEUES="${FORCE_Q:-$QUEUES}"  # 队列异常时覆盖:FORCE_Q=62v100ib bash ops/queue/60d_eval_phase2.sh ...
 ALL="p2_l2 p2_div_mid p2_spec p2_ext p2_vort p2_div_lo p2_div_hi p2_combo"
 
 cfg_of() { echo "$CFG_DIR/config_wind_canvas_p2_${1#p2_}.yml"; }
