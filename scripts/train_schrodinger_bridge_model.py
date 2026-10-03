@@ -240,6 +240,15 @@ if __name__ == "__main__":
                     f"vort={si.c.vorticity_weight:.4g}, spec={si.c.spectral_weight:.4g}, "
                     f"ext={si.c.extreme_weight:.4g})")
 
+            # 学习率调度(稳定性诊断用):cosine = 按 epoch 余弦衰减到 0
+            _sched = getattr(config.train, "lr_schedule", "none") or "none"
+            if _sched == "cosine":
+                _lr = float(config.train.learning_rate) * 0.5 * (
+                    1.0 + np.cos(np.pi * float(epoch) / max(1, config.train.epochs)))
+                for _g in optimizer.param_groups:
+                    _g["lr"] = _lr
+                logger.info(f"lr_schedule=cosine: lr={_lr:.3e}")
+
             losses = {}
             for mode in (["train", "valid"] if "valid" in dict_loaders else ["train"]):
                 loss = optimize_si(
