@@ -20,7 +20,8 @@ RESULT_BASE=data/DL_result/$EXP
 CFG_DIR="configs/深圳/phase2"
 QUEUES="e5v4p100ib 6148v100ib 7552v100 62v100ib 83a100ib"
 QUEUES="${FORCE_Q:-$QUEUES}"
-TAGS="p2_l1_r3 p2_l2_r2 p2_l1r2_cos p2_l1r2_lr2e4"
+# 可选参数:只投指定 tag;默认投全部诊断臂
+TAGS="${*:-p2_l1_r3 p2_l2_r2 p2_l1r2_cos p2_l1r2_lr2e4}"
 
 pick_queue() {
   local BEST="" BESTRUN=1000000 P R
