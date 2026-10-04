@@ -47,18 +47,20 @@ for s in 88_phase3_probe 87_gen_phase3_configs 99_phase3_tables 95_phase2_loss_f
 done
 
 echo ""
-echo "===== 1. AGL 探针(88)-> results/phase3/probe.json ====="
-$PY3D -u scripts/outline/88_phase3_probe.py
-echo "88 exit=$?"
+echo "===== 1. AGL 探针(88;GPU 作业 63a)-> results/phase3/probe.json ====="
 if [ -f results/phase3/probe.json ]; then
+  echo "[OK] probe.json 已存在(跳过提交)"
   echo "--- probe.json ---"
   cat results/phase3/probe.json
 else
-  echo "[FAIL] 未产生 results/phase3/probe.json;87 的 --probe_json 将无法继续"
+  echo "[待跑] 无 results/phase3/probe.json:登录节点无 GPU,先提交探针作业(约 10 分钟):"
+  echo "    bash ops/queue/63a_phase3_probe.sh"
+  echo "  探针完成(产出经 git 回传/本地产出)后重跑本脚本继续后续步骤。"
 fi
 
 echo ""
 echo "===== 2. 生成阶段 3 配置(87;读 probe.json) ====="
+if [ -f results/phase3/probe.json ]; then
 $PY3D -u scripts/outline/87_gen_phase3_configs.py --probe_json results/phase3/probe.json
 echo "87 exit=$?"
 ls -1 "configs/深圳/phase3" 2>/dev/null
@@ -69,11 +71,18 @@ for t in p3_agl p3_joint p3_agllw; do
     echo "[警告] 缺 config_wind_canvas_${t}.yml(63b 对应 wave 会跳过该 tag)"
   fi
 done
+else
+  echo "[跳过] 缺 results/phase3/probe.json(见第 1 步)"
+fi
 
 echo ""
 echo "===== 3. 通道校验(81;阶段 3 目录) ====="
+if [ -n "$(ls -A "configs/深圳/phase3" 2>/dev/null)" ]; then
 $PY3D -u scripts/outline/81_config_channel_check.py --config_dir "configs/深圳/phase3"
 echo "81 exit=$?"
+else
+  echo "[跳过] 尚无阶段 3 配置(见第 1/2 步)"
+fi
 
 echo ""
 echo "===== 4. 物理损失项合成自检(95;C 任务可能已扩展覆盖 AGL 项) ====="
@@ -149,6 +158,8 @@ fi
 echo ""
 echo "===== 8. 后续步骤 ====="
 cat <<'EOM'
+(0) 若第 1 步提示缺 probe.json:先 GPU 探针,完成后再重跑本脚本
+      bash ops/queue/63a_phase3_probe.sh
 (1) W1 训练(p3_agl + p3_joint):
       bash ops/queue/63b_phase3_waves.sh
 (2) 查状态 / PEND 换队列:
