@@ -1,0 +1,357 @@
+===== 0. 数据与 V* 基线检查 =====
+[OK] prepare_npz_outline_fine (8928 个条目)
+[OK] prepare_npz_outline_coarse (1488 个条目)
+[OK] prepare_npz_outline_static (4 个条目)
+[OK] V* 基线 checkpoint(阶段 1 最优 run r_t14_noenc_cos)存在
+[OK] scripts/outline/88_phase3_probe.py
+[OK] scripts/outline/87_gen_phase3_configs.py
+[OK] scripts/outline/99_phase3_tables.py
+[OK] scripts/outline/95_phase2_loss_fixture.py
+[OK] scripts/outline/89_agl_eval_fixture.py
+[OK] scripts/outline/80_fixture_check.py
+
+===== 1. AGL 探针(88;GPU 作业 63a)-> results/phase3/probe.json =====
+[OK] probe.json 已存在(跳过提交)
+--- probe.json ---
+{
+ "data_mean": 0.10196815710514784,
+ "agl_mean": 0.3005861960351467,
+ "agl_u": 0.3339065320789814,
+ "agl_v": 0.40087747275829316,
+ "agl_w": 0.03336294572800398,
+ "lambda_joint": 0.33923100411844925,
+ "lambda_joint_third": 0.11307700137281641,
+ "channel_weights_72": [
+  2.7934141208235554,
+  4.726311476026466,
+  2.2386192611207427,
+  2.2148392949605666,
+  1.11772493797776,
+  1.107999149476639,
+  1.0738190323415429,
+  0.0,
+  0.0,
+  1.1651496858253076,
+  1.0166684959928742,
+  0.0,
+  0.0,
+  1.2137563198558554,
+  0.9680618619623262,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  1.276387457099219,
+  0.9052576166404029,
+  0.0001731080785598965,
+  0.0,
+  2.7934141208235554,
+  4.726311476026466,
+  2.2386192611207427,
+  2.2148392949605666,
+  1.11772493797776,
+  1.107999149476639,
+  1.0738190323415429,
+  0.0,
+  0.0,
+  1.1651496858253076,
+  1.0166684959928742,
+  0.0,
+  0.0,
+  1.2137563198558554,
+  0.9680618619623262,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  1.276387457099219,
+  0.9052576166404029,
+  0.0001731080785598965,
+  0.0,
+  0.43073585235062856,
+  7.268945809452793,
+  3.2363296577475587,
+  2.190796364258924,
+  2.1437663774410893,
+  0.06342568615525965,
+  2.116870399029887,
+  0.0036753081093149737,
+  0.0,
+  0.10432103488114602,
+  2.068886989513377,
+  0.008610157423658695,
+  0.0,
+  0.15223996337150475,
+  2.014417136448642,
+  0.015161081998035163,
+  0.0,
+  0.0,
+  0.0,
+  0.2210473322572223,
+  1.9317206531561129,
+  0.029050196404846792,
+  0.0,
+  0.0,
+  2.1818181818181817,
+  2.1818181818181817
+ ],
+ "meta": {
+  "generated": "2026-10-04T23:26:45",
+  "config_path": "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/phase2/config_wind_canvas_p2_l1r2_lr2e4.yml",
+  "checkpoint": "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/data/DL_result/ExperimentSchrodingerBridgeWindCanvas/config_wind_canvas_p2_l1r2_lr2e4/checkpoint.pth",
+  "split": "valid",
+  "ckpt_weights": "model",
+  "n_batches": 20,
+  "n_frames": 40,
+  "agl_weight_used": 1.0,
+  "agl_w_weight": 0.5,
+  "phys_scale": [
+   4.870846441027263,
+   5.61437944936059,
+   6.019056127430309,
+   6.2815552984238545,
+   6.463933812270389,
+   6.599116699750335,
+   6.703716564616404,
+   6.783024074003322,
+   6.821489184307413,
+   6.818774998074592,
+   6.8079732242255515,
+   6.7964430002385186,
+   6.779796027106433,
+   6.757128213345633,
+   6.726237573782599,
+   6.686988257405682,
+   6.641360819242549,
+   6.593021442672661,
+   6.54402627191043,
+   6.496797430578095,
+   6.452993875539729,
+   6.413655410880438,
+   6.37880598760765,
+   4.870846441027263,
+   5.61437944936059,
+   6.019056127430309,
+   6.2815552984238545,
+   6.463933812270389,
+   6.599116699750335,
+   6.703716564616404,
+   6.783024074003322,
+   6.821489184307413,
+   6.818774998074592,
+   6.8079732242255515,
+   6.7964430002385186,
+   6.779796027106433,
+   6.757128213345633,
+   6.726237573782599,
+   6.686988257405682,
+   6.641360819242549,
+   6.593021442672661,
+   6.54402627191043,
+   6.496797430578095,
+   6.452993875539729,
+   6.413655410880438,
+   6.37880598760765,
+   0.13534155504949685,
+   0.20442356098008196,
+   0.23403521156369048,
+   0.2508468097526684,
+   0.26300207119611446,
+   0.27207142667288203,
+   0.27854515741178637,
+   0.28261461460401177,
+   0.2845364878625904,
+   0.28463589104976705,
+   0.2832884909155652,
+   0.280780884572796,
+   0.27734401018405497,
+   0.2731800742176422,
+   0.2684602454445838,
+   0.2633649877531885,
+   0.2580412331186307,
+   0.25261945818488074,
+   0.247219071956206,
+   0.24195567400836404,
+   0.23694706891118333,
+   0.23226531740598835,
+   0.22797965868886377,
+   0.2241161554577522,
+   4.281931440216827,
+   4.281931440216827
+  ],
+  "phys_scale_source": "phys_scale=p2_div_mid, phys_dz=p2_div_mid, phys_div_tau=p2_div_mid",
+  "phys_dz_len": 23,
+  "phys_div_tau_len": 23,
+  "tables_match_load_tables": true,
+  "agl_recomp_max_rel": 1.893995808417099e-07,
+  "note": "lambda_joint = data_mean/agl_mean;channel_weights_72 由 4 张原生表累加(÷((2+w_w)·11·像素数) 后归一到均值 1)"
+ }
+}
+===== 2. 生成阶段 3 配置(87;读 probe.json) =====
+错误: channel_weights_72 存在非正值
+87 exit=1
+[警告] 缺 config_wind_canvas_p3_agl.yml(63b 对应 wave 会跳过该 tag)
+[警告] 缺 config_wind_canvas_p3_joint.yml(63b 对应 wave 会跳过该 tag)
+[警告] 缺 config_wind_canvas_p3_agllw.yml(63b 对应 wave 会跳过该 tag)
+
+===== 3. 通道校验(81;阶段 3 目录) =====
+[跳过] 尚无阶段 3 配置(见第 1/2 步)
+
+===== 4. 物理损失项合成自检(95;C 任务可能已扩展覆盖 AGL 项) =====
+========================================================================
+① physics_canvas 纯函数自检(解析场/真值对拍/梯度)
+① 散度解析场
+  [OK] 常数场 div≈0: max|Δ|=0.000e+00(tol=1e-12)
+  [OK] 线性场 div=a+b: max|Δ|=6.159e-10(tol=1e-06)
+  [OK] 指数 ρ(z) div=ρ_k(a+b): max|Δ|=7.785e-10(tol=1e-06)
+② 与真值侧 70_truth_diagnostics 差分公式对拍(同一合成场)
+  [OK] torch vs 真值差分公式: max|Δ|=5.259e-10(tol=1e-05 rel)
+③ 涡度解析场
+  [OK] 刚体旋转 ζ=2Ω: max|Δ|=8.434e-10(tol=1e-09)
+  [OK] 常数涡度 ζ=ζ0: max|Δ|=9.551e-10(tol=1e-09)
+④ 径向 log 谱
+  [OK] 同一场谱差=0: max|Δ|=0.000e+00(tol=1e-12)
+  [OK] 加噪后谱差>0: mean(ΔlogP)²=1.5501
+  形状 (2, 4, 2, 32)(期望 (2,4,2,32)),log 谱范围 [-27.63,-2.19]
+⑤ 极值项(风速 max/min 结构差)
+  [OK] 同场极值=0: max|Δ|=0.000e+00(tol=1e-12)
+  [OK] 整体平移极值=|位移|: max|Δ|=0.000e+00(tol=1e-09)
+⑥ estimate_residual
+  [OK] r̂=r(精确系数,t>0): max|Δ|=2.384e-07(tol=1e-06 rel)
+  [OK] mask=[False, False, False, True, True, True](期望 [False, False, False, True, True, True])
+⑦ 差分/散度梯度非零
+  [OK] 散度对 u/v/w 梯度总量=12.874
+
+自检结果: 全部通过
+  [OK] physics_canvas._self_test() 全绿 
+② 旧行为回归(权重全 0,rel 1e-6)
+  [OK] canvas_resid_L2 数值一致(rel 1e-6) 2.9703762531280518 vs 2.9703762531280518
+  [OK] canvas_direct_L1_cw 数值一致(rel 1e-6) 5.213955879211426 vs 5.213955879211426
+  [OK] canvas_direct_L2_cw 数值一致(rel 1e-6) 14.205517768859863 vs 14.20551872253418
+  [OK] interleaved_olddiv 数值一致(rel 1e-6) 4.563587188720703 vs 4.563587188720703
+  [OK] interleaved_resid_olddiv 数值一致(rel 1e-6) 3.9180166721343994 vs 3.9180166721343994
+③ 新四项:有限性/加权一致性/退化情形
+   parts: {'data': 5.771242, 'div': 112.944107, 'vort': 0.004707, 'spectral': 0.611002, 'extreme': 0.309055, 'agl': None, 'total': 84.986633}
+  [OK] 四项原始值有限 
+  [OK] 四项原始值>0 
+  [OK] total 有限 
+  [OK] total == data + Σ w_i·part_i 84.98663330078125 vs 84.98663448104634
+  [OK] 权重 0/非 0 分项一致 {'div': 0.0, 'vort': 0.0, 'spectral': 0.0, 'extreme': 0.0}
+  [OK] 权重 0 时 total==data 
+  [OK] rho=None+div 权重=0:div=None,其余正常 
+   perfect: {'div': 117.29194641, 'vort': 0.0, 'spectral': 0.0, 'extreme': 9e-08}
+  [OK] t=1 完美估计 vort=0 
+  [OK] t=1 完美估计 spectral=0 
+  [OK] t=1 完美估计 extreme=0 
+  [OK] t=1 完美估计 div≥0(hinge) 
+  [OK] mask 全 False 时四项=0 {'div': 0.0, 'vort': 0.0, 'spectral': 0.0, 'extreme': 0.0}
+  [OK] mask 全 False 时 total==data 
+  [OK] mask 全 False 时无 NaN 
+③b 报错路径
+  [OK] canvas+div 权重>0 缺 phys_scale -> canvas 物理损失需要 si.phys_scale(长度=out_channel 的每通道物理 σ)
+  [OK] canvas+div 权重>0 缺 phys_dz -> canvas 散度损失需要 si.phys_dz(长度=n_levels 的层厚 m)
+  [OK] canvas+div 权重>0 缺 phys_div_tau -> canvas 散度损失需要 si.phys_div_tau(长度=n_levels 的 hinge 阈值)
+  [OK] canvas+spectral>0 缺 phys_scale -> canvas 物理损失需要 si.phys_scale(长度=out_channel 的每通道物理 σ)
+  [OK] canvas 散度 rho=None -> canvas 散度损失需要在 forward(..., rho=...) 传入干空气密度 (B,L,H,W)
+  [OK] interleaved+spectral>0 -> 谱/极值损失仅支持 state_layout=canvas
+  [OK] phys_scale 长度不符 -> si.phys_scale 元素数 71 != out_channel 72
+  [OK] rho 形状不符 -> rho 形状 (2, 22, 96, 112) != 期望 (2, 23, 96, 112)
+④ 四项对 net 输出的梯度(有限非零)
+  [OK] div 梯度有限非零 |g|1=420
+  [OK] vort 梯度有限非零 |g|1=0.003899
+  [OK] spectral 梯度有限非零 |g|1=34.18
+  [OK] extreme 梯度有限非零 |g|1=57.52
+  [OK] total 梯度有限非零 |g|1=305.1
+⑤ 旧 yml 经 load_config 构造
+  [OK] config_wind_canvas_p1_t16_residual.yml 可构造且新字段为默认值 out=72 in=170
+  [OK] config_wind_canvas_p1_t16_residual.yml 可构造 SI 模块 
+  [OK] config_wind_canvas_p1r_t14_noenc_cos.yml 可构造且新字段为默认值 out=72 in=167
+  [OK] config_wind_canvas_p1r_t14_noenc_cos.yml 可构造 SI 模块 
+⑥a 可微算子 ↔ numpy 算子等价(idx 覆盖 -2/-1/0..21,field10 有无)
+  [OK] 合成 idx 全覆盖 -2/-1/0..21 
+  [OK] 算子等价(field10 有) max|Δ|=0.000e+00
+  [OK] 算子等价(field10 无) max|Δ|=0.000e+00
+⑥b 解析自检(ln z 线性场精确还原 / -2 与 -1 分支 torch↔numpy)
+  [OK] 质量表覆盖 -2/-1/≥0 三类分支 -2=11880 -1=35640 ≥0=83160
+  [OK] ln z 线性场 idx≥0 精确还原(torch/numpy) torch 7.86e-07 numpy 7.86e-07
+  [OK] idx==-2 直接取 10 m 通道(torch/numpy 一致) max|Δ|=0.000e+00
+  [OK] idx==-1 分支 torch↔numpy 逐点一致 max|Δ|=0.000e+00
+   (记录)-1 分支与解析值偏差 5.801e+00(评估侧权重口径,仅 -1 列)
+  [OK] 界面层表(区间内)精确还原 + torch↔numpy max|Δ|=1.170e-06(区间外为首/末层钳制,按设计不外推)
+⑥c crop 对齐端到端(训练路 place→crop→split/destagger→可微插值 vs 评估路)
+  [OK] crop(0,0) 两路 AGL 场一致 max|Δ|=0.000e+00
+  [OK] crop(0,0) 表同 crop 逐元素相等 
+  [OK] crop(3,8) 两路 AGL 场一致 max|Δ|=0.000e+00
+  [OK] crop(3,8) 表同 crop 逐元素相等 
+⑥d AGL 集成(parts 复算 / replace-add 恒等式 / 梯度 / weight=0 逐位)
+  [OK] AGL 项有限且>0 agl=2.216509
+  [OK] parts['agl'] ≈ 公共算子复算(rel 1e-4) 2.216509 vs 2.216509
+  [OK] replace: total == w·agl + Σ w_i·part_i 82.5051498413086 vs 82.50514602325856
+  [OK] replace 模式 data 项仍照常返回 
+  [OK] add: total == data + w·agl + Σ w_i·part_i 84.54570007324219 vs 84.5457019577734
+  [OK] total 梯度有限非零 |g|1=162.1
+  [OK] agl_weight=0 传表/不传表 total 逐位相同 81.32335662841797 vs 81.32335662841797
+  [OK] agl_weight>0 缺 agl 表 -> ValueError -> si.agl_weight>0 需要 forward(..., agl=...) 传入 AGL 插值表
+========================================================================
+检查项:通过 57 / 失败 0
+PHASE2 LOSS FIXTURE OK
+95 exit=0
+
+===== 5. AGL 评估链路合成自检(89;需真实 statics) =====
+1) AGL 算子解析自检:最大偏差 2.669e-06
+2) 累加器自检:pooled 3.999831 vs 暴力 3.999831(n=534600)
+3a) bootstrap 同分布:Δ=+0.00000 CI=[+0.00000,+0.00000]
+3b) bootstrap 已知偏差:Δ=+0.04401 CI=[+0.02020,+0.07283]
+4) 3维/4维混用:Δ=+0.000000 CI=(nan,nan)
+   3维 vs 4维 已知偏差:Δ=+0.048588(期望 +0.048588)
+5) 切变累加解析自检(8 对相邻主层;true u=c·z,c=0.0025;逐层增量 d=0.4)
+   1) pred==true:se2 全 0(P=True),每对计数=11880
+   2) u 逐层增量:每对 RMSE [0.02   0.02   0.02   0.0133 0.008  0.008  0.004  0.002 ] vs 解析 |d|/Δz [0.02   0.02   0.02   0.0133 0.008  0.008  0.004  0.002 ]
+   3) 池化 RMSE 1.38102217e-02 vs 解析 1.38102217e-02(n=95040,期望 95040)
+   4) v 逐层增量:每对 RMSE 与 u 逐对相等:P=True
+   5) 层间均匀常数偏移 d:每对残余 RMSE 最大 2.24e-09(信号 2.00e-03,仅舍入)
+   6) 掩码取上层(150 m 仅上层):各对计数 [0, 0, 0, 0, 11880, 0, 0, 0] -> P=True
+AGL EVAL FIXTURE OK
+89 exit=0
+
+===== 6. canvas 数据集合成自检(80;含 rho/AGL 表透传) =====
+manifest 划分: train=1 valid=0 test=0 unmatched=0
+通道: 输入 206 / 输出 72
+张量: x=(206, 96, 112) y=(72, 96, 112) y0=(72, 96, 112)
+  coarse_wind_uv   -> 46 通道
+  coarse_w         -> 24 通道
+  coarse_zagl      -> 23 通道
+  coarse_logz0     -> 1 通道
+  coarse_most      -> 3 通道
+  coarse_flux      -> 3 通道
+  coarse_theta     -> 23 通道
+  coarse_ph        -> 24 通道
+  time_enc         -> 4 通道
+  coszen           -> 1 通道
+  fine_geom        -> 24 通道
+  fine_logz0       -> 1 通道
+  fine_urban       -> 1 通道
+  fine_waterveg    -> 2 通道
+  geom_diff_zagl   -> 23 通道
+  geom_diff_hgt    -> 1 通道
+  coords           -> 2 通道
+y-y0 平均绝对差 1.3986(随机合成数据,仅验证非退化)
+FIXTURE OK
+80 exit=0
+
+===== 7. 冒烟(p3_agl:AGL 表 + agl 损失,3 iter,CPU) =====
+[跳过] 冒烟:缺 configs/深圳/phase3/config_wind_canvas_p3_agl.yml(先看第 1/2 步)
+
+===== 8. 后续步骤 =====
+(0) 若第 1 步提示缺 probe.json:先 GPU 探针,完成后再重跑本脚本
+      bash ops/queue/63a_phase3_probe.sh
+(1) W1 训练(p3_agl + p3_joint):
+      bash ops/queue/63b_phase3_waves.sh
+(2) 查状态 / PEND 换队列:
+      bash ops/queue/63c_check_phase3.sh
+(3) W1 两臂训练完 -> 评估(90;含重评 p2_l1r2_lr2e4 回归):
+      bash ops/queue/63d_eval_phase3.sh
+(4) 闸门通过(前波评估产物存在)后 W2(p3_agllw):
+      WAVE=2 bash ops/queue/63b_phase3_waves.sh
+(5) 终评报告(99 表 + 98 空间):
+      bash ops/queue/63e_phase3_report.sh

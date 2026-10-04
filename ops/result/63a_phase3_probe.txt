@@ -1,0 +1,31 @@
+===== 88 AGL 探针(基座 p2_l1r2_lr2e4) =====
+[OK] configs/深圳/phase2/config_wind_canvas_p2_l1r2_lr2e4.yml
+[OK] data/DL_result/ExperimentSchrodingerBridgeWindCanvas/config_wind_canvas_p2_l1r2_lr2e4/checkpoint.pth
+探针 valid: 72 帧,每 batch 2 帧,最多 20 个 batch
+物理参数: phys_scale=p2_div_mid, phys_dz=p2_div_mid, phys_div_tau=p2_div_mid (phys_scale 长度 72)
+数据集表(place+crop 前)== agl_eval_common.load_tables: True
+/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
+  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
+
+项                     批均值
+data_mean        0.101968
+agl_mean         0.300586
+agl_u            0.333907
+agl_v            0.400877
+agl_w           0.0333629
+lambda_joint       0.339231
+lambda_joint_third = 0.113077
+agl 复算最大相对偏差 = 1.89e-07(框架 vs 公共算子,U/V 系数 1、W 系数 0.5)
+channel_weights_72: min=0.0000 mean=1.0000 max=7.2689;前 5 通道 y_w_01=7.269, y_v_01=4.726, y_u_01=4.726, y_w_02=3.236, y_u_00=2.793
+
+写出 /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/results/phase3/probe.json
+PROBE OK
+88 exit=0
+
+===== 产出摘要与下一步 =====
+-rw-r--r-- 1 ytw_tangzq yutingwang 4016 Oct  4 23:26 results/phase3/probe.json
+lambda_joint = 0.339231
+data_mean = 0.101968  agl_mean = 0.300586
+channel_weights_72: n=72 mean=1.0000
+tables_match_load_tables = True
+下一步(登录节点): bash ops/queue/63_phase3_setup.sh  # 读 probe.json 生成配置并自检
