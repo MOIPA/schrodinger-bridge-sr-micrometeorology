@@ -188,14 +188,47 @@
  }
 }
 ===== 2. 生成阶段 3 配置(87;读 probe.json) =====
-错误: channel_weights_72 存在非正值
-87 exit=1
-[警告] 缺 config_wind_canvas_p3_agl.yml(63b 对应 wave 会跳过该 tag)
-[警告] 缺 config_wind_canvas_p3_joint.yml(63b 对应 wave 会跳过该 tag)
-[警告] 缺 config_wind_canvas_p3_agllw.yml(63b 对应 wave 会跳过该 tag)
+基座: configs/深圳/phase2/config_wind_canvas_p2_l1r2_lr2e4.yml
+探针: results/phase3/probe.json  lambda_joint=0.339231  channel_weights_72 均值=1 零权重通道=25
+物理参数来源: phys_scale<-probe.meta.phys_scale, phys_dz<-config_wind_canvas_p2_div_mid.yml si.phys_dz, phys_div_tau<-config_wind_canvas_p2_div_mid.yml si.phys_div_tau (phys_scale 72 / phys_dz 23 / phys_div_tau 23)
+
+==== p3_agl -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/phase3/config_wind_canvas_p3_agl.yml ====
+  data.return_agl_tables   (新增) True
+  si.agl_replace_data      (新增) True
+  si.agl_w_weight          (新增) 0.5
+  si.agl_weight            (新增) 1.0
+  si.phys_div_tau          (新增) list(23)[0.00179414,0.00179414,...]
+  si.phys_dz               (新增) list(23)[50.2805,50.1968,...]
+  si.phys_scale            (新增) list(72)[4.87085,5.61438,...]
+
+==== p3_joint -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/phase3/config_wind_canvas_p3_joint.yml ====
+  data.return_agl_tables   (新增) True
+  si.agl_replace_data      (新增) False
+  si.agl_w_weight          (新增) 0.5
+  si.agl_weight            (新增) 0.33923100411844925
+  si.phys_div_tau          (新增) list(23)[0.00179414,0.00179414,...]
+  si.phys_dz               (新增) list(23)[50.2805,50.1968,...]
+  si.phys_scale            (新增) list(72)[4.87085,5.61438,...]
+
+==== p3_agllw -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/phase3/config_wind_canvas_p3_agllw.yml ====
+  data.return_agl_tables   (新增) False
+  si.channel_weights       None -> list(72)[2.79341,4.72631,...]
+
+生成 3 个配置 -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/phase3
+87 exit=0
+config_wind_canvas_p3_agllw.yml
+config_wind_canvas_p3_agl.yml
+config_wind_canvas_p3_joint.yml
+[OK] config_wind_canvas_p3_agl.yml
+[OK] config_wind_canvas_p3_joint.yml
+[OK] config_wind_canvas_p3_agllw.yml
 
 ===== 3. 通道校验(81;阶段 3 目录) =====
-[跳过] 尚无阶段 3 配置(见第 1/2 步)
+config_wind_canvas_p3_agl.yml                out= 72 cond= 95 in=167  scale=72 dz=23 tau=23
+config_wind_canvas_p3_agllw.yml              out= 72 cond= 95 in=167  
+config_wind_canvas_p3_joint.yml              out= 72 cond= 95 in=167  scale=72 dz=23 tau=23
+CHANNEL CHECK OK (3 个配置, /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/phase3)
+81 exit=0
 
 ===== 4. 物理损失项合成自检(95;C 任务可能已扩展覆盖 AGL 项) =====
 ========================================================================
@@ -335,12 +368,17 @@ manifest 划分: train=1 valid=0 test=0 unmatched=0
   geom_diff_zagl   -> 23 通道
   geom_diff_hgt    -> 1 通道
   coords           -> 2 通道
-y-y0 平均绝对差 1.3986(随机合成数据,仅验证非退化)
+y-y0 平均绝对差 1.3968(随机合成数据,仅验证非退化)
 FIXTURE OK
 80 exit=0
 
 ===== 7. 冒烟(p3_agl:AGL 表 + agl 损失,3 iter,CPU) =====
-[跳过] 冒烟:缺 configs/深圳/phase3/config_wind_canvas_p3_agl.yml(先看第 1/2 步)
+冒烟配置: agl_weight=1.0 agl_replace_data=True return_agl_tables=True
+iter 0 total=0.393357 parts={'data': 0.192768, 'div': 0.0, 'vort': 0.000356, 'spectral': 2.791321, 'extreme': 2.310458, 'agl': 0.393357, 'total': 0.393357}
+iter 1 total=0.531985 parts={'data': 0.267926, 'div': 0.0, 'vort': 0.000238, 'spectral': 3.800004, 'extreme': 2.972986, 'agl': 0.531985, 'total': 0.531985}
+iter 2 total=0.135027 parts={'data': 0.070736, 'div': 0.0, 'vort': 0.0, 'spectral': 0.0, 'extreme': 0.0, 'agl': 0.135027, 'total': 0.135027}
+SMOKE OK
+smoke exit=0
 
 ===== 8. 后续步骤 =====
 (0) 若第 1 步提示缺 probe.json:先 GPU 探针,完成后再重跑本脚本
