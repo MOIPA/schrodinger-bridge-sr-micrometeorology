@@ -1,0 +1,17 @@
+===== 0. PHASE=phase3 WAVE=1;队列里的 p3_ 作业 =====
+(无)
+
+===== 1. W1 提交清单: p3_agl p3_joint =====
+>>> p3_agl -> 队列 e5v4p100ib
+Job <14260943> is submitted to queue <e5v4p100ib>.
+>>> p3_joint -> 队列 e5v4p100ib
+Job <14260944> is submitted to queue <e5v4p100ib>.
+
+===== 2. 90 秒后 PEND 检查(PEND 立即换队列重投) =====
+14260943 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p3_agl     Oct  4 23:53
+14260944 ytw_tangzq RUN   e5v4p100ib login1      14*x002     p3_joint   Oct  4 23:53
+
+===== 3. 后续 =====
+查状态: bash ops/queue/63c_check_phase3.sh
+W1 两臂训练完 -> 评估: bash ops/queue/63d_eval_phase3.sh
+评估产物存在后 W2: WAVE=2 bash ops/queue/63b_phase3_waves.sh
