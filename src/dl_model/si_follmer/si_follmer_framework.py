@@ -10,6 +10,7 @@ from typing import Literal, Optional, Union
 import numpy as np
 import torch
 from src.dl_config.base_config import YamlConfig
+from src.dl_model.si_follmer.agl_canvas import agl_interp_batched
 from src.dl_model.si_follmer.physics_canvas import (
     destagger_canvas,
     divergence_rho_u,
@@ -115,6 +116,10 @@ class SIFollmerConfig(YamlConfig):
     phys_min_t: float = 0.5  # 单步估计掩码阈值：仅用 dot_beta>=2*min_t（quadratic 下 t>=min_t）
     phys_div_tau: typing.Optional[list] = None  # 长度 n_levels 的散度 hinge 阈值 kg m^-3 s^-1（T0.5 定标）
     phys_warmup_epochs: int = 0  # >0：四个物理项权重按 epoch 线性爬升(0→1)的轮数；0=固定权重
+    # ---- 阶段 3:AGL 空间监督(agl_weight=0 时完全不参与计算) ----
+    agl_weight: float = 0.0  # AGL 空间误差项权重（漂移误差场经 AGL 插值后的 |·| 均值）；0 表示不启用
+    agl_replace_data: bool = False  # True: 用 AGL 项替换数据项（不叠加数据项）；物理项仍照常累加
+    agl_w_weight: float = 0.5  # AGL 项内 W 分量权重（U/V 权重固定为 1；分母 2+agl_w_weight）
 
 
 class StochasticInterpolantFollmer(nn.Module):
@@ -172,9 +177,11 @@ class StochasticInterpolantFollmer(nn.Module):
                         raise ValueError(
                             f"canvas 散度损失需要 si.phys_dx>0,当前 {self.c.phys_dx}")
         else:
-            # 旧交错布局没有谱/极值的定义,拒绝误用
+            # 旧交错布局没有谱/极值/AGL 的定义,拒绝误用
             if self.c.spectral_weight > 0 or self.c.extreme_weight > 0:
                 raise ValueError("谱/极值损失仅支持 state_layout=canvas")
+            if self.c.agl_weight > 0:
+                raise ValueError("AGL 损失仅支持 state_layout=canvas")
 
         if self.c.state_layout == "canvas" and any(w > 0 for w in canvas_phys_weights):
             logger.info(
@@ -489,12 +496,52 @@ class StochasticInterpolantFollmer(nn.Module):
         out["extreme"] = self._masked_mean(ext.mean(dim=1), mask)
         return out
 
+    def _canvas_agl_raw(self, err: torch.Tensor, agl: dict) -> torch.Tensor:
+        """AGL 空间误差项的批次标量(未加权、全 t 无掩码)。
+
+        口径:err = b_est − b_true(标准化空间,与数据项同一次 b_true、同一噪声
+        机制),先乘 phys_scale 反标准化再插值(AGL 表按物理 z_agl 构造,顺序不可
+        换);U/V 用质量层表(idx>=0,10 m 锚定),W 用界面层表;不做 min_t 掩码——
+        AGL(误差场) 与 "|AGL(ŷ1)−AGL(y1)|" 逐样本仅相差因子 2t,全 t mean 是同一
+        量的代理。返回 (|au|_mean + |av|_mean + agl_w_weight·|aw|_mean)/(2+agl_w_weight)。
+        """
+        device, dtype = err.device, err.dtype
+        if self.c.phys_scale is None:
+            raise ValueError(
+                "AGL 损失需要 si.phys_scale(长度=out_channel 的每通道物理 σ)")
+        ps = torch.as_tensor(self.c.phys_scale, dtype=dtype, device=device)
+        if ps.numel() != err.shape[1]:
+            raise ValueError(
+                f"si.phys_scale 元素数 {ps.numel()} != out_channel {err.shape[1]}")
+        err_phys = err * ps.view(1, -1, 1, 1)
+
+        n_levels = infer_n_levels(err_phys.shape[1])
+        u, v, w, u10, v10 = split_canvas_state(err_phys, n_levels)
+        um, vm, wm = destagger_canvas(u, v, w)
+        u10m = u10[..., :-1, :-1]
+        v10m = v10[..., :-1, :-1]
+
+        # 插值表与 destagger 后的公共质量网格 (H-1,W-1) 对齐:按同尺寸直接裁,不自行
+        # 加 offset/clamp——表的值域 (-2..nlev-2) 与对齐由"dataset 用同一次 crop"契约保证
+        hh, ww = um.shape[-2], um.shape[-1]
+        idx_m = agl["idx_m"][..., :hh, :ww].to(device=device).round().long()
+        w_m = agl["w_m"][..., :hh, :ww].to(device=device, dtype=dtype)
+        idx_i = agl["idx_i"][..., :hh, :ww].to(device=device).round().long()
+        w_i = agl["w_i"][..., :hh, :ww].to(device=device, dtype=dtype)
+
+        au = agl_interp_batched(um, idx_m, w_m, u10m)
+        av = agl_interp_batched(vm, idx_m, w_m, v10m)
+        aw = agl_interp_batched(wm, idx_i, w_i, None)
+        return (au.abs().mean() + av.abs().mean()
+                + self.c.agl_w_weight * aw.abs().mean()) / (2.0 + self.c.agl_w_weight)
+
     def forward(
         self,
         y0: torch.Tensor,
         y1: torch.Tensor,
         y_cond: torch.Tensor,
         rho: Optional[torch.Tensor] = None,
+        agl: Optional[dict] = None,
         return_parts: bool = False,
         **kwargs,
     ):
@@ -503,6 +550,8 @@ class StochasticInterpolantFollmer(nn.Module):
         # y0 and y1 have the same shape.
         # y_cond: condition for y0 and y1, such as building data, dim = batch, channel, y, and x
         # rho: 可空,canvas 布局的干空气密度 (B,L,H,W) kg/m³(散度损失用)
+        # agl: None 或 dict{'idx_m','w_m','idx_i','w_i'}(各 (B,11,H,W) float32,
+        #      与字段同一次 crop;idx 值含 -2/-1/≥0)(AGL 空间监督用)
         # return_parts: True 返回各项损失 dict(canvas 探针定标用),默认返回标量 total
 
         # 物理约束项的目标是原始 y0/y1,必须在残差变换前保存
@@ -537,6 +586,19 @@ class StochasticInterpolantFollmer(nn.Module):
 
         # ---- 物理约束项 ----
         if self.c.state_layout == "canvas":
+            # 阶段 3:AGL 空间监督(独立于物理块:权重全 0 时不得触发 _canvas_physics_raw)。
+            # agl_weight==0 时 agl_raw=None,无任何多余计算,损失与改动前 bit-identical。
+            agl_raw = None
+            if self.c.agl_weight > 0:
+                if agl is None:
+                    raise ValueError(
+                        "si.agl_weight>0 需要 forward(..., agl=...) 传入 AGL 插值表")
+                agl_raw = self._canvas_agl_raw(b_est - b_true, agl)
+                if self.c.agl_replace_data:
+                    total_loss = self.c.agl_weight * agl_raw
+                else:
+                    total_loss = total_loss + self.c.agl_weight * agl_raw
+
             # 阶段 2:原生 C 网格口径(散度/涡度/谱/极值),逐样本掩码平均后再加权。
             # 权重全为 0 且 return_parts=False 时整块跳过,与旧行为完全一致。
             if return_parts or self._canvas_phys_active():
@@ -556,6 +618,7 @@ class StochasticInterpolantFollmer(nn.Module):
                         "vort": raw.get("vort"),
                         "spectral": raw.get("spectral"),
                         "extreme": raw.get("extreme"),
+                        "agl": agl_raw,
                         "total": total_loss,
                     }
         else:

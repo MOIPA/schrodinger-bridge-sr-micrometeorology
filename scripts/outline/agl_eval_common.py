@@ -10,14 +10,17 @@ import json
 import os
 
 import numpy as np
-from src.dl_data.wind_canvas_statics import build_agl_table
+from src.dl_data.wind_canvas_statics import TARGET_AGL, build_agl_table
 
-TARGET_AGL = np.array([10, 30, 50, 70, 100, 150, 200, 300, 500, 700, 1000], dtype=np.float64)
+# TARGET_AGL 由 src.dl_data.wind_canvas_statics 提供(训练侧插值表与评估侧同参,单一来源)
 STRATA = ['all', 'day', 'night', 'urban', 'rural', 'weak', 'mid', 'strong',
           'pbl_low', 'pbl_ent', 'pbl_high']
 SPEED_BINS = (3.0, 7.0)   # 真值风速分箱:m/s;弱 <3 / 中 3–7 / 强 ≥7
 PBL_RATIO = (0.8, 1.2)    # 相对 PBLH 位置:混合层内 / 夹卷层附近 / 混合层之上
 MAIN_LEVELS = [10, 30, 50, 70, 100, 150, 200, 300, 500]   # 主指标 10–500 m 的 AGL 层
+SHEAR_PAIRS = [(MAIN_LEVELS[k], MAIN_LEVELS[k + 1])
+               for k in range(len(MAIN_LEVELS) - 1)]      # 相邻主层对,共 8 对:(10,30)…(300,500)
+SHEAR_DZ = np.diff(np.asarray(MAIN_LEVELS, dtype=np.float64))   # 各对间距 Δz (m)
 N_ACC = 6                 # 每 (层, 分层) 存 6 个累加量:n, se2, se1, dspeed, dir_abs, we2
 
 
@@ -116,6 +119,11 @@ def new_acc(n_lev):
     return np.zeros((n_lev, len(STRATA), N_ACC), dtype=np.float64)
 
 
+def new_acc_shear(n_pairs=8):
+    """切变累加量:(相邻层对, 分层, N_ACC);默认 8 对 = 10–30 … 300–500 m。"""
+    return np.zeros((n_pairs, len(STRATA), N_ACC), dtype=np.float64)
+
+
 def accum_hour(acc, pred_u, pred_v, pred_w, true_u, true_v, true_w, masks):
     """把一小时的误差按 (层, 分层) 累加。pred/true 均为 AGL 物理场 (n_lev,99,120)。"""
     du = pred_u - true_u
@@ -136,6 +144,29 @@ def accum_hour(acc, pred_u, pred_v, pred_w, true_u, true_v, true_w, masks):
         acc[:, si, 3] += (ds * m).sum(axis=(1, 2))
         acc[:, si, 4] += (dth * m).sum(axis=(1, 2))
         acc[:, si, 5] += (dw2 * m).sum(axis=(1, 2))
+    return acc
+
+
+def accum_hour_shear(acc, pred_u, pred_v, true_u, true_v, masks):
+    """把一小时的矢量切变误差按 (相邻层对, 分层) 累加。
+
+    口径:切变 = 矢量 ΔV/Δz(m/s per m),取相邻 MAIN_LEVELS 对共 8 对(10–30 … 300–500);
+    误差 = 预测切变 − 真值切变,平方和放 col1(se2),col1 之外的列不用——池化 RMSE =
+    sqrt(Σe²/Σn),与风矢量 RMSE 同口径,可直接复用 pooled_rmse / paired_delta_ci;
+    分层掩码取每对**上层**层的掩码 masks[s][1:len(MAIN_LEVELS)](形如 (8,99,120)),
+    即切变误差归到 30..500 m 各层。pred/true 均为 AGL 物理场 (len(TARGET_AGL),99,120)。
+    """
+    n_lev = len(MAIN_LEVELS)
+    dz = SHEAR_DZ[:, None, None]                     # (n_pairs,1,1)
+    su_p = (pred_u[1:n_lev] - pred_u[:n_lev - 1]) / dz
+    sv_p = (pred_v[1:n_lev] - pred_v[:n_lev - 1]) / dz
+    su_t = (true_u[1:n_lev] - true_u[:n_lev - 1]) / dz
+    sv_t = (true_v[1:n_lev] - true_v[:n_lev - 1]) / dz
+    e2 = (su_p - su_t) ** 2 + (sv_p - sv_t) ** 2
+    for si, s in enumerate(STRATA):
+        m = masks[s][1:n_lev]                        # 上层掩码 (n_pairs,99,120)
+        acc[:, si, 0] += m.sum(axis=(1, 2))
+        acc[:, si, 1] += (e2 * m).sum(axis=(1, 2))
     return acc
 
 

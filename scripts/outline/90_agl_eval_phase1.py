@@ -26,9 +26,10 @@ import torch
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
-from agl_eval_common import (STRATA, TARGET_AGL, accum_hour, acc_metrics,  # noqa: E402
-                             agl_fields, build_masks, destagger_canvas, load_norm_sigma,
-                             load_tables, main_levels_idx, new_acc, pooled_rmse)
+from agl_eval_common import (SHEAR_PAIRS, STRATA, TARGET_AGL, accum_hour,  # noqa: E402
+                             accum_hour_shear, acc_metrics, agl_fields, build_masks,
+                             destagger_canvas, load_norm_sigma, load_tables,
+                             main_levels_idx, new_acc, new_acc_shear, pooled_rmse)
 from src.dl_config.config_loader import load_config  # noqa: E402
 from src.dl_data.dataloader import make_dataloaders_and_samplers  # noqa: E402
 from src.dl_data.wind_canvas_statics import CanvasStatics  # noqa: E402
@@ -117,6 +118,7 @@ def main():
     n_lev_agl = len(TARGET_AGL)
     hours, acc_model, acc_model_w = [], [], []
     accs, accs_y0 = [], []          # 逐小时累加量,供 92 号配对 bootstrap
+    accs_sh = []                    # 切变累加量(模型预测 vs 真值),供阶段 3 表(99 号)
 
     done, cursor = 0, 0
     for batch in loader:
@@ -155,8 +157,12 @@ def main():
             accum_hour(acc_h_y0, fields['y0'][1][0], fields['y0'][1][1], fields['y0'][1][2],
                        fields['truth'][1][0], fields['truth'][1][1], fields['truth'][1][2],
                        masks)
+            acc_h_sh = new_acc_shear(len(SHEAR_PAIRS))
+            accum_hour_shear(acc_h_sh, fields['pred'][1][0], fields['pred'][1][1],
+                             fields['truth'][1][0], fields['truth'][1][1], masks)
             accs.append(acc_h)
             accs_y0.append(acc_h_y0)
+            accs_sh.append(acc_h_sh)
             # 模式层(原生质量点)逐层:U/V 在 23 个质量层、W 在 24 个界面层,分开累加
             tu, tv, tw = fields['truth'][0][0], fields['truth'][0][1], fields['truth'][0][2]
             pu, pv, pw = fields['pred'][0][0], fields['pred'][0][1], fields['pred'][0][2]
@@ -175,6 +181,7 @@ def main():
 
     acc = np.stack(accs)            # (n_hours, 11, 11, 6)
     acc_y0 = np.stack(accs_y0)
+    acc_sh = np.stack(accs_sh)      # (n_hours, 8, 11, 6):预测 vs 真值的矢量切变误差
     acc_tot = acc.sum(axis=0)
     metrics = acc_metrics(acc_tot)
     out = {
@@ -203,6 +210,7 @@ def main():
         acc_model=np.stack(acc_model),
         acc_model_w=np.stack(acc_model_w),
         acc_y0=acc_y0,
+        acc_sh=acc_sh,
     )
     json_path = os.path.join(args.out_dir, "{}_summary.json".format(tag))
     with open(json_path, 'w') as f:

@@ -14,6 +14,10 @@ CANVAS_SHAPE = (100, 121)
 FINE_SHAPES = {'mass': MASS_SHAPE, 'u': (99, 121), 'v': (100, 120),
                'w': (99, 120)}
 
+# AGL 评估网格(单一来源):训练侧插值表与评估侧 scripts/outline/agl_eval_common 同参
+TARGET_AGL = np.array([10, 30, 50, 70, 100, 150, 200, 300, 500, 700, 1000],
+                      dtype=np.float64)
+
 
 class CanvasStatics(object):
     """statics.npz 的读取与重网格/画布操作。"""
@@ -90,3 +94,20 @@ def build_agl_table(z_agl, targets, use_10m_anchor=True):
             idx[ti][below] = -1
             w[ti][below] = np.clip(wb, 0.0, 1.0)[below].astype(np.float32)
     return idx, w
+
+
+def build_agl_tables_native(zagl_mass_fine, zagl_iface_fine, levels, targets=None):
+    """原生网格 AGL 插值表(与 scripts/outline/agl_eval_common.load_tables 同源同参)。
+
+    levels: 训练层索引序列(0..22)。
+    返回 {'idx_m','w_m','idx_i','w_i'};idx_m/w_m 由 L 个质量层、idx_i/w_i 由 L+1 个
+    界面层数组构建,输出均为 (nt,ny,nx)——层轴已编码进 idx(与 load_tables 逐元素相同)。
+    """
+    levels = list(levels)
+    zagl_m = np.asarray(zagl_mass_fine, np.float64)[levels]
+    zagl_i = np.asarray(zagl_iface_fine, np.float64)[levels[0]:levels[-1] + 2]
+    idx_m, w_m = build_agl_table(zagl_m, targets if targets is not None else TARGET_AGL,
+                                 True)
+    idx_i, w_i = build_agl_table(zagl_i, targets if targets is not None else TARGET_AGL,
+                                 False)
+    return {'idx_m': idx_m, 'w_m': w_m, 'idx_i': idx_i, 'w_i': w_i}

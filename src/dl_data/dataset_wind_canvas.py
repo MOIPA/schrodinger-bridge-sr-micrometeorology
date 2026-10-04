@@ -23,7 +23,11 @@ import warnings
 from torch.utils.data import Dataset
 
 from src.dl_config.base_config import BaseDatasetConfig
-from src.dl_data.wind_canvas_statics import FINE_SHAPES, CanvasStatics
+from src.dl_data.wind_canvas_statics import (
+    FINE_SHAPES,
+    CanvasStatics,
+    build_agl_tables_native,
+)
 from src.utils.random_crop import RandomCrop2D
 
 INPUT_GROUPS = [
@@ -33,6 +37,9 @@ INPUT_GROUPS = [
     'fine_geom', 'fine_logz0', 'fine_urban', 'fine_waterveg',
     'geom_diff_zagl', 'geom_diff_hgt', 'coords',
 ]
+
+# __getitem__ 追加/拆分的 AGL 表后缀(顺序即通道拼接顺序;返回键加 'agl_' 前缀)
+AGL_TABLE_SUFFIXES = ('idx_m', 'w_m', 'idx_i', 'w_i')
 
 
 def build_target_channel_names(L, include_w):
@@ -154,6 +161,7 @@ class DatasetWindCanvasConfig(BaseDatasetConfig):
     missing_value: float = 0.0
     dtype: str = "float32"
     day_night_filter: str = "all"
+    return_agl_tables: bool = False
     dataset_name: typing.ClassVar[str] = "DatasetWindCanvas"
 
     def __post_init__(self):
@@ -188,6 +196,14 @@ class DatasetWindCanvas(Dataset):
         self.WL = list(range(self.L[0], self.L[-1] + 2))  # W 界面层
         self.dtype = torch.float32 if self.c.dtype == "float32" else torch.float16
         self.crop = RandomCrop2D(img_sz=self.c.hr_data_shape, crop_sz=self.c.hr_cropped_shape)
+        # 阶段 3 T3.5:AGL 插值表(原生网格构建 -> place 成画布 (11,100,121)),
+        # 常驻 CPU 的 float32 静态张量;return_agl_tables=False 时完全不建
+        self.agl_tables = None
+        if self.c.return_agl_tables:
+            raw = build_agl_tables_native(self.stat.d['zagl_mass_fine'],
+                                          self.stat.d['zagl_iface_fine'], self.L)
+            self.agl_tables = {k: torch.from_numpy(CanvasStatics.place(raw[k]))
+                               for k in AGL_TABLE_SUFFIXES}
 
     # ------------------------------------------------------------ 通道清单
     def target_channel_names(self):
@@ -369,9 +385,19 @@ class DatasetWindCanvas(Dataset):
         x = self._inputs(co, stamp)
         rho = self._rho(co)
         n, nx = y.shape[0], x.shape[0]
-        # rho 与 y/y0/x 拼成同一张量后再切,保证四者共享同一次随机裁剪窗口
-        # (rho 通道数为 L,与 y 的通道数不同,切片按各自实际通道数)
-        cropped = self.crop(torch.cat([y, y0, x, rho], dim=0))
-        out = {'x': cropped[2 * n:2 * n + nx], 'y': cropped[:n], 'y0': cropped[n:2 * n],
-               'rho': cropped[2 * n + nx:]}
+        # rho 与 y/y0/x 拼成同一张量后再切,保证各段共享同一次随机裁剪窗口
+        # (rho 通道数为 L,与 y 的通道数不同,切片按各自实际通道数);
+        # return_agl_tables=True 时在末尾追加 4 张 AGL 表(同一 crop,窗口一致)
+        parts = [y, y0, x, rho]
+        if self.agl_tables is not None:
+            parts += [self.agl_tables[k] for k in AGL_TABLE_SUFFIXES]
+        cropped = self.crop(torch.cat(parts, dim=0))
+        base = 2 * n + nx
+        out = {'x': cropped[2 * n:base], 'y': cropped[:n], 'y0': cropped[n:2 * n],
+               'rho': cropped[base:base + rho.shape[0]]}
+        if self.agl_tables is not None:
+            at = base + rho.shape[0]
+            for k in AGL_TABLE_SUFFIXES:
+                out['agl_' + k] = cropped[at:at + self.agl_tables[k].shape[0]]
+                at += self.agl_tables[k].shape[0]
         return {k: torch.nan_to_num(v, self.c.missing_value) for k, v in out.items()}

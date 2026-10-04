@@ -53,13 +53,20 @@ def optimize_si(
         rho = batch.get("rho")
         if rho is not None:
             rho = rho.to(device, non_blocking=True)
+        # 阶段 3 T3.5:AGL 插值表(AGL 空间监督用);旧数据集无此键 -> None。
+        # 数据集返回键带 agl_ 前缀,si.forward 的 agl dict 用无前缀键
+        # (与 si_follmer_framework._canvas_agl_raw 的 agl["idx_m"] 消费口径一致)
+        agl = None
+        if "agl_idx_m" in batch:
+            agl = {"idx_m": batch["agl_idx_m"], "w_m": batch["agl_w_m"],
+                   "idx_i": batch["agl_idx_i"], "w_i": batch["agl_w_i"]}
 
         if mode == "train":
             optimizer.zero_grad()
 
             if use_amp:
                 with torch.cuda.amp.autocast(enabled=True):
-                    loss = si.forward(y0=y0, y1=y1, y_cond=y_cond, rho=rho)
+                    loss = si.forward(y0=y0, y1=y1, y_cond=y_cond, rho=rho, agl=agl)
 
                 # 检查 loss 是否 NaN/Inf，是则跳过这个 batch
                 if not torch.isfinite(loss):
@@ -74,7 +81,7 @@ def optimize_si(
                 scaler.update()
             else:
                 # Standard CPU training forward and backward pass
-                loss = si.forward(y0=y0, y1=y1, y_cond=y_cond, rho=rho)
+                loss = si.forward(y0=y0, y1=y1, y_cond=y_cond, rho=rho, agl=agl)
 
                 # 检查 loss 是否 NaN/Inf，是则跳过这个 batch
                 if not torch.isfinite(loss):
@@ -93,7 +100,7 @@ def optimize_si(
             with torch.no_grad(), torch.autocast(
                 device_type=device_type, dtype=torch.float16, enabled=use_amp
             ):
-                loss = si(y0=y0, y1=y1, y_cond=y_cond, rho=rho)
+                loss = si(y0=y0, y1=y1, y_cond=y_cond, rho=rho, agl=agl)
             
         loss_meter.update(loss.item(), n=batch["x"].shape[0])
     if nan_skipped > 0:
