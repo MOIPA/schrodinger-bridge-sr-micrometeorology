@@ -117,7 +117,11 @@ def load_phys_params(probe, base_cfg):
 
 
 def check_probe(probe, n_out):
-    """探针 json 必需键校验(缺失/量纲不对时直接报错,不静默用默认值)。"""
+    """探针 json 必需键校验(缺失/量纲不对时直接报错,不静默用默认值)。
+
+    注意:channel_weights_72 允许为 0——AGL 算子只覆盖到 1000 m,更高的模式层
+    (含 1 km 以上背景层)诱导权重本来就是 0(纯 AGL 臂同样不监督这些层)。
+    """
     need = []
     for k in ("lambda_joint", "channel_weights_72"):
         if probe.get(k) is None:
@@ -130,8 +134,10 @@ def check_probe(probe, n_out):
     cw = [float(x) for x in probe["channel_weights_72"]]
     if len(cw) != n_out:
         sys.exit("错误: channel_weights_72 长度 {} != out_channel {}".format(len(cw), n_out))
-    if min(cw) <= 0:
-        sys.exit("错误: channel_weights_72 存在非正值")
+    if min(cw) < 0:
+        sys.exit("错误: channel_weights_72 存在负值")
+    if sum(cw) <= 0:
+        sys.exit("错误: channel_weights_72 全零")
     return lam, cw
 
 
@@ -201,8 +207,8 @@ def main():
     lam, cw = check_probe(probe, base["model"]["out_channel"])
     phys, phys_src = load_phys_params(probe, base)
     print("基座: {}".format(disp(base_path)))
-    print("探针: {}  lambda_joint={:.6g}  channel_weights_72 均值={:.4g}".format(
-        disp(probe_path), lam, sum(cw) / len(cw)))
+    print("探针: {}  lambda_joint={:.6g}  channel_weights_72 均值={:.4g} 零权重通道={}".format(
+        disp(probe_path), lam, sum(cw) / len(cw), sum(1 for x in cw if x == 0.0)))
     print("物理参数来源: {} (phys_scale {} / phys_dz {} / phys_div_tau {})".format(
         phys_src, len(phys["phys_scale"]), len(phys["phys_dz"]), len(phys["phys_div_tau"])))
 
