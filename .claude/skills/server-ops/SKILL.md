@@ -18,6 +18,10 @@ description: LSF 集群服务器操作手册——screen 共享会话工作流�
 - **保活(2026-09-30 起)**:① 本地 `~/.ssh/config` 加 `Host entry.nju.edu.cn` + `ServerAliveInterval 60`
   + `ServerAliveCountMax 6`(客户端心跳,新建连接生效);② 当前连接可在服务器侧起
   `(while true; do sleep 55; printf "\0"; done) & disown`(不可见 NUL 心跳)。仍不保证不断,重要任务别依赖
+- **保活的现实(2026-10-03/04 实测)**:NUL 心跳挡不住网关,约 2-3 小时无"真实流量"仍被 reset;
+  可靠做法 = **本地侧每隔 25-30 分钟经 screen 发一条真实命令**(顺带查作业状态,写成后台小脚本循环);
+  断了之后把 `ssh ytw_tangzq@entry.nju.edu.cn` 预先打进 screen(用户只需输密码+OTP)。
+  注意:断线后 stuff 会打进本地 shell(报 zsh 错误),从 hardcopy 里能看出来
 - 安全层提示:自动模式可能拦截不常见或复合的 screen 命令;保持每条命令**单一目的、简单**容易通过
 
 ## 2. 环境
