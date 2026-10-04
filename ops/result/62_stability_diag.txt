@@ -1,6 +1,6 @@
 ===== 0. 诊断批提交: p2_ext_long =====
->>> p2_ext_long -> 队列 e5v4p100ib
-Job <14257671> is submitted to queue <e5v4p100ib>.
+>>> p2_ext_long -> 队列 6148v100ib
+Job <14257672> is submitted to queue <6148v100ib>.
 
 ===== 90 秒后 PEND 检查 =====
-14257671 RUN e5v4p100ib p2_ext_long
+14257672 RUN 6148v100ib p2_ext_long
