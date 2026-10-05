@@ -1,10 +1,10 @@
 ===== 换队列(先杀后投,checkpoint 自动 resume)=====
->>> bkill 14262344 (p3_agllw)
-Job <14262344> is being terminated
->>> p3_agllw -> 队列 83a100ib
-Job <14262357> is submitted to queue <83a100ib>.
+>>> bkill 14262357 (p3_agllw)
+Job <14262357> is being terminated
+>>> p3_agllw -> 队列 6148v100ib
+Job <14262480> is submitted to queue <6148v100ib>.
 
 ===== 90 秒后复查 =====
-14262357 ytw_tangzq PEND  83a100ib   login1         -        p3_agllw   Oct  5 21:45
+14262480 ytw_tangzq PEND  6148v100ib login1         -        p3_agllw   Oct  6 01:06
 
 后续: tail -f logs/p3_agl.log logs/p3_joint.log 看轮速(resume 后应连续推进)
