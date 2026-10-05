@@ -1,0 +1,59 @@
+===== 0. 评估清单 =====
+tags: p2_l1r2_lr2e4,p3_agl
+参考臂: p2_l1r2_lr2e4(phase2 主指标 0.9574;重评 = 复现性回归 + 切变类累加补齐)
+产物目录: results/phase3/(全部 tag 统一落这里,便于 92/97/99 同目录比较)
+
+===== 1. 90 AGL 评估(全画布 test split) =====
+--- p2_l1r2_lr2e4 ---
+评估 test: 144 帧(共 144 帧)
+/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
+  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:71: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+  u = t[0:n] * sigma['u']
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:72: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+  v = t[n:2 * n] * sigma['v']
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:73: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+  w = t[2 * n:2 * n + sigma['w'].shape[0]] * sigma['w']
+  ... 24 帧
+  ... 48 帧
+  ... 72 帧
+  ... 96 帧
+  ... 120 帧
+  ... 144 帧
+{"tag": "p2_l1r2_lr2e4", "n_hours": 144, "main_rmse_vec": 0.9573530575548824}
+写出 results/phase3/p2_l1r2_lr2e4_perhour.npz / results/phase3/p2_l1r2_lr2e4_summary.json
+--- p3_agl ---
+评估 test: 144 帧(共 144 帧)
+/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
+  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:71: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+  u = t[0:n] * sigma['u']
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:72: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+  v = t[n:2 * n] * sigma['v']
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/90_agl_eval_phase1.py:73: DeprecationWarning: __array_wrap__ must accept context and return_scalar arguments (positionally) in the future. (Deprecated NumPy 2.0)
+  w = t[2 * n:2 * n + sigma['w'].shape[0]] * sigma['w']
+  ... 24 帧
+  ... 48 帧
+  ... 72 帧
+  ... 96 帧
+  ... 120 帧
+  ... 144 帧
+{"tag": "p3_agl", "n_hours": 144, "main_rmse_vec": 0.9383245904130632}
+写出 results/phase3/p3_agl_perhour.npz / results/phase3/p3_agl_summary.json
+
+===== 2. 主指标汇总与 0.9574 对照 =====
+| tag | main_rmse_vec | n_hours | 与 0.9574 之差 | 判定 |
+|---|---|---|---|---|
+| p2_l1r2_lr2e4 | 0.9574 | 144 | -0.0000 | PASS(回归) |
+| p3_agl | 0.9383 | 144 | -0.0191 | 对照 |
+
+口径:main_rmse_vec = 90 的 10-500 m 全分层矢量 RMSE(标准化空间,确定性采样);
+      参考值 0.9574 来自 results/phase2/ 的同一 run(2026-10-03 记录)。
+
+===== 3. 产出 =====
+total 897
+-rw-r--r-- 1 ytw_tangzq yutingwang 731253 Oct  5 09:24 p2_l1r2_lr2e4_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang   2898 Oct  5 09:24 p2_l1r2_lr2e4_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 731673 Oct  5 09:26 p3_agl_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang   2888 Oct  5 09:26 p3_agl_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang   4016 Oct  4 23:26 probe.json
