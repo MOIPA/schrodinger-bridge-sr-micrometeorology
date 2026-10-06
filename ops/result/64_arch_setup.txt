@@ -259,7 +259,7 @@ manifest 划分: train=1 valid=0 test=0 unmatched=0
   geom_diff_zagl   -> 23 通道
   geom_diff_hgt    -> 1 通道
   coords           -> 2 通道
-y-y0 平均绝对差 1.4019(随机合成数据,仅验证非退化)
+y-y0 平均绝对差 1.3959(随机合成数据,仅验证非退化)
 FIXTURE OK
 80 exit=0
 
@@ -399,16 +399,9 @@ split by manifest /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micromet
 train: dataset size = 528, batch num = 528
 
 UNetDDPMVer01 is created
-Traceback (most recent call last):
-  File "<stdin>", line 94, in <module>
-  File "/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
-    return self._call_impl(*args, **kwargs)
-  File "/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_model/ddpm/unet_ddpm_v01.py", line 240, in forward
-    h = torch.cat([h, hpop], dim=1)
-RuntimeError: Sizes of tensors must match except in dimension 1. Expected size 12 but got size 13 for tensor number 1 in the list.
-smoke exit=1
+SMOKE edm OK(ctx=239,样本形状 (1, 1, 72, 96, 112),2 步 Heun)
+SMOKE ALL OK
+smoke exit=0
 
 ===== 8. 后续步骤 =====
 (1) W1 训练(swin + reg):

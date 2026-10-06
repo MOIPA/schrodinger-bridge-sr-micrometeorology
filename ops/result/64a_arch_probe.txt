@@ -1,0 +1,7 @@
+batch: y0 (2, 72, 96, 112), x (2, 95, 96, 112)
+UNet inner=64(ref)         0.7 s/it  peak-alloc 1.58 GiB  79.26M params
+UNet inner=32              0.1 s/it  peak-alloc 1.28 GiB  19.87M params
+SwinIR inner=288           0.2 s/it  peak-alloc 2.39 GiB  5.79M params
+SwinIR inner=536           0.2 s/it  peak-alloc 4.31 GiB  19.01M params
+PROBE OK
+exit=0
