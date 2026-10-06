@@ -1,0 +1,423 @@
+===== 0. 前置文件与数据检查 =====
+[OK] scripts/outline/83_gen_arch_configs.py
+[OK] scripts/outline/82_arch_fixture.py
+[OK] scripts/outline/84_ensemble_eval.py
+[OK] scripts/outline/81_config_channel_check.py
+[OK] scripts/outline/80_fixture_check.py
+[OK] scripts/outline/89_agl_eval_fixture.py
+[OK] scripts/outline/95_phase2_loss_fixture.py
+[OK] scripts/outline/99_phase3_tables.py
+[OK] src/dl_model/swinir_arch.py
+[OK] src/dl_model/regression_wrapper.py
+[OK] src/dl_model/edm_correction.py
+[OK] src/dl_train/reg_optim_helper.py
+[OK] scripts/train_regression_model.py
+[OK] scripts/train_edm_correction.py
+[OK] prepare_npz_outline_fine (8928 个条目)
+[OK] prepare_npz_outline_coarse (1488 个条目)
+[OK] prepare_npz_outline_static (4 个条目)
+[OK] 参考臂 checkpoint(64d ens16 重评用)
+
+===== 1. 生成架构配置(83;逐键 diff 见下) =====
+
+== p3_arch_unet_s2 -> configs/深圳/phase3_arch/config_wind_canvas_p3_arch_unet_s2.yml ==
+  train.seed                   78269 -> 78270
+
+== p3_arch_unet_small -> configs/深圳/phase3_arch/config_wind_canvas_p3_arch_unet_small.yml ==
+  model.inner_channel          64 -> 32
+
+== p3_arch_unet_small_s2 -> configs/深圳/phase3_arch/config_wind_canvas_p3_arch_unet_small_s2.yml ==
+  model.inner_channel          64 -> 32
+  train.seed                   78269 -> 78270
+
+== p3_arch_swin -> configs/深圳/phase3_arch/config_wind_canvas_p3_arch_swin.yml ==
+  model.arch                   <缺> -> 'swinir_canvas'
+  model.attn_res               [16] -> <删>
+  model.channel_mults          [1, 2, 4, 8, 8] -> <删>
+  model.channels_each_head     16 -> <删>
+  model.dropout                0.2 -> 0.0
+  model.inner_channel          64 -> 536
+  model.max_period             10.0 -> <删>
+  model.mlp_ratio              <缺> -> 2.0
+  model.num_blocks             <缺> -> 6
+  model.num_heads              <缺> -> 4
+  model.res_blocks             1 -> <删>
+  model.resblock_updown        True -> <删>
+  model.window_size            <缺> -> 8
+
+== p3_arch_swin_s2 -> configs/深圳/phase3_arch/config_wind_canvas_p3_arch_swin_s2.yml ==
+  model.arch                   <缺> -> 'swinir_canvas'
+  model.attn_res               [16] -> <删>
+  model.channel_mults          [1, 2, 4, 8, 8] -> <删>
+  model.channels_each_head     16 -> <删>
+  model.dropout                0.2 -> 0.0
+  model.inner_channel          64 -> 536
+  model.max_period             10.0 -> <删>
+  model.mlp_ratio              <缺> -> 2.0
+  model.num_blocks             <缺> -> 6
+  model.num_heads              <缺> -> 4
+  model.res_blocks             1 -> <删>
+  model.resblock_updown        True -> <删>
+  model.window_size            <缺> -> 8
+  train.seed                   78269 -> 78270
+
+== p3_arch_reg -> configs/深圳/phase3_arch/config_wind_canvas_p3_arch_reg.yml ==
+  (与基座逐键相同)
+
+== p3_arch_reg_s2 -> configs/深圳/phase3_arch/config_wind_canvas_p3_arch_reg_s2.yml ==
+  train.seed                   78269 -> 78270
+
+== p3_arch_edm -> configs/深圳/phase3_arch/config_wind_canvas_p3_arch_edm.yml ==
+  edm                          <缺> -> {'out_channel': 72, 'ctx_channel': 239, 'inner_channel': 64, 'channel_mults': [1, 2, 4], 'blocks_per_level': 1, 'dropout': 0.0, 'max_period': 10.0, 'sigma_data': None, 'sigma_min': 0.002, 'sigma_max': 80.0, 'p_mean': -1.2, 'p_std': 1.2, 'rho': 7.0, 'steps': 24, 'sigma_d_estimator': 'std', 'sigma_d_est_batches': 8}
+  reg                          <缺> -> {'reg_tag': 'p3_arch_reg', 'reg_config_path': 'configs/深圳/phase3_arch/config_wind_canvas_p3_arch_reg.yml'}
+  字段                 生成值                    类默认值                   判定
+  blocks_per_level   1                      1                      =默认
+  channel_mults      [1, 2, 4]              '<factory>'            =
+  ctx_channel        239                    239                    =默认
+  dropout            0.0                    0.0                    =默认
+  inner_channel      64                     64                     =默认
+  max_period         10.0                   10.0                   =默认
+  out_channel        72                     72                     =默认
+  p_mean             -1.2                   -1.2                   =默认
+  p_std              1.2                    1.2                    =默认
+  rho                7.0                    7.0                    =默认
+  sigma_d_est_batches 8                      8                      =默认
+  sigma_d_estimator  'std'                  'std'                  =默认
+  sigma_data         None                   None                   =默认
+  sigma_max          80.0                   80.0                   =默认
+  sigma_min          0.002                  0.002                  =默认
+  steps              24                     24                     =默认
+  EDMCorrectorConfig(**edm) 构造 OK: ctx=239 = 2*72 + 95
+Experiment Schrodinger-Bridge Wind Canvas is selected.
+  文件级校验: base 可构造(load_edm_config(训练脚本));通道 out=72 in=167 ctx=239;reg_tag=p3_arch_reg
+
+== p3_arch_edm_s2 -> configs/深圳/phase3_arch/config_wind_canvas_p3_arch_edm_s2.yml ==
+  edm                          <缺> -> {'out_channel': 72, 'ctx_channel': 239, 'inner_channel': 64, 'channel_mults': [1, 2, 4], 'blocks_per_level': 1, 'dropout': 0.0, 'max_period': 10.0, 'sigma_data': None, 'sigma_min': 0.002, 'sigma_max': 80.0, 'p_mean': -1.2, 'p_std': 1.2, 'rho': 7.0, 'steps': 24, 'sigma_d_estimator': 'std', 'sigma_d_est_batches': 8}
+  reg                          <缺> -> {'reg_tag': 'p3_arch_reg_s2', 'reg_config_path': 'configs/深圳/phase3_arch/config_wind_canvas_p3_arch_reg_s2.yml'}
+  train.seed                   78269 -> 78270
+  字段                 生成值                    类默认值                   判定
+  blocks_per_level   1                      1                      =默认
+  channel_mults      [1, 2, 4]              '<factory>'            =
+  ctx_channel        239                    239                    =默认
+  dropout            0.0                    0.0                    =默认
+  inner_channel      64                     64                     =默认
+  max_period         10.0                   10.0                   =默认
+  out_channel        72                     72                     =默认
+  p_mean             -1.2                   -1.2                   =默认
+  p_std              1.2                    1.2                    =默认
+  rho                7.0                    7.0                    =默认
+  sigma_d_est_batches 8                      8                      =默认
+  sigma_d_estimator  'std'                  'std'                  =默认
+  sigma_data         None                   None                   =默认
+  sigma_max          80.0                   80.0                   =默认
+  sigma_min          0.002                  0.002                  =默认
+  steps              24                     24                     =默认
+  EDMCorrectorConfig(**edm) 构造 OK: ctx=239 = 2*72 + 95
+Experiment Schrodinger-Bridge Wind Canvas is selected.
+Experiment Schrodinger-Bridge Wind Canvas is selected.
+  文件级校验: base 可构造(load_edm_config(训练脚本));通道 out=72 in=167 ctx=239;reg_tag=p3_arch_reg_s2
+
+生成 9 个配置 -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/phase3_arch
+Experiment Schrodinger-Bridge Wind Canvas is selected.
+Experiment Schrodinger-Bridge Wind Canvas is selected.
+UNetDDPMVer01 is created
+UNetDDPMVer01 is created
+SwinIRCanvas is created
+SwinIRCanvas is created
+参数量对照: 参考臂 UNet 79.258 M vs swin(inner 288) 19.010 M
+  注: 契约假设参考臂 ~5-6M,实测 79.3M;swin 臂按契约 inner_channel=288 生成(5.786M)。两者并非同容量,如需严格容量对齐需重定 inner_channel(≈288*sqrt(79.3/19.0)≈588),请主线决策。
+[说明] 81 全目录模式 exit=1(预期):KeyError: 'edm'
+       edm 配置含 `edm:`/`reg:` 顶段,base loader 按设计读不了;由 83 用 load_edm_config 校验(见上)。以下为排除 edm 后的 81 实检:
+config_wind_canvas_p3_arch_reg.yml           out= 72 cond= 95 in=167  
+config_wind_canvas_p3_arch_reg_s2.yml        out= 72 cond= 95 in=167  
+config_wind_canvas_p3_arch_swin.yml          out= 72 cond= 95 in=167  
+config_wind_canvas_p3_arch_swin_s2.yml       out= 72 cond= 95 in=167  
+config_wind_canvas_p3_arch_unet_s2.yml       out= 72 cond= 95 in=167  
+config_wind_canvas_p3_arch_unet_small.yml    out= 72 cond= 95 in=167  
+config_wind_canvas_p3_arch_unet_small_s2.yml out= 72 cond= 95 in=167  
+CHANNEL CHECK OK (7 个配置, /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/phase3_arch)
+
+81 通道校验(si/reg 配置): OK
+83 exit=0
+config_wind_canvas_p3_arch_edm_s2.yml
+config_wind_canvas_p3_arch_edm.yml
+config_wind_canvas_p3_arch_reg_s2.yml
+config_wind_canvas_p3_arch_reg.yml
+config_wind_canvas_p3_arch_swin_s2.yml
+config_wind_canvas_p3_arch_swin.yml
+config_wind_canvas_p3_arch_unet_s2.yml
+config_wind_canvas_p3_arch_unet_small_s2.yml
+config_wind_canvas_p3_arch_unet_small.yml
+[OK] config_wind_canvas_p3_arch_unet_s2.yml
+[OK] config_wind_canvas_p3_arch_swin.yml
+[OK] config_wind_canvas_p3_arch_swin_s2.yml
+[OK] config_wind_canvas_p3_arch_reg.yml
+[OK] config_wind_canvas_p3_arch_reg_s2.yml
+[OK] config_wind_canvas_p3_arch_edm.yml
+[OK] config_wind_canvas_p3_arch_edm_s2.yml
+
+===== 2. 通道校验(81;仅 si/reg 配置) =====
+说明:81 全目录模式会在 edm 配置上报 KeyError: 'edm'——base loader 按设计读不了
+      edm/reg 顶段(训练脚本 load_edm_config 剥离后才行);83 已用 load_edm_config
+      对 edm 配置做等价通道校验(ctx=2*out+in)与字段核对。
+config_wind_canvas_p3_arch_reg.yml           out= 72 cond= 95 in=167  
+config_wind_canvas_p3_arch_reg_s2.yml        out= 72 cond= 95 in=167  
+config_wind_canvas_p3_arch_swin.yml          out= 72 cond= 95 in=167  
+config_wind_canvas_p3_arch_swin_s2.yml       out= 72 cond= 95 in=167  
+config_wind_canvas_p3_arch_unet_s2.yml       out= 72 cond= 95 in=167  
+config_wind_canvas_p3_arch_unet_small.yml    out= 72 cond= 95 in=167  
+config_wind_canvas_p3_arch_unet_small_s2.yml out= 72 cond= 95 in=167  
+CHANNEL CHECK OK (7 个配置, /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/phase3_arch)
+81 exit=0
+
+===== 3. 架构合成自检(82;A swin / B 回归 / C EDM / D 84 指标 / E 配置) =====
+========================================================================
+A) SwinIR 前向/梯度/规模
+  [OK] 零初始化输出头:初始输出恒 0(残差零起点) |out|max=0.000e+00
+  [OK] 前向形状 == 输入(2,8,16,24) (2, 8, 16, 24)
+  [OK] 前向有限 
+  [OK] gamma 敏感性(不同时间步输出不同) max|Δ|=2.909e-04
+  [OK] 非整除尺寸(20x28)镜像 pad 后裁回 
+  [OK] 极小尺寸(4x4)pad 退化 replicate 分支可用 
+  [OK] 反向:patch_embed/out_conv 梯度有限非零 |g1|1=12.3 |g2|1=14.8
+  [OK] 83 配置参数规模 5-6.5M(对齐 UNet 参考臂) 5.786 M
+  [OK] 83 配置整除性:训练 96x112 / 评估 pad16 后 112x128 均被 window_size=8 整除 
+B) RegressionModel 前向恒等式与加载兼容
+  [OK] net 由 make_model 构建(UNetDDPMVer01) 
+  [OK] 返回 (y1_full, None) 
+  [OK] y1_full == y0 + net(..., gamma=ones) 逐位一致 
+  [OK] add_noise=True 结果与默认逐位一致(被忽略) 
+  [OK] 裸 UNet 键加载后输出逐位一致(评估链路加载口径) 
+  [OK] 前缀键(RegressionModel.state_dict)加载后输出逐位一致 
+C) EDM 预条件恒等式 / 采样 / 调度
+  [OK] 预条件恒等式 c_skip/c_out/c_in/c_noise == 论文表 1(手算) 
+  [OK] 预条件形状:c_skip/c_out/c_in (B,1,1,1),c_noise (B,) 
+  [OK] 零初始化输出头:D(r_σ) == c_skip·r_σ(逐位) max|Δ|=0.000e+00
+  [OK] sample 形状 (n,B,C,H,W) 且有限 (3, 2, 8, 16, 16)
+  [OK] 样本互异(抽两个样本 max|Δ|>0) max|Δ|=8.676e+00
+  [OK] 同 seed 逐位可复现 
+  [OK] 不同 seed 结果不同 
+  [OK] sample 不扰动全局 RNG(seed 局部 CPU generator) 
+  [OK] Karras 调度:长度 steps+1、首值 σ_max、末值 0、单调不增 
+  [OK] 训练 σ 采样落在 [σ_min, σ_max] 
+  [OK] EDM 损失有限(加权/未加权) 
+  [OK] ctx 通道不符 -> ValueError -> ctx 通道 27 != config.ctx_channel 28
+D) 84 分布类指标:CRPS / rank histogram 解析对拍
+  [OK] 样本式 CRPS == 暴力双重求和(fair 估计) 0.1666666667 vs 0.1666666667
+  [OK] N(0,1) 预报的 CRPS ≈ 解析值(±5 标准误) 估计 0.27027 解析 0.26933 ±0.00386
+  [OK] N=1 -> ValueError(84 记 N/A) 
+  [OK] 独立同分布样本+真值:秩直方图均匀(N=8,4000 次) counts=[462, 467, 440, 461, 419, 467, 415, 452, 417] 相对偏差 max 6.6%
+  [OK] rank 均值 ≈ N/2 3.933
+  [OK] 真值低于全体样本 -> 秩 0(箱 0) 
+  [OK] 真值高于全体样本 -> 秩 N(末箱) 
+  [OK] 全并列 -> 秩 = N/2(0.5 计并列) rank=4.0
+  [OK] rank_histogram 箱数 = N+1 且计数守恒 [12, 0, 0, 0, 0, 0, 0, 0, 0]
+E) 配置加载(旧 yml 照常 / arch 分派 / 83 产物)
+  [OK] 旧 phase2 yml:model 仍分派为 UNetDDPMVer01Config UNetDDPMVer01Config
+  [OK] 旧 yml 可 make_model(参考臂参数量打印) 79.258 M
+  (使用 83 产物 configs/深圳/phase3_arch/config_wind_canvas_p3_arch_swin.yml)
+  [OK] swin yml:model 分派为 SwinIRCanvasConfig SwinIRCanvasConfig
+  [OK] swin 配置 make_model -> SwinIRCanvas 
+  [OK] swin 真实配置前向(1x167x96x112,真实训练尺寸) 
+  [OK] p3_arch_unet_s2 分派 UNetDDPMVer01Config seed=78270
+  [OK] p3_arch_swin 分派 SwinIRCanvasConfig seed=78269
+  [OK] p3_arch_swin_s2 分派 SwinIRCanvasConfig seed=78270
+  [OK] p3_arch_reg 分派 UNetDDPMVer01Config seed=78269
+  [OK] p3_arch_reg_s2 分派 UNetDDPMVer01Config seed=78270
+Experiment Schrodinger-Bridge Wind Canvas is selected.
+  [OK] p3_arch_edm edm 段构造 EDMCorrectorConfig(ctx=239,inner=64,steps=24) sigma_data=None
+  [OK] p3_arch_edm reg 段指向配对 tag reg_tag=p3_arch_reg
+  [OK] p3_arch_edm EDMCorrector 可构造(σ_d 占位 1.0) 
+Experiment Schrodinger-Bridge Wind Canvas is selected.
+Experiment Schrodinger-Bridge Wind Canvas is selected.
+  [OK] p3_arch_edm_s2 edm 段构造 EDMCorrectorConfig(ctx=239,inner=64,steps=24) sigma_data=None
+  [OK] p3_arch_edm_s2 reg 段指向配对 tag reg_tag=p3_arch_reg_s2
+  [OK] p3_arch_edm_s2 EDMCorrector 可构造(σ_d 占位 1.0) 
+========================================================================
+检查项:通过 52 / 失败 0
+ARCH FIXTURE OK
+82 exit=0
+
+===== 4. canvas 数据集合成自检(80) =====
+manifest 划分: train=1 valid=0 test=0 unmatched=0
+通道: 输入 206 / 输出 72
+张量: x=(206, 96, 112) y=(72, 96, 112) y0=(72, 96, 112)
+  coarse_wind_uv   -> 46 通道
+  coarse_w         -> 24 通道
+  coarse_zagl      -> 23 通道
+  coarse_logz0     -> 1 通道
+  coarse_most      -> 3 通道
+  coarse_flux      -> 3 通道
+  coarse_theta     -> 23 通道
+  coarse_ph        -> 24 通道
+  time_enc         -> 4 通道
+  coszen           -> 1 通道
+  fine_geom        -> 24 通道
+  fine_logz0       -> 1 通道
+  fine_urban       -> 1 通道
+  fine_waterveg    -> 2 通道
+  geom_diff_zagl   -> 23 通道
+  geom_diff_hgt    -> 1 通道
+  coords           -> 2 通道
+y-y0 平均绝对差 1.4019(随机合成数据,仅验证非退化)
+FIXTURE OK
+80 exit=0
+
+===== 5. AGL 评估链路合成自检(89;需真实 statics) =====
+1) AGL 算子解析自检:最大偏差 2.669e-06
+2) 累加器自检:pooled 3.999831 vs 暴力 3.999831(n=534600)
+3a) bootstrap 同分布:Δ=+0.00000 CI=[+0.00000,+0.00000]
+3b) bootstrap 已知偏差:Δ=+0.04401 CI=[+0.02020,+0.07283]
+4) 3维/4维混用:Δ=+0.000000 CI=(nan,nan)
+   3维 vs 4维 已知偏差:Δ=+0.048588(期望 +0.048588)
+5) 切变累加解析自检(8 对相邻主层;true u=c·z,c=0.0025;逐层增量 d=0.4)
+   1) pred==true:se2 全 0(P=True),每对计数=11880
+   2) u 逐层增量:每对 RMSE [0.02   0.02   0.02   0.0133 0.008  0.008  0.004  0.002 ] vs 解析 |d|/Δz [0.02   0.02   0.02   0.0133 0.008  0.008  0.004  0.002 ]
+   3) 池化 RMSE 1.38102217e-02 vs 解析 1.38102217e-02(n=95040,期望 95040)
+   4) v 逐层增量:每对 RMSE 与 u 逐对相等:P=True
+   5) 层间均匀常数偏移 d:每对残余 RMSE 最大 2.24e-09(信号 2.00e-03,仅舍入)
+   6) 掩码取上层(150 m 仅上层):各对计数 [0, 0, 0, 0, 11880, 0, 0, 0] -> P=True
+AGL EVAL FIXTURE OK
+89 exit=0
+
+===== 6. 阶段 2 损失链合成自检(95) =====
+========================================================================
+① physics_canvas 纯函数自检(解析场/真值对拍/梯度)
+① 散度解析场
+  [OK] 常数场 div≈0: max|Δ|=0.000e+00(tol=1e-12)
+  [OK] 线性场 div=a+b: max|Δ|=6.159e-10(tol=1e-06)
+  [OK] 指数 ρ(z) div=ρ_k(a+b): max|Δ|=7.785e-10(tol=1e-06)
+② 与真值侧 70_truth_diagnostics 差分公式对拍(同一合成场)
+  [OK] torch vs 真值差分公式: max|Δ|=5.259e-10(tol=1e-05 rel)
+③ 涡度解析场
+  [OK] 刚体旋转 ζ=2Ω: max|Δ|=8.434e-10(tol=1e-09)
+  [OK] 常数涡度 ζ=ζ0: max|Δ|=9.551e-10(tol=1e-09)
+④ 径向 log 谱
+  [OK] 同一场谱差=0: max|Δ|=0.000e+00(tol=1e-12)
+  [OK] 加噪后谱差>0: mean(ΔlogP)²=1.5501
+  形状 (2, 4, 2, 32)(期望 (2,4,2,32)),log 谱范围 [-27.63,-2.19]
+⑤ 极值项(风速 max/min 结构差)
+  [OK] 同场极值=0: max|Δ|=0.000e+00(tol=1e-12)
+  [OK] 整体平移极值=|位移|: max|Δ|=0.000e+00(tol=1e-09)
+⑥ estimate_residual
+  [OK] r̂=r(精确系数,t>0): max|Δ|=2.384e-07(tol=1e-06 rel)
+  [OK] mask=[False, False, False, True, True, True](期望 [False, False, False, True, True, True])
+⑦ 差分/散度梯度非零
+  [OK] 散度对 u/v/w 梯度总量=12.874
+
+自检结果: 全部通过
+  [OK] physics_canvas._self_test() 全绿 
+② 旧行为回归(权重全 0,rel 1e-6)
+  [OK] canvas_resid_L2 数值一致(rel 1e-6) 2.9703762531280518 vs 2.9703762531280518
+  [OK] canvas_direct_L1_cw 数值一致(rel 1e-6) 5.213955879211426 vs 5.213955879211426
+  [OK] canvas_direct_L2_cw 数值一致(rel 1e-6) 14.205517768859863 vs 14.20551872253418
+  [OK] interleaved_olddiv 数值一致(rel 1e-6) 4.563587188720703 vs 4.563587188720703
+  [OK] interleaved_resid_olddiv 数值一致(rel 1e-6) 3.9180166721343994 vs 3.9180166721343994
+③ 新四项:有限性/加权一致性/退化情形
+   parts: {'data': 5.771242, 'div': 112.944107, 'vort': 0.004707, 'spectral': 0.611002, 'extreme': 0.309055, 'agl': None, 'total': 84.986633}
+  [OK] 四项原始值有限 
+  [OK] 四项原始值>0 
+  [OK] total 有限 
+  [OK] total == data + Σ w_i·part_i 84.98663330078125 vs 84.98663448104634
+  [OK] 权重 0/非 0 分项一致 {'div': 0.0, 'vort': 0.0, 'spectral': 0.0, 'extreme': 0.0}
+  [OK] 权重 0 时 total==data 
+  [OK] rho=None+div 权重=0:div=None,其余正常 
+   perfect: {'div': 117.29194641, 'vort': 0.0, 'spectral': 0.0, 'extreme': 9e-08}
+  [OK] t=1 完美估计 vort=0 
+  [OK] t=1 完美估计 spectral=0 
+  [OK] t=1 完美估计 extreme=0 
+  [OK] t=1 完美估计 div≥0(hinge) 
+  [OK] mask 全 False 时四项=0 {'div': 0.0, 'vort': 0.0, 'spectral': 0.0, 'extreme': 0.0}
+  [OK] mask 全 False 时 total==data 
+  [OK] mask 全 False 时无 NaN 
+③b 报错路径
+  [OK] canvas+div 权重>0 缺 phys_scale -> canvas 物理损失需要 si.phys_scale(长度=out_channel 的每通道物理 σ)
+  [OK] canvas+div 权重>0 缺 phys_dz -> canvas 散度损失需要 si.phys_dz(长度=n_levels 的层厚 m)
+  [OK] canvas+div 权重>0 缺 phys_div_tau -> canvas 散度损失需要 si.phys_div_tau(长度=n_levels 的 hinge 阈值)
+  [OK] canvas+spectral>0 缺 phys_scale -> canvas 物理损失需要 si.phys_scale(长度=out_channel 的每通道物理 σ)
+  [OK] canvas 散度 rho=None -> canvas 散度损失需要在 forward(..., rho=...) 传入干空气密度 (B,L,H,W)
+  [OK] interleaved+spectral>0 -> 谱/极值损失仅支持 state_layout=canvas
+  [OK] phys_scale 长度不符 -> si.phys_scale 元素数 71 != out_channel 72
+  [OK] rho 形状不符 -> rho 形状 (2, 22, 96, 112) != 期望 (2, 23, 96, 112)
+④ 四项对 net 输出的梯度(有限非零)
+  [OK] div 梯度有限非零 |g|1=420
+  [OK] vort 梯度有限非零 |g|1=0.003899
+  [OK] spectral 梯度有限非零 |g|1=34.18
+  [OK] extreme 梯度有限非零 |g|1=57.52
+  [OK] total 梯度有限非零 |g|1=305.1
+⑤ 旧 yml 经 load_config 构造
+  [OK] config_wind_canvas_p1_t16_residual.yml 可构造且新字段为默认值 out=72 in=170
+  [OK] config_wind_canvas_p1_t16_residual.yml 可构造 SI 模块 
+  [OK] config_wind_canvas_p1r_t14_noenc_cos.yml 可构造且新字段为默认值 out=72 in=167
+  [OK] config_wind_canvas_p1r_t14_noenc_cos.yml 可构造 SI 模块 
+⑥a 可微算子 ↔ numpy 算子等价(idx 覆盖 -2/-1/0..21,field10 有无)
+  [OK] 合成 idx 全覆盖 -2/-1/0..21 
+  [OK] 算子等价(field10 有) max|Δ|=0.000e+00
+  [OK] 算子等价(field10 无) max|Δ|=0.000e+00
+⑥b 解析自检(ln z 线性场精确还原 / -2 与 -1 分支 torch↔numpy)
+  [OK] 质量表覆盖 -2/-1/≥0 三类分支 -2=11880 -1=35640 ≥0=83160
+  [OK] ln z 线性场 idx≥0 精确还原(torch/numpy) torch 7.86e-07 numpy 7.86e-07
+  [OK] idx==-2 直接取 10 m 通道(torch/numpy 一致) max|Δ|=0.000e+00
+  [OK] idx==-1 分支 torch↔numpy 逐点一致 max|Δ|=0.000e+00
+   (记录)-1 分支与解析值偏差 5.801e+00(评估侧权重口径,仅 -1 列)
+  [OK] 界面层表(区间内)精确还原 + torch↔numpy max|Δ|=1.170e-06(区间外为首/末层钳制,按设计不外推)
+⑥c crop 对齐端到端(训练路 place→crop→split/destagger→可微插值 vs 评估路)
+  [OK] crop(0,0) 两路 AGL 场一致 max|Δ|=0.000e+00
+  [OK] crop(0,0) 表同 crop 逐元素相等 
+  [OK] crop(3,8) 两路 AGL 场一致 max|Δ|=0.000e+00
+  [OK] crop(3,8) 表同 crop 逐元素相等 
+⑥d AGL 集成(parts 复算 / replace-add 恒等式 / 梯度 / weight=0 逐位)
+  [OK] AGL 项有限且>0 agl=2.216509
+  [OK] parts['agl'] ≈ 公共算子复算(rel 1e-4) 2.216509 vs 2.216509
+  [OK] replace: total == w·agl + Σ w_i·part_i 82.5051498413086 vs 82.50514602325856
+  [OK] replace 模式 data 项仍照常返回 
+  [OK] add: total == data + w·agl + Σ w_i·part_i 84.54570007324219 vs 84.5457019577734
+  [OK] total 梯度有限非零 |g|1=162.1
+  [OK] agl_weight=0 传表/不传表 total 逐位相同 81.32335662841797 vs 81.32335662841797
+  [OK] agl_weight>0 缺 agl 表 -> ValueError -> si.agl_weight>0 需要 forward(..., agl=...) 传入 AGL 插值表
+========================================================================
+检查项:通过 57 / 失败 0
+PHASE2 LOSS FIXTURE OK
+95 exit=0
+
+===== 7. 冒烟(swin SI / reg 回归 / edm 假回归;3 iter,CPU,batch=1) =====
+配置 config_wind_canvas_p3_arch_swin.yml: arch=swinir_canvas seed=78269
+  swin iter 0 loss=0.139015
+  swin iter 1 loss=0.090253
+  swin iter 2 loss=0.299136
+SMOKE swin OK(19.010 M 参数)
+配置 config_wind_canvas_p3_arch_reg.yml: arch=unet_ddpm_v01 seed=78269
+  reg iter 0 loss=0.249945
+  reg iter 1 loss=0.266766
+  reg iter 2 loss=0.199881
+SMOKE reg OK(sample_y1_bare_diffusion 形状 (1, 72, 96, 112) 有限)
+Experiment Schrodinger-Bridge Wind Canvas is selected.
+配置 config_wind_canvas_p3_arch_edm.yml(剥离 edm 段后): arch=unet_ddpm_v01 seed=78269
+dataset_config.dataset_name='DatasetWindCanvas'
+The total files = 8928. A part of them is used for training.
+split by manifest /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static/split.json: {'train': 6336, 'valid': 864, 'test': 1728}, unmatched=0
+train: dataset size = 528, batch num = 528
+
+UNetDDPMVer01 is created
+Traceback (most recent call last):
+  File "<stdin>", line 94, in <module>
+  File "/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_model/ddpm/unet_ddpm_v01.py", line 240, in forward
+    h = torch.cat([h, hpop], dim=1)
+RuntimeError: Sizes of tensors must match except in dimension 1. Expected size 12 but got size 13 for tensor number 1 in the list.
+smoke exit=1
+
+===== 8. 后续步骤 =====
+(1) W1 训练(swin + reg):
+      bash ops/queue/64b_arch_waves.sh
+(2) 查状态 / PEND 换队列:
+      bash ops/queue/64c_check_arch.sh
+(3) W1 训完 -> 评估(84;si 臂 N=16 集合均值 + 参考臂 _ens16 重评):
+      bash ops/queue/64d_arch_eval.sh
+(4) 闸门通过(前波评估产物存在)后再 W2:
+      WAVE=2 bash ops/queue/64b_arch_waves.sh
+(5) 终评报告(99 表 + ensemble json 汇总):
+      bash ops/queue/64e_arch_report.sh
