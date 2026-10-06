@@ -1,0 +1,125 @@
+# p3_arch_edm_s2 — 阶段 3 架构对比(由 83_gen_arch_configs.py 派生)
+# 基座: configs/深圳/phase2/config_wind_canvas_p2_l1r2_lr2e4.yml(myj / 23 层 / L1 / 模式层监督 / 无物理项)
+# 变更: train.seed = 78270
+# 新增 `edm:` 段(EDMCorrectorConfig;sigma_data: null = 训练时估计)
+# 新增 `reg:` 段 -> p3_arch_reg_s2
+# 训练脚本 scripts/train_edm_correction.py(两段由 load_edm_config 剥离)
+data:
+  scheme: myj
+  coarse_dir: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_coarse
+  statics_dir: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static
+  normalize_json: null
+  split_manifest: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static/split.json
+  target_levels:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  - 15
+  - 16
+  - 17
+  - 18
+  - 19
+  - 20
+  - 21
+  - 22
+  input_groups:
+  - coarse_wind_uv
+  - coarse_zagl
+  - coarse_logz0
+  - fine_geom
+  - coszen
+  include_w: true
+  hr_data_shape:
+  - 99
+  - 120
+  hr_cropped_shape:
+  - 96
+  - 112
+  is_clipped: false
+  min_clipped_value: null
+  max_clipped_value: null
+  missing_value: 0.0
+  dtype: float32
+  day_night_filter: all
+loader:
+  batch_size: 2
+  dl_data_ver: wrf_3d_v2_canvas
+  num_workers: 4
+  seed: 42
+  train_valid_test_ratios:
+  - 0.7
+  - 0.1
+  - 0.2
+model:
+  attn_res:
+  - 16
+  channel_mults:
+  - 1
+  - 2
+  - 4
+  - 8
+  - 8
+  channels_each_head: 16
+  dropout: 0.2
+  in_channel: 167
+  inner_channel: 64
+  max_period: 10.0
+  out_channel: 72
+  res_blocks: 1
+  resblock_updown: true
+si:
+  eps: 0.2
+  formula: quadratic
+  loss_type: L1
+  n_timestep: 10
+  channel_weights: null
+  divergence_weight: 0.0
+  vorticity_weight: 0.0
+  residual_output: true
+  state_layout: canvas
+train:
+  early_stopping_patience: 40
+  ema_decay: null
+  epochs: 150
+  learning_rate: 0.0002
+  loss:
+    loss_name: L1
+  optim_name: AdamW
+  save_interval: 10
+  seed: 78270
+  use_amp: false
+edm:
+  out_channel: 72
+  ctx_channel: 239
+  inner_channel: 64
+  channel_mults:
+  - 1
+  - 2
+  - 4
+  blocks_per_level: 1
+  dropout: 0.0
+  max_period: 10.0
+  sigma_data: null
+  sigma_min: 0.002
+  sigma_max: 80.0
+  p_mean: -1.2
+  p_std: 1.2
+  rho: 7.0
+  steps: 24
+  sigma_d_estimator: std
+  sigma_d_est_batches: 8
+reg:
+  reg_tag: p3_arch_reg_s2
+  reg_config_path: configs/深圳/phase3_arch/config_wind_canvas_p3_arch_reg_s2.yml
