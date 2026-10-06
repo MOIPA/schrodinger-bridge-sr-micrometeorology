@@ -22,6 +22,9 @@ description: LSF 集群服务器操作手册——screen 共享会话工作流�
   可靠做法 = **本地侧每隔 25-30 分钟经 screen 发一条真实命令**(顺带查作业状态,写成后台小脚本循环);
   断了之后把 `ssh ytw_tangzq@entry.nju.edu.cn` 预先打进 screen(用户只需输密码+OTP)。
   注意:断线后 stuff 会打进本地 shell(报 zsh 错误),从 hardcopy 里能看出来
+- **stuff 必须带"提示符守卫"(2026-10-06 教训)**:用户登录过程中(Password:/2nd Password:)若 keepalive/巡检
+  的 stuff 撞进去,会把命令文本打进密码/OTP 输入导致认证失败。改法:每次 stuff 前先 hardcopy 并检查末行
+  是否含 `ytw_tangzq@login1`(服务器提示符),不是就不发;agent 手动巡检同理——**先只读 hardcopy 确认状态,再决定是否 stuff**
 - 安全层提示:自动模式可能拦截不常见或复合的 screen 命令;保持每条命令**单一目的、简单**容易通过
 
 ## 2. 环境
