@@ -176,9 +176,9 @@ cor = EDMCorrector(edm_cfg).to(DEV).eval()
 it_e = iter_of(base_cfg, "config_wind_canvas_p3_arch_edm.yml(剥离 edm 段后)")
 reg_fake = make_model(base_cfg.model).to(DEV).eval()   # 随机权重 = "假回归"
 b = next(it_e)
-pad16 = lambda t: F.pad(t, (0, 7, 0, 12), mode="replicate")   # (100,121) -> (112,128)
+# 训练 batch 已是裁剪后的 96x112(可被 8/4 整除),无需 pad16(那是评估整画布才需要)
 with torch.no_grad():
-    y0p, xp = pad16(b["y0"].to(DEV)), pad16(b["x"].to(DEV))
+    y0p, xp = b["y0"].to(DEV), b["x"].to(DEV)
     y1_reg = y0p + reg_fake(yt=y0p, y_cond=xp, gamma=torch.ones(y0p.shape[0]))
     out = cor.sample(y0=y0p, y1_reg=y1_reg, y_cond=xp, n_samples=1, steps=2, seed=0)
 assert tuple(out.shape) == (1,) + tuple(y0p.shape) and torch.isfinite(out).all()
