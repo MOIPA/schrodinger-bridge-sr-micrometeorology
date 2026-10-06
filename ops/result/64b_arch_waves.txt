@@ -1,0 +1,25 @@
+===== 0. WAVE=1;队列里的 p3_arch 作业 =====
+(无)
+
+===== 1. W1 提交清单: p3_arch_swin p3_arch_reg =====
+>>> p3_arch_swin -> 队列 e5v4p100ib(config_wind_canvas_p3_arch_swin.yml)
+Job <14264041> is submitted to queue <e5v4p100ib>.
+>>> p3_arch_reg -> 队列 e5v4p100ib(config_wind_canvas_p3_arch_reg.yml)
+Job <14264042> is submitted to queue <e5v4p100ib>.
+
+===== 2. 90 秒后 PEND 检查(PEND 立即换队列重投) =====
+14264041 ytw_tangzq PEND  e5v4p100ib login1         -        p3_arch_swin Oct  7 02:18
+14264042 ytw_tangzq PEND  e5v4p100ib login1         -        p3_arch_reg Oct  7 02:18
+>>> p3_arch_swin(14264041) PEND,换队列重投
+Job <14264041> is being terminated
+>>> p3_arch_swin -> 新队列 6148v100ib
+Job <14264044> is submitted to queue <6148v100ib>.
+>>> p3_arch_reg(14264042) PEND,换队列重投
+Job <14264042> is being terminated
+>>> p3_arch_reg -> 新队列 6148v100ib
+Job <14264045> is submitted to queue <6148v100ib>.
+
+===== 3. 后续 =====
+查状态: bash ops/queue/64c_check_arch.sh
+W1 两臂训练完 -> 评估: bash ops/queue/64d_arch_eval.sh
+评估产物存在后 W2: WAVE=2 bash ops/queue/64b_arch_waves.sh
