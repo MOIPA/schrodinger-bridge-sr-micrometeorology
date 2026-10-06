@@ -9,6 +9,7 @@ cd ~/schrodinger-bridge-sr-micrometeorology || exit 1
 ROOT=/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology
 PY3D=/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/bin/python
 QUEUES="e5v4p100ib 6148v100ib 7552v100 62v100ib 83a100ib"
+QUEUES="${FORCE_Q:-$QUEUES}"  # 队列异常时覆盖:FORCE_Q=6148v100ib bash ops/queue/64a_arch_probe.sh
 
 if [ "$1" != "--inner" ]; then
   git pull --no-rebase
