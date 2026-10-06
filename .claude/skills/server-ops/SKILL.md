@@ -69,7 +69,11 @@ bsub -q <队列> -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]"
 队列经验(2026-09 实测):83a100ib 常年 PEND 100+;72rtxib 会从空闲突变为满;**7552v100 曾整体卡死(12 PEND 0 RUN 的主机不可用状态)**;6148v100ib、62v100ib 多次成功。
 
 **GPU 队列白名单(2026-09-30 探测)**:`e5v4p100ib`(P100)、`6148v100ib`/`7552v100`/`62v100ib`(V100)、
-`83a100ib`(A100)可用;`9654p6000ib` 是 **RTX PRO 6000 Blackwell(sm_120)**,wind3d 的 torch 2.6+cu118
+`83a100ib`(A100);**抢占坑(2026-10-07)**:`6148v100ib` 配置含 `TERMINATE_WHEN=PREEMPT`——高优先级作业一来
+就把我们的作业杀成 `TERM_EXTERNAL_SIGNAL: job killed by a signal external to LSF`(可在启动 2 秒内被杀,
+日志无 traceback、.out 里有该字样)。对策:看到该字样=被抢占而非代码问题,直接重投(或换队列;
+83a100ib 当夜表现稳定);断点续训逻辑照常工作。
+`9654p6000ib` 是 **RTX PRO 6000 Blackwell(sm_120)**,wind3d 的 torch 2.6+cu118
 只编到 sm_90 → 提交后秒崩 `CUDA error: no kernel image is available`;`72rtxib`/`7k83` 未验证。
 探测脚本:`ops/queue/59x_gpu_probe.sh` + `scripts/outline/93_gpu_probe.py`(逐队列跑一个 1 分钟 GPU 小作业)。
 **挑队列规则**:只在 `bqueues` 的 PEND=0 里选 **RUN 最少**的;`6148v100ib` 曾积压 160 个排队作业把我们的
