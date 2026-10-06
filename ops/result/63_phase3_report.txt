@@ -1,0 +1,308 @@
+===== 阶段 3 T3.5 终评报告 =====
+tags: p2_l1r2_lr2e4,p3_agl,p3_joint,p3_agllw;参考臂主指标(phase2)= 0.9574
+
+===== 1. 99 阶段 3 汇总表(主指标 + 切变 + 配对 bootstrap) =====
+| run | 主 RMSE (m/s) | Δ RMSE | CI 24 h | 显著 | CI 12 h | 显著 | 切变 RMSE (m/s per m) | Δ 切变 | CI 24 h | 显著 | CI 12 h | 显著 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| p2_l1r2_lr2e4 (基准) | 0.9574 | — | — | — | — | — | 0.00885 | — | — | — | — | — |
+| p3_joint | 0.8697 | -0.0876 | [-0.1030, -0.0721] | 是 | [-0.1060, -0.0706] | 是 | 0.00704 | -0.00181 | [-0.00201, -0.00164] | 是 | [-0.00198, -0.00165] | 是 |
+| p3_agllw | 0.8904 | -0.0670 | [-0.0878, -0.0475] | 是 | [-0.0851, -0.0498] | 是 | 0.00741 | -0.00145 | [-0.00174, -0.00117] | 是 | [-0.00169, -0.00121] | 是 |
+| p3_agl | 0.9383 | -0.0190 | [-0.0444, +0.0046] | 否 | [-0.0402, +0.0017] | 否 | 0.00798 | -0.00088 | [-0.00099, -0.00077] | 是 | [-0.00097, -0.00079] | 是 |
+
+| run | AGL (m) | 矢量 RMSE (m/s) | Δ vs base | rmse_w (m/s) |
+|---|---|---|---|---|
+| p2_l1r2_lr2e4 | 10 | 0.9845 | — | 0.1045 |
+|  | 30 | 1.0231 | — | 0.1091 |
+|  | 50 | 1.0338 | — | 0.1113 |
+|  | 70 | 1.0560 | — | 0.1234 |
+|  | 100 | 1.0341 | — | 0.1381 |
+|  | 150 | 0.9856 | — | 0.1613 |
+|  | 200 | 0.9226 | — | 0.1819 |
+|  | 300 | 0.8119 | — | 0.2144 |
+|  | 500 | 0.7054 | — | 0.2458 |
+|  | 700 | 0.6724 | — | 0.2503 |
+|  | 1000 | 0.6750 | — | 0.2452 |
+| p3_joint | 10 | 0.8534 | -0.1311 | 0.0814 |
+|  | 30 | 0.9201 | -0.1030 | 0.0856 |
+|  | 50 | 0.9320 | -0.1018 | 0.0877 |
+|  | 70 | 0.9517 | -0.1043 | 0.1001 |
+|  | 100 | 0.9311 | -0.1030 | 0.1151 |
+|  | 150 | 0.8954 | -0.0902 | 0.1395 |
+|  | 200 | 0.8486 | -0.0741 | 0.1611 |
+|  | 300 | 0.7727 | -0.0392 | 0.1955 |
+|  | 500 | 0.6877 | -0.0177 | 0.2313 |
+|  | 700 | 0.6503 | -0.0221 | 0.2383 |
+|  | 1000 | 0.6324 | -0.0426 | 0.2283 |
+| p3_agllw | 10 | 0.8548 | -0.1297 | 0.0771 |
+|  | 30 | 0.9311 | -0.0920 | 0.0810 |
+|  | 50 | 0.9461 | -0.0877 | 0.0829 |
+|  | 70 | 0.9692 | -0.0868 | 0.0961 |
+|  | 100 | 0.9510 | -0.0831 | 0.1118 |
+|  | 150 | 0.9170 | -0.0687 | 0.1373 |
+|  | 200 | 0.8729 | -0.0497 | 0.1618 |
+|  | 300 | 0.7939 | -0.0180 | 0.2069 |
+|  | 500 | 0.7518 | +0.0464 | 0.2606 |
+|  | 700 | 0.7063 | +0.0339 | 0.2671 |
+|  | 1000 | 0.6596 | -0.0154 | 0.2555 |
+| p3_agl | 10 | 0.9165 | -0.0680 | 0.0964 |
+|  | 30 | 0.9817 | -0.0414 | 0.1010 |
+|  | 50 | 1.0023 | -0.0315 | 0.1033 |
+|  | 70 | 1.0295 | -0.0265 | 0.1156 |
+|  | 100 | 1.0124 | -0.0217 | 0.1310 |
+|  | 150 | 0.9757 | -0.0099 | 0.1562 |
+|  | 200 | 0.9242 | +0.0016 | 0.1794 |
+|  | 300 | 0.8367 | +0.0248 | 0.2192 |
+|  | 500 | 0.7242 | +0.0188 | 0.2609 |
+|  | 700 | 0.6745 | +0.0021 | 0.2656 |
+|  | 1000 | 0.6637 | -0.0114 | 0.2489 |
+
+口径:主指标 = AGL 10–500 m 层平均风矢量 RMSE(池化;误差 = 预测 − 真值);切变 = 相邻主层 10–30 … 300–500 m 共 8 对的矢量切变 ΔV/Δz 之差(预测 − 真值)的池化 RMSE,单位 m/s per m,分层掩码取每对上层;Δ 与 95% CI = 相对 p2_l1r2_lr2e4 的配对移动块 bootstrap(同一重采样小时集,块长 24, 12 h)。
+缺文件/缺键(如未存 acc_sh 的 run)或小时集不可配对时记 —(json null),不抛异常;小时数: p2_l1r2_lr2e4=144, p3_joint=144, p3_agllw=144, p3_agl=144
+
+写出 results/phase3/phase3_tables.md / results/phase3/phase3_tables.json
+--- results/phase3/phase3_tables.md ---
+| run | 主 RMSE (m/s) | Δ RMSE | CI 24 h | 显著 | CI 12 h | 显著 | 切变 RMSE (m/s per m) | Δ 切变 | CI 24 h | 显著 | CI 12 h | 显著 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| p2_l1r2_lr2e4 (基准) | 0.9574 | — | — | — | — | — | 0.00885 | — | — | — | — | — |
+| p3_joint | 0.8697 | -0.0876 | [-0.1030, -0.0721] | 是 | [-0.1060, -0.0706] | 是 | 0.00704 | -0.00181 | [-0.00201, -0.00164] | 是 | [-0.00198, -0.00165] | 是 |
+| p3_agllw | 0.8904 | -0.0670 | [-0.0878, -0.0475] | 是 | [-0.0851, -0.0498] | 是 | 0.00741 | -0.00145 | [-0.00174, -0.00117] | 是 | [-0.00169, -0.00121] | 是 |
+| p3_agl | 0.9383 | -0.0190 | [-0.0444, +0.0046] | 否 | [-0.0402, +0.0017] | 否 | 0.00798 | -0.00088 | [-0.00099, -0.00077] | 是 | [-0.00097, -0.00079] | 是 |
+
+| run | AGL (m) | 矢量 RMSE (m/s) | Δ vs base | rmse_w (m/s) |
+|---|---|---|---|---|
+| p2_l1r2_lr2e4 | 10 | 0.9845 | — | 0.1045 |
+|  | 30 | 1.0231 | — | 0.1091 |
+|  | 50 | 1.0338 | — | 0.1113 |
+|  | 70 | 1.0560 | — | 0.1234 |
+|  | 100 | 1.0341 | — | 0.1381 |
+|  | 150 | 0.9856 | — | 0.1613 |
+|  | 200 | 0.9226 | — | 0.1819 |
+|  | 300 | 0.8119 | — | 0.2144 |
+|  | 500 | 0.7054 | — | 0.2458 |
+|  | 700 | 0.6724 | — | 0.2503 |
+|  | 1000 | 0.6750 | — | 0.2452 |
+| p3_joint | 10 | 0.8534 | -0.1311 | 0.0814 |
+|  | 30 | 0.9201 | -0.1030 | 0.0856 |
+|  | 50 | 0.9320 | -0.1018 | 0.0877 |
+|  | 70 | 0.9517 | -0.1043 | 0.1001 |
+|  | 100 | 0.9311 | -0.1030 | 0.1151 |
+|  | 150 | 0.8954 | -0.0902 | 0.1395 |
+|  | 200 | 0.8486 | -0.0741 | 0.1611 |
+|  | 300 | 0.7727 | -0.0392 | 0.1955 |
+|  | 500 | 0.6877 | -0.0177 | 0.2313 |
+|  | 700 | 0.6503 | -0.0221 | 0.2383 |
+|  | 1000 | 0.6324 | -0.0426 | 0.2283 |
+| p3_agllw | 10 | 0.8548 | -0.1297 | 0.0771 |
+|  | 30 | 0.9311 | -0.0920 | 0.0810 |
+|  | 50 | 0.9461 | -0.0877 | 0.0829 |
+|  | 70 | 0.9692 | -0.0868 | 0.0961 |
+|  | 100 | 0.9510 | -0.0831 | 0.1118 |
+|  | 150 | 0.9170 | -0.0687 | 0.1373 |
+|  | 200 | 0.8729 | -0.0497 | 0.1618 |
+|  | 300 | 0.7939 | -0.0180 | 0.2069 |
+|  | 500 | 0.7518 | +0.0464 | 0.2606 |
+|  | 700 | 0.7063 | +0.0339 | 0.2671 |
+|  | 1000 | 0.6596 | -0.0154 | 0.2555 |
+| p3_agl | 10 | 0.9165 | -0.0680 | 0.0964 |
+|  | 30 | 0.9817 | -0.0414 | 0.1010 |
+|  | 50 | 1.0023 | -0.0315 | 0.1033 |
+|  | 70 | 1.0295 | -0.0265 | 0.1156 |
+|  | 100 | 1.0124 | -0.0217 | 0.1310 |
+|  | 150 | 0.9757 | -0.0099 | 0.1562 |
+|  | 200 | 0.9242 | +0.0016 | 0.1794 |
+|  | 300 | 0.8367 | +0.0248 | 0.2192 |
+|  | 500 | 0.7242 | +0.0188 | 0.2609 |
+|  | 700 | 0.6745 | +0.0021 | 0.2656 |
+|  | 1000 | 0.6637 | -0.0114 | 0.2489 |
+
+口径:主指标 = AGL 10–500 m 层平均风矢量 RMSE(池化;误差 = 预测 − 真值);切变 = 相邻主层 10–30 … 300–500 m 共 8 对的矢量切变 ΔV/Δz 之差(预测 − 真值)的池化 RMSE,单位 m/s per m,分层掩码取每对上层;Δ 与 95% CI = 相对 p2_l1r2_lr2e4 的配对移动块 bootstrap(同一重采样小时集,块长 24, 12 h)。
+缺文件/缺键(如未存 acc_sh 的 run)或小时集不可配对时记 —(json null),不抛异常;小时数: p2_l1r2_lr2e4=144, p3_joint=144, p3_agllw=144, p3_agl=144
+
+===== 2. 98 空间误差分析(逐像素 MAE 图 + 陡/平 x 城/郊 池化 RMSE) =====
+p2_l1r2_lr2e4: 144 帧(test)
+/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
+  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
+  ... 24 帧
+  ... 48 帧
+  ... 72 帧
+  ... 96 帧
+  ... 120 帧
+  ... 144 帧
+
+## p2_l1r2_lr2e4 (144 帧, test)
+- config: `configs/深圳/phase2/config_wind_canvas_p2_l1r2_lr2e4.yml`
+- 坡度 q75 = 0.0207(陡格点占比 25.0%,城格点占比 14.0%)
+- 备选阈值(仅非零坡度 q75)= 0.0311(陡占比 18.8%;主表口径仍为全场上四分位)
+
+选定层空间平均 |误差| (m/s):
+
+| AGL (m) | mean|Δu| | mean|Δv| | mean|Δw| |
+|---|---|---|---|
+| 10 | 0.5005 | 0.4793 | 0.0473 |
+| 50 | 0.4812 | 0.5133 | 0.0511 |
+| 100 | 0.4642 | 0.5105 | 0.0690 |
+| 300 | 0.3852 | 0.3891 | 0.1151 |
+
+低层 10-30-50-70-100 m 分组池化 RMSE (m/s):
+
+| 组 | vec RMSE | w RMSE | n(格点x层x帧) |
+|---|---|---|---|
+| all | 1.0266 | 0.1179 | 8.554e+06 |
+| city | 1.1039 | 0.1019 | 1.200e+06 |
+| flat | 0.9261 | 0.0476 | 6.415e+06 |
+| flat_city | 1.0447 | 0.0661 | 8.935e+05 |
+| flat_rural | 0.9054 | 0.0439 | 5.522e+06 |
+| rural | 1.0134 | 0.1203 | 7.353e+06 |
+| steep | 1.2815 | 0.2209 | 2.138e+06 |
+| steep_city | 1.2605 | 0.1670 | 3.067e+05 |
+| steep_rural | 1.2850 | 0.2287 | 1.832e+06 |
+
+写出 results/phase3/spatial_p2_l1r2_lr2e4.npz
+p3_agl: 144 帧(test)
+/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
+  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
+  ... 24 帧
+  ... 48 帧
+  ... 72 帧
+  ... 96 帧
+  ... 120 帧
+  ... 144 帧
+
+## p3_agl (144 帧, test)
+- config: `configs/深圳/phase3/config_wind_canvas_p3_agl.yml`
+- 坡度 q75 = 0.0207(陡格点占比 25.0%,城格点占比 14.0%)
+- 备选阈值(仅非零坡度 q75)= 0.0311(陡占比 18.8%;主表口径仍为全场上四分位)
+
+选定层空间平均 |误差| (m/s):
+
+| AGL (m) | mean|Δu| | mean|Δv| | mean|Δw| |
+|---|---|---|---|
+| 10 | 0.4460 | 0.4529 | 0.0492 |
+| 50 | 0.4658 | 0.4946 | 0.0531 |
+| 100 | 0.4583 | 0.4979 | 0.0713 |
+| 300 | 0.4027 | 0.3963 | 0.1226 |
+
+低层 10-30-50-70-100 m 分组池化 RMSE (m/s):
+
+| 组 | vec RMSE | w RMSE | n(格点x层x帧) |
+|---|---|---|---|
+| all | 0.9893 | 0.1102 | 8.554e+06 |
+| city | 1.0545 | 0.0983 | 1.200e+06 |
+| flat | 0.8846 | 0.0509 | 6.415e+06 |
+| flat_city | 1.0004 | 0.0684 | 8.935e+05 |
+| flat_rural | 0.8644 | 0.0474 | 5.522e+06 |
+| rural | 0.9782 | 0.1120 | 7.353e+06 |
+| steep | 1.2518 | 0.2020 | 2.138e+06 |
+| steep_city | 1.1982 | 0.1554 | 3.067e+05 |
+| steep_rural | 1.2606 | 0.2088 | 1.832e+06 |
+
+写出 results/phase3/spatial_p3_agl.npz
+p3_joint: 144 帧(test)
+/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
+  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
+  ... 24 帧
+  ... 48 帧
+  ... 72 帧
+  ... 96 帧
+  ... 120 帧
+  ... 144 帧
+
+## p3_joint (144 帧, test)
+- config: `configs/深圳/phase3/config_wind_canvas_p3_joint.yml`
+- 坡度 q75 = 0.0207(陡格点占比 25.0%,城格点占比 14.0%)
+- 备选阈值(仅非零坡度 q75)= 0.0311(陡占比 18.8%;主表口径仍为全场上四分位)
+
+选定层空间平均 |误差| (m/s):
+
+| AGL (m) | mean|Δu| | mean|Δv| | mean|Δw| |
+|---|---|---|---|
+| 10 | 0.3988 | 0.4202 | 0.0382 |
+| 50 | 0.4219 | 0.4468 | 0.0417 |
+| 100 | 0.4169 | 0.4398 | 0.0589 |
+| 300 | 0.3685 | 0.3581 | 0.1054 |
+
+低层 10-30-50-70-100 m 分组池化 RMSE (m/s):
+
+| 组 | vec RMSE | w RMSE | n(格点x层x帧) |
+|---|---|---|---|
+| all | 0.9183 | 0.0948 | 8.554e+06 |
+| city | 0.9859 | 0.0834 | 1.200e+06 |
+| flat | 0.8175 | 0.0457 | 6.415e+06 |
+| flat_city | 0.9354 | 0.0638 | 8.935e+05 |
+| flat_rural | 0.7967 | 0.0421 | 5.522e+06 |
+| rural | 0.9068 | 0.0965 | 7.353e+06 |
+| steep | 1.1697 | 0.1722 | 2.138e+06 |
+| steep_city | 1.1201 | 0.1239 | 3.067e+05 |
+| steep_rural | 1.1778 | 0.1791 | 1.832e+06 |
+
+写出 results/phase3/spatial_p3_joint.npz
+p3_agllw: 144 帧(test)
+/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
+  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
+  ... 24 帧
+  ... 48 帧
+  ... 72 帧
+  ... 96 帧
+  ... 120 帧
+  ... 144 帧
+
+## p3_agllw (144 帧, test)
+- config: `configs/深圳/phase3/config_wind_canvas_p3_agllw.yml`
+- 坡度 q75 = 0.0207(陡格点占比 25.0%,城格点占比 14.0%)
+- 备选阈值(仅非零坡度 q75)= 0.0311(陡占比 18.8%;主表口径仍为全场上四分位)
+
+选定层空间平均 |误差| (m/s):
+
+| AGL (m) | mean|Δu| | mean|Δv| | mean|Δw| |
+|---|---|---|---|
+| 10 | 0.4075 | 0.4203 | 0.0361 |
+| 50 | 0.4375 | 0.4510 | 0.0395 |
+| 100 | 0.4371 | 0.4456 | 0.0579 |
+| 300 | 0.3739 | 0.3683 | 0.1130 |
+
+低层 10-30-50-70-100 m 分组池化 RMSE (m/s):
+
+| 组 | vec RMSE | w RMSE | n(格点x层x帧) |
+|---|---|---|---|
+| all | 0.9313 | 0.0907 | 8.554e+06 |
+| city | 0.9997 | 0.0818 | 1.200e+06 |
+| flat | 0.8379 | 0.0442 | 6.415e+06 |
+| flat_city | 0.9476 | 0.0622 | 8.935e+05 |
+| flat_rural | 0.8188 | 0.0405 | 5.522e+06 |
+| rural | 0.9196 | 0.0920 | 7.353e+06 |
+| steep | 1.1674 | 0.1644 | 2.138e+06 |
+| steep_city | 1.1380 | 0.1223 | 3.067e+05 |
+| steep_rural | 1.1723 | 0.1704 | 1.832e+06 |
+
+写出 results/phase3/spatial_p3_agllw.npz
+
+# 跨 tag 对照(低层分组 vec RMSE, m/s)
+
+| tag | steep_city | steep_rural | flat_city | flat_rural | steep | flat | city | rural | all |
+|---|---|---|---|---|---|---|---|---|---|
+| p2_l1r2_lr2e4 | 1.2605 | 1.2850 | 1.0447 | 0.9054 | 1.2815 | 0.9261 | 1.1039 | 1.0134 | 1.0266 |
+| p3_agl | 1.1982 | 1.2606 | 1.0004 | 0.8644 | 1.2518 | 0.8846 | 1.0545 | 0.9782 | 0.9893 |
+| p3_joint | 1.1201 | 1.1778 | 0.9354 | 0.7967 | 1.1697 | 0.8175 | 0.9859 | 0.9068 | 0.9183 |
+| p3_agllw | 1.1380 | 1.1723 | 0.9476 | 0.8188 | 1.1674 | 0.8379 | 0.9997 | 0.9196 | 0.9313 |
+
+逐像素 MAE 图(npz 内 mae_abs_u/v/w,形状 (n_sel,99,120)): results/phase3/spatial_p2_l1r2_lr2e4.npz, results/phase3/spatial_p3_agl.npz, results/phase3/spatial_p3_joint.npz, results/phase3/spatial_p3_agllw.npz
+写出 results/phase3/spatial_summary.json
+
+===== 3. 产出 =====
+total 5251
+-rw-r--r-- 1 ytw_tangzq yutingwang 731215 Oct  6 08:08 p2_l1r2_lr2e4_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang   2909 Oct  6 08:08 p2_l1r2_lr2e4_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 731487 Oct  6 08:09 p3_agllw_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang   2898 Oct  6 08:09 p3_agllw_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 731673 Oct  5 18:17 p3_agl_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang   2888 Oct  5 18:17 p3_agl_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 731501 Oct  5 18:18 p3_joint_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang   2891 Oct  5 18:18 p3_joint_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang   8374 Oct  6 08:09 phase3_tables.json
+-rw-r--r-- 1 ytw_tangzq yutingwang   3125 Oct  6 08:09 phase3_tables.md
+-rw-r--r-- 1 ytw_tangzq yutingwang   4016 Oct  4 23:26 probe.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 544292 Oct  6 08:10 spatial_p2_l1r2_lr2e4.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang 543992 Oct  6 08:12 spatial_p3_agllw.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang 543951 Oct  6 08:10 spatial_p3_agl.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang 543996 Oct  6 08:11 spatial_p3_joint.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang   6337 Oct  6 08:12 spatial_summary.json
