@@ -1,0 +1,32 @@
+===== 1. 检查前置产物(checkpoint 是否在) =====
+p2_l1r2_lr2e4: OK (2026-10-04 00:09:31)
+p3_joint: OK (2026-10-05 13:58:46)
+
+===== 2. 选兼容队列(PEND=0;提交失败自动换下一个;FORCE_Q 可覆盖) =====
+
+===== 3. 提交快照任务(逐个队列尝试,bsub 报错即换) =====
+  6148v100ib: PEND=0 RUN=0
+  6148v100ib -> Job <14273408> is submitted to queue <6148v100ib>.
+>>> 已提交到队列: 6148v100ib
+
+===== 4. 等待完成(最多两轮,每轮 4 分钟) =====
+日志: logs/sz_snapshot_inner.log
+测试集 144 帧(myj, myj )
+(第一轮未见 npz,再等 4 分钟)
+日志: logs/sz_snapshot_inner.log
+测试集 144 帧(myj, myj )
+选中测试帧(top 3 近地风速):
+  case0: idx=77 stamp=f_myj_20200719T050000.npz metric=1.987
+  case1: idx=79 stamp=f_myj_20200719T070000.npz metric=1.975
+  case2: idx=80 stamp=f_myj_20200719T080000.npz metric=1.969
+模型已加载: p2_l1r2_lr2e4 (pred_base)
+模型已加载: p3_joint (pred_joint)
+/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
+  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
+  case0 完成(来源: ['truth', 'y0', 'pred_base', 'pred_joint'])
+  case1 完成(来源: ['truth', 'y0', 'pred_base', 'pred_joint'])
+  case2 完成(来源: ['truth', 'y0', 'pred_base', 'pred_joint'])
+已保存 results/report_10_09/cases.npz
+来源键: truth / y0 / pred_base / pred_joint;AGL 层: [100.0, 300.0]
+>>> cases.npz 已生成: 3.0M
+===== 完成 =====
