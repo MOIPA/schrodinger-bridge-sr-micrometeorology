@@ -227,12 +227,101 @@ def fig_p3_bars():
     save(fig, "fig_p3_bars.png")
 
 
+# ============ 图 8:阶段 2 散度残差廓线 ============
+def fig_p2_divergence():
+    base = json.load(open(os.path.join(ROOT, "results/phase2/r_t14_noenc_cos_diag.json")))
+    dv = json.load(open(os.path.join(ROOT, "results/phase2/p2_div_mid_warm_diag.json")))
+    tau = np.array(base["phys_div_tau"])
+    lv = np.arange(len(tau))
+    fig, ax = plt.subplots(figsize=(7, 4.6))
+    series = [
+        ("truth", "d04 真值", base["divergence"]["truth"], "black"),
+        ("y0", "粗端重网格(y0)", base["divergence"]["y0"], "#999999"),
+        ("base", "基线预测(纯 L1)", base["divergence"]["pred"], COLORS4[0]),
+        ("div", "散度约束预测", dv["divergence"]["pred"], COLORS4[3]),
+    ]
+    for _, lab, d, c in series:
+        ax.plot(lv, np.array(d["p95_abs"]) / tau, "-o", color=c, lw=1.6, ms=3, label=lab)
+    ax.axhline(1.0, color="gray", ls="--", lw=1)
+    ax.text(len(tau) - 1, 1.05, "定标阈值 tau", color="gray", fontsize=8, ha="right")
+    ax.set_xlabel("训练层序号(0 为最低层)")
+    ax.set_ylabel("散度残差 P95 / tau")
+    ax.set_title("阶段 2 散度残差逐层廓线(测试集 144 帧)")
+    ax.set_ylim(0, 3.2)
+    ax.legend(fontsize=9)
+    ax.grid(True, alpha=0.25)
+    save(fig, "fig_p2_divergence.png")
+
+
+# ============ 图 9:阶段 3 空间分组 ============
+def fig_p3_spatial():
+    d = json.load(open(os.path.join(ROOT, "results/phase3/spatial_summary.json")))
+    groups = ["steep_city", "steep_rural", "flat_city", "flat_rural"]
+    glab = ["陡地形+城市", "陡地形+郊区", "平坦+城市", "平坦+郊区"]
+    arm_lab = {"p2_l1r2_lr2e4": "模式层监督(基线)", "p3_agl": "纯高度层监督",
+               "p3_agllw": "低层加权", "p3_joint": "联合监督"}
+    base = {g["tag"]: g["group_rmse_vec"] for g in d}
+    x = np.arange(len(groups))
+    w = 0.2
+    fig, ax = plt.subplots(figsize=(8, 4.2))
+    order = ["p2_l1r2_lr2e4", "p3_agl", "p3_agllw", "p3_joint"]
+    for i, tag in enumerate(order):
+        vals = [base[tag][g] for g in groups]
+        off = (i - 1.5) * w
+        bars = ax.bar(x + off, vals, w, color=COLORS4[i], label=arm_lab[tag])
+        if i > 0:
+            for xi, (r, g) in enumerate(zip(bars, groups)):
+                basev = base["p2_l1r2_lr2e4"][g]
+                pct = (base[tag][g] - basev) / basev * 100
+                ax.text(r.get_x() + r.get_width() / 2, r.get_height() + 0.015,
+                        f"{pct:+.0f}%", ha="center", fontsize=7.5, color=COLORS4[i])
+    ax.set_xticks(x); ax.set_xticklabels(glab)
+    ax.set_ylabel("低层 10-100 m 风矢量 RMSE (m/s)")
+    ax.set_title("阶段 3 空间分组误差(标注为相对基线的变化)")
+    ax.legend(fontsize=8.5, ncol=2)
+    ax.grid(True, axis="y", alpha=0.3)
+    save(fig, "fig_p3_spatial.png")
+
+
+# ============ 图 10:个例风场对比(需 65 号快照回传后运行)============
+def fig_cases(case=0, agl=100.0):
+    """个例四联图:真值 / 粗场 / 基线 / 联合监督 的风速场。
+    依赖 results/report_10_09/cases.npz(ops/queue/65_case_snapshots.sh 回传)。"""
+    path = os.path.join(ROOT, "results/report_10_09/cases.npz")
+    if not os.path.exists(path):
+        print("skip fig_cases: 缺", path)
+        return
+    d = np.load(path)
+    agls = list(d["agl"])
+    li = agls.index(agl)
+    srcs = [("truth", "d04 真值"), ("y0", "粗端重网格(y0)"),
+            ("pred_base", "基线预测"), ("pred_joint", "联合监督预测")]
+    fields = {}
+    for key, _ in srcs:
+        u = d[f"case{case}_{key}_u"][li]
+        v = d[f"case{case}_{key}_v"][li]
+        fields[key] = np.sqrt(u ** 2 + v ** 2)
+    vmax = max(float(f.max()) for f in fields.values())
+    stamp = str(d[f"case{case}_stamp"][0])
+    fig, axes = plt.subplots(2, 2, figsize=(11, 8))
+    for ax, (key, lab) in zip(axes.ravel(), srcs):
+        im = ax.imshow(fields[key], vmin=0, vmax=vmax, cmap="viridis")
+        ax.set_title(f"{lab}  域均值 {fields[key].mean():.2f} m/s", fontsize=10)
+        ax.set_xticks([]); ax.set_yticks([])
+    fig.colorbar(im, ax=axes, shrink=0.8, label="风速 (m/s)")
+    fig.suptitle("个例 {}({} m 高度)风场对比".format(stamp, agl), fontsize=12)
+    save(fig, "fig_case{}_{:.0f}m.png".format(case, agl))
+
+
 if __name__ == "__main__":
     fig_spectra()
     fig_split()
     fig_p1_ablation()
     fig_p1_direct_residual()
     fig_p2_losses()
+    fig_p2_divergence()
     fig_p3_levels()
     fig_p3_bars()
+    fig_p3_spatial()
+    fig_cases()          # 快照回传后自动生效,缺文件时跳过
     print("all figures done")
