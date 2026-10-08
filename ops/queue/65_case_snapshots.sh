@@ -49,13 +49,13 @@ echo "" >> "$OUT"
 echo "===== 3. 提交快照任务 =====" >> "$OUT"
 bsub -q "$QUEUE" -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" -J sz_snapshot \
   -o logs/sz_snapshot_%J.out -e logs/sz_snapshot_%J.err \
-  "cd ~/schrodinger-bridge-sr-micrometeorology && module load anaconda/3 && module load cuda/11.8.0 && source activate wind3d && python scripts/outline/case_snapshots.py --device cuda:0" \
+  "cd ~/schrodinger-bridge-sr-micrometeorology && module load anaconda/3 && module load cuda/11.8.0 && source activate wind3d && python -u scripts/outline/case_snapshots.py --device cuda:0 > logs/sz_snapshot_inner.log 2>&1" \
   2>&1 | head -1 >> "$OUT"
 
 echo "" >> "$OUT"
 echo "===== 4. 等待完成(最多两轮,每轮 4 分钟) =====" >> "$OUT"
 sleep 240
-LATEST=$(ls -t logs/sz_snapshot_*.out 2>/dev/null | head -1)
+LATEST=logs/sz_snapshot_inner.log
 [ -n "$LATEST" ] && { echo "日志: $LATEST" >> "$OUT"; tail -15 "$LATEST" >> "$OUT"; }
 if [ ! -f results/report_10_09/cases.npz ]; then
   echo "(第一轮未见 npz,再等 4 分钟)" >> "$OUT"
