@@ -11,8 +11,18 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-plt.rcParams["font.family"] = "FZLanTingHeiS-R-GB"
 plt.rcParams["axes.unicode_minus"] = False
+# 中文字体:优先 FZLanTingHeiS-R-GB(原设定),缺失则按可用列表回退(避免渲染成方框)
+from matplotlib import font_manager as _fm  # noqa: E402
+
+_avail_fonts = {f.name for f in _fm.fontManager.ttflist}
+for _cand in ("FZLanTingHeiS-R-GB", "Arial Unicode MS", "PingFang HK", "Heiti TC",
+              "Hiragino Sans GB", "Songti SC", "STHeiti"):
+    if _cand in _avail_fonts:
+        plt.rcParams["font.family"] = _cand
+        break
+else:
+    plt.rcParams["font.family"] = "sans-serif"
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "组会汇报", "2026-10-09")
