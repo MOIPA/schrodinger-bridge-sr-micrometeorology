@@ -30,3 +30,10 @@ p3_joint: OK (2026-10-05 13:58:46)
 来源键: truth / y0 / pred_base / pred_joint;AGL 层: [100.0, 300.0]
 >>> cases.npz 已生成: 3.0M
 ===== 完成 =====
+  case0 完成(来源: ['truth', 'y0', 'pred_base', 'pred_joint'])
+  case1 完成(来源: ['truth', 'y0', 'pred_base', 'pred_joint'])
+  case2 完成(来源: ['truth', 'y0', 'pred_base', 'pred_joint'])
+已保存 results/report_10_09/cases.npz
+来源键: truth / y0 / pred_base / pred_joint;AGL 层: [100.0, 300.0]
+>>> cases.npz 已生成: 3.0M
+===== 完成 =====
