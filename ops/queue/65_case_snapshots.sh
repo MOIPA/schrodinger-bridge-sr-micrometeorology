@@ -28,29 +28,32 @@ for tag in p2_l1r2_lr2e4 p3_joint; do
 done
 
 echo "" >> "$OUT"
-echo "===== 2. 选兼容队列(PEND=0 且 RUN 最少,排除 P6000) =====" >> "$OUT"
-pick_queue() {
-  local best="" best_run=999999
-  for q in 72rtxib 7552v100 7k83 e5v4p100ib 6148v100ib 83a100ib; do
-    local PEND RUN
-    PEND=$(bqueues -w "$q" 2>/dev/null | tail -1 | awk '{print $9}')
-    RUN=$(bqueues -w "$q" 2>/dev/null | tail -1 | awk '{print $10}')
-    echo "  $q: PEND=$PEND RUN=$RUN" >> "$OUT"
-    if [ "$PEND" = "0" ] 2>/dev/null && [ "$RUN" -lt "$best_run" ] 2>/dev/null; then
-      best="$q"; best_run="$RUN"
-    fi
-  done
-  if [ -z "$best" ]; then echo "7552v100"; else echo "$best"; fi
-}
-QUEUE=$(pick_queue)
-echo ">>> 选中队列: $QUEUE" >> "$OUT"
+echo "===== 2. 选兼容队列(PEND=0;提交失败自动换下一个;FORCE_Q 可覆盖) =====" >> "$OUT"
+QUEUES="6148v100ib e5v4p100ib 7552v100 62v100ib 83a100ib 7k83 72rtxib"
+QUEUES="${FORCE_Q:-$QUEUES}"
 
 echo "" >> "$OUT"
-echo "===== 3. 提交快照任务 =====" >> "$OUT"
-bsub -q "$QUEUE" -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" -J sz_snapshot \
-  -o logs/sz_snapshot_%J.out -e logs/sz_snapshot_%J.err \
-  "cd ~/schrodinger-bridge-sr-micrometeorology && module load anaconda/3 && module load cuda/11.8.0 && source activate wind3d && python -u scripts/outline/case_snapshots.py --device cuda:0 > logs/sz_snapshot_inner.log 2>&1" \
-  2>&1 | head -1 >> "$OUT"
+echo "===== 3. 提交快照任务(逐个队列尝试,bsub 报错即换) =====" >> "$OUT"
+SUBMITTED=""
+for QUEUE in $QUEUES; do
+  PEND=$(bqueues -w "$QUEUE" 2>/dev/null | tail -1 | awk '{print $9}')
+  RUN=$(bqueues -w "$QUEUE" 2>/dev/null | tail -1 | awk '{print $10}')
+  echo "  $QUEUE: PEND=$PEND RUN=$RUN" >> "$OUT"
+  if [ "$PEND" != "0" ] 2>/dev/null; then continue; fi
+  SUB=$(bsub -q "$QUEUE" -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" -J sz_snapshot \
+    -o logs/sz_snapshot_%J.out -e logs/sz_snapshot_%J.err \
+    "cd ~/schrodinger-bridge-sr-micrometeorology && module load anaconda/3 && module load cuda/11.8.0 && source activate wind3d && python -u scripts/outline/case_snapshots.py --device cuda:0 > logs/sz_snapshot_inner.log 2>&1" 2>&1 | head -1)
+  echo "  $QUEUE -> $SUB" >> "$OUT"
+  case "$SUB" in
+    *"is submitted to queue"*) SUBMITTED="$QUEUE"; break;;
+    *) echo "  (提交失败,试下一个队列)" >> "$OUT";;
+  esac
+done
+if [ -z "$SUBMITTED" ]; then
+  echo ">>> 所有候选队列提交失败;用 FORCE_Q=<队列> 重跑,或手动检查队列状态" >> "$OUT"
+else
+  echo ">>> 已提交到队列: $SUBMITTED" >> "$OUT"
+fi
 
 echo "" >> "$OUT"
 echo "===== 4. 等待完成(最多两轮,每轮 4 分钟) =====" >> "$OUT"
