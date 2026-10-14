@@ -396,7 +396,7 @@ def fig_cases(case=0, agl=100.0):
     xlat, xlon = st["xlat_fine"], st["xlong_fine"]
     water, hgt = st["water_fine"], st["hgt_fine"]
 
-    fig = plt.figure(figsize=(7.3, 6.1), constrained_layout=True)
+    fig = plt.figure(figsize=(9.6, 7.7), constrained_layout=True)
     gs = fig.add_gridspec(2, 3, width_ratios=[1, 1, 0.045])
     axs = np.empty((2, 2), dtype=object)
     axs[0, 0] = fig.add_subplot(gs[0, 0])
@@ -415,18 +415,18 @@ def fig_cases(case=0, agl=100.0):
         im = ax.pcolormesh(xlon, xlat, fields[key], cmap="viridis", vmin=vmin,
                            vmax=vmax, shading="nearest", rasterized=True)
         ax.contour(xlon, xlat, hgt, levels=[50, 200, 400],
-                   colors=[fs.GREY], linewidths=0.5, zorder=3)
+                   colors=[fs.GREY], linewidths=0.55, zorder=3)
         ax.contour(xlon, xlat, water, levels=[0.5], colors=[fs.COAST],
-                   linewidths=0.8, zorder=4)
+                   linewidths=0.9, zorder=4)
         ax.set_xlim(float(xlon.min()), float(xlon.max()))
         ax.set_ylim(float(xlat.min()), float(xlat.max()))
         ax.set_aspect(asp)
         ax.set_xticks(xt)
         ax.set_yticks(yt)
-        ax.grid(True)
+        ax.tick_params(labelsize=8.5)
         ax.set_title("({}) {} - mean {:.2f} m/s".format(
             "abcd"[j], lab, fields[key].mean()),
-            loc="left", fontsize=8.6)
+            loc="left", fontsize=9.4)
     for ax in (axs[0, 0], axs[0, 1]):
         ax.tick_params(labelbottom=False)
     for ax in (axs[0, 1], axs[1, 1]):
@@ -443,12 +443,12 @@ def fig_cases(case=0, agl=100.0):
         (114.17, 22.30, "Hong Kong", 0.03, "left"),
         (113.54, 22.19, "Macau", 0.03, "left"),
     ]:
-        a.text(lon + dx, lat, name, fontsize=6.8, color=fs.INK, ha=ha,
+        a.text(lon + dx, lat, name, fontsize=7.2, color=fs.INK, ha=ha,
                va="center", zorder=6, path_effects=fs.halo())
-    a.text(113.70, 22.40, "Pearl River\nestuary", fontsize=6.8, style="italic",
+    a.text(113.70, 22.40, "Pearl River\nestuary", fontsize=7.2, style="italic",
            color=fs.INK2, ha="center", va="center", zorder=6, linespacing=1.1,
            path_effects=fs.halo())
-    a.text(114.44, 22.50, "Mirs Bay", fontsize=6.8, style="italic",
+    a.text(114.44, 22.50, "Mirs Bay", fontsize=7.2, style="italic",
            color=fs.INK2, ha="center", va="center", zorder=6,
            path_effects=fs.halo())
 
@@ -471,15 +471,15 @@ def fig_cases(case=0, agl=100.0):
              path_effects=fs.halo(2.6))
     axi.plot([113.26], [23.13], marker="o", ms=1.8, color=fs.ORANGE,
              mec="white", mew=0.4, zorder=6)
-    axi.text(112.95, 23.13, "Guangzhou", fontsize=6.2, color=fs.INK,
+    axi.text(112.95, 23.13, "Guangzhou", fontsize=6.8, color=fs.INK,
              ha="right", va="center", zorder=6, path_effects=fs.halo(1.6))
-    axi.text(109.85, 19.35, "Hainan", fontsize=6.2, color=fs.INK,
+    axi.text(109.85, 19.35, "Hainan", fontsize=6.8, color=fs.INK,
              ha="center", va="center", zorder=6, path_effects=fs.halo(1.6))
-    axi.text(116.0, 19.2, "South China Sea", fontsize=6.2, style="italic",
+    axi.text(116.0, 19.2, "South China Sea", fontsize=6.8, style="italic",
              color=fs.INK2, ha="center", va="center", zorder=6,
              path_effects=fs.halo(1.6))
     axi.annotate("study area", xy=(114.1, 22.5), xytext=(117.2, 20.8),
-                 fontsize=6.2, color=fs.INK, ha="center", va="center",
+                 fontsize=6.8, color=fs.INK, ha="center", va="center",
                  zorder=7, path_effects=fs.halo(1.6),
                  arrowprops=dict(arrowstyle="-", color=fs.INK2, lw=0.6,
                                  shrinkA=1, shrinkB=2))
@@ -494,11 +494,11 @@ def fig_cases(case=0, agl=100.0):
     axi.set_facecolor("white")
 
     cb = fig.colorbar(im, cax=cax)
-    cb.set_label("Wind speed (m/s)", fontsize=8.5)
-    cb.ax.tick_params(labelsize=fs.DS["tick"])
+    cb.set_label("Wind speed (m/s)", fontsize=9.5)
+    cb.ax.tick_params(labelsize=8.5)
     cb.outline.set_visible(False)
     fig.suptitle("Strong-wind case {} - {} m AGL".format(stamp_lab, int(agl)),
-                 fontsize=11, color=fs.INK)
+                 fontsize=12.5, color=fs.INK)
     save(fig, "fig_case{}_{:.0f}m.png".format(case, agl))
 
 
