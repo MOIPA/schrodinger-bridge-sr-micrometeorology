@@ -3,7 +3,8 @@
 
 - 图内文字全部英文,风格对齐 组会汇报/模范图片/(fig_common 设计系统):
   见 scripts/figstyle.py(NJU 紫主色/字号 token/白底淡化轴线)
-- 个例图(fig_case*)加真实经纬度坐标轴 + 海岸线 + 地名,并带华南区位小图
+- 个例图(fig_case*)加真实经纬度坐标轴 + 海岸线 + 地名,并带华南区位小图;
+  风速场保留原 viridis 色标(非品牌紫,用户 2026-10-14 定)
 - 本地运行:/opt/anaconda3/envs/d2l/bin/python scripts/plot_report_10_09.py
 - 输出:组会汇报/2026-10-09/fig_*.png(文件名与报告引用保持一致)
 """
@@ -17,6 +18,7 @@ import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.colors import ListedColormap  # noqa: E402
 from matplotlib.lines import Line2D  # noqa: E402
 from matplotlib.ticker import FuncFormatter  # noqa: E402
 import figstyle as fs  # noqa: E402
@@ -382,8 +384,8 @@ def fig_cases(case=0, agl=100.0):
         u = d["case{}_{}_u".format(case, key)][li]
         v = d["case{}_{}_v".format(case, key)][li]
         fields[key] = np.sqrt(u ** 2 + v ** 2)
-    vmin = np.floor(min(f.min() for f in fields.values()) * 2.0) / 2.0
-    vmax = np.ceil(max(f.max() for f in fields.values()) * 2.0) / 2.0
+    vmin = 0.0
+    vmax = float(np.ceil(max(f.max() for f in fields.values())))
     stamp = str(d["case{}_stamp".format(case)][0])
     m = re.search(r"(\d{8})T?(\d{4})", stamp)
     stamp_lab = ("{}-{}-{} {}:{} UTC".format(
@@ -406,13 +408,14 @@ def fig_cases(case=0, agl=100.0):
     asp = 1.0 / np.cos(np.deg2rad(float(np.mean(xlat))))
     xt = [113.6, 114.0, 114.4]
     yt = [22.2, 22.4, 22.6, 22.8]
-    cmap = fs.seq_purple()
+    # 个例图沿用原 viridis 色标(用户 2026-10-14 定:风速场不用品牌紫,
+    # 紫色仅留在区位图研究域方框等界面注记上)
     im = None
     for j, (ax, (key, lab)) in enumerate(zip(axs.ravel(), srcs)):
-        im = ax.pcolormesh(xlon, xlat, fields[key], cmap=cmap, vmin=vmin,
+        im = ax.pcolormesh(xlon, xlat, fields[key], cmap="viridis", vmin=vmin,
                            vmax=vmax, shading="nearest", rasterized=True)
         ax.contour(xlon, xlat, hgt, levels=[50, 200, 400],
-                   colors=[fs.GREY_LIGHT], linewidths=0.5, zorder=3)
+                   colors=[fs.GREY], linewidths=0.5, zorder=3)
         ax.contour(xlon, xlat, water, levels=[0.5], colors=[fs.COAST],
                    linewidths=0.8, zorder=4)
         ax.set_xlim(float(xlon.min()), float(xlon.max()))
@@ -456,7 +459,7 @@ def fig_cases(case=0, agl=100.0):
     lon_c = st["xlong_coarse"][0, :]
     wc = st["water_coarse"]
     axi.pcolormesh(lon_c, lat_c, (wc < 0.5).astype(float),
-                   cmap=fs.land_sea_cmap(), vmin=0, vmax=1,
+                   cmap=ListedColormap(["#FFFFFF", "#E9E9E9"]), vmin=0, vmax=1,
                    shading="nearest", rasterized=True)
     axi.contour(lon_c, lat_c, wc, levels=[0.5], colors=["#5A5A5A"],
                 linewidths=0.5)
