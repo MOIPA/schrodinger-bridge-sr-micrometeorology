@@ -458,11 +458,15 @@ def fig_cases(case=0, agl=100.0):
     lat_c = st["xlat_coarse"][:, 0]
     lon_c = st["xlong_coarse"][0, :]
     wc = st["water_coarse"]
+    hc = st["hgt_coarse"]
+    # 地图卡配色:淡蓝海 + 象牙陆地 + 浅色地形线,与 viridis 主图区分但同色调
     axi.pcolormesh(lon_c, lat_c, (wc < 0.5).astype(float),
-                   cmap=ListedColormap(["#FFFFFF", "#E9E9E9"]), vmin=0, vmax=1,
+                   cmap=ListedColormap(["#E4EFF6", "#F7F4EB"]), vmin=0, vmax=1,
                    shading="nearest", rasterized=True)
-    axi.contour(lon_c, lat_c, wc, levels=[0.5], colors=["#5A5A5A"],
-                linewidths=0.5)
+    axi.contour(lon_c, lat_c, hc, levels=[200, 600, 1000],
+                colors=["#DAD2C2"], linewidths=0.45, zorder=2)
+    axi.contour(lon_c, lat_c, wc, levels=[0.5], colors=["#5F6B72"],
+                linewidths=0.6, zorder=3)
     ring_lon = np.concatenate([xlon[0, :], xlon[:, -1], xlon[-1, ::-1],
                                xlon[::-1, 0]])
     ring_lat = np.concatenate([xlat[0, :], xlat[:, -1], xlat[-1, ::-1],
