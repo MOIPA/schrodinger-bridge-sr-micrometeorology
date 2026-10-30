@@ -14,6 +14,12 @@ PY3D="${PY3D:-/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/bin/python}"  #
 QUEUES="${FORCE_Q:-}"   # 2026-10 集群换代:GPU 队列改由 ops/queue/q_pick.sh 按主机状态挑选
 
 if [ "$1" != "--inner" ]; then
+  # 全程纯 numpy 后处理,不需要 GPU: LOCAL=1 直接本地跑,不再占队列/等卡
+  if [ "${LOCAL:-0}" = "1" ]; then
+    echo ">>> LOCAL=1:跳过 LSF,本地直跑(纯 numpy 后处理,无需 GPU)"
+    bash "$0" --inner
+    exit $?
+  fi
   git pull --no-rebase
   git --no-pager log --oneline -1
   mkdir -p ops/result logs results/phase3_arch

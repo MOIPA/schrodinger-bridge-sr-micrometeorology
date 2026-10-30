@@ -40,6 +40,8 @@ case "$WAVE" in
   2) TAGS="$W2";;
   *) echo "用法: WAVE=1|2 bash ops/queue/64b_arch_waves.sh(默认 WAVE=1)"; exit 1;;
 esac
+# ARMS="tag1 tag2 ..." 可只跑波次内的子集(例:只跑 P0/P1 三臂,不跑满七臂)
+if [ -n "${ARMS:-}" ]; then TAGS="$ARMS"; fi
 
 cfg_of() { echo "$CFG_DIR/config_wind_canvas_${1}.yml"; }
 ck_of()  { echo "$RESULT_BASE/config_wind_canvas_${1}/checkpoint.pth"; }
