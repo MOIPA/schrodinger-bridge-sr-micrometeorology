@@ -1,0 +1,27 @@
+===== 1. 队列里的 p3_arch 作业 =====
+(无)
+
+===== 2. 逐配置:checkpoint / 最新日志尾 =====
+[--] p3_arch_unet_s2  配置在但无日志(未提交?)
+[OK] p3_arch_swin  ckpt=10-07 10:35  Train end 标记=1  Epoch 151 / 150  valid error: avg loss = 0.06442580
+[--] p3_arch_swin_s2  配置在但无日志(未提交?)
+[OK] p3_arch_reg  ckpt=10-07 06:14  Train end 标记=1  Epoch 85 / 150  valid error: avg loss = 0.14786640
+[--] p3_arch_reg_s2  配置在但无日志(未提交?)
+[--] p3_arch_edm  配置在但无日志(未提交?)
+[--] p3_arch_edm_s2  配置在但无日志(未提交?)
+
+checkpoint 完成: 2 / 7
+
+===== 3. 错误扫描 =====
+(无)
+
+===== 4. PEND 检查与换队列重投 =====
+(无 PEND 作业)
+
+===== 5. GPU 队列现状 =====
+  e5v4p100ib: PEND RUN = 0 0
+  6148v100ib: PEND RUN = 
+  7552v100: PEND RUN = 12 12
+  62v100ib: PEND RUN = 
+  83a100ib: PEND RUN = 
+  9654p6000ib: PEND RUN = 
