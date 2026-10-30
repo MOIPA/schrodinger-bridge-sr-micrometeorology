@@ -114,10 +114,10 @@ tags: p3_arch_swin,p3_arch_swin_s2,p3_arch_unet_s2,p3_arch_reg,p3_arch_reg_s2,p3
 ===== 2. 集合分布指标汇总(*_ensemble.json;主指标层 10-500 m) =====
 | tag | mode | N | spread_vec | spread_w | CRPS(风速) | rank 最大相对偏差 | spread-skill RMSE 四分位 |
 |---|---|---|---|---|---|---|---|
-| p2_l1r2_lr2e4 | si | 16 | 7077.5429 | 658.1380 | 0.3631 | 96.7% | 0.6611 / 0.8601 / 0.9932 / 1.1772 |
-| p3_arch_swin | si | 16 | 5470.9459 | 488.5226 | 0.3993 | 217.9% | 0.5860 / 0.8324 / 1.0560 / 1.3540 |
+| p2_l1r2_lr2e4 | si | 16 | 0.7281 | 0.0677 | 0.3631 | 96.7% | 0.6611 / 0.8601 / 0.9932 / 1.1772 |
+| p3_arch_swin | si | 16 | 0.5629 | 0.0503 | 0.3993 | 217.9% | 0.5860 / 0.8324 / 1.0560 / 1.3540 |
 
-口径:spread/spread_w = 主指标层逐像素样本标准差(ddof=1)的池化均值;
+口径:spread/spread_w = 主指标层逐像素样本标准差(ddof=1)的均值(已按 H*W 归一,m/s);
       CRPS = 样本式 fair 估计于风速(逐层像素 x 小时池化均值);
       rank 最大相对偏差 = 主层池化秩直方图对理想均匀 counts/(N+1) 的最大相对偏差;
       spread-skill = 每小时主层像素按 spread 四分位分组的集合均值 RMSE(0-25/25-50/50-75/75-100%)。
@@ -132,5 +132,5 @@ total 4280
 -rw-r--r--@ 1 rui  staff    5137 10月 31 00:32 p3_arch_swin_ensemble.json
 -rw-r--r--@ 1 rui  staff  718464 10月 31 00:32 p3_arch_swin_perhour.npz
 -rw-r--r--@ 1 rui  staff    3203 10月 31 00:32 p3_arch_swin_summary.json
--rw-r--r--@ 1 rui  staff    8228 10月 31 00:58 phase3_tables.json
--rw-r--r--@ 1 rui  staff    3017 10月 31 00:58 phase3_tables.md
+-rw-r--r--@ 1 rui  staff    8228 10月 31 00:59 phase3_tables.json
+-rw-r--r--@ 1 rui  staff    3017 10月 31 00:59 phase3_tables.md
