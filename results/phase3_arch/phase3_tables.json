@@ -1,0 +1,360 @@
+{
+ "perhour_dir": "results/phase3_arch",
+ "base_tag": "p2_l1r2_lr2e4_ens16",
+ "blocks": [
+  24,
+  12
+ ],
+ "n_boot": 2000,
+ "shear_unit": "m/s per m",
+ "runs": {
+  "p2_l1r2_lr2e4_ens16": {
+   "available": true,
+   "n_hours": 144,
+   "main_rmse_vec": 0.9419730213975939,
+   "n_cells_main": 15396480.0,
+   "shear_rmse_vec": 0.009604906127413645,
+   "n_cells_shear": 13685760.0,
+   "shear_n_pairs": 8,
+   "per_level": [
+    {
+     "agl_m": 10.0,
+     "rmse_vec": 0.9934200216506099,
+     "rmse_w": 0.11300947181381506
+    },
+    {
+     "agl_m": 30.0,
+     "rmse_vec": 1.0112173960014095,
+     "rmse_w": 0.11806741233914375
+    },
+    {
+     "agl_m": 50.0,
+     "rmse_vec": 1.0147246098330456,
+     "rmse_w": 0.12047340282664808
+    },
+    {
+     "agl_m": 70.0,
+     "rmse_vec": 1.035877032495116,
+     "rmse_w": 0.13217414681623027
+    },
+    {
+     "agl_m": 100.0,
+     "rmse_vec": 1.0091412662842498,
+     "rmse_w": 0.1463864809598541
+    },
+    {
+     "agl_m": 150.0,
+     "rmse_vec": 0.9575182533023151,
+     "rmse_w": 0.16704636170672021
+    },
+    {
+     "agl_m": 200.0,
+     "rmse_vec": 0.8974078862240352,
+     "rmse_w": 0.1850346015785704
+    },
+    {
+     "agl_m": 300.0,
+     "rmse_vec": 0.8041403909119504,
+     "rmse_w": 0.21314380067959307
+    },
+    {
+     "agl_m": 500.0,
+     "rmse_vec": 0.6974792846001313,
+     "rmse_w": 0.23914711776898487
+    },
+    {
+     "agl_m": 700.0,
+     "rmse_vec": 0.6479272334547834,
+     "rmse_w": 0.24129330831017928
+    },
+    {
+     "agl_m": 1000.0,
+     "rmse_vec": 0.6226438177540026,
+     "rmse_w": 0.2339377128867914
+    }
+   ],
+   "tag": "p2_l1r2_lr2e4_ens16",
+   "file": "results/phase3_arch/p2_l1r2_lr2e4_ens16_perhour.npz",
+   "delta_vs_base": null,
+   "ci": null,
+   "shear_delta_vs_base": null,
+   "shear_ci": null
+  },
+  "p3_arch_reg": {
+   "available": true,
+   "n_hours": 144,
+   "main_rmse_vec": 0.8276786819371978,
+   "n_cells_main": 15396480.0,
+   "shear_rmse_vec": 0.008093751441425828,
+   "n_cells_shear": 13685760.0,
+   "shear_n_pairs": 8,
+   "per_level": [
+    {
+     "agl_m": 10.0,
+     "rmse_vec": 0.8572900089866669,
+     "rmse_w": 0.07249531718189302
+    },
+    {
+     "agl_m": 30.0,
+     "rmse_vec": 0.8886178186946668,
+     "rmse_w": 0.07637500246290199
+    },
+    {
+     "agl_m": 50.0,
+     "rmse_vec": 0.8931229426862726,
+     "rmse_w": 0.07822813044094692
+    },
+    {
+     "agl_m": 70.0,
+     "rmse_vec": 0.9098423879858025,
+     "rmse_w": 0.08890763931770157
+    },
+    {
+     "agl_m": 100.0,
+     "rmse_vec": 0.8856654007426186,
+     "rmse_w": 0.10213624288674089
+    },
+    {
+     "agl_m": 150.0,
+     "rmse_vec": 0.8417577042065512,
+     "rmse_w": 0.12356957001251782
+    },
+    {
+     "agl_m": 200.0,
+     "rmse_vec": 0.7907035822395218,
+     "rmse_w": 0.14243266647558597
+    },
+    {
+     "agl_m": 300.0,
+     "rmse_vec": 0.7063173219135492,
+     "rmse_w": 0.17145390488322035
+    },
+    {
+     "agl_m": 500.0,
+     "rmse_vec": 0.6311441253756112,
+     "rmse_w": 0.19782659029013808
+    },
+    {
+     "agl_m": 700.0,
+     "rmse_vec": 0.5861035905753295,
+     "rmse_w": 0.20118512119399276
+    },
+    {
+     "agl_m": 1000.0,
+     "rmse_vec": 0.5704058821276834,
+     "rmse_w": 0.19707009571763542
+    }
+   ],
+   "tag": "p3_arch_reg",
+   "file": "results/phase3_arch/p3_arch_reg_perhour.npz",
+   "delta_vs_base": -0.11429433946039602,
+   "ci": {
+    "24": {
+     "delta": -0.11429433946039602,
+     "lo": -0.18562558116898004,
+     "hi": -0.05204663593437379,
+     "significant": true
+    },
+    "12": {
+     "delta": -0.11429433946039602,
+     "lo": -0.17159200090737844,
+     "hi": -0.06367645296761458,
+     "significant": true
+    }
+   },
+   "shear_delta_vs_base": -0.0015111546859878176,
+   "shear_ci": {
+    "24": {
+     "delta": -0.0015111546859878176,
+     "lo": -0.0018074545858074403,
+     "hi": -0.0012706909136885813,
+     "significant": true
+    },
+    "12": {
+     "delta": -0.0015111546859878176,
+     "lo": -0.0017564874036803198,
+     "hi": -0.0013173332132551396,
+     "significant": true
+    }
+   }
+  },
+  "p3_arch_swin": {
+   "available": true,
+   "n_hours": 144,
+   "main_rmse_vec": 0.9981026981015143,
+   "n_cells_main": 15396480.0,
+   "shear_rmse_vec": 0.008433717348411057,
+   "n_cells_shear": 13685760.0,
+   "shear_n_pairs": 8,
+   "per_level": [
+    {
+     "agl_m": 10.0,
+     "rmse_vec": 1.007535983040533,
+     "rmse_w": 0.1014965250914414
+    },
+    {
+     "agl_m": 30.0,
+     "rmse_vec": 1.0761915865132379,
+     "rmse_w": 0.10612488901761481
+    },
+    {
+     "agl_m": 50.0,
+     "rmse_vec": 1.0947754643124379,
+     "rmse_w": 0.10834917498158445
+    },
+    {
+     "agl_m": 70.0,
+     "rmse_vec": 1.1200364256707118,
+     "rmse_w": 0.12281170073670919
+    },
+    {
+     "agl_m": 100.0,
+     "rmse_vec": 1.0912385442246622,
+     "rmse_w": 0.13960477279420974
+    },
+    {
+     "agl_m": 150.0,
+     "rmse_vec": 1.0306776904192043,
+     "rmse_w": 0.16571781213033152
+    },
+    {
+     "agl_m": 200.0,
+     "rmse_vec": 0.9556985891875655,
+     "rmse_w": 0.18730971052609724
+    },
+    {
+     "agl_m": 300.0,
+     "rmse_vec": 0.8226484834528716,
+     "rmse_w": 0.21857886201780302
+    },
+    {
+     "agl_m": 500.0,
+     "rmse_vec": 0.70451442915869,
+     "rmse_w": 0.2423616563553616
+    },
+    {
+     "agl_m": 700.0,
+     "rmse_vec": 0.6952598078103426,
+     "rmse_w": 0.24243658728714929
+    },
+    {
+     "agl_m": 1000.0,
+     "rmse_vec": 0.6415415931909911,
+     "rmse_w": 0.22976453707470632
+    }
+   ],
+   "tag": "p3_arch_swin",
+   "file": "results/phase3_arch/p3_arch_swin_perhour.npz",
+   "delta_vs_base": 0.05612967670392044,
+   "ci": {
+    "24": {
+     "delta": 0.05612967670392044,
+     "lo": 0.03581296899369454,
+     "hi": 0.07794892556651765,
+     "significant": true
+    },
+    "12": {
+     "delta": 0.05612967670392044,
+     "lo": 0.0383855690075226,
+     "hi": 0.07570766587876807,
+     "significant": true
+    }
+   },
+   "shear_delta_vs_base": -0.0011711887790025882,
+   "shear_ci": {
+    "24": {
+     "delta": -0.00117118877900259,
+     "lo": -0.001428462717226915,
+     "hi": -0.0009074349248689571,
+     "significant": true
+    },
+    "12": {
+     "delta": -0.00117118877900259,
+     "lo": -0.0013854050879884357,
+     "hi": -0.0009557758256648556,
+     "significant": true
+    }
+   }
+  },
+  "p3_arch_swin_s2": {
+   "available": false,
+   "n_hours": null,
+   "main_rmse_vec": null,
+   "n_cells_main": null,
+   "shear_rmse_vec": null,
+   "n_cells_shear": null,
+   "shear_n_pairs": null,
+   "per_level": [],
+   "tag": "p3_arch_swin_s2",
+   "file": "results/phase3_arch/p3_arch_swin_s2_perhour.npz",
+   "delta_vs_base": null,
+   "ci": null,
+   "shear_delta_vs_base": null,
+   "shear_ci": null
+  },
+  "p3_arch_unet_s2": {
+   "available": false,
+   "n_hours": null,
+   "main_rmse_vec": null,
+   "n_cells_main": null,
+   "shear_rmse_vec": null,
+   "n_cells_shear": null,
+   "shear_n_pairs": null,
+   "per_level": [],
+   "tag": "p3_arch_unet_s2",
+   "file": "results/phase3_arch/p3_arch_unet_s2_perhour.npz",
+   "delta_vs_base": null,
+   "ci": null,
+   "shear_delta_vs_base": null,
+   "shear_ci": null
+  },
+  "p3_arch_reg_s2": {
+   "available": false,
+   "n_hours": null,
+   "main_rmse_vec": null,
+   "n_cells_main": null,
+   "shear_rmse_vec": null,
+   "n_cells_shear": null,
+   "shear_n_pairs": null,
+   "per_level": [],
+   "tag": "p3_arch_reg_s2",
+   "file": "results/phase3_arch/p3_arch_reg_s2_perhour.npz",
+   "delta_vs_base": null,
+   "ci": null,
+   "shear_delta_vs_base": null,
+   "shear_ci": null
+  },
+  "p3_arch_edm": {
+   "available": false,
+   "n_hours": null,
+   "main_rmse_vec": null,
+   "n_cells_main": null,
+   "shear_rmse_vec": null,
+   "n_cells_shear": null,
+   "shear_n_pairs": null,
+   "per_level": [],
+   "tag": "p3_arch_edm",
+   "file": "results/phase3_arch/p3_arch_edm_perhour.npz",
+   "delta_vs_base": null,
+   "ci": null,
+   "shear_delta_vs_base": null,
+   "shear_ci": null
+  },
+  "p3_arch_edm_s2": {
+   "available": false,
+   "n_hours": null,
+   "main_rmse_vec": null,
+   "n_cells_main": null,
+   "shear_rmse_vec": null,
+   "n_cells_shear": null,
+   "shear_n_pairs": null,
+   "per_level": [],
+   "tag": "p3_arch_edm_s2",
+   "file": "results/phase3_arch/p3_arch_edm_s2_perhour.npz",
+   "delta_vs_base": null,
+   "ci": null,
+   "shear_delta_vs_base": null,
+   "shear_ci": null
+  }
+ }
+}
