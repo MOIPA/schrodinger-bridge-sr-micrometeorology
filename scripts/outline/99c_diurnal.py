@@ -54,15 +54,25 @@ def main():
     ap.add_argument('--out_md', required=True)
     ap.add_argument('--fig', default='')
     ap.add_argument('--n_boot', type=int, default=2000)
+    ap.add_argument('--det_tag', default='',
+                    help='同权重确定性基线(如 p2_l1r2_lr2e4,N=1 采样),用于把'
+                         '"架构差异"和"集合平均红利"分开;数据可能不在同一目录')
+    ap.add_argument('--det_dir', default='results/phase2')
     a = ap.parse_args()
 
     ml = main_idx()
-    arms = [a.base_tag] + [t for t in a.tags if t != a.base_tag]
+    paths = {t: os.path.join(a.perhour_dir, f'{t}_perhour.npz')
+             for t in [a.base_tag] + list(a.tags)}
+    if a.det_tag:
+        paths[a.det_tag] = os.path.join(a.det_dir, f'{a.det_tag}_perhour.npz')
+    arms = [a.base_tag] + [t for t in list(a.tags) if t != a.base_tag]
+    if a.det_tag and a.det_tag not in arms:
+        arms.append(a.det_tag)
 
     # ---------- 读数据 ----------
     d = {}
     for t in arms:
-        p = os.path.join(a.perhour_dir, f'{t}_perhour.npz')
+        p = paths[t]
         if not os.path.isfile(p):
             raise SystemExit(f'缺 {p}')
         z = np.load(p, allow_pickle=True)
@@ -122,6 +132,39 @@ def main():
                          'ci95': [float(np.percentile(boot, 2.5)), float(np.percentile(boot, 97.5))],
                          'p_delta_gt0': float((boot > 0).mean())})
         perday_delta[t] = rows
+    # ---------- 公平对比:同协议(N=1)的确定性基线 ----------
+    fair_delta = {}
+    if a.det_tag and a.det_tag in arms:
+        det = a.det_tag
+        for t in [x for x in arms if x not in (det, base)]:
+            rows = []
+            for dd in days:
+                idx = np.where(day == dd)[0]
+                boot = np.empty(a.n_boot)
+                for b in range(a.n_boot):
+                    sel = rng.choice(idx, len(idx), replace=True)
+                    boot[b] = (np.sqrt(d[t]['se2'][sel].sum() / d[t]['n'][sel].sum())
+                               - np.sqrt(d[det]['se2'][sel].sum() / d[det]['n'][sel].sum()))
+                rows.append({'day': dd,
+                             'delta': float(np.sqrt(d[t]['se2'][idx].sum() / d[t]['n'][idx].sum())
+                                            - np.sqrt(d[det]['se2'][idx].sum() / d[det]['n'][idx].sum())),
+                             'ci95': [float(np.percentile(boot, 2.5)), float(np.percentile(boot, 97.5))],
+                             'p_delta_gt0': float((boot > 0).mean())})
+            fair_delta[t] = rows
+        # 集合平均红利:同权重 ens16 − 确定性 N=1
+        ens_gain = []
+        for dd in days:
+            idx = np.where(day == dd)[0]
+            boot = np.empty(a.n_boot)
+            for b in range(a.n_boot):
+                sel = rng.choice(idx, len(idx), replace=True)
+                boot[b] = (np.sqrt(d[det]['se2'][sel].sum() / d[det]['n'][sel].sum())
+                           - np.sqrt(d[base]['se2'][sel].sum() / d[base]['n'][sel].sum()))
+            ens_gain.append({'day': dd,
+                             'gain': float(np.sqrt(d[det]['se2'][idx].sum() / d[det]['n'][idx].sum())
+                                           - np.sqrt(d[base]['se2'][idx].sum() / d[base]['n'][idx].sum())),
+                             'ci95': [float(np.percentile(boot, 2.5)), float(np.percentile(boot, 97.5))]})
+
     # 变率代理:逐小时基准臂 RMSE 的标准差(衡量该日"难"是难在系统性还是难在起伏)
     day_volatility = {dd: float(np.std(d[base]['rm'][day == dd])) for dd in days}
 
@@ -142,6 +185,9 @@ def main():
         'base_worst_hour': worst_h,
         'base_best_hour': best_h,
         'perday_delta_vs_base': perday_delta,
+        'det_tag': a.det_tag or None,
+        'perday_delta_vs_det': fair_delta,
+        'perday_ensemble_gain': locals().get('ens_gain', []),
         'base_day_volatility': day_volatility,
         'bootstrap_note': 'per-day paired bootstrap is iid over hours (n=24), crude: use sign only',
     }
@@ -180,6 +226,18 @@ def main():
             L.append('| %s | `%s` | %+.4f | [%+.4f, %+.4f] | %.2f |' %
                      (r['day'], t, r['delta'], r['ci95'][0], r['ci95'][1], r['p_delta_gt0']))
     L.append('')
+    if fair_delta:
+        L.append('### 公平对比(同协议 N=1:`%s` 为基线,iid bootstrap 只取符号)' % a.det_tag)
+        L.append('')
+        L.append('| 日期 | 臂 | Δ vs 确定性基线 | 95% CI | 集合平均红利(ens−det) |')
+        L.append('|---|---|---|---|---|')
+        for t, rows in fair_delta.items():
+            for i, r in enumerate(rows):
+                g = ens_gain[i] if i < len(ens_gain) else None
+                L.append('| %s | `%s` | %+.4f | [%+.4f, %+.4f] | %s |' %
+                         (r['day'], t, r['delta'], r['ci95'][0], r['ci95'][1],
+                          ('%+.4f [%+.4f, %+.4f]' % (g['gain'], g['ci95'][0], g['ci95'][1])) if g else '-'))
+        L.append('')
     with open(a.out_md, 'w', encoding='utf-8') as f:
         f.write('\n'.join(L))
 
@@ -190,9 +248,10 @@ def main():
         import matplotlib.pyplot as plt
         fig, ax = plt.subplots(figsize=(7.2, 3.8), dpi=150)
         xs = np.arange(24)
-        style = {base: dict(color='#888888', ls='--', lw=1.4),
-                 'p3_arch_reg': dict(color='#d1495b', lw=2.0),
-                 'p3_arch_swin': dict(color='#2a6f97', lw=2.0)}
+        style = {base: dict(color='#8a8a8a', ls='--', lw=1.5),
+                 'p3_arch_reg': dict(color='#d1495b', lw=2.2),
+                 'p3_arch_swin': dict(color='#2a6f97', lw=1.8),
+                 a.det_tag or '_none': dict(color='#2f6b2f', lw=1.6, ls='-.')}
         for t in arms:
             st = style.get(t, dict(lw=1.6))
             ax.plot(xs, diurnal[t]['rmse'], label=t, **st)
