@@ -12,6 +12,7 @@
 """
 import os
 import sys
+import traceback
 
 sys.path.insert(0, os.getcwd())
 
@@ -64,6 +65,9 @@ def main() -> int:
         except Exception as e:  # noqa: BLE001 - 目的就是把任何异常显示出来
             bad += 1
             print(f"{t:26s} {'-':16s} {'-':>10s}  {'-':>4s} {'-':>4s}  FAIL: {type(e).__name__}: {e}")
+            # 完整栈:配置类问题(如 KeyError: 'edm' = base loader 收到未剥离的 edm 段)
+            # 只看类名+消息不足以定位,这里把栈打到 stderr
+            print(traceback.format_exc(), file=sys.stderr)
     print(f"\n失败 {bad} / {len(TAGS)}")
     return 1 if bad else 0
 
