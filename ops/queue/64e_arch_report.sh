@@ -11,19 +11,14 @@
 cd ~/schrodinger-bridge-sr-micrometeorology || exit 1
 ROOT=/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology
 PY3D=/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/bin/python
-QUEUES="e5v4p100ib 6148v100ib 7552v100 62v100ib 83a100ib"
+QUEUES="${FORCE_Q:-}"   # 2026-10 集群换代:GPU 队列改由 ops/queue/q_pick.sh 按主机状态挑选
 
 if [ "$1" != "--inner" ]; then
   git pull --no-rebase
   git --no-pager log --oneline -1
   mkdir -p ops/result logs results/phase3_arch
-  QUEUES="${FORCE_Q:-$QUEUES}"
-  Q=""
-  for q in $QUEUES; do
-    PEND=$(bqueues -w "$q" 2>/dev/null | tail -1 | awk '{print $9}')
-    if [ "$PEND" = "0" ] 2>/dev/null; then Q="$q"; break; fi
-  done
-  [ -z "$Q" ] && Q="83a100ib"
+  if [ -n "${FORCE_Q:-}" ]; then Q="$FORCE_Q"; else Q=$(bash ops/queue/q_pick.sh 2>/dev/null); fi
+  [ -z "$Q" ] && { echo ">>> 无可用 GPU 队列(全部 closed/满载),稍后重试或 FORCE_Q=<队列>"; exit 2; }
   # GPU 计算节点 PATH 可能没有 git,提交时注入登录节点 git 目录
   GITDIR=$(dirname "$(command -v git)")
   echo "阶段 3 架构对比终评报告(99 表 + ensemble json 汇总)-> 队列 $Q"

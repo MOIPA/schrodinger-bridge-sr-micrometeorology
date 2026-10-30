@@ -29,8 +29,7 @@ mkdir -p ops/result logs results/phase3_arch
 EXP=ExperimentSchrodingerBridgeWindCanvas
 RESULT_BASE=data/DL_result/$EXP
 CFG_DIR="configs/深圳/phase3_arch"
-QUEUES="e5v4p100ib 6148v100ib 7552v100 62v100ib 83a100ib"  # 9654p6000ib 为 Blackwell,与 wind3d torch 不兼容
-QUEUES="${FORCE_Q:-$QUEUES}"  # 队列异常时覆盖:FORCE_Q=6148v100ib WAVE=2 bash ops/queue/64b_arch_waves.sh
+QUEUES="${FORCE_Q:-}"  # 2026-10 集群换代:GPU 队列改由 ops/queue/q_pick.sh 挑选;FORCE_Q=<队列> 可强制
 
 W1="p3_arch_swin p3_arch_reg"
 W2="p3_arch_swin_s2 p3_arch_reg_s2 p3_arch_unet_s2 p3_arch_unet_small p3_arch_unet_small_s2 p3_arch_edm p3_arch_edm_s2"
@@ -56,14 +55,8 @@ reg_of() {
 
 pick_queue() {
   # 只在"没有排队积压(PEND=0)"的队列里挑,并选 RUN 最少的(近似空闲 GPU 最多)
-  local BEST="" BESTRUN=1000000 P R
-  for q in $QUEUES; do
-    read -r P R <<< "$(bqueues -w "$q" 2>/dev/null | tail -1 | awk '{print $9, $10}')"
-    [ "$P" = "0" ] || continue
-    [ -z "$R" ] && continue
-    if [ "$R" -lt "$BESTRUN" ] 2>/dev/null; then BEST="$q"; BESTRUN="$R"; fi
-  done
-  echo "${BEST:-83a100ib}"
+  if [ -n "$QUEUES" ]; then echo "$QUEUES"; return; fi
+  bash ops/queue/q_pick.sh 2>/dev/null
 }
 
 submit_one() {  # $1=tag $2=queue
