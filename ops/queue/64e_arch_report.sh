@@ -8,9 +8,9 @@
 #   ③ 全部 stdout/表格写 ops/result/64_arch_report.txt,回传 ops/result + results/phase3_arch。
 # 前置依赖:64d 已评估(否则 99 缺输入;缺文件的行标 —,不抛异常)。
 # 手机执行: bash ops/queue/64e_arch_report.sh   (登录节点提交,GPU 节点跑 --inner)
-cd ~/schrodinger-bridge-sr-micrometeorology || exit 1
-ROOT=/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology
-PY3D=/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/bin/python
+cd "${REPO:-$HOME/schrodinger-bridge-sr-micrometeorology}" || exit 1
+ROOT="${ROOT:-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology}"
+PY3D="${PY3D:-/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/bin/python}"  # 纯 numpy 后处理,可 PY3D=python3 本地跑
 QUEUES="${FORCE_Q:-}"   # 2026-10 集群换代:GPU 队列改由 ops/queue/q_pick.sh 按主机状态挑选
 
 if [ "$1" != "--inner" ]; then
@@ -81,8 +81,11 @@ rows = []
 for p in sorted(glob.glob('results/phase3_arch/*_ensemble.json')):
     d = json.load(open(p))
     ml = [i for i, h in enumerate(d['agl_targets']) if 10 <= h <= 500]
-    sv = float(np.mean([d['spread_vec_per_level'][i] for i in ml]))
-    sw = float(np.mean([d['spread_w_per_level'][i] for i in ml]))
+    # spread_*_per_level 存的是逐像素 std 在(行,列)上求和后按小时平均的值,即 sum over pixels;
+    # 像素数由 rank 直方图总量反推:sum(rank)/(n_hours*n_levels)= H*W,避免硬编码画布尺寸
+    n_pix = float(np.sum(d['rank_hist_main_pooled'])) / max(d['n_hours'] * len(d['agl_targets']), 1)
+    sv = float(np.mean([d['spread_vec_per_level'][i] for i in ml])) / max(n_pix, 1.0)
+    sw = float(np.mean([d['spread_w_per_level'][i] for i in ml])) / max(n_pix, 1.0)
     hist = np.asarray(d['rank_hist_main_pooled'], dtype=float)
     exp = hist.sum() / (d['n_ensemble'] + 1.0)
     rel = float(np.abs(hist - exp).max() / max(exp, 1e-12))
@@ -96,7 +99,7 @@ for t, m, n, sv, sw, c, r, rmse in rows:
 if not rows:
     print('(无 *_ensemble.json:64d 的 si/edm 臂未评估?)')
 print()
-print('口径:spread/spread_w = 主指标层逐像素样本标准差(ddof=1)的池化均值;')
+print('口径:spread/spread_w = 主指标层逐像素样本标准差(ddof=1)的均值(已按 H*W 归一,m/s);')
 print('      CRPS = 样本式 fair 估计于风速(逐层像素 x 小时池化均值);')
 print('      rank 最大相对偏差 = 主层池化秩直方图对理想均匀 counts/(N+1) 的最大相对偏差;')
 print('      spread-skill = 每小时主层像素按 spread 四分位分组的集合均值 RMSE(0-25/25-50/50-75/75-100%)。')
