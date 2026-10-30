@@ -79,6 +79,43 @@ bsub -q <队列> -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]"
 **挑队列规则**:只在 `bqueues` 的 PEND=0 里选 **RUN 最少**的;`6148v100ib` 曾积压 160 个排队作业把我们的
 作业卡住——所以不能只看"PEND=0",还要看 RUN 数
 
+## 3.5 集群换代后的提交口径(2026-10-31 实勘,**取代上面所有旧队列名**)
+
+2026-10-31 起 `lsid` 报 "cluster name is hpc / master name is nfs2",旧队列名(e5v4p100ib、83a100ib、6148v100ib…)大部分已关闭或改名。上面第 3 节的队列经验只作历史参考。
+
+| 队列 | 宿主机 | GPU | 2026-10-31 状态 |
+|---|---|---|---|
+| `813080` | a018 | 8×RTX3080-10G | LSF 里 ngpus_physical=0,提交后 PEND |
+| `814080` | m009 | 4×RTX4080-16G | closed_Full |
+| `734090ib` | m005 | 8×RTX4090-24G | closed_Full |
+| `734090d` / `944090d` | n034 / n033 | 4090D | closed |
+| `75434090ib` | m007 / m008 | 8×RTX4090-24G,EPYC 7543×2 / 512 GB / 100 Gb IB | 首选;closed_Full 时排队 |
+| `945090ib` / `65305090ib` | e001 / e005 | 8×RTX5090-32G | **Blackwell sm_120,wind3d(cu118)不兼容,别用** |
+| `7552v100` | o004 | V100-32G | 曾被 zombie 作业占满 |
+| `e5v4p100ib` | x002 | P100 | **Closed,提交会得到 "Queue has been closed. Job not submitted." 而脚本仍 exit 0** |
+
+**选队列的唯一正确做法:`bash ops/queue/q_pick.sh`**——它同时检查 ①队列 Open ②队内有 `ok` 主机 ③该主机 GPU 空闲>0,全满足才输出队列名,否则 exit 1,没有任何 fallback。可用 `FORCE_Q=<队列>` 强制指定。
+
+**2026-10-31 新踩的四个坑:**
+
+1. **`bqueues -w` 的状态在第 3 列**(第 2 列是 PRIO)。取错列会让"是否 Open"的判断永远为假——q_pick 初版就栽在这(已修,`awk 'NR==2{print $3}'`)。
+2. **`-gpu` 与 `select[ngpus>0]` 不能同时给**:报 `GPU number in GPU resource requirements and -gpu cannot be specified at the same time.`。要 GPU 就用 `-gpu "num=1"`,要卡数约束就只用 `-R select[...]`。
+3. **`-o /tmp/x.out` 落在计算节点本地 /tmp**,登录节点读不到;一律写 `$HOME` 下共享盘路径。且 `-o` 文件**作业结束才落盘**,运行中看到空文件是正常的,别当失败。
+4. **screen 里别写 `cat $(ls -t logs/x_*.log | head -1)`**:通配符为空时 `cat` 退化成读 stdin,整个 shell 看起来"死机",之后 stuff 进去的字符全被吃掉。用 `tail -n 100 <具体文件名>`,卡住了先 stuff `\003`(Ctrl-C)。
+
+**W2 三臂提交清单**(`p3_arch_edm` / `p3_arch_reg_s2` / `p3_arch_unet_small`):
+
+```bash
+# 1) 有卡自检:能打印队列名才继续
+bash ops/queue/q_pick.sh
+# 2) 一条命令提三臂(内部再调 q_pick,无卡 exit 2)
+bash ops/queue/64f_w2_min.sh
+# 3) 训练完后评估(纯 numpy,不必占 GPU)
+LOCAL=1 bash ops/queue/64e_arch_report.sh
+```
+
+提交前先跑 `python ops/debug/arch_params.py`(CPU 建网自检,不碰数据)确认四个架构都能建出来。2026-10-31 的读数是 reg/reg_s2 79.26M、unet_small 19.87M、swin 19.01M 全 OK,edm 报 `KeyError: 'edm'`——**最可能是服务器 `git pull --no-rebase -q` 静默失败、跑的是旧脚本**(旧版直接 `load_config`,遇到 `edm:` 段必然在 `src/dl_config/base_config.py:31` 抛 KeyError);重连后先 `git log --oneline -1` 确认版本再重跑。
+
 ## 4. 长任务与 CPU/GPU 分工
 
 - 登录节点长任务:`setsid nohup 命令 > logs/x.log 2>&1 < /dev/null &`——**普通 nohup 在 SSH 断线时会被杀**(进程组清理),必须 setsid
