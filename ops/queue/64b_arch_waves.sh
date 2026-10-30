@@ -18,10 +18,14 @@
 # 前置依赖:configs/深圳/phase3_arch/*.yml(由 64_arch_setup.sh 的 83 生成)。
 # 手机执行: bash ops/queue/64b_arch_waves.sh          # W1
 #           WAVE=2 bash ops/queue/64b_arch_waves.sh    # W2(需前波评估产物)
-cd ~/schrodinger-bridge-sr-micrometeorology || exit 1
-git pull --no-rebase
-git --no-pager log --oneline -1
-ROOT=/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology
+cd "${REPO:-$HOME/schrodinger-bridge-sr-micrometeorology}" || exit 1
+if [ "${DRY_RUN:-0}" = "1" ]; then
+  echo "[DRY_RUN] 跳过 git pull / 提交;仅打印将要提交的 bsub 命令"
+else
+  git pull --no-rebase
+  git --no-pager log --oneline -1
+fi
+ROOT="${ROOT:-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology}"
 OUT=ops/result/64b_arch_waves.txt
 mkdir -p ops/result logs results/phase3_arch
 : > "$OUT"
@@ -42,6 +46,10 @@ case "$WAVE" in
 esac
 # ARMS="tag1 tag2 ..." 可只跑波次内的子集(例:只跑 P0/P1 三臂,不跑满七臂)
 if [ -n "${ARMS:-}" ]; then TAGS="$ARMS"; fi
+# edm* 依赖配对回归的 checkpoint,必须排在最后提交(否则同波次里 reg 还没落盘就被判"等")
+if [ -n "${TAGS// /}" ]; then
+  TAGS="$(echo $TAGS | tr ' ' '\n' | grep -v '^p3_arch_edm' | tr '\n' ' ') $(echo $TAGS | tr ' ' '\n' | grep '^p3_arch_edm' | tr '\n' ' ')"
+fi
 
 cfg_of() { echo "$CFG_DIR/config_wind_canvas_${1}.yml"; }
 ck_of()  { echo "$RESULT_BASE/config_wind_canvas_${1}/checkpoint.pth"; }
@@ -61,8 +69,9 @@ pick_queue() {
   bash ops/queue/q_pick.sh 2>/dev/null
 }
 
-submit_one() {  # $1=tag $2=queue
-  local tag=$1 q=$2 script extra=""
+submit_one() {  # $1=tag $2=queue $3=LSF 依赖(可选,如 "ended(p3_arch_reg_s2)")
+  local tag=$1 q=$2 dep=${3:-} script extra=""
+  local depOpt=(); [ -n "$dep" ] && depOpt=(-w "$dep")
   case "$tag" in
     p3_arch_reg*) script=scripts/train_regression_model.py;;
     p3_arch_edm*)
@@ -71,7 +80,12 @@ submit_one() {  # $1=tag $2=queue
       extra="--reg_tag $rt --reg_config_path $CFG_DIR/config_wind_canvas_${rt}.yml";;
     *) script=scripts/train_schrodinger_bridge_model.py;;
   esac
+  if [ "${DRY_RUN:-0}" = "1" ]; then
+    echo "[DRY_RUN] bsub -q $q -gpu num=1:mode=exclusive_process -n 4 -R rusage[mem=32000] ${depOpt[*]:-} -J $tag -o logs/${tag}_%J.out -e logs/${tag}_%J.err $script ... $extra"
+    return 0
+  fi
   bsub -q "$q" -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" \
+    "${depOpt[@]}" \
     -J "$tag" -o "logs/${tag}_%J.out" -e "logs/${tag}_%J.err" \
     "cd $ROOT && module load anaconda/3 && module load cuda/11.8.0 && source activate wind3d && \
 python -u $script \
@@ -127,12 +141,18 @@ for tag in $TAGS; do
     echo "[警告] 缺配置 $CFG(先跑 64_arch_setup.sh 生成),跳过 $tag" >> "$OUT"
     continue
   fi
+  DEP=""
   case "$tag" in
     p3_arch_edm*)
       RT=$(reg_of "$tag")
-      if [ ! -f "$(ck_of "$RT")" ]; then
+      if [ -f "$(ck_of "$RT")" ]; then
+        :
+      elif echo " $TAGS " | grep -q " $RT "; then
+        DEP="ended($RT)"
+        echo "[依赖] $tag 等配对回归 $RT 结束后开跑(-w $DEP)" >> "$OUT"
+      else
         echo "[等] $tag 需配对回归 $RT 的 checkpoint(尚不存在),跳过;" \
-             "先跑 W1/64b 把 $RT 训完(或 --after-training 依赖)" >> "$OUT"
+             "先跑 W1/64b 把 $RT 训完(或用 -w ended($RT) 依赖)" >> "$OUT"
         continue
       fi
       ;;
@@ -148,7 +168,7 @@ for tag in $TAGS; do
   done
   Q=$(pick_queue)
   echo ">>> $tag -> 队列 $Q($(basename "$(cfg_of $tag)"))" >> "$OUT"
-  submit_one "$tag" "$Q" >> "$OUT"
+  submit_one "$tag" "$Q" "$DEP" >> "$OUT"
   SUBMITTED="$SUBMITTED $tag"
 done
 
@@ -163,6 +183,11 @@ if [ -z "$SUBMITTED" ]; then
 fi
 
 echo "" >> "$OUT"
+if [ "${DRY_RUN:-0}" = "1" ]; then
+  echo "===== 2. [DRY_RUN] 跳过 PEND 检查与 git 提交 =====" >> "$OUT"
+  cat "$OUT"; exit 0
+fi
+
 echo "===== 2. 90 秒后 PEND 检查(PEND 立即换队列重投) =====" >> "$OUT"
 sleep 90
 bjobs -w 2>/dev/null | grep "p3_arch" >> "$OUT" || echo "(bjobs 无 p3_arch 记录?)" >> "$OUT"
@@ -175,7 +200,7 @@ for tag in $SUBMITTED; do
     bkill "$JID" >> "$OUT" 2>&1
     Q=$(pick_queue)
     echo ">>> $tag -> 新队列 $Q" >> "$OUT"
-    submit_one "$tag" "$Q" >> "$OUT"
+    submit_one "$tag" "$Q" "$DEP" >> "$OUT"
   fi
 done
 
