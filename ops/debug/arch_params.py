@@ -16,7 +16,9 @@ import sys
 sys.path.insert(0, os.getcwd())
 
 from src.dl_config.config_loader import load_config  # noqa: E402
+from src.dl_model.edm_correction import EDMCorrector  # noqa: E402
 from src.dl_model.model_maker import make_model  # noqa: E402
+from scripts.train_edm_correction import load_edm_config  # noqa: E402
 
 EXP = "ExperimentSchrodingerBridgeWindCanvas"
 CFG_DIR = "configs/深圳/phase3_arch"
@@ -35,6 +37,22 @@ def main() -> int:
     for t in TAGS:
         path = os.path.join(CFG_DIR, f"config_wind_canvas_{t}.yml")
         try:
+            if t.startswith("p3_arch_edm"):
+                # edm 臂不带 edm/reg 段走统一 loader:配置里 edm/reg 两段必须由
+                # load_edm_config 剥离后进 base loader,直接 load_config 会 KeyError
+                base_cfg, edm_cfg, reg_raw, _ = load_edm_config(EXP, path)
+                if not edm_cfg.sigma_data or float(edm_cfg.sigma_data) <= 0:
+                    import dataclasses as _dc
+                    edm_cfg = _dc.replace(edm_cfg, sigma_data=1.0)
+                model = EDMCorrector(edm_cfg)
+                n = sum(p.numel() for p in model.parameters()) / 1e6
+                print(
+                    f"{t:26s} {'edm_correction':16s} {n:9.2f}M  "
+                    f"{base_cfg.model.in_channel:4d} {base_cfg.model.out_channel:4d}  OK"
+                    f"  (reg 段: {reg_raw.get('reg_tag', '-')})"
+                )
+                del model
+                continue
             cfg = load_config(EXP, path)
             model = make_model(cfg.model)
             n = sum(p.numel() for p in model.parameters()) / 1e6
