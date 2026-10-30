@@ -89,7 +89,9 @@ for p in sorted(glob.glob('results/phase3_arch/*_ensemble.json')):
     ml = [i for i, h in enumerate(d['agl_targets']) if 10 <= h <= 500]
     # spread_*_per_level 存的是逐像素 std 在(行,列)上求和后按小时平均的值,即 sum over pixels;
     # 像素数由 rank 直方图总量反推:sum(rank)/(n_hours*n_levels)= H*W,避免硬编码画布尺寸
-    n_pix = float(np.sum(d['rank_hist_main_pooled'])) / max(d['n_hours'] * len(d['agl_targets']), 1)
+    # rank_hist_main_pooled 只覆盖主指标层(10–500 m),像素数必须除以主层数而不是全部 11 层
+    # (2026-10-31 修正:原来除以 len(agl_targets)=11,导致 spread 被系统性放大 11/9=1.222 倍)
+    n_pix = float(np.sum(d['rank_hist_main_pooled'])) / max(d['n_hours'] * len(ml), 1)
     sv = float(np.mean([d['spread_vec_per_level'][i] for i in ml])) / max(n_pix, 1.0)
     sw = float(np.mean([d['spread_w_per_level'][i] for i in ml])) / max(n_pix, 1.0)
     hist = np.asarray(d['rank_hist_main_pooled'], dtype=float)
