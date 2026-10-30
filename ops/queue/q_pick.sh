@@ -12,7 +12,7 @@
 CAND="${Q_CAND:-7552v100 734090d 944090d 75434090ib 734090ib 814080 813080}"
 
 for q in $CAND; do
-  st=$(bqueues -w "$q" 2>/dev/null | awk 'NR==2{print $2}')
+  st=$(bqueues -w "$q" 2>/dev/null | awk 'NR==2{print $3}')
   [ -z "$st" ] && continue
   case "$st" in
     Open*) ;;
