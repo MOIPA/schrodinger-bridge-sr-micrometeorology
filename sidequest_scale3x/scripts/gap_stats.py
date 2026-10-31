@@ -55,11 +55,11 @@ def mass_winds(nc, nlev):
 
 
 def block_mean(f, k=3):
-    """(lev, ny, nx) -> (lev, ny//k, nx//k),要求整除。"""
-    nlev, ny, nx = f.shape
+    """(...，ny, nx) -> (..., ny//k, nx//k),要求整除。"""
+    *lead, ny, nx = f.shape
     ny2, nx2 = ny // k, nx // k
-    f = f[:, :ny2 * k, :nx2 * k]
-    return f.reshape(nlev, ny2, k, nx2, k).mean(axis=(2, 4))
+    f = f[..., :ny2 * k, :nx2 * k]
+    return f.reshape(*lead, ny2, k, nx2, k).mean(axis=(-3, -1))
 
 
 def radial_psd(f):
@@ -120,10 +120,12 @@ def analyze_pair(scheme, fine_dom, n_times, nlev, k=3):
             y0, x0 = ny // 2 - hy // 2, nx // 2 - hx // 2
             u = u[:, y0:y0 + hy, x0:x0 + hx]
             v = v[:, y0:y0 + hy, x0:x0 + hx]
-            spd = np.sqrt(u ** 2 + v ** 2)                      # (lev, ny, nx)
-        c = block_mean(spd, k)                                   # 粗端该看到的
-        c_up = np.repeat(np.repeat(c, k, axis=1), k, axis=2)
-        for L in range(spd.shape[0]):
+            spd_all = np.sqrt(u ** 2 + v ** 2)                  # (t, lev, ny, nx)
+        for ti in range(spd_all.shape[0]):
+          spd = spd_all[ti]                                      # (lev, ny, nx)
+          c = block_mean(spd, k)                                 # 粗端该看到的
+          c_up = np.repeat(np.repeat(c, k, axis=1), k, axis=2)
+          for L in range(spd.shape[0]):
             f = spd[L]
             r = f - c_up[L]
             sf, sc, sr = f.std(), c.std(), r.std()
@@ -140,7 +142,7 @@ def analyze_pair(scheme, fine_dom, n_times, nlev, k=3):
             per_lev["beta_res"].append(fit_slope(kr, Sr))
     out = {}
     for key, vals in per_lev.items():
-        a = np.asarray(vals, dtype=np.float64).reshape(n_times, nlev)
+        a = np.asarray(vals, dtype=np.float64).reshape(-1, nlev)
         out[key] = np.nanmean(a, axis=0).tolist()
     out["levels"] = list(range(nlev))
     out["n_times"] = n_times
@@ -161,10 +163,10 @@ def main():
     result = {}
     for dom in args.pairs.split(","):
         dom = dom.strip()
-        print(">>> 分析 %s 的 3× 尺度间隙 ..." % dom, flush=True)
+        print(">>> gap %s ..." % dom, flush=True)
         result[dom] = analyze_pair(args.scheme, dom, args.n_times, args.nlev)
         r = result[dom]
-        print("    R2(粗端解释率) 均值 %.3f | sigma_fine/coarse %.2f | 残差峰度 %.2f | beta_fine %.2f"
+        print("    R2 %.3f | sf/sc %.2f | kurt_res %.2f | beta_fine %.2f"
               % (np.nanmean(r["r2"]),
                  np.nanmean(np.asarray(r["sigma_fine"]) / np.asarray(r["sigma_coarse"])),
                  np.nanmean(r["kurt_res"]), np.nanmean(r["beta_fine"])), flush=True)
