@@ -3,22 +3,22 @@
 
 ===== 1. W2 提交清单: p3_arch_reg_s2 p3_arch_unet_small   =====
 >>> p3_arch_reg_s2 -> 队列 944090d(config_wind_canvas_p3_arch_reg_s2.yml)
-Job <14831328> is submitted to queue <944090d>.
+Job <14831399> is submitted to queue <944090d>.
 >>> p3_arch_unet_small -> 队列 944090d(config_wind_canvas_p3_arch_unet_small.yml)
-Job <14831329> is submitted to queue <944090d>.
+Job <14831400> is submitted to queue <944090d>.
 
 ===== 2. 90 秒后 PEND 检查(PEND 立即换队列重投) =====
 14831202 ytw_tangzq RUN   734090d    login1      8*n034      p3_arch_edm Oct 31 23:39
-14831328 ytw_tangzq PEND  944090d    login1         -        p3_arch_reg_s2 Nov  1 01:16
-14831329 ytw_tangzq PEND  944090d    login1         -        p3_arch_unet_small Nov  1 01:16
->>> p3_arch_reg_s2(14831328) PEND,换队列重投
-Job <14831328> is being terminated
+14831399 ytw_tangzq PEND  944090d    login1         -        p3_arch_reg_s2 Nov  1 01:51
+14831400 ytw_tangzq PEND  944090d    login1         -        p3_arch_unet_small Nov  1 01:51
+>>> p3_arch_reg_s2(14831399) PEND,换队列重投
+Job <14831399> is being terminated
 >>> p3_arch_reg_s2 -> 新队列 944090d
-Job <14831330> is submitted to queue <944090d>.
->>> p3_arch_unet_small(14831329) PEND,换队列重投
-Job <14831329> is being terminated
+Job <14831401> is submitted to queue <944090d>.
+>>> p3_arch_unet_small(14831400) PEND,换队列重投
+Job <14831400> is being terminated
 >>> p3_arch_unet_small -> 新队列 944090d
-Job <14831331> is submitted to queue <944090d>.
+Job <14831402> is submitted to queue <944090d>.
 
 ===== 3. 后续 =====
 查状态: bash ops/queue/64c_check_arch.sh
