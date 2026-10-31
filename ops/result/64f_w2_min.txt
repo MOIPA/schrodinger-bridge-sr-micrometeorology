@@ -2,3 +2,60 @@
 >>> 队列: 7552v100(强制指定)
 
 ===== 1. 提交训练(64b WAVE=2 + ARMS) =====
+===== 1. W2 提交清单:  p3_arch_edm  =====
+>>> p3_arch_edm -> 队列 7552v100(config_wind_canvas_p3_arch_edm.yml)
+Job <14830438> is submitted to queue <7552v100>.
+
+===== 2. 90 秒后 PEND 检查(PEND 立即换队列重投) =====
+14830438 ytw_tangzq RUN   7552v100   login1      12*o004     p3_arch_edm Oct 31 18:52
+
+===== 3. 后续 =====
+查状态: bash ops/queue/64c_check_arch.sh
+全臂训练完 -> 评估: bash ops/queue/64d_arch_eval.sh
+评估完 -> 终评报告: bash ops/queue/64e_arch_report.sh
+[main faca430] result 64b arch waves W2
+ 4 files changed, 212 insertions(+), 13 deletions(-)
+ rewrite ops/result/64b_arch_waves.txt (91%)
+ create mode 100644 ops/result/65_phase4_prep_d01.txt
+ create mode 100644 ops/result/65_phase4_prep_d03.txt
+warning: push.default 未设置，它的默认值将会在 Git 2.0 由 'matching'
+修改为 'simple'。若要不再显示本信息并在其默认值改变后维持当前使用习惯，
+进行如下设置：
+
+  git config --global push.default matching
+
+若要不再显示本信息并从现在开始采用新的使用习惯，设置：
+
+  git config --global push.default simple
+
+参见 'git help config' 并查找 'push.default' 以获取更多信息。
+（'simple' 模式由 Git 1.7.11 版本引入。如果您有时要使用老版本的 Git，
+为保持兼容，请用 'current' 代替 'simple' 模式）
+
+To git@github.com:MOIPA/schrodinger-bridge-sr-micrometeorology.git
+ ! [rejected]        main -> main (non-fast-forward)
+error: 无法推送一些引用到 'git@github.com:MOIPA/schrodinger-bridge-sr-micrometeorology.git'
+提示：更新被拒绝，因为您当前分支的最新提交落后于其对应的远程分支。
+提示：再次推送前，先与远程变更合并（如 'git pull'）。详见
+提示：'git push --help' 中的 'Note about fast-forwards' 小节。
+error: Your local changes to the following files would be overwritten by merge:
+	scripts/outline/21_extract_coarse.py
+Please, commit your changes or stash them before you can merge.
+Aborting
+
+===== 2. 挂评估(64d,--after-training 依赖训练作业 ended) =====
+error: Your local changes to the following files would be overwritten by merge:
+	scripts/outline/21_extract_coarse.py
+Please, commit your changes or stash them before you can merge.
+Aborting
+faca430 result 64b arch waves W2
+依赖: ended(p3_arch_edm)
+评估清单: p3_arch_edm
+  si 臂:  p3_arch_swin(N=16 集合均值);reg 臂:  p3_arch_reg(确定性); edm 臂: (N=16);参考臂: p2_l1r2_lr2e4(_ens16 重评)
+Job <14830439> is submitted to queue <7552v100>.
+
+===== 3. 训练+评估完成后(64e 纯 numpy,登录节点本地跑即可) =====
+  LOCAL=1 bash ops/queue/64e_arch_report.sh
+  LOCAL=1 ROOT=$PWD REPO=$PWD PY3D=python3 bash ops/queue/64e_arch_report.sh   # 或在笔记本上
+
+查状态: bjobs -w | grep p3_arch ; tail -n 20 logs/p3_arch_edm.log
