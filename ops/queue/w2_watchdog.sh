@@ -20,22 +20,24 @@ LOG=${LOG:-$REPO/logs/w2_watchdog.log}
 
 cd "$REPO" || { echo "找不到仓:$REPO"; exit 1; }
 mkdir -p logs
-echo "$(date '+%F %T') [start] watchdog 启动,间隔 ${INTERVAL}s,上限 ${MAX_HOURS}h,仓 $REPO" >> "$LOG"
+# 同时写日志和终端:写到终端的那几行会经过 ssh 信道,正好当保活心跳(网关是"空闲"断连)
+log() { echo "$*" | tee -a "$LOG"; }
+log "$(date '+%F %T') [start] watchdog 启动,间隔 ${INTERVAL}s,上限 ${MAX_HOURS}h,仓 $REPO"
 
 deadline=$(( $(date +%s) + MAX_HOURS*3600 ))
 while [ "$(date +%s)" -lt "$deadline" ]; do
   ts=$(date '+%F %T')
   Q=$(bash ops/queue/q_pick.sh 2>/dev/null)
   if [ -n "$Q" ]; then
-    echo "$ts [GO] 发现可用队列 $Q,提交 W2 三臂" >> "$LOG"
+    log "$ts [GO] 发现可用队列 $Q,提交 W2 三臂"
     if FORCE_Q="$Q" bash ops/queue/64f_w2_min.sh >> "$LOG" 2>&1; then
-      echo "$ts [DONE] 提交完成,watchdog 退出" >> "$LOG"
+      log "$ts [DONE] 提交完成,watchdog 退出"
     else
-      echo "$ts [WARN] 64f 返回非零,继续看守并重试" >> "$LOG"
+      log "$ts [WARN] 64f 返回非零,继续看守并重试"
     fi
     exit 0
   fi
-  echo "$ts [skip] 无可用 GPU 队列" >> "$LOG"
+  log "$ts [skip] 无可用 GPU 队列"
   sleep "$INTERVAL"
 done
-echo "$(date '+%F %T') [timeout] 看守到期(${MAX_HOURS}h)仍无可用队列,退出" >> "$LOG"
+log "$(date '+%F %T') [timeout] 看守到期(${MAX_HOURS}h)仍无可用队列,退出"
