@@ -2,3 +2,58 @@
 >>> 队列: 944090d(强制指定)
 
 ===== 1. 提交训练(64b WAVE=2 + ARMS) =====
+Job <14831328> is submitted to queue <944090d>.
+>>> p3_arch_unet_small -> 队列 944090d(config_wind_canvas_p3_arch_unet_small.yml)
+Job <14831329> is submitted to queue <944090d>.
+
+===== 2. 90 秒后 PEND 检查(PEND 立即换队列重投) =====
+14831202 ytw_tangzq RUN   734090d    login1      8*n034      p3_arch_edm Oct 31 23:39
+14831328 ytw_tangzq PEND  944090d    login1         -        p3_arch_reg_s2 Nov  1 01:16
+14831329 ytw_tangzq PEND  944090d    login1         -        p3_arch_unet_small Nov  1 01:16
+>>> p3_arch_reg_s2(14831328) PEND,换队列重投
+Job <14831328> is being terminated
+>>> p3_arch_reg_s2 -> 新队列 944090d
+Job <14831330> is submitted to queue <944090d>.
+>>> p3_arch_unet_small(14831329) PEND,换队列重投
+Job <14831329> is being terminated
+>>> p3_arch_unet_small -> 新队列 944090d
+Job <14831331> is submitted to queue <944090d>.
+
+===== 3. 后续 =====
+查状态: bash ops/queue/64c_check_arch.sh
+全臂训练完 -> 评估: bash ops/queue/64d_arch_eval.sh
+评估完 -> 终评报告: bash ops/queue/64e_arch_report.sh
+[main cb9d2cb] result 64b arch waves W2
+ 2 files changed, 18 insertions(+), 73 deletions(-)
+ rewrite ops/result/64f_w2_min.txt (95%)
+warning: push.default 未设置，它的默认值将会在 Git 2.0 由 'matching'
+修改为 'simple'。若要不再显示本信息并在其默认值改变后维持当前使用习惯，
+进行如下设置：
+
+  git config --global push.default matching
+
+若要不再显示本信息并从现在开始采用新的使用习惯，设置：
+
+  git config --global push.default simple
+
+参见 'git help config' 并查找 'push.default' 以获取更多信息。
+（'simple' 模式由 Git 1.7.11 版本引入。如果您有时要使用老版本的 Git，
+为保持兼容，请用 'current' 代替 'simple' 模式）
+
+remote: To git@github.com:MOIPA/schrodinger-bridge-sr-micrometeorology.git
+   fb021a1..cb9d2cb  main -> main
+
+===== 2. 挂评估(64d,--after-training 依赖训练作业 ended) =====
+Already up-to-date.
+cb9d2cb result 64b arch waves W2
+依赖: ended(p3_arch_reg_s2)
+依赖: ended(p3_arch_unet_small)
+评估清单: p3_arch_reg_s2,p3_arch_unet_small
+  si 臂:  p3_arch_swin(N=16 集合均值);reg 臂:  p3_arch_reg(确定性); edm 臂:  p3_arch_edm(N=16);参考臂: p2_l1r2_lr2e4(_ens16 重评)
+Job <14831332> is submitted to queue <944090d>.
+
+===== 3. 训练+评估完成后(64e 纯 numpy,登录节点本地跑即可) =====
+  LOCAL=1 bash ops/queue/64e_arch_report.sh
+  LOCAL=1 ROOT=$PWD REPO=$PWD PY3D=python3 bash ops/queue/64e_arch_report.sh   # 或在笔记本上
+
+查状态: bjobs -w | grep p3_arch ; tail -n 20 logs/p3_arch_edm.log
