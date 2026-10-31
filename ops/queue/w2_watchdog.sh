@@ -1,6 +1,7 @@
 #!/bin/bash
 # 登录节点常驻看守:每 INTERVAL 秒查一次 GPU 队列,一旦出现可用队列,
-# 立刻用 64f_w2_min.sh 把 W2 三臂(p3_arch_edm / p3_arch_reg_s2 / p3_arch_unet_small)提交上去,然后退出。
+# 立刻用 64f_w2_min.sh 提交 W2;默认只投最关键的 p3_arch_edm 一臂(ARMS 可覆盖),
+# 避开三作业同机抢 I/O 导致 4 分钟摸不到 GPU 被杀的坑(见 10-31 18:25)。
 #
 # 用法(在 login1 上,脱离 ssh 也能活):
 #   setsid nohup bash ops/queue/w2_watchdog.sh >/dev/null 2>&1 &
@@ -30,7 +31,7 @@ while [ "$(date +%s)" -lt "$deadline" ]; do
   Q=$(bash ops/queue/q_pick.sh 2>/dev/null)
   if [ -n "$Q" ]; then
     log "$ts [GO] 发现可用队列 $Q,提交 W2 三臂"
-    if FORCE_Q="$Q" bash ops/queue/64f_w2_min.sh >> "$LOG" 2>&1; then
+    if FORCE_Q="$Q" ARMS="${ARMS:-p3_arch_edm}" bash ops/queue/64f_w2_min.sh >> "$LOG" 2>&1; then
       log "$ts [DONE] 提交完成,watchdog 退出"
     else
       log "$ts [WARN] 64f 返回非零,继续看守并重试"
