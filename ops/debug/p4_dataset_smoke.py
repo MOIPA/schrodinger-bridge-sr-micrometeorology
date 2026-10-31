@@ -16,15 +16,16 @@ sys.path.insert(0, str(ROOT))
 from src.dl_config.config_loader import load_config          # noqa: E402
 from src.dl_data.dataloader import make_dataloaders_and_samplers  # noqa: E402
 
-EXP = "ExperimentSchrodingerBridgeModel"
+EXP = "ExperimentSchrodingerBridgeWindCanvas"
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--config_path", required=True)
+    ap.add_argument("--experiment_name", default=EXP)
     args = ap.parse_args()
 
-    cfg = load_config(EXP, args.config_path)
+    cfg = load_config(args.experiment_name, args.config_path)
     print("[cfg] coarse_dir =", cfg.data.coarse_dir)
     print("[cfg] statics_dir =", cfg.data.statics_dir)
     print("[cfg] split_manifest =", cfg.data.split_manifest)
