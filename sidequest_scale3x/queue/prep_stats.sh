@@ -17,6 +17,8 @@ run() { echo ">>> $*"; "$@" || { echo "!! 失败: $*"; exit 1; }; }
 
 # 组: tag 细端目录 粗端目录
 while read -r tag fine coarse; do
+  # ONLY=sq3to1 只处理指定组(便于失败后单独补跑)
+  if [ -n "${ONLY:-}" ] && [ "$tag" != "$ONLY" ]; then continue; fi
   [ -n "$tag" ] || continue
   static="prepare_npz_outline_static_${tag}"
   ver="sq${tag#sq}"; ver="${ver%_reg}"
