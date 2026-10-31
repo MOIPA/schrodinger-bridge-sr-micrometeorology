@@ -9,7 +9,7 @@
 set -u
 cd "${REPO:-$(cd "$(dirname "$0")/../.." && pwd)}" || exit 1
 ROOT="${ROOT:-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology}"
-CFG_DIR="sidequest_scale3x/configs"
+CFG_DIR="sidequest_scale3x/configs/phase3_arch"
 EXP="ExperimentSchrodingerBridgeWindCanvas"
 OUT="sidequest_scale3x/results/train3_submit.txt"
 mkdir -p logs sidequest_scale3x/results
