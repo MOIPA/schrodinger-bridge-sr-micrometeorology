@@ -205,6 +205,10 @@ ls -l $OUT_DIR | tail -40
 } > "$OUT" 2>&1
 
 cat "$OUT"
+if command -v git >/dev/null 2>&1; then
 git add ops/result results/phase3_arch
 git commit -m "result 64d arch eval (84;si/reg/two_step + p2_l1r2_lr2e4 ens16 re-eval)"
 git push || { git fetch origin && git merge --no-edit origin/main && git push; }
+else
+  echo "[64d] 计算节点无 git,跳过提交;产物留在共享盘"
+fi
