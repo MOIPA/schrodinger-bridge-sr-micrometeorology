@@ -24,7 +24,7 @@ from torch.utils.data import Dataset
 
 from src.dl_config.base_config import BaseDatasetConfig
 from src.dl_data.wind_canvas_statics import (
-    FINE_SHAPES,
+    FINE_SHAPES,  # noqa: F401  (保留导出,老脚本可能 import)
     CanvasStatics,
     build_agl_tables_native,
 )
@@ -202,7 +202,7 @@ class DatasetWindCanvas(Dataset):
         if self.c.return_agl_tables:
             raw = build_agl_tables_native(self.stat.d['zagl_mass_fine'],
                                           self.stat.d['zagl_iface_fine'], self.L)
-            self.agl_tables = {k: torch.from_numpy(CanvasStatics.place(raw[k]))
+            self.agl_tables = {k: torch.from_numpy(self.stat.place(raw[k]))
                                for k in AGL_TABLE_SUFFIXES}
 
     # ------------------------------------------------------------ 通道清单
@@ -226,14 +226,14 @@ class DatasetWindCanvas(Dataset):
 
     def _targets(self, fine):
         sig_uv10 = float(self.fn['u10']['sigma'])
-        chans = [CanvasStatics.place(self._std_fine_wind(fine['f_u'], 'u'))]
-        chans.append(CanvasStatics.place(self._std_fine_wind(fine['f_v'], 'v')))
+        chans = [self.stat.place(self._std_fine_wind(fine['f_u'], 'u'))]
+        chans.append(self.stat.place(self._std_fine_wind(fine['f_v'], 'v')))
         if self.c.include_w:
             sig_w = np.asarray(self.fn['w']['sigma'], dtype=np.float32)[self.WL]
-            chans.append(CanvasStatics.place(
+            chans.append(self.stat.place(
                 np.asarray(fine['f_w'], dtype=np.float32)[self.WL] / sig_w[:, None, None]))
-        chans.append(CanvasStatics.place(np.asarray(fine['f_u10'], dtype=np.float32) / sig_uv10))
-        chans.append(CanvasStatics.place(np.asarray(fine['f_v10'], dtype=np.float32) / sig_uv10))
+        chans.append(self.stat.place(np.asarray(fine['f_u10'], dtype=np.float32) / sig_uv10))
+        chans.append(self.stat.place(np.asarray(fine['f_v10'], dtype=np.float32) / sig_uv10))
         return torch.from_numpy(np.concatenate(chans, axis=0)).to(self.dtype)
 
     def _y0(self, co):
@@ -241,17 +241,17 @@ class DatasetWindCanvas(Dataset):
         sig = np.asarray(self.fn['u']['sigma'], dtype=np.float32)[self.L]
         u = np.asarray(co['c_u'], dtype=np.float32)[self.L] / sig[:, None, None]
         v = np.asarray(co['c_v'], dtype=np.float32)[self.L] / sig[:, None, None]
-        chans = [CanvasStatics.place(self.stat.regrid_field(u, 'u')),
-                 CanvasStatics.place(self.stat.regrid_field(v, 'v'))]
+        chans = [self.stat.place(self.stat.regrid_field(u, 'u')),
+                 self.stat.place(self.stat.regrid_field(v, 'v'))]
         if self.c.include_w:
             sig_w = np.asarray(self.fn['w']['sigma'], dtype=np.float32)[self.WL]
             w = np.asarray(co['c_w'], dtype=np.float32)[self.WL] / sig_w[:, None, None]
-            chans.append(CanvasStatics.place(self.stat.regrid_field(w, 'mass')))
+            chans.append(self.stat.place(self.stat.regrid_field(w, 'mass')))
         # 10 m 通道代理:粗端最低层风(粗端未输出 U10/V10;去交错到质量点后重网格)
         u10 = 0.5 * (u[0, :, :-1] + u[0, :, 1:])
         v10 = 0.5 * (v[0, :-1, :] + v[0, 1:, :])
-        chans.append(CanvasStatics.place(self.stat.regrid_field(u10[None], 'mass')))
-        chans.append(CanvasStatics.place(self.stat.regrid_field(v10[None], 'mass')))
+        chans.append(self.stat.place(self.stat.regrid_field(u10[None], 'mass')))
+        chans.append(self.stat.place(self.stat.regrid_field(v10[None], 'mass')))
         return torch.from_numpy(np.concatenate(chans, axis=0)).to(self.dtype)
 
     def _rho(self, co):
@@ -265,7 +265,7 @@ class DatasetWindCanvas(Dataset):
         z_agl = np.asarray(self.stat.d['zagl_mass_coarse'], dtype=np.float64)[self.L]
         rho = compute_rho_dry(co['c_psfc'],
                               np.asarray(co['c_theta'], dtype=np.float64)[self.L], z_agl)
-        return torch.from_numpy(CanvasStatics.place(
+        return torch.from_numpy(self.stat.place(
             self.stat.regrid_field(rho, 'mass'))).to(self.dtype)
 
     def _inputs(self, co, stamp):
@@ -273,7 +273,7 @@ class DatasetWindCanvas(Dataset):
         chans = []
 
         def add(name, arr):
-            chans.append(CanvasStatics.place(arr))
+            chans.append(self.stat.place(arr))
 
         if 'coarse_wind_uv' in g:
             add('c_u', self.stat.regrid_field(self._std_coarse_wind(co['c_u'], 'u'), 'u'))
@@ -327,7 +327,7 @@ class DatasetWindCanvas(Dataset):
                                     val, dtype=np.float32))
         if 'coszen' in g:
             r = self.stat.regrid(np.asarray(co['c_coszen'], dtype=np.float32)[None], 'mass')
-            add('coszen', r[0].reshape(FINE_SHAPES['mass']))
+            add('coszen', r[0].reshape(self.stat.fine_shapes['mass']))
         if 'fine_geom' in g:
             s = self.sn['hgt_fine_raw']
             add('f_hgt', ((np.asarray(self.stat.d['hgt_fine'], dtype=np.float32)

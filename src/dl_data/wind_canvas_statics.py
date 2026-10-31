@@ -26,6 +26,17 @@ class CanvasStatics(object):
         path = os.path.join(statics_dir, "statics.npz")
         with np.load(path) as s:
             self.d = {k: s[k] for k in s.files}
+        # 画布/细端形状:优先读 statics.npz 里写下的目标形状(支持任意细端域),
+        # 老文件没有这些键时退回 d04 的默认常量。
+        fs = {}
+        for cls in ('mass', 'u', 'v', 'w'):
+            k = 'dst_shape_' + cls
+            fs[cls] = tuple(int(x) for x in self.d[k]) if k in self.d else FINE_SHAPES[cls]
+        self.fine_shapes = fs
+        self.mass_shape = fs['mass']
+        k = 'canvas_shape'
+        self.canvas_shape = (tuple(int(x) for x in self.d[k]) if k in self.d else
+                             (self.mass_shape[0] + 1, self.mass_shape[1] + 1))
 
     def regrid(self, arr, cls):
         """(..., n_src_flat) 或 (..., ny_s, nx_s) -> (..., n_dst):粗端 -> 细端原生交错位置。
@@ -44,15 +55,14 @@ class CanvasStatics(object):
     def regrid_field(self, arr, cls):
         """(nlev, ny_s, nx_s) -> (nlev, ny_d, nx_d)。"""
         out = self.regrid(np.asarray(arr).reshape(arr.shape[0], -1), cls)
-        return out.reshape((arr.shape[0],) + FINE_SHAPES[cls])
+        return out.reshape((arr.shape[0],) + self.fine_shapes[cls])
 
-    @staticmethod
-    def place(arr):
-        """(..., ny_k, nx_k) -> (..., 100, 121);虚行/列边缘复制。"""
+    def place(self, arr):
+        """(..., ny_k, nx_k) -> (..., canvas);虚行/列边缘复制。"""
         a = np.asarray(arr, dtype=np.float32)
         if a.ndim == 2:
             a = a[None]
-        nyc, nxc = CANVAS_SHAPE
+        nyc, nxc = self.canvas_shape
         out = np.empty((a.shape[0], nyc, nxc), dtype=np.float32)
         h, w = a.shape[1], a.shape[2]
         out[:, :h, :w] = a

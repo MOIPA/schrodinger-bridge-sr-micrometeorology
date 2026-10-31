@@ -533,6 +533,13 @@ def main():
     out['logz0_coarse'] = np.log(np.maximum(z0_c, 1e-6)).astype(np.float32)
 
     # ------------------------------------------------------------ 保存
+    # 目标(细端)形状写进 npz,使 CanvasStatics 能服务任意细端域(外传三尺度实验需要)
+    ny_f2, nx_f2 = fine['hgt'].shape
+    out['dst_shape_mass'] = np.array([ny_f2, nx_f2], dtype=np.int32)
+    out['dst_shape_u'] = np.array([ny_f2, nx_f2 + 1], dtype=np.int32)
+    out['dst_shape_v'] = np.array([ny_f2 + 1, nx_f2], dtype=np.int32)
+    out['dst_shape_w'] = np.array([ny_f2, nx_f2], dtype=np.int32)
+    out['canvas_shape'] = np.array([ny_f2 + 1, nx_f2 + 1], dtype=np.int32)
     npz_path = os.path.join(args.out_dir, "statics.npz")
     np.savez_compressed(npz_path, **out)
     meta = {
