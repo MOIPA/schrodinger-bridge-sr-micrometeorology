@@ -1,11 +1,14 @@
 ===== 0. WAVE=2;队列里的 p3_arch 作业 =====
-14830384 ytw_tangzq RUN   734090d    login1      8*n034      p3_arch_reg_s2 Oct 31 18:21
-14830385 ytw_tangzq RUN   734090d    login1      8*n034      p3_arch_unet_small Oct 31 18:21
-14830386 ytw_tangzq RUN   734090d    login1      8*n034      p3_arch_edm Oct 31 18:21
+(无)
 
-===== 1. W2 提交清单: p3_arch_reg_s2 p3_arch_unet_small  p3_arch_edm  =====
-[跳过] p3_arch_reg_s2 正在 RUN
-[跳过] p3_arch_unet_small 正在 RUN
-[跳过] p3_arch_edm 正在 RUN
+===== 1. W2 提交清单:  p3_arch_edm  =====
+>>> p3_arch_edm -> 队列 7552v100(config_wind_canvas_p3_arch_edm.yml)
+Job <14830438> is submitted to queue <7552v100>.
 
-没有可补投的配置(要么在跑,要么已完成,要么缺配置/等配对 checkpoint)。
+===== 2. 90 秒后 PEND 检查(PEND 立即换队列重投) =====
+14830438 ytw_tangzq RUN   7552v100   login1      12*o004     p3_arch_edm Oct 31 18:52
+
+===== 3. 后续 =====
+查状态: bash ops/queue/64c_check_arch.sh
+全臂训练完 -> 评估: bash ops/queue/64d_arch_eval.sh
+评估完 -> 终评报告: bash ops/queue/64e_arch_report.sh

@@ -1,0 +1,98 @@
+===== 0. 阶段4 数据准备: 粗端域 d01 / scheme myj =====
+repo    : /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology
+python  : /fs00/software/anaconda/3/bin/python
+wrfout  : /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_myj/wrfout_d01_*
+样例文件: wrfout_d01_2020-07-01_00:00:00;共 31 个
+
+===== 1. 静态场 + 重网格权重(d01 -> d04)=====
+    "dom_class": 17,
+    "logz0": -9.2103,
+    "vegfra": 0.1848,
+    "water": 0.4889
+   }
+  }
+ }
+}
+
+===== 2. 复用开发档划分 split.json =====
+已复制: split.json -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static_d01/
+
+===== 3. 粗端逐时 npz 抽取(d01,原生 C 网格)=====
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "scripts/outline/21_extract_coarse.py", line 138, in <module>
+    main()
+  File "scripts/outline/21_extract_coarse.py", line 119, in main
+    for i, (c, s) in enumerate(pool.imap_unordered(process_file, tasks, chunksize=1)):
+  File "/fs00/software/anaconda/3/lib/python3.7/multiprocessing/pool.py", line 748, in next
+    raise value
+AssertionError: U shape (24, 40, 150, 181) != (40, 40, 151)
+===== 0. 阶段4 数据准备: 粗端域 d01 / scheme myj =====
+repo    : /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology
+python  : /fs00/software/anaconda/3/bin/python
+wrfout  : /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_myj/wrfout_d01_*
+样例文件: wrfout_d01_2020-07-01_00:00:00;共 31 个
+
+===== 1. 静态场 + 重网格权重(d01 -> d04)=====
+[跳过] 已存在 /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static_d01/statics.npz
+
+===== 2. 复用开发档划分 split.json =====
+[跳过] split.json 已在
+
+===== 3. 粗端逐时 npz 抽取(d01,原生 C 网格)=====
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "scripts/outline/21_extract_coarse.py", line 138, in <module>
+    main()
+  File "scripts/outline/21_extract_coarse.py", line 119, in main
+    for i, (c, s) in enumerate(pool.imap_unordered(process_file, tasks, chunksize=1)):
+  File "/fs00/software/anaconda/3/lib/python3.7/multiprocessing/pool.py", line 748, in next
+    raise value
+AssertionError: W shape (24, 41, 150, 180) != (41, 150, 181)
+===== 0. 阶段4 数据准备: 粗端域 d01 / scheme myj =====
+repo    : /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology
+python  : /fs00/software/anaconda/3/bin/python
+wrfout  : /fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen/meso_202007_myj/wrfout_d01_*
+样例文件: wrfout_d01_2020-07-01_00:00:00;共 31 个
+
+===== 1. 静态场 + 重网格权重(d01 -> d04)=====
+[跳过] 已存在 /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static_d01/statics.npz
+
+===== 2. 复用开发档划分 split.json =====
+[跳过] split.json 已在
+
+===== 3. 粗端逐时 npz 抽取(d01,原生 C 网格)=====
+scheme myj [d01]: 31 files -> /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_coarse_d01
+  10/31
+  20/31
+  30/31
+scheme myj: created 744 skipped 0
+done
+粗端 npz 数: 744(开发档 d02 应为 31 左右)
+
+===== 4. 标准化统计量(只用训练块)=====
+  coarse 400/~
+  读取 fine 528 帧, coarse 528 小时
+  零方差通道(按不平移不缩放处理): {"ph": [0]}
+  fine σ_uv 前5层: 4.871, 5.614, 6.019, 6.282, 6.464
+  fine σ_w  前5层: 0.135, 0.204, 0.234, 0.251, 0.263
+  coarse σ_uv 前5层: 3.913, 4.473, 4.833, 5.101, 5.317
+  coarse UST/PBLH/HFX 均值: 0.2017 / 267.8 / 25.6
+
+写出: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static_d01/normalize_config.json
+σ 廓线图: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/results/outline/sigma_profiles.png
+
+===== 5. 生成阶段 4 配置 =====
+wrote /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/phase4/config_wind_canvas_p4_27to1_reg.yml
+wrote /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/configs/深圳/phase4/config_wind_canvas_p4_3to1_reg.yml
+
+===== 完成。下一步 =====
+  核对: ls /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_coarse_d01 | wc -l ; ls /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static_d01
+  提交训练: bash ops/queue/66_phase4_train.sh --arms p4_27to1_reg
+  注意: 27->1 km 的粗端只有 1/9 的格点数,通道数不变(23 层 U/V),先在 1 个 epoch 上看 loss 是否正常。
