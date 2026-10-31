@@ -125,6 +125,10 @@ logs/
 # Shenzhen npz output
 prepare_npz_wind_3d_sz
 
+# 大纲数据集(npz 由 20/21 脚本生成,不入库)
+prepare_npz_outline_*
+data/DL_data/
+
 # PDFs (not uploaded)
 *.pdf
 .claude/scheduled_tasks.lock
