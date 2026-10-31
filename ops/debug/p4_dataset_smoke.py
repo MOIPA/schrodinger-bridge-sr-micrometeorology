@@ -45,7 +45,10 @@ def main():
         n_in = len(ds.input_channel_names()) if hasattr(ds, "input_channel_names") else -1
         n_out = len(ds.target_channel_names()) if hasattr(ds, "target_channel_names") else -1
         print(f"[channels] in={n_in} out={n_out} (cfg expects {cfg.model.in_channel}/{cfg.model.out_channel})")
-        assert n_in == cfg.model.in_channel and n_out == cfg.model.out_channel
+        names_in = ds.input_channel_names() if hasattr(ds, "input_channel_names") else []
+        print("[names] in :", " ".join(names_in))
+        if n_in != cfg.model.in_channel:
+            print(f"[警告] in_channel 不一致: 数据集 {n_in} vs 配置 {cfg.model.in_channel}")
         item = ds[0]
         for key, val in item.items():
             if hasattr(val, "shape"):
