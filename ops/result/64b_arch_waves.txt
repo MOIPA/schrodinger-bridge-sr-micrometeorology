@@ -1,17 +1,11 @@
-===== 0. WAVE=1;队列里的 p3_arch 作业 =====
+===== 0. WAVE=2;队列里的 p3_arch 作业 =====
 (无)
 
-===== 1. W1 提交清单: p3_arch_swin p3_arch_reg =====
->>> p3_arch_swin -> 队列 83a100ib(config_wind_canvas_p3_arch_swin.yml)
-Job <14264052> is submitted to queue <83a100ib>.
->>> p3_arch_reg -> 队列 83a100ib(config_wind_canvas_p3_arch_reg.yml)
-Job <14264053> is submitted to queue <83a100ib>.
+===== 1. W2 提交清单: p3_arch_reg_s2 p3_arch_unet_small  p3_arch_edm  =====
+>>> p3_arch_reg_s2 -> 队列 75434090ib(config_wind_canvas_p3_arch_reg_s2.yml)
+[DRY_RUN] bsub -q 75434090ib -gpu num=1:mode=exclusive_process -n 4 -R rusage[mem=32000]  -J p3_arch_reg_s2 -o logs/p3_arch_reg_s2_%J.out -e logs/p3_arch_reg_s2_%J.err scripts/train_regression_model.py ... 
+>>> p3_arch_unet_small -> 队列 75434090ib(config_wind_canvas_p3_arch_unet_small.yml)
+[DRY_RUN] bsub -q 75434090ib -gpu num=1:mode=exclusive_process -n 4 -R rusage[mem=32000]  -J p3_arch_unet_small -o logs/p3_arch_unet_small_%J.out -e logs/p3_arch_unet_small_%J.err scripts/train_schrodinger_bridge_model.py ... 
+[等] p3_arch_edm 需配对回归 p3_arch_reg 的 checkpoint(尚不存在),跳过; 先跑 W1/64b 把 p3_arch_reg 训完(或用 -w ended(p3_arch_reg) 依赖)
 
-===== 2. 90 秒后 PEND 检查(PEND 立即换队列重投) =====
-14264052 ytw_tangzq RUN   83a100ib   login1      8*m001      p3_arch_swin Oct  7 03:20
-14264053 ytw_tangzq RUN   83a100ib   login1      8*m001      p3_arch_reg Oct  7 03:20
-
-===== 3. 后续 =====
-查状态: bash ops/queue/64c_check_arch.sh
-W1 两臂训练完 -> 评估: bash ops/queue/64d_arch_eval.sh
-评估产物存在后 W2: WAVE=2 bash ops/queue/64b_arch_waves.sh
+===== 2. [DRY_RUN] 跳过 PEND 检查与 git 提交 =====
