@@ -69,15 +69,30 @@ def destagger_native(u, v, w, u10, v10):
     return um, vm, w, u10, v10
 
 
-def destagger_canvas(u_c, v_c, w_c, u10_c, v10_c):
-    """canvas (…,100,121) -> 原生质量点 (…,99,120)。U/V 去交错,W/10 m 直接切片。"""
-    return destagger_native(u_c[..., :99, :121], v_c[..., :100, :120],
-                            w_c[..., :99, :120], u10_c[..., :99, :120],
-                            v10_c[..., :99, :120])
+def mass_shape_from_canvas(canvas_shape):
+    """画布 (ny+1, nx+1) -> 原生质量点 (ny, nx)。d04: (100,121)->(99,120)。"""
+    ny, nx = int(canvas_shape[0]) - 1, int(canvas_shape[1]) - 1
+    return ny, nx
+
+
+def destagger_canvas(u_c, v_c, w_c, u10_c, v10_c, mass_shape=None):
+    """canvas (…,ny+1,nx+1) -> 原生质量点 (…,ny,nx)。U/V 去交错,W/10 m 直接切片。
+
+    mass_shape 缺省从 u_c 推断(画布边长 - 1),所以 d04(99,120) 与
+    跨尺度实验的 d02/d03(120,150) 都走同一套代码。
+    """
+    ny, nx = (mass_shape_from_canvas(u_c.shape[-2:]) if mass_shape is None
+              else (int(mass_shape[0]), int(mass_shape[1])))
+    return destagger_native(u_c[..., :ny, :nx + 1], v_c[..., :ny + 1, :nx],
+                            w_c[..., :ny, :nx], u10_c[..., :ny, :nx],
+                            v10_c[..., :ny, :nx])
 
 
 def agl_fields(u, v, w, u10, v10, tables):
-    """质量点 (n_lev,99,120) + 10 m (99,120) -> AGL 11 层 (11,99,120),物理单位。"""
+    """质量点 (n_lev,ny,nx) + 10 m (ny,nx) -> AGL 11 层 (11,ny,nx),物理单位。
+
+    ny/nx 由 tables 的 idx 形状决定(逐尺度 build),不写死 d04 的 (99,120)。
+    """
     au = agl_interp(u, tables['idx_m'], tables['w_m'], field10=u10)
     av = agl_interp(v, tables['idx_m'], tables['w_m'], field10=v10)
     aw = agl_interp(w, tables['idx_i'], tables['w_i'], field10=None)
@@ -85,7 +100,8 @@ def agl_fields(u, v, w, u10, v10, tables):
 
 
 def _b(mask, n_lev):
-    return np.broadcast_to(np.asarray(mask, dtype=bool), (n_lev, 99, 120))
+    mask = np.asarray(mask, dtype=bool)
+    return np.broadcast_to(mask, (n_lev,) + mask.shape[-2:])
 
 
 def build_masks(truth_u, truth_v, coszen, pblh, urban):

@@ -270,6 +270,9 @@ def evaluate(tag, mode, config, loader, static_ctx, predictor, out_dir, out_suff
     urban = static_ctx['urban']
     ds = loader.dataset
     device = static_ctx['device']
+    canvas_shape = getattr(statics, 'canvas_shape', (100, 121))
+    Hc, Wc = int(canvas_shape[0]), int(canvas_shape[1])
+    mass_shape = (Hc - 1, Wc - 1)
     levels = list(config.data.target_levels)
     n_lev_agl = len(TARGET_AGL)
     mask_idx = main_levels_idx()
@@ -287,8 +290,8 @@ def evaluate(tag, mode, config, loader, static_ctx, predictor, out_dir, out_suff
         with torch.no_grad():
             samples = predictor(bi, EV90.pad16(y0), EV90.pad16(x))
         # (N,B,C,Hp,Wp) -> 裁回画布 (N,B,C,100,121) 的 numpy
-        samples = samples[:, :, :, :100, :121].detach().cpu().float().numpy()
-        y0u = y0[:, :, :100, :121].detach().cpu()
+        samples = samples[:, :, :, :Hc, :Wc].detach().cpu().float().numpy()
+        y0u = y0[:, :, :Hc, :Wc].detach().cpu()
         n_s = samples.shape[0]
         if n_s != n_ensemble:
             raise RuntimeError("预测器返回样本数 {} != n_ensemble {}".format(
@@ -309,14 +312,14 @@ def evaluate(tag, mode, config, loader, static_ctx, predictor, out_dir, out_suff
             for name, tensor in (('truth', y[k]), ('y0', y0u[k])):
                 u, v, w, u10, v10 = EV90.split_denorm(tensor, levels, sigma)
                 m = destagger_canvas(u.numpy(), v.numpy(), w.numpy(),
-                                     u10.numpy(), v10.numpy())
+                                     u10.numpy(), v10.numpy(), mass_shape=mass_shape)
                 fields[name] = agl_fields(m[0], m[1], m[2], m[3], m[4], tables)
             sample_agl = []                       # [(au, av, aw), ...] 每样本
             for i in range(n_s):
                 t = torch.from_numpy(samples[i, k])
                 u, v, w, u10, v10 = EV90.split_denorm(t, levels, sigma)
                 m = destagger_canvas(u.numpy(), v.numpy(), w.numpy(),
-                                     u10.numpy(), v10.numpy())
+                                     u10.numpy(), v10.numpy(), mass_shape=mass_shape)
                 sample_agl.append(agl_fields(m[0], m[1], m[2], m[3], m[4], tables))
             mean = [np.stack([sample_agl[i][c] for i in range(n_s)]).mean(axis=0)
                     for c in range(3)]
@@ -492,8 +495,15 @@ def build_loader(config, split):
     在精简环境(合成自检 82)可被 importlib 复用。
     """
     from src.dl_data.dataloader import make_dataloaders_and_samplers
-    config.data.hr_data_shape = [100, 121]
-    config.data.hr_cropped_shape = [100, 121]
+    canvas_shape = [100, 121]
+    try:
+        with np.load(os.path.join(config.data.statics_dir, "statics.npz")) as f:
+            if "canvas_shape" in f:
+                canvas_shape = [int(v) for v in f["canvas_shape"]]
+    except Exception:
+        pass
+    config.data.hr_data_shape = list(canvas_shape)
+    config.data.hr_cropped_shape = list(canvas_shape)
     dict_loaders, _ = make_dataloaders_and_samplers(
         root_dir=ROOT, loader_config=config.loader, dataset_config=config.data,
         world_size=None, rank=None, train_valid_test_kinds=[split])

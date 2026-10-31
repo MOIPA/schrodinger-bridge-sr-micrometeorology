@@ -36,6 +36,10 @@ def agl_interp(field, idx, w, field10=None):
     """field (nlev, ny, nx) -> (nt, ny, nx);idx/w 来自 statics 的 AGL 表。"""
     nlev, ny, nx = field.shape
     nt = idx.shape[0]
+    if idx.shape[1:] != (ny, nx):
+        raise ValueError(
+            "AGL 表形状 {} 与场形状 {} 不一致:跨尺度评估必须用该尺度自己的 "
+            "statics(zagl_mass_fine) 建表".format(idx.shape[1:], (ny, nx)))
     jj, ii = np.meshgrid(np.arange(ny), np.arange(nx), indexing='ij')
     out = np.zeros((nt, ny, nx), dtype=np.float32)
     for t in range(nt):
