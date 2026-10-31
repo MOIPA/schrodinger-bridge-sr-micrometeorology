@@ -126,7 +126,7 @@ def analyze_pair(scheme, fine_dom, n_times, nlev, k=3):
           c = block_mean(spd, k)                                 # 粗端该看到的
           c_up = np.repeat(np.repeat(c, k, axis=1), k, axis=2)
           for L in range(spd.shape[0]):
-            f = spd[L]
+            f = spd[L][:c_up.shape[1], :c_up.shape[2]]   # 裁到 3 的整数倍
             r = f - c_up[L]
             sf, sc, sr = f.std(), c.std(), r.std()
             per_lev["sigma_fine"].append(float(sf))
