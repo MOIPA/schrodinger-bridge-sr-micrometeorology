@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-阶段 0 (导师大纲) · T0.2 粗端(d02,9 km)抽取
+阶段 0 (导师大纲) · T0.2 粗端抽取(默认 d02/9 km;--domain d01 可做 27 km 档)
 
 原生 Arakawa C 网格,不插质量点,逐时。每时刻一个 npz:
   c_{scheme}_{YYYYMMDDTHHMMSS}.npz
@@ -35,11 +35,18 @@ SURFACE_VARS = {
     'T2': 'c_t2',
     'PSFC': 'c_psfc',
 }
-SHAPE_U = (N_MASS, 120, 151)
-SHAPE_V = (N_MASS, 121, 150)
-SHAPE_S = (N_MASS, 120, 150)
-SHAPE_W = (N_IFACE, 120, 150)
-SHAPE_2D = (120, 150)
+def shapes_for(ny_mass, nx_mass):
+    """按文件里的质量点网格 (ny, nx) 给出 C 网格各面形状(不写死域尺寸)。
+
+    WRF 原生交错: U 面 nx+1 列、V 面 ny+1 行、W 面 ny+1 行 nx+1 列。
+    """
+    return {
+        'u': (N_MASS, ny_mass, nx_mass + 1),
+        'v': (N_MASS, ny_mass + 1, nx_mass),
+        'w': (N_IFACE, ny_mass, nx_mass + 1),
+        'theta': (N_MASS, ny_mass, nx_mass),
+        '2d': (ny_mass, nx_mass),
+    }
 
 
 def process_file(task):
@@ -62,10 +69,11 @@ def process_file(task):
         coszen_wrf = None
         if 'COSZEN' in nc.variables:
             coszen_wrf = np.asarray(nc.variables['COSZEN'][:], dtype=np.float32)
-    assert u.shape[1:] == SHAPE_U, "U shape {}".format(u.shape)
-    assert v.shape[1:] == SHAPE_V, "V shape {}".format(v.shape)
-    assert w.shape[1:] == SHAPE_W, "W shape {}".format(w.shape)
-    assert theta.shape[1:] == SHAPE_S, "T shape {}".format(theta.shape)
+    shp = shapes_for(theta.shape[1], theta.shape[2])
+    assert u.shape[1:] == shp['u'], "U shape {} != {}".format(u.shape, shp['u'])
+    assert v.shape[1:] == shp['v'], "V shape {} != {}".format(v.shape, shp['v'])
+    assert w.shape[1:] == shp['w'], "W shape {} != {}".format(w.shape, shp['w'])
+    assert theta.shape[1:] == shp['theta'], "T shape {}".format(theta.shape)
     for t, dt in enumerate(times):
         out_path = os.path.join(out_dir, "c_{}_{}.npz".format(scheme, stamp(dt)))
         if os.path.exists(out_path):
@@ -77,7 +85,7 @@ def process_file(task):
             'c_coszen': cos_sza_field(xlat, xlong, dt),
         }
         for key, arr in surf.items():
-            if arr.shape[1:] == SHAPE_2D:
+            if arr.shape[1:] == shp['2d']:
                 payload[key] = arr[t]
         if coszen_wrf is not None:
             payload['c_coszen_wrf'] = coszen_wrf[t]
@@ -91,16 +99,18 @@ def main():
     parser.add_argument("--scheme", default="both", choices=["myj", "ysu", "both"])
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument("--workers", type=int, default=4)
+    parser.add_argument("--domain", default="d02", choices=["d01", "d02", "d03"],
+                        help="粗端来源域;27 km 档用 d01,开发档默认 d02")
     parser.add_argument("--out_dir", default=OUT_COARSE)
     args = parser.parse_args()
 
     ensure_dir(args.out_dir)
     schemes = SCHEMES if args.scheme == "both" else [args.scheme]
     for scheme in schemes:
-        files = domain_files(scheme, "d02")
+        files = domain_files(scheme, args.domain)
         if args.limit > 0:
             files = files[:args.limit]
-        print("scheme {}: {} files -> {}".format(scheme, len(files), args.out_dir))
+        print("scheme {} [{}]: {} files -> {}".format(scheme, args.domain, len(files), args.out_dir))
         tasks = [(f, args.out_dir, scheme) for f in files]
         n_created = 0
         n_skipped = 0
