@@ -116,7 +116,7 @@ def build_masks(truth_u, truth_v, coszen, pblh, urban):
     ratio = TARGET_AGL[:, None, None] / np.maximum(pblh[None, :, :], 1.0)
     r_lo, r_hi = PBL_RATIO
     masks = {
-        'all': _b(np.ones((1, 1, 1)), n_lev),
+        'all': _b(np.ones(truth_u.shape[1:], dtype=bool), n_lev),
         'day': _b(coszen > 0.01, n_lev),
         'night': _b(coszen <= 0.01, n_lev),
         'urban': _b(urban > 0.3, n_lev),
