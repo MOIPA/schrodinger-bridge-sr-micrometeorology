@@ -122,6 +122,34 @@ def main() -> None:
         b[1] += r["cpu_h"]
         b[2] += 1
 
+    by_group = defaultdict(lambda: [0.0, 0])
+    for r in rows:
+        g = by_group[prefix_group(r["name"])]
+        g[0] += r["wall_h"]
+        g[1] += 1
+    lines.append("")
+    lines.append("按阶段分组(墙钟小时 ≈ GPU 卡时):")
+    for tag, (h, n) in sorted(by_group.items(), key=lambda kv: -kv[1][0]):
+        lines.append("  %-14s %2d 个作业  %7.2f h" % (tag, n, h))
+
+    lines.append("作业名                          队列          主机          起-止                       墙钟h  GPU  GPU·h    CPU·h")
+    for r in rows:
+        lines.append("%-30s %-13s %-13s %s → %s %6.2f %4d %6.2f %8.1f" % (
+            r["name"][:30], r["queue"][:13], r["hosts"][:13],
+            r["started"].strftime("%m-%d %H:%M"), r["terminated"].strftime("%m-%d %H:%M"),
+            r["wall_h"], r["ngpu"], r["wall_h"] * r["ngpu"], r["cpu_h"]))
+
+    tot_wall = sum(r["wall_h"] for r in rows)
+    tot_gpu = sum(r["wall_h"] * r["ngpu"] for r in rows)
+    tot_cpu = sum(r["cpu_h"] for r in rows)
+
+    by_name = defaultdict(lambda: [0.0, 0.0, 0])
+    for r in rows:
+        b = by_name[r["name"]]
+        b[0] += r["wall_h"] * r["ngpu"]
+        b[1] += r["cpu_h"]
+        b[2] += 1
+
     def prefix_group(name: str) -> str:
         for pre, tag in (("p1", "阶段0/1"), ("p2", "阶段2"), ("p3", "阶段3"),
                          ("sz_", "深圳(8–9月)"), ("abl_", "消融(7–8月)"),
