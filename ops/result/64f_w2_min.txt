@@ -17,7 +17,7 @@
 
 ===== 2. 挂评估(64d,--after-training 依赖训练作业 ended) =====
 Already up to date.
-564f774 result 64f w2-min: submit arms = p3_arch_edm p3_arch_reg_s2 p3_arch_unet_small
+52dbda2 result 64f w2-min: submit arms = p3_arch_edm p3_arch_reg_s2 p3_arch_unet_small
 依赖: p3_arch_edm 已不在 bjobs 里,不挂(否则 LSF 报 No matching job found)
 依赖: p3_arch_reg_s2 已不在 bjobs 里,不挂(否则 LSF 报 No matching job found)
 依赖: p3_arch_unet_small 已不在 bjobs 里,不挂(否则 LSF 报 No matching job found)
