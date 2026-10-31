@@ -53,7 +53,7 @@ while read -r tag fine coarse; do
 done <<EOF
 sq27to9 prepare_npz_outline_fine_d02 prepare_npz_outline_coarse_d01
 sq9to3  prepare_npz_outline_fine_d03 prepare_npz_outline_coarse
-sq3to1  prepare_npz_outline_fine_d04 prepare_npz_outline_coarse_d03
+sq3to1  prepare_npz_outline_fine prepare_npz_outline_coarse_d03
 EOF
 
 echo "===== 生成配置 ====="
