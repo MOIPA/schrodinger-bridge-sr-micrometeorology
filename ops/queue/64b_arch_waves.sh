@@ -88,9 +88,11 @@ submit_one() {  # $1=tag $2=queue $3=LSF 依赖(可选,如 "ended(p3_arch_reg_s2
     "${depOpt[@]}" \
     -J "$tag" -o "logs/${tag}_%J.out" -e "logs/${tag}_%J.err" \
     "cd $ROOT && module load anaconda/3 && module load cuda/11.8.0 && source activate wind3d && \
+bash ops/queue/gpu_keepalive.sh start; \
 python -u $script \
 --config_path $CFG_DIR/config_wind_canvas_${tag}.yml \
---experiment_name $EXP --device cuda:0 $extra > logs/${tag}.log 2>&1" \
+--experiment_name $EXP --device cuda:0 $extra > logs/${tag}.log 2>&1; \
+bash ops/queue/gpu_keepalive.sh stop" \
     2>&1 | head -1
 }
 
