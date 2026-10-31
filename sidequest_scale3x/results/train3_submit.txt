@@ -3,3 +3,6 @@ Job <14831276> is submitted to queue <734090d>.
 Job <14831277> is submitted to queue <734090d>.
 Job <14831278> is submitted to queue <734090d>.
 ===== 之后:bjobs -w | grep sq_ 看状态;完成后跑评估 =====
+===== 外传三组提交 queue=7552v100 2026-11-01 05:41:30 =====
+Job <14831709> is submitted to queue <7552v100>.
+===== 之后:bjobs -w | grep sq_ 看状态;完成后跑评估 =====
