@@ -94,6 +94,16 @@ def main() -> None:
     rows.sort(key=lambda r: r["started"])
 
     lines = []
+    by_group = defaultdict(lambda: [0.0, 0])
+    for r in rows:
+        g = by_group[prefix_group(r["name"])]
+        g[0] += r["wall_h"]
+        g[1] += 1
+    lines.append("")
+    lines.append("按阶段分组(墙钟小时 ≈ GPU 卡时):")
+    for tag, (h, n) in sorted(by_group.items(), key=lambda kv: -kv[1][0]):
+        lines.append("  %-14s %2d 个作业  %7.2f h" % (tag, n, h))
+
     lines.append("作业名                          队列          主机          起-止                       墙钟h  GPU  GPU·h    CPU·h")
     for r in rows:
         lines.append("%-30s %-13s %-13s %s → %s %6.2f %4d %6.2f %8.1f" % (
@@ -119,16 +129,6 @@ def main() -> None:
             if name.startswith(pre):
                 return tag
         return "工具/杂项"
-
-    by_group = defaultdict(lambda: [0.0, 0])
-    for r in rows:
-        g = by_group[prefix_group(r["name"])]
-        g[0] += r["wall_h"]
-        g[1] += 1
-    lines.append("")
-    lines.append("按阶段分组(墙钟小时 ≈ GPU 卡时):")
-    for tag, (h, n) in sorted(by_group.items(), key=lambda kv: -kv[1][0]):
-        lines.append("  %-14s %2d 个作业  %7.2f h" % (tag, n, h))
 
     lines.append("")
     lines.append("按作业名汇总:")
