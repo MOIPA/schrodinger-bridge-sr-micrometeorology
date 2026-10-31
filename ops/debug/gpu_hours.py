@@ -55,10 +55,9 @@ def parse_one(path: str):
         return None
     queue = QUEUE_RE.search(txt)
     host = HOST_RE.search(txt)
-    ngpu = 1
+    # 没写 -gpu 的作业是纯 CPU 作业(python 后处理、探针、git 操作),不该计入 GPU·h
     g = GPU_RE.search(txt) or GPU_R_RE.search(txt)
-    if g:
-        ngpu = int(g.group(1))
+    ngpu = int(g.group(1)) if g else 0
     cpu = 0.0
     mc = re.search(r"CPU time\s*:\s*([\d.]+)\s*sec", txt)
     if mc:
