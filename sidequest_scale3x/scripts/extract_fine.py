@@ -17,7 +17,12 @@ import os
 import sys
 
 import numpy as np
-from netCDF4 import Dataset, num2date
+from netCDF4 import Dataset
+
+# 复用主仓已验证的 Times 解析(WRF 的 Times 变量属性口径与常规不同)
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(
+    os.path.abspath(__file__)))), "scripts", "outline"))
+from outline_common import read_times, stamp  # noqa: E402
 
 N_MASS = 40
 N_IFACE = 41
@@ -28,15 +33,6 @@ SCHEME_DIRS = {"myj": "meso_202007_myj", "ysu": "meso_202007_ysu"}
 def domain_files(scheme, dom):
     import glob
     return sorted(glob.glob(os.path.join(WRF_BASE, SCHEME_DIRS[scheme], "wrfout_" + dom + "_*")))
-
-
-def read_times(nc):
-    tv = nc.variables["Times"]
-    return [num2date(tv[i], tv.units, getattr(tv, "calendar", "standard")) for i in range(tv.shape[0])]
-
-
-def stamp(dt):
-    return dt.strftime("%Y%m%dT%H%M%S")
 
 
 def infer_shapes(nc):
