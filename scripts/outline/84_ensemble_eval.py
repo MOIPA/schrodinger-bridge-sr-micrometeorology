@@ -132,8 +132,13 @@ def predictor_two_step(reg, corrector, n_samples, steps, base_seed):
 
 
 def tag_paths(tag, cfg_root="configs/深圳", ck_root=None):
-    """tag -> (config, checkpoint);p2_ 前缀走 phase2,其余走 phase3_arch。"""
-    phase = "phase2" if tag.startswith("p2_") else "phase3_arch"
+    """tag -> (config, checkpoint);p2_ 走 phase2,p4_ 走 phase4,其余走 phase3_arch。"""
+    if tag.startswith("p2_"):
+        phase = "phase2"
+    elif tag.startswith("p4_"):
+        phase = "phase4"          # 阶段 4 跨分辨率:27->1 / 3->1 km
+    else:
+        phase = "phase3_arch"
     if ck_root is None:
         ck_root = os.path.join("data", "DL_result", EXPERIMENT)
     return (os.path.join(cfg_root, phase, "config_wind_canvas_{}.yml".format(tag)),
