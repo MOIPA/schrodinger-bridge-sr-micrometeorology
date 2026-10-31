@@ -32,7 +32,7 @@ DOMAIN="${DOMAIN:-d01}"
 SCHEME="${SCHEME:-myj}"
 WORKERS="${WORKERS:-8}"
 ROOT="${ROOT:-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology}"
-PY3D="${PY3D:-/fsb/home/yutingwang/ytw_tangzq/.conda/envs/pytorch-gpu/bin/python}"
+PY3D="${PY3D:-/fs00/software/anaconda/3/bin/python}"   # 该解释器带 netCDF4 1.6.4(wind3d 环境没有)
 WRF_BASE="${WRF_BASE:-/fsb/home/yutingwang/share/Data_WRFout/case01_Shenzhen}"
 WRF_DIR="${WRF_DIR:-meso_202007_myj}"
 
