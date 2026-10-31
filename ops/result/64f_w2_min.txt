@@ -1,0 +1,14 @@
+===== 0. W2 精简版;臂: p3_arch_edm p3_arch_reg_s2 p3_arch_unet_small =====
+>>> 队列: 75434090ib(强制指定)
+
+===== 1. 提交训练(64b WAVE=2 + ARMS) =====
+ops/queue/64b_arch_waves.sh: line 21: cd: /Users/rui/schrodinger-bridge-sr-micrometeorology: No such file or directory
+
+===== 2. 挂评估(64d,--after-training 依赖训练作业 ended) =====
+ops/queue/64d_arch_eval.sh: line 12: cd: /Users/rui/schrodinger-bridge-sr-micrometeorology: No such file or directory
+
+===== 3. 训练+评估完成后(64e 纯 numpy,登录节点本地跑即可) =====
+  LOCAL=1 bash ops/queue/64e_arch_report.sh
+  LOCAL=1 ROOT=$PWD REPO=$PWD PY3D=python3 bash ops/queue/64e_arch_report.sh   # 或在笔记本上
+
+查状态: bjobs -w | grep p3_arch ; tail -n 20 logs/p3_arch_edm.log
