@@ -55,9 +55,10 @@ def parse_one(path: str):
         return None
     queue = QUEUE_RE.search(txt)
     host = HOST_RE.search(txt)
-    # 没写 -gpu 的作业是纯 CPU 作业(python 后处理、探针、git 操作),不该计入 GPU·h
+    # LSF 的 .out 不回写 bsub 的资源选项,所以按"每个作业 1 张卡"计(本项目从未多卡训练);
+    # 若以后有多卡作业,提交时可显式写进命令行,这里能解析到就覆盖。
     g = GPU_RE.search(txt) or GPU_R_RE.search(txt)
-    ngpu = int(g.group(1)) if g else 0
+    ngpu = int(g.group(1)) if g else 1
     cpu = 0.0
     mc = re.search(r"CPU time\s*:\s*([\d.]+)\s*sec", txt)
     if mc:
@@ -110,6 +111,24 @@ def main() -> None:
         b[0] += r["wall_h"] * r["ngpu"]
         b[1] += r["cpu_h"]
         b[2] += 1
+
+    def prefix_group(name: str) -> str:
+        for pre, tag in (("p1", "阶段0/1"), ("p2", "阶段2"), ("p3", "阶段3"),
+                         ("sz_", "深圳(8–9月)"), ("abl_", "消融(7–8月)"),
+                         ("sz", "深圳(8–9月)")):
+            if name.startswith(pre):
+                return tag
+        return "工具/杂项"
+
+    by_group = defaultdict(lambda: [0.0, 0])
+    for r in rows:
+        g = by_group[prefix_group(r["name"])]
+        g[0] += r["wall_h"]
+        g[1] += 1
+    lines.append("")
+    lines.append("按阶段分组(墙钟小时 ≈ GPU 卡时):")
+    for tag, (h, n) in sorted(by_group.items(), key=lambda kv: -kv[1][0]):
+        lines.append("  %-14s %2d 个作业  %7.2f h" % (tag, n, h))
 
     lines.append("")
     lines.append("按作业名汇总:")
