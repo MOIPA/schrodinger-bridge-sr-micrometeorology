@@ -38,12 +38,12 @@ SURFACE_VARS = {
 def shapes_for(ny_mass, nx_mass):
     """按文件里的质量点网格 (ny, nx) 给出 C 网格各面形状(不写死域尺寸)。
 
-    WRF 原生交错: U 面 nx+1 列、V 面 ny+1 行、W 面 ny+1 行 nx+1 列。
+    WRF 原生交错: U 面 nx+1 列、V 面 ny+1 行、W 面水平与质量点同网格(只垂直到 nz+1)。
     """
     return {
         'u': (N_MASS, ny_mass, nx_mass + 1),
         'v': (N_MASS, ny_mass + 1, nx_mass),
-        'w': (N_IFACE, ny_mass, nx_mass + 1),
+        'w': (N_IFACE, ny_mass, nx_mass),      # W 水平不交错(只垂直交错)
         'theta': (N_MASS, ny_mass, nx_mass),
         '2d': (ny_mass, nx_mass),
     }
