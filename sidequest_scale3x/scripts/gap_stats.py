@@ -124,12 +124,13 @@ def analyze_pair(scheme, fine_dom, n_times, nlev, k=3):
             spd_all = np.sqrt(u ** 2 + v ** 2)                  # (t, lev, ny, nx)
         for ti in range(spd_all.shape[0]):
           spd = spd_all[ti]                                      # (lev, ny, nx)
-          c = block_mean(spd, k)                                 # 粗端该看到的
-          c_up = np.repeat(np.repeat(c, k, axis=1), k, axis=2)
+          c_all = block_mean(spd, k)                             # (lev, ny2, nx2)
+          c_up_all = np.repeat(np.repeat(c_all, k, axis=1), k, axis=2)
           for L in range(spd.shape[0]):
-            f = spd[L][:c_up.shape[1], :c_up.shape[2]]   # 裁到 3 的整数倍
-            r = f - c_up[L]
-            sf, sc, sr = f.std(), c.std(), r.std()
+            f = spd[L][:c_up_all.shape[1], :c_up_all.shape[2]]   # 裁到 3 的整数倍
+            c_up = c_up_all[L]
+            r = f - c_up
+            sf, sc, sr = f.std(), c_all[L].std(), r.std()
             per_lev["sigma_fine"].append(float(sf))
             per_lev["sigma_coarse"].append(float(sc))
             per_lev["sigma_res"].append(float(sr))
