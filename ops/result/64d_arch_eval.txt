@@ -6,24 +6,94 @@ edm 臂(N=16 集合均值): p3_arch_edm
 产物目录:results/phase3_arch(全部 84 产物;绝不覆盖 results/phase3 的既有文件名)
 
 ===== 1. 84 si 模式(各臂 N=16 集合均值) =====
-Traceback (most recent call last):
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/84_ensemble_eval.py", line 578, in <module>
-    main()
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/scripts/outline/84_ensemble_eval.py", line 562, in main
-    set_seeds(config.train.seed)
-  File "/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/utils/random_seed_helper.py", line 22, in set_seeds
-    np.random.seed(seed)
-  File "/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/numpy/__init__.py", line 337, in __getattr__
-    import numpy.random as random
-  File "/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/numpy/random/__init__.py", line 180, in <module>
-    from . import _pickle
-  File "/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/numpy/random/_pickle.py", line 3, in <module>
-    from .bit_generator import BitGenerator
-  File "bit_generator.pyx", line 40, in init numpy.random.bit_generator
-  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
-  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
-  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
-  File "<frozen importlib._bootstrap_external>", line 879, in exec_module
-  File "<frozen importlib._bootstrap_external>", line 975, in get_code
-  File "<frozen importlib._bootstrap_external>", line 1074, in get_data
-KeyboardInterrupt
+=== p3_arch_swin (mode=si, N=16, 144 帧, test) ===
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_model/swinir_arch.py:128: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
+  attn = (q @ k.transpose(-2, -1)) * self.scale
+/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/src/dl_model/swinir_arch.py:133: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
+  x = (attn @ v).transpose(1, 2).reshape(nW, N, C)
+  ... 24 帧
+  ... 48 帧
+  ... 72 帧
+  ... 96 帧
+  ... 120 帧
+  ... 144 帧
+{"tag": "p3_arch_swin", "mode": "si", "n_ensemble": 16, "n_hours": 144, "main_rmse_vec": 0.9983676395540253}
+写出 results/phase3_arch/p3_arch_swin_perhour.npz / results/phase3_arch/p3_arch_swin_summary.json / results/phase3_arch/p3_arch_swin_ensemble.json
+
+===== 2. 参考臂 ens16 重评(p2_l1r2_lr2e4;_ens16) =====
+=== p2_l1r2_lr2e4 (mode=si, N=16, 144 帧, test) ===
+/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
+  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
+  ... 24 帧
+  ... 48 帧
+  ... 72 帧
+  ... 96 帧
+  ... 120 帧
+  ... 144 帧
+{"tag": "p2_l1r2_lr2e4", "mode": "si", "n_ensemble": 16, "n_hours": 144, "main_rmse_vec": 0.9420464437417848}
+写出 results/phase3_arch/p2_l1r2_lr2e4_ens16_perhour.npz / results/phase3_arch/p2_l1r2_lr2e4_ens16_summary.json / results/phase3_arch/p2_l1r2_lr2e4_ens16_ensemble.json
+对照:results/phase2 的确定性 ODE 主指标 = 0.9574;本产物为 N=16 随机采样均值,
+      两者口径不同(90 号 add_noise=False);仅并列展示,不判回归。
+
+===== 3. 84 reg 模式(确定性单次前向) =====
+=== p3_arch_reg (mode=reg, N=1, 144 帧, test) ===
+/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
+  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
+  ... 24 帧
+  ... 48 帧
+  ... 72 帧
+  ... 96 帧
+  ... 120 帧
+  ... 144 帧
+{"tag": "p3_arch_reg", "mode": "reg", "n_ensemble": 1, "n_hours": 144, "main_rmse_vec": 0.8276750662802086}
+写出 results/phase3_arch/p3_arch_reg_perhour.npz / results/phase3_arch/p3_arch_reg_summary.json
+
+===== 4. 84 two_step 模式(EDM,N=16 集合均值) =====
+=== p3_arch_edm (mode=two_step, N=16, 144 帧, test) ===
+/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/lib/python3.10/site-packages/torch/functional.py:407: UserWarning: Deterministic behavior was enabled with either `torch.use_deterministic_algorithms(True)` or `at::Context::setDeterministicAlgorithms(true)`, but this operation is not deterministic because it uses CuBLAS and you have CUDA >= 10.2. To enable deterministic behavior in this case, you must set an environment variable before running your PyTorch application: CUBLAS_WORKSPACE_CONFIG=:4096:8 or CUBLAS_WORKSPACE_CONFIG=:16:8. For more information, go to https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility (Triggered internally at /pytorch/aten/src/ATen/Context.cpp:217.)
+  return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
+  ... 24 帧
+  ... 48 帧
+  ... 72 帧
+  ... 96 帧
+  ... 120 帧
+  ... 144 帧
+{"tag": "p3_arch_edm", "mode": "two_step", "n_ensemble": 16, "n_hours": 144, "main_rmse_vec": 0.8714812280568818}
+写出 results/phase3_arch/p3_arch_edm_perhour.npz / results/phase3_arch/p3_arch_edm_summary.json / results/phase3_arch/p3_arch_edm_ensemble.json
+
+===== 5. 主指标汇总(summary json;phase2 参考 0.9574 仅并列) =====
+| mode | tag | N | n_hours | main_rmse_vec (m/s) | 与 0.9574 之差 |
+|---|---|---|---|---|---|
+| si | p2_l1r2_lr2e4 | 16 | 144 | 0.9420 | -0.0154 |
+| two_step | p3_arch_edm | 16 | 144 | 0.8715 | -0.0859 |
+| reg | p3_arch_reg | 1 | 144 | 0.8277 | -0.1297 |
+| si | p3_arch_swin | 16 | 144 | 0.9984 | +0.0410 |
+
+口径:主指标 = AGL 10-500 m 池化矢量 RMSE;si/edm 为 N=16 集合均值(随机协议),
+      reg 为确定性单次前向;与 phase2 的 0.9574(90 号确定性 ODE)口径不同。
+
+===== 6. 产出 =====
+total 3461
+-rw-r--r-- 1 ytw_tangzq yutingwang   5161 Nov  1 04:35 p2_l1r2_lr2e4_ens16_ensemble.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 718451 Nov  1 04:35 p2_l1r2_lr2e4_ens16_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang   3219 Nov  1 04:35 p2_l1r2_lr2e4_ens16_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang   5165 Nov  1 04:42 p3_arch_edm_ensemble.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 716041 Nov  1 04:42 p3_arch_edm_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang   3179 Nov  1 04:42 p3_arch_edm_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 700793 Nov  1 04:37 p3_arch_reg_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang   3127 Nov  1 04:37 p3_arch_reg_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang   5130 Nov  1 04:30 p3_arch_swin_ensemble.json
+-rw-r--r-- 1 ytw_tangzq yutingwang 718696 Nov  1 04:30 p3_arch_swin_perhour.npz
+-rw-r--r-- 1 ytw_tangzq yutingwang   3201 Nov  1 04:30 p3_arch_swin_summary.json
+-rw-r--r-- 1 ytw_tangzq yutingwang  29760 Oct 31 18:04 phase3_diurnal.json
+-rw-r--r-- 1 ytw_tangzq yutingwang   4852 Oct 31 18:04 phase3_diurnal.md
+-rw-r--r-- 1 ytw_tangzq yutingwang   8228 Oct 31 01:01 phase3_tables.json
+-rw-r--r-- 1 ytw_tangzq yutingwang   3017 Oct 31 01:01 phase3_tables.md
+-rw-r--r-- 1 ytw_tangzq yutingwang   7461 Oct 31 18:04 phase3_vertical.json
+-rw-r--r-- 1 ytw_tangzq yutingwang   2316 Oct 31 18:04 phase3_vertical.md
+-rw-r--r-- 1 ytw_tangzq yutingwang   7389 Oct 31 18:04 phase3_vertical_mid.json
+-rw-r--r-- 1 ytw_tangzq yutingwang   2299 Oct 31 18:04 phase3_vertical_mid.md
+-rw-r--r-- 1 ytw_tangzq yutingwang   7451 Oct 31 18:04 phase3_vertical_strong.json
+-rw-r--r-- 1 ytw_tangzq yutingwang   2316 Oct 31 18:04 phase3_vertical_strong.md
+-rw-r--r-- 1 ytw_tangzq yutingwang   7347 Oct 31 18:04 phase3_vertical_weak.json
+-rw-r--r-- 1 ytw_tangzq yutingwang   2279 Oct 31 18:04 phase3_vertical_weak.md
