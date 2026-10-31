@@ -69,7 +69,7 @@ def process_file(task):
         coszen_wrf = None
         if 'COSZEN' in nc.variables:
             coszen_wrf = np.asarray(nc.variables['COSZEN'][:], dtype=np.float32)
-    shp = shapes_for(theta.shape[1], theta.shape[2])
+    shp = shapes_for(theta.shape[-2], theta.shape[-1])   # theta: (t, lev, ny, nx)
     assert u.shape[1:] == shp['u'], "U shape {} != {}".format(u.shape, shp['u'])
     assert v.shape[1:] == shp['v'], "V shape {} != {}".format(v.shape, shp['v'])
     assert w.shape[1:] == shp['w'], "W shape {} != {}".format(w.shape, shp['w'])
