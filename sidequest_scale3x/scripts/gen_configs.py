@@ -15,7 +15,7 @@ import yaml
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 BASE = os.path.join(REPO, "configs/深圳/phase3_arch/config_wind_canvas_p3_arch_reg.yml")
-OUT_DIR = os.path.join(REPO, "sidequest_scale3x/configs")
+OUT_DIR = os.path.join(REPO, "sidequest_scale3x/configs/phase3_arch")
 
 # 组 -> (tag, 细端域, 画布形状, coarse_dir, statics_dir, dl_data_ver)
 GROUPS = {
