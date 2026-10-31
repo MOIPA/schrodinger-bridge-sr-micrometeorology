@@ -11,22 +11,16 @@
 [DRY_RUN] bsub -q 75434090ib -gpu num=1:mode=exclusive_process -n 4 -R rusage[mem=32000]  -J p3_arch_reg_s2 -o logs/p3_arch_reg_s2_%J.out -e logs/p3_arch_reg_s2_%J.err scripts/train_regression_model.py ... 
 >>> p3_arch_unet_small -> 队列 75434090ib(config_wind_canvas_p3_arch_unet_small.yml)
 [DRY_RUN] bsub -q 75434090ib -gpu num=1:mode=exclusive_process -n 4 -R rusage[mem=32000]  -J p3_arch_unet_small -o logs/p3_arch_unet_small_%J.out -e logs/p3_arch_unet_small_%J.err scripts/train_schrodinger_bridge_model.py ... 
-[等] p3_arch_edm 需配对回归 p3_arch_reg 的 checkpoint(尚不存在),跳过; 先跑 W1/64b 把 p3_arch_reg 训完(或用 -w ended(p3_arch_reg) 依赖)
+>>> p3_arch_edm -> 队列 75434090ib(config_wind_canvas_p3_arch_edm.yml)
+[DRY_RUN] bsub -q 75434090ib -gpu num=1:mode=exclusive_process -n 4 -R rusage[mem=32000]  -J p3_arch_edm -o logs/p3_arch_edm_%J.out -e logs/p3_arch_edm_%J.err scripts/train_edm_correction.py ... --reg_tag p3_arch_reg --reg_config_path configs/深圳/phase3_arch/config_wind_canvas_p3_arch_reg.yml
 
 ===== 2. [DRY_RUN] 跳过 PEND 检查与 git 提交 =====
 
-===== 2. 挂评估(64d,--after-training 依赖训练作业 ended) =====
-Already up to date.
-52dbda2 result 64f w2-min: submit arms = p3_arch_edm p3_arch_reg_s2 p3_arch_unet_small
-依赖: p3_arch_edm 已不在 bjobs 里,不挂(否则 LSF 报 No matching job found)
-依赖: p3_arch_reg_s2 已不在 bjobs 里,不挂(否则 LSF 报 No matching job found)
-依赖: p3_arch_unet_small 已不在 bjobs 里,不挂(否则 LSF 报 No matching job found)
-评估清单: p3_arch_edm,p3_arch_reg_s2,p3_arch_unet_small
-  si 臂: (N=16 集合均值);reg 臂: (确定性); edm 臂: (N=16);参考臂: (缺 ckpt)(_ens16 重评)
-ops/queue/64d_arch_eval.sh: line 98: bsub: command not found
+===== 2. [DRY_RUN] 跳过评估挂载(64d) =====
 
 ===== 3. 训练+评估完成后(64e 纯 numpy,登录节点本地跑即可) =====
   LOCAL=1 bash ops/queue/64e_arch_report.sh
   LOCAL=1 ROOT=$PWD REPO=$PWD PY3D=python3 bash ops/queue/64e_arch_report.sh   # 或在笔记本上
 
 查状态: bjobs -w | grep p3_arch ; tail -n 20 logs/p3_arch_edm.log
+[DRY_RUN] 不提交、不推送

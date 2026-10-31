@@ -9,7 +9,7 @@
 #   ⑤ 主指标汇总:读 *_summary.json 打印表(与 phase2 参考值 0.9574 并列展示,注明口径)。
 # 前置依赖:64b 训完;84_ensemble_eval.py 与 83 生成的 phase3_arch 配置。
 # 手机执行: bash ops/queue/64d_arch_eval.sh [--tags a,b] [--after-training a,b]
-cd ~/schrodinger-bridge-sr-micrometeorology || exit 1
+cd "${REPO:-$(cd "$(dirname "$0")/../.." && pwd)}" || exit 1
 ROOT=/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology
 PY3D=/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/bin/python
 EXP=ExperimentSchrodingerBridgeWindCanvas

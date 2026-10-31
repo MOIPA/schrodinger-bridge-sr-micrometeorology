@@ -8,7 +8,7 @@
 #   ③ 全部 stdout/表格写 ops/result/64_arch_report.txt,回传 ops/result + results/phase3_arch。
 # 前置依赖:64d 已评估(否则 99 缺输入;缺文件的行标 —,不抛异常)。
 # 手机执行: bash ops/queue/64e_arch_report.sh   (登录节点提交,GPU 节点跑 --inner)
-cd "${REPO:-$HOME/schrodinger-bridge-sr-micrometeorology}" || exit 1
+cd "${REPO:-$(cd "$(dirname "$0")/../.." && pwd)}" || exit 1
 ROOT="${ROOT:-/fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology}"
 PY3D="${PY3D:-/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/bin/python}"  # 纯 numpy 后处理,可 PY3D=python3 本地跑
 QUEUES="${FORCE_Q:-}"   # 2026-10 集群换代:GPU 队列改由 ops/queue/q_pick.sh 按主机状态挑选
@@ -52,7 +52,7 @@ mkdir -p results/phase3_arch
 
 REPORT_TAGS="p3_arch_swin p3_arch_swin_s2 p3_arch_unet_s2 p3_arch_reg p3_arch_reg_s2 \
 p3_arch_edm p3_arch_edm_s2 p2_l1r2_lr2e4_ens16"
-TAGS_CSV=$(echo "$REPORT_TAGS" | tr -s ' \n' ' ' | tr ' ' ',')
+TAGS_CSV=$(echo "$REPORT_TAGS" | tr -s ' \n' ' ' | tr ' ' ',' | sed 's/,$//')
 BASE_TAG="p3_arch_unet_s2"
 [ -f "results/phase3_arch/p3_arch_unet_s2_perhour.npz" ] \
   || BASE_TAG="p2_l1r2_lr2e4_ens16"

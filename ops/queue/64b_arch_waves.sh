@@ -18,7 +18,7 @@
 # 前置依赖:configs/深圳/phase3_arch/*.yml(由 64_arch_setup.sh 的 83 生成)。
 # 手机执行: bash ops/queue/64b_arch_waves.sh          # W1
 #           WAVE=2 bash ops/queue/64b_arch_waves.sh    # W2(需前波评估产物)
-cd "${REPO:-$HOME/schrodinger-bridge-sr-micrometeorology}" || exit 1
+cd "${REPO:-$(cd "$(dirname "$0")/../.." && pwd)}" || exit 1
 if [ "${DRY_RUN:-0}" = "1" ]; then
   echo "[DRY_RUN] 跳过 git pull / 提交;仅打印将要提交的 bsub 命令"
 else

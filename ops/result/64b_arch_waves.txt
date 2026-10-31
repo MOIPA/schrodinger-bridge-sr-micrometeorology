@@ -6,6 +6,7 @@
 [DRY_RUN] bsub -q 75434090ib -gpu num=1:mode=exclusive_process -n 4 -R rusage[mem=32000]  -J p3_arch_reg_s2 -o logs/p3_arch_reg_s2_%J.out -e logs/p3_arch_reg_s2_%J.err scripts/train_regression_model.py ... 
 >>> p3_arch_unet_small -> 队列 75434090ib(config_wind_canvas_p3_arch_unet_small.yml)
 [DRY_RUN] bsub -q 75434090ib -gpu num=1:mode=exclusive_process -n 4 -R rusage[mem=32000]  -J p3_arch_unet_small -o logs/p3_arch_unet_small_%J.out -e logs/p3_arch_unet_small_%J.err scripts/train_schrodinger_bridge_model.py ... 
-[等] p3_arch_edm 需配对回归 p3_arch_reg 的 checkpoint(尚不存在),跳过; 先跑 W1/64b 把 p3_arch_reg 训完(或用 -w ended(p3_arch_reg) 依赖)
+>>> p3_arch_edm -> 队列 75434090ib(config_wind_canvas_p3_arch_edm.yml)
+[DRY_RUN] bsub -q 75434090ib -gpu num=1:mode=exclusive_process -n 4 -R rusage[mem=32000]  -J p3_arch_edm -o logs/p3_arch_edm_%J.out -e logs/p3_arch_edm_%J.err scripts/train_edm_correction.py ... --reg_tag p3_arch_reg --reg_config_path configs/深圳/phase3_arch/config_wind_canvas_p3_arch_reg.yml
 
 ===== 2. [DRY_RUN] 跳过 PEND 检查与 git 提交 =====

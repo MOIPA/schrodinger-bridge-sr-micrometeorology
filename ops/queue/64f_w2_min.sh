@@ -11,6 +11,7 @@
 #        ARMS="p3_arch_edm" bash ops/queue/64f_w2_min.sh   # 只跑一臂
 #        FORCE_Q=<队列> bash ops/queue/64f_w2_min.sh       # 指定队列
 cd "${REPO:-$(cd "$(dirname "$0")/../.." && pwd)}" || exit 1
+export REPO="$PWD"
 OUT=ops/result/64f_w2_min.txt
 mkdir -p ops/result logs
 : > "$OUT"
@@ -38,8 +39,12 @@ say "===== 1. 提交训练(64b WAVE=2 + ARMS) ====="
 WAVE=2 ARMS="$ARMS" bash ops/queue/64b_arch_waves.sh 2>&1 | tail -40 | tee -a "$OUT"
 
 say ""
+if [ -n "${DRY_RUN:-}" ]; then
+  say "===== 2. [DRY_RUN] 跳过评估挂载(64d) ====="
+else
 say "===== 2. 挂评估(64d,--after-training 依赖训练作业 ended) ====="
 bash ops/queue/64d_arch_eval.sh --tags "$CSV" --after-training "$CSV" 2>&1 | tail -20 | tee -a "$OUT"
+fi
 
 say ""
 say "===== 3. 训练+评估完成后(64e 纯 numpy,登录节点本地跑即可) ====="
@@ -48,6 +53,10 @@ say "  LOCAL=1 ROOT=\$PWD REPO=\$PWD PY3D=python3 bash ops/queue/64e_arch_report
 say ""
 say "查状态: bjobs -w | grep p3_arch ; tail -n 20 logs/p3_arch_edm.log"
 
-git add ops/result docs 2>/dev/null
-git commit -qm "result 64f w2-min: submit arms = $ARMS" 2>/dev/null
-git push 2>&1 | tail -1
+if [ -z "${DRY_RUN:-}" ]; then
+  git add ops/result docs 2>/dev/null
+  git commit -qm "result 64f w2-min: submit arms = $ARMS" 2>/dev/null
+  git push 2>&1 | tail -1
+else
+  say "[DRY_RUN] 不提交、不推送"
+fi
