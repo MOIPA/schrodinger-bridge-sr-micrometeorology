@@ -37,6 +37,7 @@ summary json;切变层对/分层掩码/主指标层完全一致)。差别只在"
 """
 import argparse
 import importlib.util
+import tempfile
 import json
 import os
 import re
@@ -511,6 +512,31 @@ def build_static_ctx(config, device):
             'device': device}
 
 
+def load_dataset_config(cfg_path):
+    """读配置建 dataset/model 用的 config。
+
+    EDM 臂的 yml 里带 `edm:` / `reg:` 两个额外段,基础 dataclass 不认这两个键
+    (base_config.convert_from_dict 会 KeyError)。这里先把它们剥掉再 load,
+    非 EDM 配置本来就没有这两段,行为不变。
+    """
+    import yaml
+    with open(cfg_path) as f:
+        raw = yaml.safe_load(f)
+    if isinstance(raw, dict) and ("edm" in raw or "reg" in raw):
+        raw = dict(raw)
+        raw.pop("edm", None)
+        raw.pop("reg", None)
+        fd, tmp = tempfile.mkstemp(suffix=".yml")
+        os.close(fd)
+        try:
+            with open(tmp, "w") as f:
+                yaml.safe_dump(raw, f, allow_unicode=True)
+            return load_config(EXPERIMENT, tmp)
+        finally:
+            os.unlink(tmp)
+    return load_config(EXPERIMENT, cfg_path)
+
+
 def main():
     ap = argparse.ArgumentParser(description="阶段 3 架构对比集合评估")
     ap.add_argument("--mode", required=True, choices=["si", "reg", "two_step"])
@@ -563,7 +589,7 @@ def main():
         if not os.path.isfile(ck_path):
             print("[跳过] {} 缺 checkpoint {}".format(tag, ck_path))
             continue
-        config = load_config(EXPERIMENT, cfg_path)
+        config = load_dataset_config(cfg_path)
         set_seeds(config.train.seed)
         loader = build_loader(config, args.split)
         static_ctx = build_static_ctx(config, device)
