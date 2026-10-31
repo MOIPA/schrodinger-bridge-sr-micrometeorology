@@ -48,7 +48,7 @@ WRF 嵌套是 3 倍降尺度:d01 27 km → d02 9 km → d03 3 km → d04 1 km。
 ## 目录
 
 ```
-外传/三尺度3x/
+sidequest_scale3x/
   README.md          本文
   scripts/           数据抽取、诊断、评估
   configs/           三组训练配置(待生成)

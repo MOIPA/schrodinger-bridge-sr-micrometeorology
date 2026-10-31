@@ -16,9 +16,9 @@
   4. 功率谱斜率 beta(F) 与 beta(R)  场的空间粗糙度
 
 用法(服务器 base anaconda python,需 netCDF4):
-  python 外传/三尺度3x/scripts/gap_stats.py \
+  python sidequest_scale3x/scripts/gap_stats.py \
       --pairs d02:d03:d04 --n_times 6 --nlev 20 \
-      --out_json 外传/三尺度3x/results/gap_stats.json
+      --out_json sidequest_scale3x/results/gap_stats.json
 """
 import argparse
 import glob
