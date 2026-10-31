@@ -43,6 +43,16 @@ fi
 
 for t in $TAGS; do
   echo "===== eval $t ====="
+  "$PY3D" - <<PYEOF || true
+import sys, importlib.util as iu, yaml
+sys.path.insert(0, "scripts/outline")
+spec = iu.spec_from_file_location("m84", "scripts/outline/84_ensemble_eval.py")
+m = iu.module_from_spec(spec); spec.loader.exec_module(m)
+cfg = m.load_dataset_config("$CFG_ROOT/phase3_arch/config_wind_canvas_${t}.yml")
+ctx = m.build_static_ctx(cfg, "cpu")
+print("[shapecheck]", cfg.data.statics_dir.split("/")[-1],
+      ctx["tables"]["idx_m"].shape, ctx["tables"]["zagl_mass"].shape)
+PYEOF
   "$PY3D" scripts/outline/84_ensemble_eval.py \
     --mode reg --tags "$t" --split test --device cuda:0 \
     --cfg_root "$CFG_ROOT" --out_dir "$OUT_DIR" || { echo "FAIL $t"; continue; }
