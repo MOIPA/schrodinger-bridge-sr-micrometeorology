@@ -1,26 +1,21 @@
-===== 0. WAVE=2;队列里的 p3_arch 作业 =====
-14831202 ytw_tangzq RUN   734090d    login1      8*n034      p3_arch_edm Oct 31 23:39
+===== 0. WAVE=1;队列里的 p3_arch 作业 =====
+(无)
 
-===== 1. W2 提交清单: p3_arch_reg_s2 p3_arch_unet_small   =====
->>> p3_arch_reg_s2 -> 队列 944090d(config_wind_canvas_p3_arch_reg_s2.yml)
-Job <14831399> is submitted to queue <944090d>.
->>> p3_arch_unet_small -> 队列 944090d(config_wind_canvas_p3_arch_unet_small.yml)
-Job <14831400> is submitted to queue <944090d>.
+===== 1. W1 提交清单: p3_arch_reg_s2 p3_arch_unet_small   =====
+>>> p3_arch_reg_s2 -> 队列 7552v100(config_wind_canvas_p3_arch_reg_s2.yml)
+Job <14831710> is submitted to queue <7552v100>.
+>>> p3_arch_unet_small -> 队列 7552v100(config_wind_canvas_p3_arch_unet_small.yml)
+Job <14831711> is submitted to queue <7552v100>.
 
 ===== 2. 90 秒后 PEND 检查(PEND 立即换队列重投) =====
-14831202 ytw_tangzq RUN   734090d    login1      8*n034      p3_arch_edm Oct 31 23:39
-14831399 ytw_tangzq PEND  944090d    login1         -        p3_arch_reg_s2 Nov  1 01:51
-14831400 ytw_tangzq PEND  944090d    login1         -        p3_arch_unet_small Nov  1 01:51
->>> p3_arch_reg_s2(14831399) PEND,换队列重投
-Job <14831399> is being terminated
->>> p3_arch_reg_s2 -> 新队列 944090d
-Job <14831401> is submitted to queue <944090d>.
->>> p3_arch_unet_small(14831400) PEND,换队列重投
-Job <14831400> is being terminated
->>> p3_arch_unet_small -> 新队列 944090d
-Job <14831402> is submitted to queue <944090d>.
+14831710 ytw_tangzq RUN   7552v100   login1      12*o004     p3_arch_reg_s2 Nov  1 05:42
+14831711 ytw_tangzq PEND  7552v100   login1         -        p3_arch_unet_small Nov  1 05:42
+>>> p3_arch_unet_small(14831711) PEND,换队列重投
+Job <14831711> is being terminated
+>>> p3_arch_unet_small -> 新队列 7552v100
+Job <14831712> is submitted to queue <7552v100>.
 
 ===== 3. 后续 =====
 查状态: bash ops/queue/64c_check_arch.sh
-全臂训练完 -> 评估: bash ops/queue/64d_arch_eval.sh
-评估完 -> 终评报告: bash ops/queue/64e_arch_report.sh
+W1 两臂训练完 -> 评估: bash ops/queue/64d_arch_eval.sh
+评估产物存在后 W2: WAVE=2 bash ops/queue/64b_arch_waves.sh
