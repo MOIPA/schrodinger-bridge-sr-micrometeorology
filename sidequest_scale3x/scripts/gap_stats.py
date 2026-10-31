@@ -89,7 +89,7 @@ def radial_psd(f):
 def fit_slope(k, S, kmin=None, kmax=0.25):
     # k 的单位是 cycles/pixel;kmin 默认取 3 个格点波长(1/3),kmax 取 Nyquist 的一半
     if kmin is None:
-        kmin = 1.0 / 3.0
+        kmin = 1.0 / 32.0
     m = (k >= kmin) & (k <= kmax) & (S > 0)
     if m.sum() < 4:
         return float("nan")
