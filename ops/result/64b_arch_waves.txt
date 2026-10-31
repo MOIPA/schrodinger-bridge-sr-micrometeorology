@@ -1,19 +1,13 @@
 ===== 0. WAVE=1;队列里的 p3_arch 作业 =====
-(无)
+14831710 ytw_tangzq RUN   7552v100   login1      12*o004     p3_arch_reg_s2 Nov  1 05:42
 
-===== 1. W1 提交清单: p3_arch_reg_s2 p3_arch_unet_small   =====
->>> p3_arch_reg_s2 -> 队列 7552v100(config_wind_canvas_p3_arch_reg_s2.yml)
-Job <14831710> is submitted to queue <7552v100>.
->>> p3_arch_unet_small -> 队列 7552v100(config_wind_canvas_p3_arch_unet_small.yml)
-Job <14831711> is submitted to queue <7552v100>.
+===== 1. W1 提交清单: p3_arch_unet_small   =====
+>>> p3_arch_unet_small -> 队列 944090d(config_wind_canvas_p3_arch_unet_small.yml)
+Job <14831760> is submitted to queue <944090d>.
 
 ===== 2. 90 秒后 PEND 检查(PEND 立即换队列重投) =====
 14831710 ytw_tangzq RUN   7552v100   login1      12*o004     p3_arch_reg_s2 Nov  1 05:42
-14831711 ytw_tangzq PEND  7552v100   login1         -        p3_arch_unet_small Nov  1 05:42
->>> p3_arch_unet_small(14831711) PEND,换队列重投
-Job <14831711> is being terminated
->>> p3_arch_unet_small -> 新队列 7552v100
-Job <14831712> is submitted to queue <7552v100>.
+14831760 ytw_tangzq RUN   944090d    login1      24*n033     p3_arch_unet_small Nov  1 06:35
 
 ===== 3. 后续 =====
 查状态: bash ops/queue/64c_check_arch.sh
