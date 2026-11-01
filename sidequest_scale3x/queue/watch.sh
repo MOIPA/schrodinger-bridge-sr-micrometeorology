@@ -50,7 +50,8 @@ have_casc() {
             sidequest_scale3x/results/sq3to1_casc_casc_perhour.npz
 }
 downstream_running() { bjobs -w 2>/dev/null | awk 'NR>1{print $7}' | grep -qE "^(eval2_|casc|xfer2)"; }
-report_done() { [ -s sidequest_scale3x/results/report4_tables.md ]; }
+# 不只看"文件在不在":部分产物也能生成一份全是 — 的表。只有带 COMPLETE 标记才算完成。
+report_done() { grep -qa "STATUS: COMPLETE" sidequest_scale3x/results/report4_tables.md 2>/dev/null; }
 
 phase4_state() {  # 回显 wait|done:阶段4 一步 27→1 的自我接管
   local tag=p4_27to1_reg

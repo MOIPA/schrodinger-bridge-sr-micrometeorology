@@ -63,4 +63,16 @@ for f in "$OUT_MD" "$SQ/report4_summary.md" "$P4/summary4.md" "$SQ/xfer_retentio
     if [ -s "$f" ]; then say "  产出 $f"; else say "  [缺] $f"; fi
 done
 
+# 完整性标记:看守据此判断"要不要再跑一次"。缺任何一行就写 PARTIAL,
+# 否则"表跑出来了"和"表是完整的"就没法区分(部分产物也能生成一份满是 — 的表)。
+MISS=$(grep -c "—" "$OUT_MD" 2>/dev/null || echo 0)
+if [ "$MISS" -gt 0 ]; then
+    echo "" >> "$OUT_MD"
+    echo "<!-- STATUS: PARTIAL(MISS_ROWS=$MISS) 生成时间 $(date '+%F %T') -->" >> "$OUT_MD"
+    say "  ⚠️ 有 $MISS 行是「—」,标记为 PARTIAL"
+else
+    echo "" >> "$OUT_MD"
+    echo "<!-- STATUS: COMPLETE 生成时间 $(date '+%F %T') -->" >> "$OUT_MD"
+fi
+
 say "完成。缺行说明对应产物还没跑到,不要手填。"
