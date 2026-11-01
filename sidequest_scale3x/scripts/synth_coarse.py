@@ -56,11 +56,16 @@ def main():
             key = next((k for k in TD2D if k in g), None)
             if key is not None:
                 got = int(np.prod(g[key].shape))
-                want = int(np.prod(stat.fine_shapes['mass']))
+                # 比的是**源网格**(谁给 2D 场),不是目标网格(本级的细端)。
+                # 级联里第 2 级:td_from = d01(150x180)、statics = sq27to9(源 d01 -> 目标 d02),
+                # 拿目标网格去比会把这个合法调用误判成错误。
+                src = tuple(int(x) for x in stat.d['regrid_shape_mass']) \
+                    if 'regrid_shape_mass' in stat.d else stat.fine_shapes['mass']
+                want = int(np.prod(src))
                 if got != want:
                     raise SystemExit(
                         "--td_from 的 2D 场有 {} 个格点({}),而 --td_statics 的源网格是 {}".format(
-                            got, g[key].shape, stat.fine_shapes['mass'])
+                            got, g[key].shape, src)
                         + "\n  级联里这一级的地面场应该来自上一级输出目录(如 prepare_npz_outline_coarse_casc_s2),"
                         + "而不是更粗的 d01。")
     n_done = 0
