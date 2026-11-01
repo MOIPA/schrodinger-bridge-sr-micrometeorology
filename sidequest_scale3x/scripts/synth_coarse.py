@@ -45,6 +45,24 @@ def main():
         preds = preds[:args.limit]
 
     stat = CanvasStatics(args.td_statics) if (args.td_from and args.td_statics) else None
+    if stat is not None:
+        # 守卫:--td_from 必须是 --td_statics 的"源网格"那一级。
+        # 级联里最常见的错法是把 d01(27 km)的地面场喂给 d02→d03 的 statics,
+        # 报出来的却是一句看不懂的 reshape 错误,所以提前比对格点数。
+        probe = sorted(glob.glob(os.path.join(args.td_from, "c_*.npz")))
+        if not probe:
+            raise SystemExit("--td_from 目录里没有 c_*.npz: {}".format(args.td_from))
+        with np.load(probe[0]) as g:
+            key = next((k for k in TD2D if k in g), None)
+            if key is not None:
+                got = int(np.prod(g[key].shape))
+                want = int(np.prod(stat.fine_shapes['mass']))
+                if got != want:
+                    raise SystemExit(
+                        "--td_from 的 2D 场有 {} 个格点({}),而 --td_statics 的源网格是 {}".format(
+                            got, g[key].shape, stat.fine_shapes['mass'])
+                        + "\n  级联里这一级的地面场应该来自上一级输出目录(如 prepare_npz_outline_coarse_casc_s2),"
+                        + "而不是更粗的 d01。")
     n_done = 0
     for p in preds:
         stamp = os.path.basename(p)[2:-4]

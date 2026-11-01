@@ -27,7 +27,9 @@ STAGES = {
             td_statics="prepare_npz_outline_static_sq27to9",
             out="prepare_npz_outline_coarse_casc_s2"),
     3: dict(coarse="prepare_npz_outline_coarse_d03",
-            td_from="prepare_npz_outline_coarse_d01",
+            # 真跑时这一级的地面场来自上一级产出(directory 由 cascade.sh 生成);
+            # 网格与 d02 粗端完全一致,所以预检直接拿 prepare_npz_outline_coarse 顶替。
+            td_from="prepare_npz_outline_coarse",
             td_statics="prepare_npz_outline_static_sq9to3",
             out="prepare_npz_outline_coarse_casc_s3"),
 }
