@@ -50,8 +50,8 @@ OUT=ops/result/64_arch_report.txt
 : > "$OUT"
 mkdir -p results/phase3_arch
 
-REPORT_TAGS="p3_arch_swin p3_arch_swin_s2 p3_arch_unet_s2 p3_arch_reg p3_arch_reg_s2 \
-p3_arch_edm p3_arch_edm_s2 p2_l1r2_lr2e4_ens16"
+REPORT_TAGS="${REPORT_TAGS:-p3_arch_swin p3_arch_swin_s2 p3_arch_unet_s2 p3_arch_unet_small \
+p3_arch_reg p3_arch_reg_s2 p3_arch_edm p3_arch_edm_s2 p2_l1r2_lr2e4_ens16}"
 TAGS_CSV=$(echo "$REPORT_TAGS" | tr -s ' \n' ' ' | tr ' ' ',' | sed 's/,$//')
 BASE_TAG="p3_arch_unet_s2"
 [ -f "results/phase3_arch/p3_arch_unet_s2_perhour.npz" ] \
