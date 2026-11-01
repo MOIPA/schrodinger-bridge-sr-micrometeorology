@@ -69,19 +69,21 @@ for tag in $ARMS; do
     *_reg*) SCRIPT=scripts/train_regression_model.py;;
     *)      SCRIPT=scripts/train_schrodinger_bridge_model.py;;
   esac
+  DEP_OPTS=()
+  if [ -n "${AFTER:-}" ]; then DEP_OPTS=(-w "ended(${AFTER})"); fi
 
   if [ "${DRY_RUN:-0}" = "1" ]; then
-    say "[DRY_RUN] bsub -q $Q -gpu num=1:mode=exclusive_process -n 4 -R rusage[mem=32000] ${DEP[*]:-} -J $tag $SCRIPT --config_path $CFG"
+    say "[DRY_RUN] bsub -q $Q -gpu num=1:mode=exclusive_process -n 4 -R rusage[mem=32000] ${DEP_OPTS[*]:-} -J $tag $SCRIPT --config_path $CFG"
     continue
   fi
 
   say ">>> $tag -> 队列 $Q($(basename "$CFG"))"
   bsub -q "$Q" -gpu "num=1:mode=exclusive_process" -n 4 -R "rusage[mem=32000]" \
-    "${DEP[@]}" \
+    ${DEP_OPTS:+"${DEP_OPTS[@]}"} \
     -J "$tag" -o "logs/${tag}_%J.out" -e "logs/${tag}_%J.err" \
     "cd $ROOT && module load anaconda/3 && module load cuda/11.8.0 && source activate wind3d && \
 bash ops/queue/gpu_keepalive.sh start; \
-python -u $SCRIPT --config_path $CFG --experiment_name $tag --device cuda:0 \
+python -u $SCRIPT --config_path $CFG --experiment_name ExperimentSchrodingerBridgeWindCanvas --device cuda:0 \
   > logs/${tag}.log 2>&1; \
 bash ops/queue/gpu_keepalive.sh stop" 2>&1 | tee -a "$OUT" | tail -1
 done
