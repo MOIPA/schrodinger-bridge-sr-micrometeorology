@@ -20,6 +20,15 @@ mkdir -p "$WK"
 FR_OPT=""
 if [ "$MAXFR" -gt 0 ]; then FR_OPT="--max_frames $MAXFR"; fi
 
+link_ckpt() {  # $1=新建的 tag 目录名, $2=真实权重目录名(同级)
+  local dst="$CK/$1" src="$2"
+  if [ -e "$dst" ] && [ ! -L "$dst" ]; then
+    echo ">>> 拒绝:"$dst" 是真实目录,不是软链。若在这里 ln -sfn,软链会建到目录【内部】,"         "上一轮就是这样把冒烟作业指到了正在训练的 checkpoint 上。请先人工确认再删。" >&2
+    exit 1
+  fi
+  ln -sfn "$src" "$dst"
+}
+
 fresh_dir() {  # $1=目录;冒烟测试时清掉上一轮的残留,避免 synth 读到旧 dump
   if [ -n "$FR_OPT" ]; then rm -rf "$1"; fi
   mkdir -p "$1"
@@ -43,7 +52,7 @@ echo "=== [2/3] 组装 9→3 的粗端 ==="
 "$PY" sidequest_scale3x/scripts/gen_cascade_cfg.py \
   --src "$CFG_DIR/config_wind_canvas_sq9to3_reg.yml" --tag sq9to3_casc \
   --coarse_dir "$ROOT_DATA/prepare_npz_outline_coarse_casc_s2" >/dev/null
-ln -sfn config_wind_canvas_sq9to3_reg "$CK/config_wind_canvas_sq9to3_casc"
+link_ckpt config_wind_canvas_sq9to3_casc config_wind_canvas_sq9to3_reg
 
 echo "=== [2/3] 9→3 推理 ==="
 "$PY" -u scripts/outline/84_ensemble_eval.py --mode reg --tags sq9to3_casc \
@@ -61,7 +70,7 @@ echo "=== [3/3] 组装 3→1 的粗端 ==="
 "$PY" sidequest_scale3x/scripts/gen_cascade_cfg.py \
   --src "$CFG_DIR/config_wind_canvas_sq3to1_reg.yml" --tag sq3to1_casc \
   --coarse_dir "$ROOT_DATA/prepare_npz_outline_coarse_casc_s3" >/dev/null
-ln -sfn config_wind_canvas_sq3to1_reg "$CK/config_wind_canvas_sq3to1_casc"
+link_ckpt config_wind_canvas_sq3to1_casc config_wind_canvas_sq3to1_reg
 
 echo "=== [3/3] 3→1 推理(级联终点) ==="
 "$PY" -u scripts/outline/84_ensemble_eval.py --mode reg --tags sq3to1_casc \
