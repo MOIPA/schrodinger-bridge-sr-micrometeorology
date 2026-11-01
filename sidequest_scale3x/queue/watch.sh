@@ -29,6 +29,14 @@ train_finished() {  # $1=tag
   tail -c 400 "logs/$1.log" 2>/dev/null | tr '\r' '\n' | grep -q "Train end"
 }
 
+
+count_glob() { ls $1 >/dev/null 2>&1 && ls $1 | wc -l || echo 0; }
+have_eval() { [ "$(count_glob 'sidequest_scale3x/results/sq*_reg_perhour.npz')" -ge 3 ]; }
+have_xfer() { [ "$(count_glob 'sidequest_scale3x/results/xfer*_perhour.npz')" -ge 2 ]; }
+have_casc() { [ "$(count_glob 'sidequest_scale3x/results/*_casc_casc_perhour.npz')" -ge 3 ]; }
+downstream_running() { bjobs -w 2>/dev/null | awk 'NR>1{print $7}' | grep -qE "^(eval2_|casc|xfer2)"; }
+report_done() { [ -s sidequest_scale3x/results/report4_tables.md ]; }
+
 phase4_state() {  # 回显 wait|done:阶段4 一步 27→1 的自我接管
   local tag=p4_27to1_reg
   if ls results/phase4/*_perhour.npz >/dev/null 2>&1; then echo done; return; fi
@@ -60,26 +68,46 @@ one_round() {
   if [ "$need" = "1" ]; then log "[等] 已重投,下一轮再看"; return 1; fi
   if [ "$alive" -gt 0 ]; then log "[等] $alive 个训练在跑"; return 1; fi
 
-  # 三个都训完了:下游跑过就不管
-  if ls sidequest_scale3x/results/*_perhour.npz >/dev/null 2>&1; then
-    if [ "$p4" = "done" ]; then
-      log "[完成] 外传下游与阶段4 评估都已产出,看守退出"
-      return 0
-    fi
-    log "[等] 外传下游已产出,继续盯阶段4"
-    return 1
-  fi
-  if bjobs -w 2>/dev/null | awk 'NR>1{print $7}' | grep -qE "^(eval2_|casc|xfer2)"; then
-    log "[等] 下游作业在跑"; return 1
-  fi
+  # ---- 下游分块接管:评估 → 迁移 → 级联 → 出表 ----
   local ids="" t
   for t in $TAGS; do
     local jid
     jid=$(bjobs -a -J "$t" -o "jobid stat" 2>/dev/null | awk '$2=="DONE"{print $1}' | tail -1)
     [ -n "$jid" ] && ids="$ids $jid"
   done
-  log "[接管] 训练全部结束,重新挂下游(DEPS=$ids)"
-  DEPS="$ids" bash sidequest_scale3x/queue/chain_after_train.sh >/dev/null 2>&1
+
+  if ! have_eval; then
+    if downstream_running; then log "[等] 下游作业在跑(评估未齐)"; return 1; fi
+    log "[接管] 训练全部结束,重新挂下游(DEPS=$ids)"
+    DEPS="$ids" bash sidequest_scale3x/queue/chain_after_train.sh >/dev/null 2>&1
+    return 1
+  fi
+
+  if ! have_xfer; then
+    if downstream_running; then log "[等] 下游作业在跑(迁移未齐)"; return 1; fi
+    log "[接管] 评估已齐,补投交叉迁移"
+    TAGS="xfer9to3_by27to9_reg,xfer27to9_by3to1_reg" bash sidequest_scale3x/queue/eval_xfer.sh >/dev/null 2>&1
+    return 1
+  fi
+
+  if ! have_casc; then
+    if downstream_running; then log "[等] 下游作业在跑(级联未齐)"; return 1; fi
+    log "[接管] 评估与迁移已齐,补投级联"
+    bash sidequest_scale3x/queue/cascade.sh >/dev/null 2>&1
+    return 1
+  fi
+
+  if ! report_done; then
+    log "[出表] 全部产物已齐,生成 report4 三张表"
+    bash sidequest_scale3x/queue/report4.sh >>logs/report4.log 2>&1
+    return 1
+  fi
+
+  if [ "$p4" = "done" ]; then
+    log "[完成] 外传下游与阶段4 评估都已产出,看守退出"
+    return 0
+  fi
+  log "[等] 外传全部完成,继续盯阶段4"
   return 1
 }
 
