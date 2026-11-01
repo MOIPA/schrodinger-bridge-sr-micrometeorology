@@ -23,6 +23,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--config_path", required=True)
     ap.add_argument("--experiment_name", default=EXP)
+    ap.add_argument("--timing", action="store_true", help="只测 __getitem__ 的单样本耗时")
+    ap.add_argument("--n_time", type=int, default=8)
     args = ap.parse_args()
 
     cfg = load_config(args.experiment_name, args.config_path)
@@ -50,6 +52,15 @@ def main():
         assert n_out == cfg.model.out_channel, f"state {n_out} != out_channel {cfg.model.out_channel}"
         assert n_in + n_out == cfg.model.in_channel, (
             f"cond {n_in} + state {n_out} != in_channel {cfg.model.in_channel}")
+        if args.timing:
+            import time
+            ds[0]
+            t0 = time.time()
+            for i in range(args.n_time):
+                ds[i]
+            dt = (time.time() - t0) / args.n_time
+            print(f"[timing] __getitem__ 平均 {dt:.2f} s/样本 (n={args.n_time})")
+            continue
         item = ds[0]
         for key, val in item.items():
             if hasattr(val, "shape"):
