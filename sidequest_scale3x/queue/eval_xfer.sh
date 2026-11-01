@@ -6,7 +6,7 @@ set -euo pipefail
 cd "${REPO:-$(cd "$(dirname "$0")/../.." && pwd)}"
 
 PY="${PY3:-python3}"
-TAGS="${TAGS:-xfer9to3_by27to9,xfer27to9_by3to1}"
+TAGS="${TAGS:-xfer9to3_by27to9_reg,xfer27to9_by3to1_reg}"
 OUT="${OUT:-sidequest_scale3x/results}"
 CK_ROOT="${CK_ROOT:-data/DL_result/ExperimentSchrodingerBridgeWindCanvas}"
 
