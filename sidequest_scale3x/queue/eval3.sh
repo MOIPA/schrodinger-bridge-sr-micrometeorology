@@ -43,6 +43,12 @@ fi
 
 for t in $TAGS; do
   echo "===== eval $t ====="
+  # 闸门:训练日志里必须有 "Train end"。依赖条件 ended(<jobid>) 在作业被抢占/重投、
+  # 旧作业号离开历史后可能立刻满足,导致拿半成品 checkpoint 评估(2026-11-01 真实发生过)。
+  if ! grep -qa "Train end" "logs/${t}.log" 2>/dev/null; then
+    echo "[skip] $t: logs/${t}.log 里没有 'Train end',训练未完成,不评估"
+    continue
+  fi
   "$PY3D" - <<PYEOF || true
 import sys, importlib.util as iu, yaml
 sys.path.insert(0, "scripts/outline")

@@ -36,6 +36,14 @@ fresh_dir() {  # $1=目录;冒烟测试时清掉上一轮的残留,避免 synth 
 
 fresh_dir "$WK/s1"
 echo "=== [1/3] 27→9 (dump 到 $WK/s1) ==="
+# 闸门(三级都要):每一级用的权重必须训练完成。依赖 ended(<jobid>) 在作业被抢占/重投后
+# 可能立刻满足,级联会拿半成品权重跑到底,浪费几小时且结果不可信。
+need_trained() {
+  if ! grep -qa "Train end" "logs/$1.log" 2>/dev/null; then
+    echo ">>> $1 训练未完成(logs/$1.log 无 'Train end'),级联中止"; exit 1
+  fi
+}
+need_trained sq27to9_reg
 "$PY" -u scripts/outline/84_ensemble_eval.py --mode reg --tags sq27to9_reg \
   --cfg_root sidequest_scale3x/configs --out_dir "$OUT" --out_suffix _casc \
   --dump_fields "$WK/s1" $FR_OPT --device "${DEV:-cuda:0}" | tail -3
@@ -43,6 +51,7 @@ echo "=== [1/3] 27→9 (dump 到 $WK/s1) ==="
 [ "$STAGES" -lt 2 ] && { echo "STAGES=$STAGES,停在第 1 级"; exit 0; }
 
 fresh_dir "$WK/s2"
+need_trained sq9to3_reg
 echo "=== [2/3] 组装 9→3 的粗端 ==="
 "$PY" sidequest_scale3x/scripts/synth_coarse.py \
   --pred_dir "$WK/s1" --coarse_dir "$ROOT_DATA/prepare_npz_outline_coarse" \
@@ -61,6 +70,7 @@ echo "=== [2/3] 9→3 推理 ==="
 [ -f "$OUT/sq9to3_casc_casc_perhour.npz" ] || { echo ">>> 9→3 未产出,中止"; exit 1; }
 [ "$STAGES" -lt 3 ] && { echo "STAGES=$STAGES,停在第 2 级"; exit 0; }
 
+need_trained sq3to1_reg
 echo "=== [3/3] 组装 3→1 的粗端 ==="
 "$PY" sidequest_scale3x/scripts/synth_coarse.py \
   --pred_dir "$WK/s2" --coarse_dir "$ROOT_DATA/prepare_npz_outline_coarse_d03" \
