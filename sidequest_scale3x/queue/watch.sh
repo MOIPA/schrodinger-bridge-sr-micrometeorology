@@ -29,8 +29,26 @@ train_finished() {  # $1=tag
   tail -c 400 "logs/$1.log" 2>/dev/null | tr '\r' '\n' | grep -q "Train end"
 }
 
+phase4_state() {  # 回显 wait|done:阶段4 一步 27→1 的自我接管
+  local tag=p4_27to1_reg
+  if ls results/phase4/*_perhour.npz >/dev/null 2>&1; then echo done; return; fi
+  if running_named "$tag"; then echo wait; return; fi
+  if ! train_finished "$tag"; then
+    log "[重投] $tag 不在队列里且没训完,重新提交到 $Q"
+    FORCE_Q="$Q" ARMS="$tag" bash ops/queue/66_phase4_train.sh >/dev/null 2>&1
+    echo wait; return
+  fi
+  if bjobs -w 2>/dev/null | awk 'NR>1{print $7}' | grep -qx "p4eval"; then
+    log "[等] p4 评估在跑"; echo wait; return
+  fi
+  log "[接管] p4 训练已结束,提交阶段4 评估"
+  FORCE_Q="$Q" TAGS="$tag" bash ops/queue/66b_phase4_eval.sh >/dev/null 2>&1
+  echo wait
+}
+
 one_round() {
-  local alive=0 need=0
+  local alive=0 need=0 p4
+  p4=$(phase4_state)
   for t in $TAGS; do
     if running_named "$t"; then alive=$((alive+1)); continue; fi
     if train_finished "$t"; then continue; fi
@@ -44,8 +62,12 @@ one_round() {
 
   # 三个都训完了:下游跑过就不管
   if ls sidequest_scale3x/results/*_perhour.npz >/dev/null 2>&1; then
-    log "[完成] 下游产物已存在,看守退出"
-    return 0
+    if [ "$p4" = "done" ]; then
+      log "[完成] 外传下游与阶段4 评估都已产出,看守退出"
+      return 0
+    fi
+    log "[等] 外传下游已产出,继续盯阶段4"
+    return 1
   fi
   if bjobs -w 2>/dev/null | awk 'NR>1{print $7}' | grep -qE "^(eval2_|casc|xfer2)"; then
     log "[等] 下游作业在跑"; return 1

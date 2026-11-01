@@ -19,6 +19,7 @@ CFG_ROOT="configs/深圳"
 OUT_DIR="results/phase4"
 TAGS="${TAGS:-p4_27to1_reg}"
 QUEUE="${FORCE_Q:-}"
+DRY_RUN="${DRY_RUN:-}"
 
 mkdir -p logs "$OUT_DIR"
 
@@ -32,6 +33,11 @@ if [ -z "${INNER:-}" ]; then
   fi
   DEP_OPTS=()
   [ -n "${AFTER:-}" ] && DEP_OPTS=(-w "ended(${AFTER})")
+  if [ -n "$DRY_RUN" ]; then
+    echo "[dry] 队列=$QUEUE tags=$TAGS dep=${DEP_OPTS[*]:-无}"
+    echo "[dry] bsub -q $QUEUE -gpu num=1:mode=exclusive_process -n 4 -R rusage[mem=32000] ${DEP_OPTS[*]:-} -J p4eval ... bash -lc 'INNER=1 TAGS=\"$TAGS\" bash ops/queue/66b_phase4_eval.sh'"
+    exit 0
+  fi
   bsub -q "$QUEUE" -gpu "num=1:mode=exclusive_process" -n 4 \
     -R "rusage[mem=32000]" ${DEP_OPTS:+"${DEP_OPTS[@]}"} \
     -J p4eval -o "logs/p4eval_%J.out" -e "logs/p4eval_%J.err" \
@@ -44,10 +50,18 @@ fi
 
 for t in $TAGS; do
   echo "===== eval $t ====="
+  if [ -n "$DRY_RUN" ]; then
+    echo "[dry] $PY3D scripts/outline/84_ensemble_eval.py --mode reg --tags $t --split test --cfg_root $CFG_ROOT --out_dir $OUT_DIR"
+    continue
+  fi
   "$PY3D" -u scripts/outline/84_ensemble_eval.py \
     --mode reg --tags "$t" --split test --device cuda:0 \
     --cfg_root "$CFG_ROOT" --out_dir "$OUT_DIR" || { echo "FAIL $t"; continue; }
 done
 
 echo "===== 汇总 ====="
-"$PY3D" sidequest_scale3x/scripts/summarize3.py --dir "$OUT_DIR" || true
+if [ -n "$DRY_RUN" ]; then
+  echo "[dry] $PY3D sidequest_scale3x/scripts/summarize3.py --dir $OUT_DIR"
+else
+  "$PY3D" sidequest_scale3x/scripts/summarize3.py --dir "$OUT_DIR" || true
+fi
