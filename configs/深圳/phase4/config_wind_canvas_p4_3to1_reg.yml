@@ -1,6 +1,7 @@
 # p4_3to1_reg — 阶段 4 T4.1 跨分辨率(3 km -> 1 km)
 # 基座: configs/深圳/phase3_arch/config_wind_canvas_p3_arch_reg.yml (阶段 3 回归臂,73 层/23 层/同容量)
-# 变更: 仅 data.coarse_dir / data.statics_dir / data.split_manifest 三行 -> d03
+# 3→1 臂 = 外传 sq3to1_reg 的同一实验(核对见 docs/阶段4_跨分辨率_开工清单.md §4)
+# 变更: 仅 data.coarse_dir / data.statics_dir / data.split_manifest / loader.dl_data_ver
 # 依赖: ops/queue/65_phase4_prep.sh 已在该机生成 prepare_npz_outline_*_d03
 # p3_arch_reg — 阶段 3 架构对比(由 83_gen_arch_configs.py 派生)
 # 基座: configs/深圳/phase2/config_wind_canvas_p2_l1r2_lr2e4.yml(myj / 23 层 / L1 / 模式层监督 / 无物理项)
@@ -9,9 +10,9 @@
 data:
   scheme: myj
   coarse_dir: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_coarse_d03
-  statics_dir: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static_d03
+  statics_dir: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static_sq3to1
   normalize_json: null
-  split_manifest: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static_d03/split.json
+  split_manifest: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static_sq3to1/split.json
   target_levels:
   - 0
   - 1
@@ -57,7 +58,7 @@ data:
   day_night_filter: all
 loader:
   batch_size: 2
-  dl_data_ver: wrf_3d_v2_canvas
+  dl_data_ver: sq3to1
   num_workers: 4
   seed: 42
   train_valid_test_ratios:
