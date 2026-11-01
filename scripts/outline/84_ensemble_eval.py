@@ -257,8 +257,35 @@ def rank_histogram(ranks, n_samples, n_layers):
 # ---------------------------------------------------------------------------
 # 单 tag 评估
 # ---------------------------------------------------------------------------
+def dump_frame(dump_dir, stamp, samples_k, sigma, levels, mass_shape):
+    """把该时次集合均值的 u/v/w 反标准化并按原生交错网格切出来,存成 npz。
+
+    输出用于"级联超分"实验:samples_k 是 (N,C,Hc,Wc) 归一化画布样本,
+    返回的 u (nL,ny,nx+1) / v (nL,ny+1,nx) / w (nW,ny,nx) 与 WRF 粗端 npz 同布局。
+    """
+    EV90 = ev90()
+    d = os.path.join(dump_dir, "d_{}.npz".format(stamp))
+    if os.path.exists(d):
+        return
+    ybar = torch.from_numpy(samples_k.mean(axis=0))
+    u, v, w, u10, v10 = EV90.split_denorm(ybar, levels, sigma)
+    ny, nx = int(mass_shape[0]), int(mass_shape[1])
+    nL = len(levels)
+    wl = list(range(levels[0], levels[-1] + 2))
+    np.savez_compressed(
+        d,
+        u=u.numpy()[:, :ny, :nx + 1].astype(np.float32),
+        v=v.numpy()[:, :ny + 1, :nx].astype(np.float32),
+        w=w.numpy()[:len(wl), :ny, :nx].astype(np.float32),
+        u10=u10.numpy().astype(np.float32),
+        v10=v10.numpy().astype(np.float32),
+        levels=np.asarray(levels, dtype=np.int32),
+        wl=np.asarray(wl, dtype=np.int32))
+
+
 def evaluate(tag, mode, config, loader, static_ctx, predictor, out_dir, out_suffix,
-             n_ensemble, split, weights, max_frames=0, meta=None, verbose=True):
+             n_ensemble, split, weights, max_frames=0, meta=None, verbose=True,
+             dump_dir=None):
     """跑一个 tag:集合预测 -> 均值 -> 与 90 同链的逐时累加 + 分布类指标 -> 写产物。
 
     predictor(batch_idx, y0_pad, x_pad) -> (N, B, C, Hp, Wp) padding 空间样本。
@@ -323,6 +350,8 @@ def evaluate(tag, mode, config, loader, static_ctx, predictor, out_dir, out_suff
                 sample_agl.append(agl_fields(m[0], m[1], m[2], m[3], m[4], tables))
             mean = [np.stack([sample_agl[i][c] for i in range(n_s)]).mean(axis=0)
                     for c in range(3)]
+            if dump_dir:
+                dump_frame(dump_dir, stamp, samples[:, k], sigma, levels, mass_shape)
 
             masks = build_masks(fields['truth'][0], fields['truth'][1], coszen, pblh, urban)
             acc_h = new_acc(n_lev_agl)
@@ -565,6 +594,8 @@ def main():
     ap.add_argument("--cfg_root", default="configs/深圳")
     ap.add_argument("--ck_root", default=None)
     ap.add_argument("--max_frames", type=int, default=0, help="0 = 全部")
+    ap.add_argument("--dump_fields", default=None,
+                    help="把该 tag 的预测场(u/v/w 物理量、原生交错网格)逐时存到此目录,供级联实验用")
     args = ap.parse_args()
 
     tags = [t.strip() for t in args.tags.split(',') if t.strip()]
@@ -611,6 +642,7 @@ def main():
         evaluate(tag, args.mode, config, loader, static_ctx, predictor,
                  args.out_dir, args.out_suffix, n_eff, args.split,
                  args.weights, max_frames=args.max_frames,
+                 dump_dir=args.dump_fields,
                  meta={'config_path': cfg_path, 'checkpoint': ck_path,
                        'edm_tag': edm_tags[ti] if edm_tags else None})
 

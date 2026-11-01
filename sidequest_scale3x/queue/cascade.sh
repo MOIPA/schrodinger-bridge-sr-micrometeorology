@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# 级联超分 27→9→3→1:三级串起来,与"一步 27→1"对照。
+# 关键点:中间级的粗端用上一级预测的风场 + 上一级粗端的地面场(重网格过来),
+#         所以整条级联只用 27 km 的信息,和一步 27→1 信息量对等。
+# 用法:bash sidequest_scale3x/queue/cascade.sh          # 需 GPU
+#       STAGES=1 bash ...                               # 只跑到第 1 级(调试)
+set -euo pipefail
+cd "${REPO:-$(cd "$(dirname "$0")/../.." && pwd)}"
+
+PY="${PY3:-/fsb/home/yutingwang/ytw_tangzq/.conda/envs/wind3d/bin/python}"
+WK="${WK:-/tmp/casc}"
+ROOT_DATA="${ROOT_DATA:-$PWD}"
+CFG_DIR=sidequest_scale3x/configs/phase3_arch
+OUT=sidequest_scale3x/results
+CK="data/DL_result/ExperimentSchrodingerBridgeWindCanvas"
+STAGES="${STAGES:-3}"
+
+mkdir -p "$WK"
+
+echo "=== [1/3] 27→9 (dump 到 $WK/s1) ==="
+"$PY" -u scripts/outline/84_ensemble_eval.py --mode reg --tags sq27to9_reg \
+  --cfg_root sidequest_scale3x/configs --out_dir "$OUT" --out_suffix _casc \
+  --dump_fields "$WK/s1" --device "${DEV:-cuda:0}" | tail -3
+[ "$STAGES" -lt 2 ] && { echo "STAGES=$STAGES,停在第 1 级"; exit 0; }
+
+echo "=== [2/3] 组装 9→3 的粗端 ==="
+"$PY" sidequest_scale3x/scripts/synth_coarse.py \
+  --pred_dir "$WK/s1" --coarse_dir "$ROOT_DATA/prepare_npz_outline_coarse" \
+  --td_from "$ROOT_DATA/prepare_npz_outline_coarse_d01" \
+  --td_statics "$ROOT_DATA/prepare_npz_outline_static_sq27to9" \
+  --out_dir "$ROOT_DATA/prepare_npz_outline_coarse_casc_s2"
+"$PY" sidequest_scale3x/scripts/gen_cascade_cfg.py \
+  --src "$CFG_DIR/config_wind_canvas_sq9to3_reg.yml" --tag sq9to3_casc \
+  --coarse_dir "$ROOT_DATA/prepare_npz_outline_coarse_casc_s2" >/dev/null
+ln -sfn ../config_wind_canvas_sq9to3_reg "$CK/config_wind_canvas_sq9to3_casc"
+
+echo "=== [2/3] 9→3 推理 ==="
+"$PY" -u scripts/outline/84_ensemble_eval.py --mode reg --tags sq9to3_casc \
+  --cfg_root sidequest_scale3x/configs --out_dir "$OUT" --out_suffix _casc \
+  --dump_fields "$WK/s2" --device "${DEV:-cuda:0}" | tail -3
+[ "$STAGES" -lt 3 ] && { echo "STAGES=$STAGES,停在第 2 级"; exit 0; }
+
+echo "=== [3/3] 组装 3→1 的粗端 ==="
+"$PY" sidequest_scale3x/scripts/synth_coarse.py \
+  --pred_dir "$WK/s2" --coarse_dir "$ROOT_DATA/prepare_npz_outline_coarse_d03" \
+  --td_from "$ROOT_DATA/prepare_npz_outline_coarse_casc_s2" \
+  --td_statics "$ROOT_DATA/prepare_npz_outline_static_sq9to3" \
+  --out_dir "$ROOT_DATA/prepare_npz_outline_coarse_casc_s3"
+"$PY" sidequest_scale3x/scripts/gen_cascade_cfg.py \
+  --src "$CFG_DIR/config_wind_canvas_sq3to1_reg.yml" --tag sq3to1_casc \
+  --coarse_dir "$ROOT_DATA/prepare_npz_outline_coarse_casc_s3" >/dev/null
+ln -sfn ../config_wind_canvas_sq3to1_reg "$CK/config_wind_canvas_sq3to1_casc"
+
+echo "=== [3/3] 3→1 推理(级联终点) ==="
+"$PY" -u scripts/outline/84_ensemble_eval.py --mode reg --tags sq3to1_casc \
+  --cfg_root sidequest_scale3x/configs --out_dir "$OUT" --out_suffix _casc \
+  --device "${DEV:-cuda:0}" | tail -3
+
+echo "=== 汇总 ==="
+"$PY" sidequest_scale3x/scripts/summarize3.py --dir "$OUT" || true
