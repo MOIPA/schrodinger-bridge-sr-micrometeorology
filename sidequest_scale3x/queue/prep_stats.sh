@@ -39,6 +39,16 @@ while read -r tag fine coarse; do
     cp -f "$FORCE_SPLIT_FROM" "$static/split.json" || exit 1
     rm -f "$static/normalize_config.json"
     echo ">>> [统一划分] $static/split.json <- $FORCE_SPLIT_FROM(标准化将重算)"
+
+    # 划一变,旧 checkpoint 必须让路:训练脚本见到 checkpoint 会 full resume,
+    # 而旧权重是在旧划分上训的(旧 train 含新 test 时次)= 测试期泄漏。
+    ck="data/DL_result/ExperimentSchrodingerBridgeWindCanvas/config_wind_canvas_${tag}"
+    if [ -d "$ck" ]; then
+      mkdir -p data/DL_result/_old_split
+      dst="data/DL_result/_old_split/config_wind_canvas_${tag}_preunify"
+      rm -rf "$dst"
+      mv "$ck" "$dst" && echo ">>> [旧权重让路] $ck -> $dst"
+    fi
   fi
 
   # 2) 时间划分(不存在才生成)
