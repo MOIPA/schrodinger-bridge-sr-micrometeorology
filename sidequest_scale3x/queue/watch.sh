@@ -89,6 +89,13 @@ one_round() {
   for t in $TAGS; do
     if running_named "$t"; then alive=$((alive+1)); continue; fi
     if train_finished "$t"; then continue; fi
+    if [ "${NO_RESUBMIT:-0}" = "1" ]; then
+      # 收尾阶段用:训练没在跑也没训完,但不自动重投(避免误判导致的重复续训白占卡),
+      # 只提示,由人决定。重复续训会从 best 权重继续跑剩余轮次,既浪费卡、又会改日志。
+      log "[停] $t 不在队列且未训完;NO_RESUBMIT=1,不自动重投(请人工确认)"
+      need=1
+      continue
+    fi
     log "[重投] $t 不在队列里且没训完,重新提交到 $Q"
     FORCE_Q="$Q" TAGS="$t" bash sidequest_scale3x/queue/train3.sh >/dev/null 2>&1
     need=1
