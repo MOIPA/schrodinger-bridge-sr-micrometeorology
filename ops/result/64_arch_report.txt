@@ -6,17 +6,16 @@ tags: p3_arch_swin,p3_arch_swin_s2,p3_arch_unet_s2,p3_arch_reg,p3_arch_reg_s2,p3
 ===== 1. 99 阶段 3 汇总表(主指标 + 切变 + 配对 bootstrap) =====
 [警告] 缺 results/phase3_arch/p3_arch_swin_s2_perhour.npz;该行全标 —
 [警告] 缺 results/phase3_arch/p3_arch_unet_s2_perhour.npz;该行全标 —
-[警告] 缺 results/phase3_arch/p3_arch_reg_s2_perhour.npz;该行全标 —
 [警告] 缺 results/phase3_arch/p3_arch_edm_s2_perhour.npz;该行全标 —
 | run | 主 RMSE (m/s) | Δ RMSE | CI 24 h | 显著 | CI 12 h | 显著 | 切变 RMSE (m/s per m) | Δ 切变 | CI 24 h | 显著 | CI 12 h | 显著 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | p2_l1r2_lr2e4_ens16 (基准) | 0.9420 | — | — | — | — | — | 0.00960 | — | — | — | — | — |
+| p3_arch_reg_s2 | 0.8215 | -0.1205 | [-0.1839, -0.0649] | 是 | [-0.1714, -0.0759] | 是 | 0.00803 | -0.00158 | [-0.00169, -0.00147] | 是 | [-0.00170, -0.00145] | 是 |
 | p3_arch_reg | 0.8277 | -0.1144 | [-0.1853, -0.0520] | 是 | [-0.1717, -0.0636] | 是 | 0.00809 | -0.00151 | [-0.00181, -0.00127] | 是 | [-0.00175, -0.00132] | 是 |
 | p3_arch_edm | 0.8715 | -0.0706 | [-0.1418, -0.0076] | 是 | [-0.1276, -0.0187] | 是 | 0.00948 | -0.00012 | [-0.00022, -0.00004] | 是 | [-0.00024, -0.00001] | 是 |
 | p3_arch_swin | 0.9984 | +0.0563 | [+0.0356, +0.0788] | 是 | [+0.0384, +0.0764] | 是 | 0.00843 | -0.00117 | [-0.00143, -0.00090] | 是 | [-0.00138, -0.00095] | 是 |
 | p3_arch_swin_s2 | — | — | — | — | — | — | — | — | — | — | — | — |
 | p3_arch_unet_s2 | — | — | — | — | — | — | — | — | — | — | — | — |
-| p3_arch_reg_s2 | — | — | — | — | — | — | — | — | — | — | — | — |
 | p3_arch_edm_s2 | — | — | — | — | — | — | — | — | — | — | — | — |
 
 | run | AGL (m) | 矢量 RMSE (m/s) | Δ vs base | rmse_w (m/s) |
@@ -32,6 +31,17 @@ tags: p3_arch_swin,p3_arch_swin_s2,p3_arch_unet_s2,p3_arch_reg,p3_arch_reg_s2,p3
 |  | 500 | 0.6974 | — | 0.2392 |
 |  | 700 | 0.6476 | — | 0.2413 |
 |  | 1000 | 0.6226 | — | 0.2340 |
+| p3_arch_reg_s2 | 10 | 0.8545 | -0.1390 | 0.0739 |
+|  | 30 | 0.8754 | -0.1360 | 0.0777 |
+|  | 50 | 0.8797 | -0.1352 | 0.0795 |
+|  | 70 | 0.8969 | -0.1392 | 0.0900 |
+|  | 100 | 0.8756 | -0.1336 | 0.1031 |
+|  | 150 | 0.8369 | -0.1205 | 0.1240 |
+|  | 200 | 0.7899 | -0.1076 | 0.1425 |
+|  | 300 | 0.7100 | -0.0941 | 0.1713 |
+|  | 500 | 0.6355 | -0.0619 | 0.1987 |
+|  | 700 | 0.5913 | -0.0563 | 0.2028 |
+|  | 1000 | 0.5697 | -0.0529 | 0.1968 |
 | p3_arch_reg | 10 | 0.8573 | -0.1362 | 0.0725 |
 |  | 30 | 0.8886 | -0.1228 | 0.0764 |
 |  | 50 | 0.8931 | -0.1218 | 0.0782 |
@@ -67,7 +77,7 @@ tags: p3_arch_swin,p3_arch_swin_s2,p3_arch_unet_s2,p3_arch_reg,p3_arch_reg_s2,p3
 |  | 1000 | 0.6414 | +0.0187 | 0.2299 |
 
 口径:主指标 = AGL 10–500 m 层平均风矢量 RMSE(池化;误差 = 预测 − 真值);切变 = 相邻主层 10–30 … 300–500 m 共 8 对的矢量切变 ΔV/Δz 之差(预测 − 真值)的池化 RMSE,单位 m/s per m,分层掩码取每对上层;Δ 与 95% CI = 相对 p2_l1r2_lr2e4_ens16 的配对移动块 bootstrap(同一重采样小时集,块长 24, 12 h)。
-缺文件/缺键(如未存 acc_sh 的 run)或小时集不可配对时记 —(json null),不抛异常;小时数: p2_l1r2_lr2e4_ens16=144, p3_arch_reg=144, p3_arch_edm=144, p3_arch_swin=144
+缺文件/缺键(如未存 acc_sh 的 run)或小时集不可配对时记 —(json null),不抛异常;小时数: p2_l1r2_lr2e4_ens16=144, p3_arch_reg_s2=144, p3_arch_reg=144, p3_arch_edm=144, p3_arch_swin=144
 
 写出 results/phase3_arch/phase3_tables.md / results/phase3_arch/phase3_tables.json
 --- results/phase3_arch/phase3_diurnal.md ---
@@ -157,12 +167,12 @@ tags: p3_arch_swin,p3_arch_swin_s2,p3_arch_unet_s2,p3_arch_reg,p3_arch_reg_s2,p3
 | run | 主 RMSE (m/s) | Δ RMSE | CI 24 h | 显著 | CI 12 h | 显著 | 切变 RMSE (m/s per m) | Δ 切变 | CI 24 h | 显著 | CI 12 h | 显著 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | p2_l1r2_lr2e4_ens16 (基准) | 0.9420 | — | — | — | — | — | 0.00960 | — | — | — | — | — |
+| p3_arch_reg_s2 | 0.8215 | -0.1205 | [-0.1839, -0.0649] | 是 | [-0.1714, -0.0759] | 是 | 0.00803 | -0.00158 | [-0.00169, -0.00147] | 是 | [-0.00170, -0.00145] | 是 |
 | p3_arch_reg | 0.8277 | -0.1144 | [-0.1853, -0.0520] | 是 | [-0.1717, -0.0636] | 是 | 0.00809 | -0.00151 | [-0.00181, -0.00127] | 是 | [-0.00175, -0.00132] | 是 |
 | p3_arch_edm | 0.8715 | -0.0706 | [-0.1418, -0.0076] | 是 | [-0.1276, -0.0187] | 是 | 0.00948 | -0.00012 | [-0.00022, -0.00004] | 是 | [-0.00024, -0.00001] | 是 |
 | p3_arch_swin | 0.9984 | +0.0563 | [+0.0356, +0.0788] | 是 | [+0.0384, +0.0764] | 是 | 0.00843 | -0.00117 | [-0.00143, -0.00090] | 是 | [-0.00138, -0.00095] | 是 |
 | p3_arch_swin_s2 | — | — | — | — | — | — | — | — | — | — | — | — |
 | p3_arch_unet_s2 | — | — | — | — | — | — | — | — | — | — | — | — |
-| p3_arch_reg_s2 | — | — | — | — | — | — | — | — | — | — | — | — |
 | p3_arch_edm_s2 | — | — | — | — | — | — | — | — | — | — | — | — |
 
 | run | AGL (m) | 矢量 RMSE (m/s) | Δ vs base | rmse_w (m/s) |
@@ -178,6 +188,17 @@ tags: p3_arch_swin,p3_arch_swin_s2,p3_arch_unet_s2,p3_arch_reg,p3_arch_reg_s2,p3
 |  | 500 | 0.6974 | — | 0.2392 |
 |  | 700 | 0.6476 | — | 0.2413 |
 |  | 1000 | 0.6226 | — | 0.2340 |
+| p3_arch_reg_s2 | 10 | 0.8545 | -0.1390 | 0.0739 |
+|  | 30 | 0.8754 | -0.1360 | 0.0777 |
+|  | 50 | 0.8797 | -0.1352 | 0.0795 |
+|  | 70 | 0.8969 | -0.1392 | 0.0900 |
+|  | 100 | 0.8756 | -0.1336 | 0.1031 |
+|  | 150 | 0.8369 | -0.1205 | 0.1240 |
+|  | 200 | 0.7899 | -0.1076 | 0.1425 |
+|  | 300 | 0.7100 | -0.0941 | 0.1713 |
+|  | 500 | 0.6355 | -0.0619 | 0.1987 |
+|  | 700 | 0.5913 | -0.0563 | 0.2028 |
+|  | 1000 | 0.5697 | -0.0529 | 0.1968 |
 | p3_arch_reg | 10 | 0.8573 | -0.1362 | 0.0725 |
 |  | 30 | 0.8886 | -0.1228 | 0.0764 |
 |  | 50 | 0.8931 | -0.1218 | 0.0782 |
@@ -213,7 +234,7 @@ tags: p3_arch_swin,p3_arch_swin_s2,p3_arch_unet_s2,p3_arch_reg,p3_arch_reg_s2,p3
 |  | 1000 | 0.6414 | +0.0187 | 0.2299 |
 
 口径:主指标 = AGL 10–500 m 层平均风矢量 RMSE(池化;误差 = 预测 − 真值);切变 = 相邻主层 10–30 … 300–500 m 共 8 对的矢量切变 ΔV/Δz 之差(预测 − 真值)的池化 RMSE,单位 m/s per m,分层掩码取每对上层;Δ 与 95% CI = 相对 p2_l1r2_lr2e4_ens16 的配对移动块 bootstrap(同一重采样小时集,块长 24, 12 h)。
-缺文件/缺键(如未存 acc_sh 的 run)或小时集不可配对时记 —(json null),不抛异常;小时数: p2_l1r2_lr2e4_ens16=144, p3_arch_reg=144, p3_arch_edm=144, p3_arch_swin=144
+缺文件/缺键(如未存 acc_sh 的 run)或小时集不可配对时记 —(json null),不抛异常;小时数: p2_l1r2_lr2e4_ens16=144, p3_arch_reg_s2=144, p3_arch_reg=144, p3_arch_edm=144, p3_arch_swin=144
 --- results/phase3_arch/phase3_vertical_mid.md ---
 # 垂直增益剖面(si=6)
 
@@ -357,6 +378,7 @@ tags: p3_arch_swin,p3_arch_swin_s2,p3_arch_unet_s2,p3_arch_reg,p3_arch_reg_s2,p3
 | p2_l1r2_lr2e4 | si | 16 | 0.5955 | 0.0554 | 0.3631 | 97.1% | 0.6600 / 0.8607 / 0.9951 / 1.1761 |
 | p3_arch_edm | two_step | 16 | 0.7699 | 0.0718 | 0.3384 | 42.8% | 0.6954 / 0.7893 / 0.8975 / 1.0610 |
 | p3_arch_swin | si | 16 | 0.4603 | 0.0411 | 0.3993 | 218.6% | 0.5849 / 0.8363 / 1.0585 / 1.3509 |
+| p3_arch_unet_small | si | 16 | 0.8570 | 0.0705 | 0.4117 | 34.2% | 0.7407 / 0.9653 / 1.1371 / 1.3107 |
 
 口径:spread/spread_w = 主指标层逐像素样本标准差(ddof=1)的均值(已按 H*W 归一,m/s);
       CRPS = 样本式 fair 估计于风速(逐层像素 x 小时池化均值);
@@ -364,7 +386,7 @@ tags: p3_arch_swin,p3_arch_swin_s2,p3_arch_unet_s2,p3_arch_reg,p3_arch_reg_s2,p3
       spread-skill = 每小时主层像素按 spread 四分位分组的集合均值 RMSE(0-25/25-50/50-75/75-100%)。
 
 ===== 3. 产出 =====
-total 5880
+total 8696
 -rw-r--r--@ 1 rui  staff    5161 11月  1 04:45 p2_l1r2_lr2e4_ens16_ensemble.json
 -rw-r--r--@ 1 rui  staff  718451 11月  1 04:45 p2_l1r2_lr2e4_ens16_perhour.npz
 -rw-r--r--@ 1 rui  staff    3219 11月  1 04:45 p2_l1r2_lr2e4_ens16_summary.json
@@ -372,14 +394,19 @@ total 5880
 -rw-r--r--@ 1 rui  staff  716041 11月  1 04:45 p3_arch_edm_perhour.npz
 -rw-r--r--@ 1 rui  staff    3179 11月  1 04:45 p3_arch_edm_summary.json
 -rw-r--r--@ 1 rui  staff  700793 11月  1 04:45 p3_arch_reg_perhour.npz
+-rw-r--r--@ 1 rui  staff  701319 11月  1 11:18 p3_arch_reg_s2_perhour.npz
+-rw-r--r--@ 1 rui  staff    3143 11月  1 11:18 p3_arch_reg_s2_summary.json
 -rw-r--r--@ 1 rui  staff    3127 11月  1 04:45 p3_arch_reg_summary.json
 -rw-r--r--@ 1 rui  staff    5130 11月  1 04:45 p3_arch_swin_ensemble.json
 -rw-r--r--@ 1 rui  staff  718696 11月  1 04:45 p3_arch_swin_perhour.npz
 -rw-r--r--@ 1 rui  staff    3201 11月  1 04:45 p3_arch_swin_summary.json
+-rw-r--r--@ 1 rui  staff    5156 11月  1 11:18 p3_arch_unet_small_ensemble.json
+-rw-r--r--@ 1 rui  staff  717364 11月  1 11:18 p3_arch_unet_small_perhour.npz
+-rw-r--r--@ 1 rui  staff    3237 11月  1 11:18 p3_arch_unet_small_summary.json
 -rw-r--r--@ 1 rui  staff   29760 10月 31 06:17 phase3_diurnal.json
 -rw-r--r--@ 1 rui  staff    4852 10月 31 06:17 phase3_diurnal.md
--rw-r--r--@ 1 rui  staff   10057 11月  1 04:46 phase3_tables.json
--rw-r--r--@ 1 rui  staff    3551 11月  1 04:46 phase3_tables.md
+-rw-r--r--@ 1 rui  staff   11885 11月  1 11:18 phase3_tables.json
+-rw-r--r--@ 1 rui  staff    4091 11月  1 11:18 phase3_tables.md
 -rw-r--r--@ 1 rui  staff    7389 10月 31 08:35 phase3_vertical_mid.json
 -rw-r--r--@ 1 rui  staff    2299 10月 31 08:35 phase3_vertical_mid.md
 -rw-r--r--@ 1 rui  staff    7451 10月 31 08:35 phase3_vertical_strong.json

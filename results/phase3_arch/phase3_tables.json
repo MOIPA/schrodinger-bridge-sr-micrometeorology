@@ -80,6 +80,104 @@
    "shear_delta_vs_base": null,
    "shear_ci": null
   },
+  "p3_arch_reg_s2": {
+   "available": true,
+   "n_hours": 144,
+   "main_rmse_vec": 0.8215067487292464,
+   "n_cells_main": 15396480.0,
+   "shear_rmse_vec": 0.008027488506770934,
+   "n_cells_shear": 13685760.0,
+   "shear_n_pairs": 8,
+   "per_level": [
+    {
+     "agl_m": 10.0,
+     "rmse_vec": 0.8544779625021802,
+     "rmse_w": 0.0738855859065673
+    },
+    {
+     "agl_m": 30.0,
+     "rmse_vec": 0.8754402003814247,
+     "rmse_w": 0.07771457818071688
+    },
+    {
+     "agl_m": 50.0,
+     "rmse_vec": 0.8797208259246025,
+     "rmse_w": 0.07954319183704983
+    },
+    {
+     "agl_m": 70.0,
+     "rmse_vec": 0.8969304652027501,
+     "rmse_w": 0.09000507936677403
+    },
+    {
+     "agl_m": 100.0,
+     "rmse_vec": 0.8755796727984667,
+     "rmse_w": 0.1030527089599101
+    },
+    {
+     "agl_m": 150.0,
+     "rmse_vec": 0.8369071103344355,
+     "rmse_w": 0.12399023365186834
+    },
+    {
+     "agl_m": 200.0,
+     "rmse_vec": 0.789870814044832,
+     "rmse_w": 0.14251649664379887
+    },
+    {
+     "agl_m": 300.0,
+     "rmse_vec": 0.7100324264483717,
+     "rmse_w": 0.17131252954991288
+    },
+    {
+     "agl_m": 500.0,
+     "rmse_vec": 0.6354869753307535,
+     "rmse_w": 0.1986955802098425
+    },
+    {
+     "agl_m": 700.0,
+     "rmse_vec": 0.5913201589529935,
+     "rmse_w": 0.2028226540335431
+    },
+    {
+     "agl_m": 1000.0,
+     "rmse_vec": 0.5697100074071764,
+     "rmse_w": 0.19679341786773116
+    }
+   ],
+   "tag": "p3_arch_reg_s2",
+   "file": "results/phase3_arch/p3_arch_reg_s2_perhour.npz",
+   "delta_vs_base": -0.12053969501253836,
+   "ci": {
+    "24": {
+     "delta": -0.12053969501253836,
+     "lo": -0.18394441066519757,
+     "hi": -0.06487792614883718,
+     "significant": true
+    },
+    "12": {
+     "delta": -0.12053969501253836,
+     "lo": -0.17140564256700297,
+     "hi": -0.07586133827197777,
+     "significant": true
+    }
+   },
+   "shear_delta_vs_base": -0.0015760826540963235,
+   "shear_ci": {
+    "24": {
+     "delta": -0.0015760826540963235,
+     "lo": -0.0016939674623542918,
+     "hi": -0.001473483674584273,
+     "significant": true
+    },
+    "12": {
+     "delta": -0.0015760826540963235,
+     "lo": -0.0016985739152678386,
+     "hi": -0.001453506406217338,
+     "significant": true
+    }
+   }
+  },
   "p3_arch_reg": {
    "available": true,
    "n_hours": 144,
@@ -401,22 +499,6 @@
    "per_level": [],
    "tag": "p3_arch_unet_s2",
    "file": "results/phase3_arch/p3_arch_unet_s2_perhour.npz",
-   "delta_vs_base": null,
-   "ci": null,
-   "shear_delta_vs_base": null,
-   "shear_ci": null
-  },
-  "p3_arch_reg_s2": {
-   "available": false,
-   "n_hours": null,
-   "main_rmse_vec": null,
-   "n_cells_main": null,
-   "shear_rmse_vec": null,
-   "n_cells_shear": null,
-   "shear_n_pairs": null,
-   "per_level": [],
-   "tag": "p3_arch_reg_s2",
-   "file": "results/phase3_arch/p3_arch_reg_s2_perhour.npz",
    "delta_vs_base": null,
    "ci": null,
    "shear_delta_vs_base": null,
