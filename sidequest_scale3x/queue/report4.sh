@@ -52,7 +52,14 @@ say "② 单项汇总(每档 vs 自己的插值基线 y0)"
     --dir "$P4" --md_out "$P4/summary4.md" --json_out "$P4/summary4.json" \
     || say "  ⚠️ summarize3(阶段4目录)失败"
 
-for f in "$OUT_MD" "$SQ/report4_summary.md" "$P4/summary4.md"; do
+say "③ 零样本迁移:增益保持率(retained = 迁移增益 / 自训增益)"
+"$PY3" sidequest_scale3x/scripts/xfer_retention.py \
+    --dir "$SQ" \
+    --pairs "xfer9to3_by27to9_reg:sq9to3_reg,xfer27to9_by3to1_reg:sq27to9_reg" \
+    --out_md "$SQ/xfer_retention.md" --out_json "$SQ/xfer_retention.json" \
+    || say "  ⚠️ xfer_retention 失败"
+
+for f in "$OUT_MD" "$SQ/report4_summary.md" "$P4/summary4.md" "$SQ/xfer_retention.md"; do
     if [ -s "$f" ]; then say "  产出 $f"; else say "  [缺] $f"; fi
 done
 
