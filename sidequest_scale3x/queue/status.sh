@@ -12,7 +12,9 @@ echo "-- 训练进度(日志最后一轮)"
 for t in sq27to9_reg sq9to3_reg sq3to1_reg p4_27to1_reg; do
   [ -f "logs/$t.log" ] || { echo "  $t: 无日志"; continue; }
   last=$(tr '\r' '\n' < "logs/$t.log" | grep -a "Epoch" | tail -1 | sed 's/.*| //' | cut -c1-40)
-  fin=$(tail -c 400 "logs/$t.log" | tr '\r' '\n' | grep -ac "Train end")
+  # 只扫最后 400 字符会漏:训练脚本在 "Train end" 之后还会打印若干行(最佳模型、
+  # sigma_d 等),老日志的 tqdm 行就停留在中途中 —— 看起来像还在跑。整份日志都扫。
+  fin=$(tr '\r' '\n' < "logs/$t.log" | grep -ac "Train end")
   best=$(tr '\r' '\n' < "logs/$t.log" | grep -a "Best epoch" | tail -1 | cut -c1-60)
   if [ "$fin" -gt 0 ]; then
     echo "  $t: 已结束 | $best"
