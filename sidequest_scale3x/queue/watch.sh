@@ -49,8 +49,19 @@ phase4_state() {  # 回显 wait|done:阶段4 一步 27→1 的自我接管
   if bjobs -w 2>/dev/null | awk 'NR>1{print $7}' | grep -qx "p4eval"; then
     log "[等] p4 评估在跑"; echo wait; return
   fi
-  log "[接管] p4 训练已结束,提交阶段4 评估"
-  FORCE_Q="$Q" TAGS="$tag" bash ops/queue/66b_phase4_eval.sh >/dev/null 2>&1
+  # 队列名可能是空的(全部 closed),此时按候选列表逐个试;并把 bsub 的返回写进日志,
+  # 否则"提交失败"和"提交成功"在日志里长得一模一样(2026-11-01 踩过:日志说接管了、队列里没有作业)。
+  local cand="${Q:-} 944090d 734090d 813080"
+  local q out
+  for q in $cand; do
+    [ -n "$q" ] || continue
+    out=$(FORCE_Q="$q" TAGS="$tag" bash ops/queue/66b_phase4_eval.sh 2>&1)
+    if echo "$out" | grep -qa "is submitted"; then
+      log "[接管] p4 评估已提交 -> $q: $(echo "$out" | grep -a "Job <" | head -1)"
+      echo wait; return
+    fi
+  done
+  log "[失败] p4 评估所有候选队列都没提交成,下一轮再试"
   echo wait
 }
 
