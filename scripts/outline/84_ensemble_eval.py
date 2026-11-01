@@ -264,6 +264,7 @@ def dump_frame(dump_dir, stamp, samples_k, sigma, levels, mass_shape):
     返回的 u (nL,ny,nx+1) / v (nL,ny+1,nx) / w (nW,ny,nx) 与 WRF 粗端 npz 同布局。
     """
     EV90 = ev90()
+    os.makedirs(dump_dir, exist_ok=True)
     d = os.path.join(dump_dir, "d_{}.npz".format(stamp))
     if os.path.exists(d):
         return
