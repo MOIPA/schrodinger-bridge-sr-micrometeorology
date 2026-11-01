@@ -46,8 +46,14 @@ for t in $TAGS; do
   # 闸门:训练日志里必须有 "Train end"。依赖条件 ended(<jobid>) 在作业被抢占/重投、
   # 旧作业号离开历史后可能立刻满足,导致拿半成品 checkpoint 评估(2026-11-01 真实发生过)。
   if ! grep -qa "Train end" "logs/${t}.log" 2>/dev/null; then
-    echo "[skip] $t: logs/${t}.log 里没有 'Train end',训练未完成,不评估"
-    continue
+    if [ -z "${SKIP_TRAIN_GATE:-}" ]; then
+      echo "[skip] $t: logs/${t}.log 里没有 'Train end',训练未完成,不评估"
+      continue
+    fi
+    # 逃生口:日志被"重复续训"的守护进程重定向覆盖(> 覆盖而不是 >>),Train end 行会丢,
+    # 但权重其实早就是训完的最佳轮。放行时把 ckpt 的时间与大小打出来,人工可核。
+    CKPT="data/DL_result/ExperimentSchrodingerBridgeWindCanvas/config_wind_canvas_${t}/checkpoint.pth"
+    echo "[gate] SKIP_TRAIN_GATE=1,放行 $t;ckpt: $(ls -l --time-style=+%F_%T "$CKPT" 2>/dev/null | awk '{print $6, $5"B"}')"
   fi
   "$PY3D" - <<PYEOF || true
 import sys, importlib.util as iu, yaml

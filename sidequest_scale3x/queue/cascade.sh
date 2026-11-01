@@ -39,9 +39,13 @@ echo "=== [1/3] 27→9 (dump 到 $WK/s1) ==="
 # 闸门(三级都要):每一级用的权重必须训练完成。依赖 ended(<jobid>) 在作业被抢占/重投后
 # 可能立刻满足,级联会拿半成品权重跑到底,浪费几小时且结果不可信。
 need_trained() {
-  if ! grep -qa "Train end" "logs/$1.log" 2>/dev/null; then
-    echo ">>> $1 训练未完成(logs/$1.log 无 'Train end'),级联中止"; exit 1
+  if grep -qa "Train end" "logs/$1.log" 2>/dev/null; then return 0; fi
+  if [ -n "${SKIP_TRAIN_GATE:-}" ]; then
+    CKPT="data/DL_result/ExperimentSchrodingerBridgeWindCanvas/config_wind_canvas_$1/checkpoint.pth"
+    echo "[gate] SKIP_TRAIN_GATE=1,放行 $1;ckpt: $(ls -l --time-style=+%F_%T "$CKPT" 2>/dev/null | awk '{print $6, $5"B"}')"
+    return 0
   fi
+  echo ">>> $1 训练未完成(logs/$1.log 无 'Train end'),级联中止"; exit 1
 }
 need_trained sq27to9_reg
 "$PY" -u scripts/outline/84_ensemble_eval.py --mode reg --tags sq27to9_reg \
