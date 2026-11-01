@@ -76,6 +76,7 @@ def one_stage(name, cfg, n_times, nlev, scheme="myj"):
     stamps = stamps[::step][:n_times]
 
     var_f, var_r, std_f, std_c, kurts = [], [], [], [], []
+    sq_r, bias_r = [], []
     per_level = {lv: {"var_f": 0.0, "var_r": 0.0} for lv in range(nlev)}
     for s in stamps:
         with np.load(coarse_files[s]) as g:
@@ -96,6 +97,8 @@ def one_stage(name, cfg, n_times, nlev, scheme="myj"):
                 continue
             var_f.append(vf)
             var_r.append(vr)
+            sq_r.append(float(np.mean(r * r)))
+            bias_r.append(float(np.mean(r)))
             std_f.append(float(np.std(f)))
             std_c.append(float(np.std(c)))
             sd = float(np.std(r))
@@ -117,6 +120,9 @@ def one_stage(name, cfg, n_times, nlev, scheme="myj"):
         "std_ratio": ratio,
         "gap_var_frac": float(var_r.sum() / var_f.sum()),
         "resid_kurtosis": float(np.mean(kurts)) if kurts else float("nan"),
+        "resid_rmse": float(np.sqrt(np.mean(sq_r))) if sq_r else float("nan"),
+        "resid_bias": float(np.mean(bias_r)) if bias_r else float("nan"),
+        "fine_std": float(np.mean(std_f)) if std_f else float("nan"),
         "fine_mean_speed": None,
         "per_level_r2": {str(k): 1.0 - v["var_r"] / v["var_f"]
                          for k, v in per_level.items() if v["var_f"] > 0},
@@ -145,9 +151,10 @@ def main():
         row = one_stage(name, cfg, args.n_times, args.nlev, args.scheme)
         rows.append(row)
         print("{:<6s} n={:3d} 时次×{:2d} 层 R2={:.3f} 缺口方差占比={:.3f} "
-              "σ细/σ粗={:.3f} 残差峰度={:.2f}".format(
+              "σ细/σ粗={:.3f} 残差RMSE={:.3f} 偏差={:+.3f} 峰度={:.2f}".format(
                   name, row["n_times"], row["nlev"], row["r2"],
-                  row["gap_var_frac"], row["std_ratio"], row["resid_kurtosis"]))
+                  row["gap_var_frac"], row["std_ratio"], row["resid_rmse"],
+                  row["resid_bias"], row["resid_kurtosis"]))
 
     if args.out_json:
         os.makedirs(os.path.dirname(args.out_json) or ".", exist_ok=True)
