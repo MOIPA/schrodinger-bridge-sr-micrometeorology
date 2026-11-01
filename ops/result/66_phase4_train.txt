@@ -1,7 +1,6 @@
-===== 阶段4 T4.1 训练提交;臂: p4_27to1_reg p4_3to1_reg =====
->>> 队列: 734090d(强制)
-[跳过] p4_27to1_reg 缺粗端数据 /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_coarse_d01(先跑 65_phase4_prep.sh DOMAIN=d01)
-[跳过] p4_3to1_reg 缺粗端数据 /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_coarse_d03(先跑 65_phase4_prep.sh DOMAIN=d03)
+===== 阶段4 T4.1 训练提交;臂: p4_27to1_reg =====
+>>> 队列: 7552v100(强制)
+>>> p4_27to1_reg -> 队列 7552v100(config_wind_canvas_p4_27to1_reg.yml)
 
 查状态: bjobs -w | grep p4_ ;tail -n 20 logs/p4_27to1_reg.log
 训完后评估: 复用 84_ensemble_eval.py(T4.1 评估脚本待写:按 tag 前缀 p4_ 取 ckpt 与粗端域)
