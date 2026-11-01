@@ -46,9 +46,13 @@ STRATA_LIST = list(STRATA)
 SI = STRATA_LIST.index("all")
 
 
-def load_tag(d, tag):
-    path = os.path.join(d, "{}_perhour.npz".format(tag))
-    if not os.path.exists(path):
+def load_tag(dirs, tag):
+    """在若干目录里找 <tag>_perhour.npz;返回 None 表示都没有。"""
+    for d in dirs:
+        path = os.path.join(d, "{}_perhour.npz".format(tag))
+        if os.path.exists(path):
+            break
+    else:
         return None
     z = np.load(path, allow_pickle=True)
     out = {"hours": z["hours"] if "hours" in z.files else None,
@@ -82,7 +86,8 @@ def ci(vals, lo=2.5, hi=97.5):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--dir", default="sidequest_scale3x/results")
+    ap.add_argument("--dir", default="sidequest_scale3x/results",
+                    help="可逗号分隔多个目录(如级联与外传在 results/,直连在 results/phase4)")
     ap.add_argument("--ref", required=True, help="参照 tag(通常是 p4_27to1_reg 一步直连)")
     ap.add_argument("--tags", required=True, help="逗号分隔;第一行应为参照本身")
     ap.add_argument("--block", type=int, default=24)
@@ -95,10 +100,13 @@ def main():
     args = ap.parse_args()
 
     tags = [t.strip() for t in args.tags.split(",") if t.strip()]
+    if args.ref not in tags:      # 参照不在 --tags 里也自动补上,免得手误
+        tags.insert(0, args.ref)
+    dirs = [d.strip() for d in args.dir.split(",") if d.strip()]
     lv = main_levels_idx()
     data, missing = {}, []
     for t in tags:
-        z = load_tag(args.dir, t)
+        z = load_tag(dirs, t)
         if z is None:
             missing.append(t)
             continue
@@ -192,6 +200,16 @@ def main():
                 dlines.append("| {} ({}) | {} |".format(day, len(idx), " | ".join(cells)))
             print("\n".join(dlines))
             md = md + "\n".join(dlines)
+
+    # 自洽守卫:级联第 1 级(带 --dump_fields 重跑)与它本来的 in-domain 结果必须一致,
+    # 不一致说明推理不确定(或 dump 改变了采样),那么后面各级的数不能信。
+    for t in list(data):
+        if t.endswith("_casc"):
+            twin = t[: -len("_casc")]
+            if twin in data:
+                d_ = abs(base[t] - base[twin])
+                print("\n[自洽] {} vs {}:Δ={:.2e} {}".format(
+                    t, twin, d_, "✓" if d_ < 1e-6 else "⚠️ 不一致,级联数不可信"))
 
     if args.out_json:
         with open(args.out_json, "w", encoding="utf-8") as f:
