@@ -34,6 +34,13 @@ while read -r tag fine coarse; do
     echo ">>> 链接 $(ls data/DL_data/$ver/*.npz | wc -l) 个细端文件 -> $ver"
   fi
 
+  # 1.5) 统一划分:把别的目录的 split.json 拷过来,并强制重算标准化统计
+  if [ -n "${FORCE_SPLIT_FROM:-}" ]; then
+    cp -f "$FORCE_SPLIT_FROM" "$static/split.json" || exit 1
+    rm -f "$static/normalize_config.json"
+    echo ">>> [统一划分] $static/split.json <- $FORCE_SPLIT_FROM(标准化将重算)"
+  fi
+
   # 2) 时间划分(不存在才生成)
   if [ ! -f "$static/split.json" ]; then
     run "$PY3D" scripts/outline/30_blocks_and_split.py \
