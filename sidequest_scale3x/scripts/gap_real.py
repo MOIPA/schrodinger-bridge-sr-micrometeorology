@@ -60,6 +60,12 @@ def destagger_speed(u, v):
 
 
 def one_stage(name, cfg, n_times, nlev, scheme="myj"):
+    """逐 (时次, 层) 算空间统计量,再等权汇总。
+
+    为什么不把所有层摊平一次性算:不同层的平均风速差异极大(10 m 与 500 m 可能差一倍),
+    摊平后 var(F) 主要由"垂直切变"贡献,会系统性抬高 R² —— 3→1 曾因此算出 0.983 的假高分。
+    正确做法是每层各自在**空间上**算 var,再对 (时次×层) 等权平均。
+    """
     st = CanvasStatics(os.path.join(REPO, cfg["statics"]))
     fine_files = {stamp_of(p): p for p in glob.glob(os.path.join(REPO, cfg["fine"], "f_*.npz"))}
     coarse_files = {stamp_of(p): p for p in glob.glob(os.path.join(REPO, cfg["coarse"], "c_*.npz"))}
@@ -69,7 +75,8 @@ def one_stage(name, cfg, n_times, nlev, scheme="myj"):
     step = max(1, len(stamps) // n_times)
     stamps = stamps[::step][:n_times]
 
-    acc_f, acc_c, acc_r = [], [], []
+    var_f, var_r, std_f, std_c, kurts = [], [], [], [], []
+    per_level = {lv: {"var_f": 0.0, "var_r": 0.0} for lv in range(nlev)}
     for s in stamps:
         with np.load(coarse_files[s]) as g:
             cu = np.asarray(g["c_u"][:nlev], dtype=np.float32)
@@ -77,36 +84,42 @@ def one_stage(name, cfg, n_times, nlev, scheme="myj"):
         with np.load(fine_files[s]) as g:
             fu = np.asarray(g["f_u"][:nlev], dtype=np.float32)
             fv = np.asarray(g["f_v"][:nlev], dtype=np.float32)
-        # 真粗端 -> 细端原生交错位置 -> 质量点 -> 风速
-        cu_up = st.regrid_field(cu, "u")
-        cv_up = st.regrid_field(cv, "v")
-        spd_c = destagger_speed(cu_up, cv_up)
+        spd_c = destagger_speed(st.regrid_field(cu, "u"), st.regrid_field(cv, "v"))
         spd_f = destagger_speed(fu, fv)
-        acc_f.append(spd_f.ravel())
-        acc_c.append(spd_c.ravel())
-        acc_r.append((spd_f - spd_c).ravel())
+        for lv in range(nlev):
+            f = spd_f[lv].ravel()
+            c = spd_c[lv].ravel()
+            r = f - c
+            vf = float(np.var(f))
+            vr = float(np.var(r))
+            if not np.isfinite(vf) or vf <= 0:
+                continue
+            var_f.append(vf)
+            var_r.append(vr)
+            std_f.append(float(np.std(f)))
+            std_c.append(float(np.std(c)))
+            sd = float(np.std(r))
+            if sd > 0:
+                kurts.append(float(np.mean(((r - r.mean()) / sd) ** 4)))
+            per_level[lv]["var_f"] += vf
+            per_level[lv]["var_r"] += vr
 
-    f = np.concatenate(acc_f)
-    c = np.concatenate(acc_c)
-    r = f - c
-    var_f = float(np.var(f))
-    r2 = 1.0 - float(np.var(r)) / var_f if var_f > 0 else float("nan")
-    ratio = float(np.std(f) / np.std(c)) if np.std(c) > 0 else float("nan")
-    m = float(np.mean(r))
-    sd = float(np.std(r))
-    kurt = float(np.mean(((r - m) / sd) ** 4)) if sd > 0 else float("nan")
+    var_f = np.asarray(var_f)
+    var_r = np.asarray(var_r)
+    r2 = 1.0 - float(var_r.sum() / var_f.sum())
+    ratio = float(np.sum(std_f) / max(np.sum(std_c), 1e-12))
     return {
         "stage": name,
         "n_times": len(stamps),
         "nlev": nlev,
-        "n_points": int(f.size),
+        "n_samples": int(var_f.size),
         "r2": r2,
         "std_ratio": ratio,
-        "resid_mean": m,
-        "resid_std": sd,
-        "resid_kurtosis": kurt,
-        "fine_mean_speed": float(np.mean(f)),
-        "coarse_mean_speed": float(np.mean(c)),
+        "gap_var_frac": float(var_r.sum() / var_f.sum()),
+        "resid_kurtosis": float(np.mean(kurts)) if kurts else float("nan"),
+        "fine_mean_speed": None,
+        "per_level_r2": {str(k): 1.0 - v["var_r"] / v["var_f"]
+                         for k, v in per_level.items() if v["var_f"] > 0},
         "stamps": stamps,
     }
 
@@ -131,10 +144,10 @@ def main():
             continue
         row = one_stage(name, cfg, args.n_times, args.nlev, args.scheme)
         rows.append(row)
-        print("{:<6s} n={:3d} 时次 R2={:.3f} σ细/σ粗={:.3f} 残差均值={:+.3f} "
-              "残差σ={:.3f} 峰度={:.2f}".format(
-                  name, row["n_times"], row["r2"], row["std_ratio"],
-                  row["resid_mean"], row["resid_std"], row["resid_kurtosis"]))
+        print("{:<6s} n={:3d} 时次×{:2d} 层 R2={:.3f} 缺口方差占比={:.3f} "
+              "σ细/σ粗={:.3f} 残差峰度={:.2f}".format(
+                  name, row["n_times"], row["nlev"], row["r2"],
+                  row["gap_var_frac"], row["std_ratio"], row["resid_kurtosis"]))
 
     if args.out_json:
         os.makedirs(os.path.dirname(args.out_json) or ".", exist_ok=True)
