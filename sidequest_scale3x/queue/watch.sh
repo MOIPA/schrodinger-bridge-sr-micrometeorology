@@ -31,9 +31,24 @@ train_finished() {  # $1=tag
 
 
 count_glob() { ls $1 >/dev/null 2>&1 && ls $1 | wc -l || echo 0; }
-have_eval() { [ "$(count_glob 'sidequest_scale3x/results/sq*_reg_perhour.npz')" -ge 3 ]; }
-have_xfer() { [ "$(count_glob 'sidequest_scale3x/results/xfer*_perhour.npz')" -ge 2 ]; }
-have_casc() { [ "$(count_glob 'sidequest_scale3x/results/*_casc_casc_perhour.npz')" -ge 3 ]; }
+all_exist() { local f; for f in "$@"; do [ -s "$f" ] || return 1; done; return 0; }
+# 显式列产物名,不用通配符计数:级联三级产物名不齐整(第 1 级只有一个 _casc,
+# 第 2/3 级是两个 _casc),用 '*_casc_casc_*' 计数会永远只数到 2 个,
+# 于是看守会以为级联没跑、每 10 分钟重投一次。
+have_eval() {
+  all_exist sidequest_scale3x/results/sq27to9_reg_perhour.npz \
+            sidequest_scale3x/results/sq9to3_reg_perhour.npz \
+            sidequest_scale3x/results/sq3to1_reg_perhour.npz
+}
+have_xfer() {
+  all_exist sidequest_scale3x/results/xfer9to3_by27to9_reg_perhour.npz \
+            sidequest_scale3x/results/xfer27to9_by3to1_reg_perhour.npz
+}
+have_casc() {
+  all_exist sidequest_scale3x/results/sq27to9_reg_casc_perhour.npz \
+            sidequest_scale3x/results/sq9to3_casc_casc_perhour.npz \
+            sidequest_scale3x/results/sq3to1_casc_casc_perhour.npz
+}
 downstream_running() { bjobs -w 2>/dev/null | awk 'NR>1{print $7}' | grep -qE "^(eval2_|casc|xfer2)"; }
 report_done() { [ -s sidequest_scale3x/results/report4_tables.md ]; }
 
