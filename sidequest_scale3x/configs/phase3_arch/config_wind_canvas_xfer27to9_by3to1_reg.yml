@@ -1,0 +1,101 @@
+# 交叉迁移(零样本):用 3→1 的权重评 27→9 的任务(全卷积,画布尺寸不同也能跑);数据/静态场/归一化沿用 27→9 目标侧
+# 外传 · 三尺度 3× 对比 —— sq27to9_reg
+# 基座: configs/深圳/phase3_arch/config_wind_canvas_p3_arch_reg.yml(逐键相同)
+# 变更: data.coarse_dir / statics_dir / split_manifest / hr_data_shape + loader.dl_data_ver
+# 目的: 固定架构与超参, 只变尺度, 使差异可归因于'灰度区间'
+data:
+  coarse_dir: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_coarse_d01
+  day_night_filter: all
+  dtype: float32
+  hr_cropped_shape:
+  - 96
+  - 112
+  hr_data_shape:
+  - 120
+  - 150
+  include_w: true
+  input_groups:
+  - coarse_wind_uv
+  - coarse_zagl
+  - coarse_logz0
+  - fine_geom
+  - coszen
+  is_clipped: false
+  max_clipped_value: null
+  min_clipped_value: null
+  missing_value: 0.0
+  normalize_json: null
+  scheme: myj
+  split_manifest: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static_sq27to9/split.json
+  statics_dir: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static_sq27to9
+  target_levels:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  - 15
+  - 16
+  - 17
+  - 18
+  - 19
+  - 20
+  - 21
+  - 22
+loader:
+  batch_size: 2
+  dl_data_ver: sq27to9
+  num_workers: 4
+  seed: 42
+  train_valid_test_ratios:
+  - 0.7
+  - 0.1
+  - 0.2
+model:
+  attn_res:
+  - 16
+  channel_mults:
+  - 1
+  - 2
+  - 4
+  - 8
+  - 8
+  channels_each_head: 16
+  dropout: 0.2
+  in_channel: 167
+  inner_channel: 64
+  max_period: 10.0
+  out_channel: 72
+  res_blocks: 1
+  resblock_updown: true
+si:
+  channel_weights: null
+  divergence_weight: 0.0
+  eps: 0.2
+  formula: quadratic
+  loss_type: L1
+  n_timestep: 10
+  residual_output: true
+  state_layout: canvas
+  vorticity_weight: 0.0
+train:
+  early_stopping_patience: 40
+  ema_decay: null
+  epochs: 150
+  learning_rate: 0.0002
+  loss:
+    loss_name: L1
+  optim_name: AdamW
+  save_interval: 10
+  seed: 78269
+  use_amp: false
