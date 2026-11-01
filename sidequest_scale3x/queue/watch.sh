@@ -26,7 +26,9 @@ running_named() {  # $1=jobname -> 0 若队列里有同名作业
 }
 
 train_finished() {  # $1=tag
-  tail -c 400 "logs/$1.log" 2>/dev/null | tr '\r' '\n' | grep -q "Train end"
+  # 必须扫整份日志:训练脚本在 "Train end" 之后还会打印最佳模型、sigma_d 等若干行,
+  # 只看尾部 400 字符会把已训完的档判成"没训完",于是重复重投(2026-11-02 00:35 实际发生)。
+  tr '\r' '\n' < "logs/$1.log" 2>/dev/null | grep -qa "Train end"
 }
 
 
