@@ -1,1 +1,2 @@
 2026-10-31 02:44  SSH 断开(01:19:57 服务器主动断开),无 OTP 无法重连;暂停定时轮询,待用户重连后重建。W2 未提交。
+2026-11-03 02:17 起 SSH 中断(Connection closed by remote host),至 12:17 仍 Permission denied(仅密码+OTP,无密钥);期间服务器无待取产物(外传-4 定稿已推送),离线完成 阶段5 预登记判据 + 70_time_pair_index.py + 预期样本量预演。
