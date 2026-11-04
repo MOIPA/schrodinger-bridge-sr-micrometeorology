@@ -22,8 +22,8 @@ from src.dl_model.model_maker import make_model  # noqa: E402
 from scripts.train_edm_correction import load_edm_config  # noqa: E402
 
 EXP = "ExperimentSchrodingerBridgeWindCanvas"
-CFG_DIR = "configs/深圳/phase3_arch"
-TAGS = [
+CFG_DIR = os.environ.get("CFG_DIR", "configs/深圳/phase3_arch")
+TAGS = [t for t in os.environ.get("TAGS", "").split() if t] or [
     "p3_arch_reg",
     "p3_arch_reg_s2",
     "p3_arch_unet_small",
