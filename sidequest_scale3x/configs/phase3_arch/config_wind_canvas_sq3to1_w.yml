@@ -1,0 +1,103 @@
+# 假设②:3→1 上加粗端 W
+# 由 scripts/outline/42_gen_phase4_ablate_configs.py 生成(基准 config_wind_canvas_sq3to1_reg.yml;input_groups 与 in_channel 同步改动)
+# 外传 · 三尺度 3× 对比 —— sq3to1_reg
+# 基座: configs/深圳/phase3_arch/config_wind_canvas_p3_arch_reg.yml(逐键相同)
+# 变更: data.coarse_dir / statics_dir / split_manifest / hr_data_shape + loader.dl_data_ver
+# 目的: 固定架构与超参, 只变尺度, 使差异可归因于'灰度区间'
+data:
+  coarse_dir: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_coarse_d03
+  day_night_filter: all
+  dtype: float32
+  hr_cropped_shape:
+  - 96
+  - 112
+  hr_data_shape:
+  - 99
+  - 120
+  include_w: true
+  input_groups:
+  - coarse_wind_uv
+  - coarse_zagl
+  - coarse_logz0
+  - fine_geom
+  - coszen
+  - coarse_w
+  is_clipped: false
+  max_clipped_value: null
+  min_clipped_value: null
+  missing_value: 0.0
+  normalize_json: null
+  scheme: myj
+  split_manifest: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static_sq3to1/split.json
+  statics_dir: /fsb/home/yutingwang/ytw_tangzq/schrodinger-bridge-sr-micrometeorology/prepare_npz_outline_static_sq3to1
+  target_levels:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  - 15
+  - 16
+  - 17
+  - 18
+  - 19
+  - 20
+  - 21
+  - 22
+loader:
+  batch_size: 2
+  dl_data_ver: sq3to1
+  num_workers: 4
+  seed: 42
+  train_valid_test_ratios:
+  - 0.7
+  - 0.1
+  - 0.2
+model:
+  attn_res:
+  - 16
+  channel_mults:
+  - 1
+  - 2
+  - 4
+  - 8
+  - 8
+  channels_each_head: 16
+  dropout: 0.2
+  in_channel: 191
+  inner_channel: 64
+  max_period: 10.0
+  out_channel: 72
+  res_blocks: 1
+  resblock_updown: true
+si:
+  channel_weights: null
+  divergence_weight: 0.0
+  eps: 0.2
+  formula: quadratic
+  loss_type: L1
+  n_timestep: 10
+  residual_output: true
+  state_layout: canvas
+  vorticity_weight: 0.0
+train:
+  early_stopping_patience: 40
+  ema_decay: null
+  epochs: 150
+  learning_rate: 0.0002
+  loss:
+    loss_name: L1
+  optim_name: AdamW
+  save_interval: 10
+  seed: 78269
+  use_amp: false
