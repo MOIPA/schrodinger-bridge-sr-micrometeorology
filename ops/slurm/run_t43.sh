@@ -27,13 +27,17 @@ SQ_TRAINER=scripts/train_regression_model.py
 
 chain_job=""
 plan=(
-    "p4_27to1_aux|$P4_CFG/config_wind_canvas_p4_27to1_aux.yml|$P4_TRAINER|configs/深圳/phase4"
-    "p4_27to1_w|$P4_CFG/config_wind_canvas_p4_27to1_w.yml|$P4_TRAINER|configs/深圳/phase4"
-    "sq3to1_w|$SQ_CFG/config_wind_canvas_sq3to1_w.yml|$SQ_TRAINER|sidequest_scale3x/configs/phase3_arch"
+    "p4_27to1_aux|$P4_CFG/config_wind_canvas_p4_27to1_aux.yml|$P4_TRAINER|configs/深圳"
+    "p4_27to1_w|$P4_CFG/config_wind_canvas_p4_27to1_w.yml|$P4_TRAINER|configs/深圳"
+    "sq3to1_w|$SQ_CFG/config_wind_canvas_sq3to1_w.yml|$SQ_TRAINER|sidequest_scale3x/configs"
 )
 
 for row in "${plan[@]}"; do
     IFS='|' read -r tag cfg trainer cfgroot <<<"$row"
+    case "$cfgroot" in
+        configs/深圳) outdir=results/phase4 ;;
+        *)        outdir=sidequest_scale3x/results ;;
+    esac
     if [ ! -f "$cfg" ]; then say "[跳过] 缺配置 $cfg"; continue; fi
     if grep -qa "Train end" "logs/${tag}.log" 2>/dev/null; then
         say "[跳过] $tag 日志里已有 Train end"; continue
@@ -55,7 +59,7 @@ for row in "${plan[@]}"; do
     if [ -z "$jid" ]; then say "[失败] $tag 没拿到 jobid"; exit 1; fi
     say "$tag -> 作业 $jid"
     # 评估紧跟着这一臂(用同一个作业号做 afterok,训完才评)
-    sub_eval "$cfgroot" "" "$tag" "$jid" | sed 's/^/    /'
+    sub_eval "$cfgroot" "$outdir" "$tag" "$jid" | sed 's/^/    /'
     chain_job="$jid"
 done
 

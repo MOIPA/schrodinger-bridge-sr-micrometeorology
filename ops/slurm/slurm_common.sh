@@ -49,9 +49,10 @@ sub_train() {
 }
 
 # 生成并提交一个评估作业(84 的 reg 模式),可选依赖训练作业。
-#   sub_eval <cfg_root> <phase_dir_name> <tag_csv> [dependency_jobid]
+#   sub_eval <cfg_root> <out_dir> <tag_csv> [dependency_jobid]
+# cfg_root 是"phase 的父目录"(84 按 tag 前缀挑 phase:p4_→phase4,其余→phase3_arch)。
 sub_eval() {
-    local cfg_root="$1" phase="$2" tags="$3" dep="${4:-}"
+    local cfg_root="$1" out_dir="$2" tags="$3" dep="${4:-}"
     local name="eval_$(echo "$tags" | tr ',' '_')"
     local sb="$LOGD/sbatch/${name}.sbatch"
     {
@@ -66,8 +67,8 @@ sub_eval() {
         echo "module load ${PY_MODULE}"
         echo "cd ${REPO} || exit 1"
         echo "python -u scripts/outline/84_ensemble_eval.py --mode reg \\"
-        echo "    --cfg_root ${cfg_root}/\${PHASE:-${phase}} --tags ${tags} \\"
-        echo "    --out_dir ${cfg_root%/configs/*}/results --device cuda:0"
+        echo "    --cfg_root ${cfg_root} --tags ${tags} \\"
+        echo "    --out_dir ${out_dir} --device cuda:0"
     } >"$sb"
     sbatch "$sb" | tee -a "$LOGD/submit_history.log"
 }
