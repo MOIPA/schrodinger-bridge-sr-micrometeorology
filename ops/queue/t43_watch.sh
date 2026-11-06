@@ -30,16 +30,32 @@ running_named() {  # 有同名作业在跑/排队就为真
     bjobs -w 2>/dev/null | awk 'NR>1{print $7}' | grep -qx "$1"
 }
 
+trained() {  # 该臂日志里已经有 Train end 就不再投(避免重复烧卡)
+    grep -qa "Train end" "logs/$1.log" 2>/dev/null
+}
+
+pending_of() {  # 从一串 tag 里挑出还没训完的
+    local t out=""
+    for t in $*; do trained "$t" || out="$out $t"; done
+    echo $out
+}
+
 submit_all() {  # $1 = 队列名
     local q="$1" ok=0
-    local out
-    out=$(FORCE_Q="$q" ARMS="$ARMS_P4" bash ops/queue/66_phase4_train.sh 2>&1)
-    echo "$out" >>"$LOG"
-    if echo "$out" | grep -qa "is submitted"; then ok=$((ok+1)); else log "[警告] p4 两臂提交未见 is submitted"; fi
-    out=$(FORCE_Q="$q" TAGS="$ARMS_SQ" bash sidequest_scale3x/queue/train3.sh 2>&1)
-    echo "$out" >>"$LOG"
-    if echo "$out" | grep -qa "is submitted"; then ok=$((ok+1)); else log "[警告] sq3to1_w 提交未见 is submitted"; fi
-    log "[提交完成] 批次成功 $ok / 2,队列 $q"
+    local out p4 sq
+    p4=$(pending_of $ARMS_P4)      # 已训完的臂跳过(中断续训靠 checkpoint 自动 resume)
+    sq=$(pending_of $ARMS_SQ)
+    if [ -n "$p4" ]; then
+        out=$(FORCE_Q="$q" ARMS="$p4" bash ops/queue/66_phase4_train.sh 2>&1)
+        echo "$out" >>"$LOG"
+        if echo "$out" | grep -qa "is submitted"; then ok=$((ok+1)); else log "[警告] p4 臂提交未见 is submitted"; fi
+    fi
+    if [ -n "$sq" ]; then
+        out=$(FORCE_Q="$q" TAGS="$sq" bash sidequest_scale3x/queue/train3.sh 2>&1)
+        echo "$out" >>"$LOG"
+        if echo "$out" | grep -qa "is submitted"; then ok=$((ok+1)); else log "[警告] sq 臂提交未见 is submitted"; fi
+    fi
+    log "[提交完成] 队列 $q;p4=[$p4] sq=[$sq];批次成功 $ok"
     [ "$ok" -ge 1 ]
 }
 
@@ -55,7 +71,7 @@ once() {
         log "[skip] 已有同名作业在队列里,不重投"
         return 1
     fi
-    log "[发现] 队列 $q 有空卡,提交 T4.3 三臂"
+    log "[发现] 队列 $q 有空卡,提交 T4.3 未训完的臂"
     submit_all "$q"
 }
 
