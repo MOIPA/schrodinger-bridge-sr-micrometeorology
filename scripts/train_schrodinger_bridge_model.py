@@ -67,7 +67,7 @@ def get_model_si_loader(
     assert config.data.hr_cropped_shape == config.data.hr_data_shape
 
     model = make_model(config.model).to(device)
-    model.load_state_dict(torch.load(model_weight_path, map_location=device))
+    model.load_state_dict(torch.load(model_weight_path, map_location=device, weights_only=True))
     _ = model.eval()
 
     si = StochasticInterpolantFollmer(
@@ -187,7 +187,8 @@ if __name__ == "__main__":
         # --- Check for existing checkpoint ---
         if os.path.exists(checkpoint_path):
             logger.info(f"Checkpoint found at '{checkpoint_path}'. Loading...")
-            checkpoint = torch.load(checkpoint_path, map_location=device)
+            # torch>=2.6 的 weights_only 默认改成 True,而我们的 ckpt 里存了配置对象
+            checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
             
             # Check for new dictionary format vs old raw state_dict format
             if isinstance(checkpoint, dict) and 'model_state_dict' in checkpoint:

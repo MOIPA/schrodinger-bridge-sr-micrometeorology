@@ -55,7 +55,7 @@ def pad16(t, mult=16):
 
 def build_si(config, ckpt_path, device, use_ema):
     model = make_model(config.model).to(device)
-    ckpt = torch.load(ckpt_path, map_location=device)
+    ckpt = torch.load(ckpt_path, map_location=device, weights_only=False)
     sd = ckpt
     if isinstance(ckpt, dict) and 'model_state_dict' in ckpt:
         sd = ckpt['ema_model_state_dict'] if (
