@@ -11,9 +11,12 @@ export PY_MODULE="${PY_MODULE:-python/ml-2026.10}"
 export LOGD="$REPO/logs"
 mkdir -p "$LOGD" "$LOGD/sbatch"
 
-# 每个作业固定申请:1 卡、4 核、32 GB、24 小时。
+# 每个作业固定申请:1 卡、4 核、32 GB、**4 小时**。
 # - 4 核够 DataLoader 用(旧集群也是 -n 4),不必抢 16 核;
-# - 24 h 是给单臂(150 轮 ≈ 5–9 h)留的余量,超时 Slurm 会杀掉,靠 checkpoint 续训;
+# - 4 h 是刻意的:这是组里共用的单卡机,不能一个人占一整天。作业到点被 Slurm 杀掉后
+#   重新提交即可(训练脚本见到 checkpoint 就续训),等于把卡定期还回调度池;
+# - 注意:scontrol 的 CfgTRES/AllocTRES 里**没有 gres/gpu**,说明这块卡没被当作可计量资源,
+#   Slurm 不会替我们串行化 GPU 作业。所以"先看 gpu_free.sh 再投、一次只投一个"必须自律;
 # - --hint=nomultithread 让 4 个进程落在 4 个物理核上(手册 §5 第 6 条同款建议)。
 export SBATCH_RES="${SBATCH_RES:-}"
 
@@ -22,7 +25,7 @@ slurm_defaults() {
     echo "#SBATCH --gres=gpu:1"
     echo "#SBATCH -c 4"
     echo "#SBATCH --mem=32G"
-    echo "#SBATCH -t 24:00:00"
+    echo "#SBATCH -t ${GPU_HOURS:-4}:00:00"
     echo "#SBATCH --hint=nomultithread"
 }
 

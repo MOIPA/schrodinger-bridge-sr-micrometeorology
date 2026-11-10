@@ -132,3 +132,6 @@ data/DL_data/
 # PDFs (not uploaded)
 *.pdf
 .claude/scheduled_tasks.lock
+
+# 本地凭证(不入库)
+.secrets/
